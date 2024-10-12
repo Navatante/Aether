@@ -5,8 +5,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import javax.swing.*;
 
 public class Main {
-    public static void main(String[] args) {
-        FlatDarkLaf.setup(); // I set the look and feel.
+    public static void main(String[] args)  {
+        FlatDarkLaf.setup(); // Set de look and feel
         SwingUtilities.invokeLater(MainView::new);
     }
 }

@@ -1,9 +1,12 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.model.DatabaseLink;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,13 +18,20 @@ public class MainView extends JFrame {
         frameConfiguration();
         initComponents();
         createMenuBar();
+        try {
+            if(!DatabaseLink.getDatabaseInstance().databaseInitialConnectionCheck()) {
+                System.exit(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
     }
 
     private void frameConfiguration() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1280,720);
         this.setVisible(true);
-        this.setResizable(false); // to avoid users destroy the GUI.
         this.setLocationRelativeTo(null);
     }
 
@@ -37,16 +47,27 @@ public class MainView extends JFrame {
         JSpinner dateTextField = new JSpinner(dateModel);
 
         // Set the date format for the JSpinner (e.g., "dd/MM/yyyy")
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateTextField, "dd/MM/yyyy");
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateTextField, "dd/MM/yyyy HH:mm");
+        dateTextField.setEditor(dateEditor);
 
         // Set the already created dimension
         dateTextField.setPreferredSize(textFieldsDimension);
-        dateTextField.setEnabled(false);
+        dateTextField.setEnabled(true);
 
 
+        // Create buttons
+        JButton viewDataButton = new JButton("View Data");
+        viewDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open DataView when the button is clicked
+                new DataViewTest().setVisible(true);
+            }
+        });
 
 
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        mainPanel.add(viewDataButton); // adding new button to test sql connection
         mainPanel.add(new JButton ("One"));
         mainPanel.add(new JButton ("Two"));
         mainPanel.add(new JButton ("Three"));
@@ -61,6 +82,12 @@ public class MainView extends JFrame {
         backgroundPanel.add(mainPanel, BorderLayout.NORTH);
         backgroundPanel.add(new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10) ),BorderLayout.CENTER);
 
+        // Just testing the separator
+        JSeparator verticalSeparator = new JSeparator(SwingConstants.VERTICAL);
+        verticalSeparator.setPreferredSize(new Dimension(10, 50));
+        backgroundPanel.add(verticalSeparator);
+
+
         // Main JFrame
         this.setContentPane(backgroundPanel);
 
@@ -74,7 +101,7 @@ public class MainView extends JFrame {
         JMenu registrarVueloMenu = new JMenu("Registrar vuelo");
 
         // Create the "File" menu
-        JMenu anadirMenu = new JMenu("Añadir...");
+        JMenu anadirMenu = new JMenu("Añadir");
 
 
         // Create the "Exit" menu item
