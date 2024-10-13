@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesFile { // Study about Template Method Pattern, maybe you can use it in this scenario.
+public class PropertiesFile {
     // Path to the properties file
     private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + "/properties/flightHubDatabase.properties";
     private static PropertiesFile instanceOfPropertiesFile;
