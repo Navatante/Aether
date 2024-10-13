@@ -6,33 +6,57 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesFile {
+public class PropertiesFile { // Study about Template Method Pattern, maybe you can use it in this scenario.
     // Path to the properties file
     private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + "/properties/flightHubDatabase.properties";
-    private static PropertiesFile instance;
-    private Properties properties;
+    private static PropertiesFile instanceOfPropertiesFile;
+    private final Properties properties;
 
     // Private constructor for Singleton pattern
     private PropertiesFile() {
         properties = new Properties();
-        createPropertiesDirectory(); // Ensure the directory exists
-        loadProperties();
+        if (checkIfPropertiesDirectoryExists()) {
+            loadProperties();
+        } else {
+            createPropertiesDirectory();
+            loadProperties();
+        }
+    }
+
+    private boolean checkIfPropertiesDirectoryExists() { // This method only checks existence, it won't create a folder in case of inexistence.
+        String propertiesDirectory = System.getProperty("user.dir") + File.separator + "properties"; // The path to the properties directory always should be from the path where the FlightHub App is installed.
+        File folder = new File(propertiesDirectory);
+        return folder.exists() && folder.isDirectory();
     }
 
     // Ensure the properties directory exists
     private void createPropertiesDirectory() {
-        File directory = new File(System.getProperty("user.dir") + "\\properties");
-        if (!directory.exists()) {
-            directory.mkdirs(); // Create the directory if it doesn't exist
-        }
+        File propertiesDirectory = new File(System.getProperty("user.dir") + File.separator + "properties");
+        propertiesDirectory.mkdirs(); // Create the directory
     }
 
-    // Thread-safe singleton instance retrieval
-    public static synchronized PropertiesFile getInstance() {
-        if (instance == null) {
-            instance = new PropertiesFile();
-        }
-        return instance;
+    private boolean checkIfPropertiesFileExists() {
+
+    }
+
+    private void createPropertiesFile() {
+
+    }
+
+    private void checkIfContentInsidePropertiesFileIsCorrect() {
+
+    }
+
+    private void writeContentIntoPropertiesFile() {
+
+    }
+
+    private String askTheUserForDirectoryPath() { // maybe this method should be moved to Controller or View packages.
+        // JFileChooser
+    }
+
+    public boolean allAboutPropertiesIsFine() {
+        // DatabaseLink class will use this to work.
     }
 
     // Load properties from the file
@@ -68,5 +92,13 @@ public class PropertiesFile {
     // Read a value by key
     public String read(String key) {
         return properties.getProperty(key);
+    }
+
+    // Thread-safe singleton instance retrieval
+    public static synchronized PropertiesFile getInstanceOfPropertiesFile() {
+        if (instanceOfPropertiesFile == null) {
+            instanceOfPropertiesFile = new PropertiesFile();
+        }
+        return instanceOfPropertiesFile;
     }
 }

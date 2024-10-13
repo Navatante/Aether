@@ -11,7 +11,7 @@ public class DataViewTest extends JFrame {
     public DataViewTest() {
         super("Data View");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(1920, 1080);
+        this.setSize(1024, 576);
         this.setLocationRelativeTo(null);
 
         // Create a JTable
@@ -42,7 +42,9 @@ public class DataViewTest extends JFrame {
             statement = connection.createStatement();
 
             // SQL query
-            String sql = "SELECT * FROM dim_crew"; // Example query, replace with your own table and columns
+            String sql = "SELECT crew_nk AS 'Codigo', crew_rank_number AS 'Num. Escalafon', crew_rank AS 'Empleo', crew_name AS 'Nombre', crew_last_name_1 AS 'Apellido1', crew_last_name_2 AS 'Apellido2', crew_dni AS 'DNI', crew_phone AS Telefono, crew_division AS 'Division'\n" +
+                    "FROM dim_crew\n" +
+                    "ORDER BY crew_sk DESC;";
             resultSet = statement.executeQuery(sql);
 
             // Get metadata to dynamically get the column count and names

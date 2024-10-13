@@ -8,7 +8,7 @@ public class DatabaseLink {
     private static DatabaseLink databaseInstance; // Singleton
     private String pathToDatabase;
     private Connection connection;
-    private final PropertiesFile propertiesFile = PropertiesFile.getInstance();
+    private final PropertiesFile propertiesFile = PropertiesFile.getInstanceOfPropertiesFile();
 
     private DatabaseLink() {}
 
@@ -35,7 +35,10 @@ public class DatabaseLink {
         return pathtoSelectedFile;
     }
 
-    public boolean databaseInitialConnectionCheck() {
+    public boolean pathToDatabaseCheck() { // pending.
+        return true;
+    }
+    public boolean propertiesFileCheck() { // you have to improve this. this name is already used in Properties file class. te has liado un huevo siguiendo a chatgpt. con tranquilidad dale logica a esto.
         try {
             String path = propertiesFile.read("path");
             if (path == null || path.trim().isEmpty()) {
