@@ -12,6 +12,10 @@ public class DatabaseLink {
 
     private DatabaseLink() {}
 
+    private String askTheUserForDatabaseFilePath() { // maybe this method should be moved to Controller or View packages. or DatabaseLink class
+        // JFileChooser
+    }
+
     private JFileChooser createFileChooser() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleccione la base de datos SQLite");
@@ -40,14 +44,14 @@ public class DatabaseLink {
     }
     public boolean propertiesFileCheck() { // you have to improve this. this name is already used in Properties file class. te has liado un huevo siguiendo a chatgpt. con tranquilidad dale logica a esto.
         try {
-            String path = propertiesFile.read("path");
+            String path = propertiesFile.readFromPropertiesFile("path");
             if (path == null || path.trim().isEmpty()) {
                 String pathUserInput = getPathFromFileChooser(createFileChooser());
 
                 // Check if the path is valid
                 if (pathUserInput != null && !pathUserInput.trim().isEmpty()) {
                     // Write the selected file path to properties and replace backslashes with slashes
-                    propertiesFile.write("path", "jdbc:sqlite:" + pathUserInput.replace("\\", "/"));
+                    propertiesFile.writeIntoPropertiesFile("path", "jdbc:sqlite:" + pathUserInput.replace("\\", "/"));
                     setPathToDatabaseFromPropertiesFile();  // It reads from the properties files and assigns the path to the pathToDatabase variable
                     connectToDatabase();
                     disconnectFromDatabase();
@@ -88,7 +92,7 @@ public class DatabaseLink {
     }
 
     public void setPathToDatabaseFromPropertiesFile() {
-        this.pathToDatabase = propertiesFile.read("path");
+        this.pathToDatabase = propertiesFile.readFromPropertiesFile("path");
     }
 
     public Connection connectToDatabase() throws SQLException {
