@@ -1,6 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.controller.DatabaseController;
 import org.jonatancarbonellmartinez.model.DatabaseLink;
+import org.jonatancarbonellmartinez.model.PropertiesFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,19 +16,21 @@ public class MainView extends JFrame {
     private Dimension textFieldsDimension = new Dimension(125,30); // Dimension to be used in all of my text fields.
 
     public MainView() {
-        super("Haverkat Flight - Decimocuarta Escuadrilla"); // "FlightHub - Decimocuarta Escuadrilla" (he puesto Haverkat de cachondeo, cambialo)
+        super("Haverkat - Decimocuarta Escuadrilla");
         frameConfiguration();
         initComponents();
         createMenuBar();
-        try {
-            if(!DatabaseLink.getDatabaseInstance().propertiesFileCheck()) {
-                System.exit(1);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+
+        PropertiesFile propertiesFile = PropertiesFile.getInstanceOfPropertiesFile();
+
+        if (!propertiesFile.isAllAboutPropertiesIsFine()) {
             System.exit(1);
+        } else {
+            DatabaseController databaseController = new DatabaseController(new DatabaseFileChooserView());
+            databaseController.checkDatabasePath();
         }
     }
+
 
     private void frameConfiguration() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

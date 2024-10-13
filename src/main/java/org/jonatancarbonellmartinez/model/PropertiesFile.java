@@ -6,31 +6,31 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesFile extends Properties {
+public class PropertiesFile {
     // Path to the properties file
+    Properties properties;
     private static PropertiesFile instanceOfPropertiesFile;
     private static final String PROPERTIES_DIRECTORY_PATH = System.getProperty("user.dir") + File.separator + "properties"; // The path to the properties directory always should be from the path where the FlightHub App is installed.
     private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + File.separator + "properties" + File.separator + "flightHubDatabase.properties";
     private File propertiesDirectory;
     private File propertiesFile;
-    public boolean allAboutPropertiesIsFine = false;
+    private boolean allAboutPropertiesIsFine = false;
 
     // Private constructor for Singleton pattern
     private PropertiesFile() {
+        this.properties = new Properties();
         this.propertiesDirectory = new File(PROPERTIES_DIRECTORY_PATH);
         this.propertiesFile = new File(PROPERTIES_FILE_PATH);
 
-        if (checkIfPropertiesDirectoryExists() && checkIfPropertiesFileExists()) {
-            loadProperties();
-        } else if (checkIfPropertiesDirectoryExists()) {
-            if (createPropertiesFile()) // if true = creation of file is successful
-                loadProperties();
-        } else {
-            if (createPropertiesDirectory()) { // if true = creation of directory is successful
-                if (createPropertiesFile()) // if true = creation of file is successful
-                    loadProperties();
-            }
+        if (!propertiesDirectory.exists() && !createPropertiesDirectory()) {
+            throw new RuntimeException("Failed to create properties directory.");
         }
+
+        if (!propertiesFile.exists() && !createPropertiesFile()) {
+            throw new RuntimeException("Failed to create properties file.");
+        }
+
+        loadProperties();
     }
 
     // Thread-safe singleton instance retrieval
@@ -54,18 +54,23 @@ public class PropertiesFile extends Properties {
     }
 
     private boolean createPropertiesFile() {
-        try{
-            return propertiesFile.createNewFile();
+        try {
+            if (propertiesFile.createNewFile()) {
+                return true;
+            } else {
+                System.err.println("File already exists or failed to create.");
+                return false;
+            }
         } catch (IOException e) {
-            System.err.println("Failed to create propertie file: " + e.getMessage());
-            return false;
+            throw new RuntimeException("Failed to create properties file", e);
         }
     }
+
 
     // Load properties from the file (it reads from the file)
     private void loadProperties() { // Loads properties from the file into memory.
         try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-            instanceOfPropertiesFile.load(fileInputStream);
+            properties.load(fileInputStream);
             allAboutPropertiesIsFine = true; // if we finally arrive here, everything has been good.
         } catch (IOException e) {
             System.err.println("Failed to load properties: " + e.getMessage());
@@ -75,7 +80,7 @@ public class PropertiesFile extends Properties {
     // Save properties to the file (it writes into the file)
     private void saveProperties() {
         try (FileOutputStream fileOutputStream = new FileOutputStream(PROPERTIES_FILE_PATH)) {
-            instanceOfPropertiesFile.store(fileOutputStream, null);
+            properties.store(fileOutputStream, null);
         } catch (IOException e) {
             System.err.println("Failed to save properties: " + e.getMessage());
         }
@@ -83,12 +88,16 @@ public class PropertiesFile extends Properties {
 
     // Write a key-value pair to properties
     public void writeIntoPropertiesFile(String key, String value) {
-        instanceOfPropertiesFile.setProperty(key, value);
+        properties.setProperty(key, value);
         saveProperties();
     }
 
     // Read a value by key
     public String readFromPropertiesFile(String key) {
-        return instanceOfPropertiesFile.getProperty(key);
+        return properties.getProperty(key);
+    }
+
+    public boolean isAllAboutPropertiesIsFine() {
+        return this.allAboutPropertiesIsFine;
     }
 }
