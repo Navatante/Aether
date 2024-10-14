@@ -63,7 +63,7 @@ public class MainView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open DataView when the button is clicked
-                new DataTestView().setVisible(true);
+                new DataTestViewDeleteMe().setVisible(true);
             }
         });
 

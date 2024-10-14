@@ -6,9 +6,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 
-public class DataTestView extends JFrame {
+public class DataTestViewDeleteMe extends JFrame {
 
-    public DataTestView() {
+    public DataTestViewDeleteMe() {
         super("Listado de pilotos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(1024, 576);
@@ -29,16 +29,15 @@ public class DataTestView extends JFrame {
         this.add(scrollPane);
     }
 
-
     // Method to populate JTable with data from SQLite database
-    private void populateTableWithData(DefaultTableModel tableModel)  { // ESTE METODO LO TENGO QUE SACAR DE AQUI Y METERLO EN model en una clase nueva
+    private void populateTableWithData(DefaultTableModel tableModel)  {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
         try {
             // Establish the SQLite connection
-            connection = Database.getDatabaseInstance().connectToDatabase();
+            connection = Database.getInstance().getConnection();
             statement = connection.createStatement();
 
             // SQL query
@@ -70,7 +69,7 @@ public class DataTestView extends JFrame {
             }
 
             // Disconnect from database
-            Database.getDatabaseInstance().disconnectFromDatabase();
+            Database.getInstance().disconnect();
 
         } catch (SQLException e) {
             e.printStackTrace();

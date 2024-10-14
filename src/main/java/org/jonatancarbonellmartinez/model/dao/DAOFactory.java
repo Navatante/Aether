@@ -7,7 +7,7 @@ import java.sql.*;
 public class DAOFactory {
 
     public DimPersonDAO createDimPersonDAO() throws SQLException {
-        Connection connection = Database.getDatabaseInstance().connectToDatabase();
+        Connection connection = Database.getInstance().getConnection();
         return new DimPersonDAOImpl(connection);
     }
 

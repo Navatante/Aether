@@ -1,9 +1,7 @@
 package org.jonatancarbonellmartinez.model;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database { // THIS IS A SINGLETON
     private static Database databaseInstance;
@@ -11,7 +9,7 @@ public class Database { // THIS IS A SINGLETON
     private Connection connection;
     private final Properties propertiesFile = Properties.getInstanceOfPropertiesFile();
 
-    public static synchronized Database getDatabaseInstance() throws SQLException {
+    public static synchronized Database getInstance() throws SQLException {
         if (databaseInstance == null) {
             databaseInstance = new Database();
         }
@@ -22,27 +20,7 @@ public class Database { // THIS IS A SINGLETON
         this.pathToDatabase = propertiesFile.readFromPropertiesFile("path");
     }
 
-    public Connection connectToDatabase() throws SQLException {
-        setPathToDatabaseFromPropertiesFile();
-        if (!doesDatabaseFileExist()) {
-            throw new SQLException("El archivo de base de datos no existe: " + pathToDatabase);
-        }
-
-        if (this.connection == null || this.connection.isClosed()) {
-            this.connection = DriverManager.getConnection(this.pathToDatabase);
-            System.out.println("Connected to database");
-        }
-        return this.connection;
-    }
-
-    public void disconnectFromDatabase() throws SQLException {
-        if (this.connection != null && !this.connection.isClosed()) {
-            this.connection.close();
-            System.out.println("Disconnected from database");
-        }
-    }
-
-    private boolean doesDatabaseFileExist() {
+    private boolean isDatabaseFilePresent() {
         if (pathToDatabase == null || pathToDatabase.isEmpty()) {
             return false; // No valid path, database doesn't exist
         }
@@ -53,5 +31,25 @@ public class Database { // THIS IS A SINGLETON
         // Check if the file exists
         File databaseFile = new File(actualFilePath);
         return databaseFile.exists() && databaseFile.isFile();
+    }
+
+    public Connection getConnection() throws SQLException {
+        setPathToDatabaseFromPropertiesFile();
+        if (!isDatabaseFilePresent()) {
+            throw new SQLException("El archivo de base de datos no existe: " + pathToDatabase);
+        }
+
+        if (this.connection == null || this.connection.isClosed()) {
+            this.connection = DriverManager.getConnection(this.pathToDatabase);
+            System.out.println("Connected to database");
+        }
+        return this.connection;
+    }
+
+    public void disconnect() throws SQLException {
+        if (this.connection != null && !this.connection.isClosed()) {
+            this.connection.close();
+            System.out.println("Disconnected from database");
+        }
     }
 }
