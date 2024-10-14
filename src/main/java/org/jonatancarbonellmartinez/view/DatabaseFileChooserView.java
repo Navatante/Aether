@@ -4,13 +4,14 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class DatabaseFileChooserView {
+
     public String showFileChooser() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Seleccione la base de datos SQLite");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        FileNameExtensionFilter dbFilter = new FileNameExtensionFilter("Archivos de base de datos (*.db)", "db");
-        fileChooser.setFileFilter(dbFilter);
+        FileNameExtensionFilter filterToOnlyDbFiles = new FileNameExtensionFilter("Archivos de base de datos (*.db)", "db");
+        fileChooser.setFileFilter(filterToOnlyDbFiles);
 
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {

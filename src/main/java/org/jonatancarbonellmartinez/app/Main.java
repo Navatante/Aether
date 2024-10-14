@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.model;
+package org.jonatancarbonellmartinez.app;
 
 import org.jonatancarbonellmartinez.view.MainView;
 import com.formdev.flatlaf.FlatDarkLaf;

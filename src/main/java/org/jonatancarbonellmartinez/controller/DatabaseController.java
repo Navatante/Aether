@@ -1,18 +1,18 @@
 package org.jonatancarbonellmartinez.controller;
 
-import org.jonatancarbonellmartinez.model.DatabaseLink;
-import org.jonatancarbonellmartinez.model.PropertiesFile;
+import org.jonatancarbonellmartinez.model.Database;
+import org.jonatancarbonellmartinez.model.Properties;
 import org.jonatancarbonellmartinez.view.DatabaseFileChooserView;
 
 import java.sql.SQLException;
 
 public class DatabaseController {
     private final DatabaseFileChooserView view;
-    private final PropertiesFile propertiesFile;
+    private final Properties propertiesFile;
 
     public DatabaseController(DatabaseFileChooserView view) {
         this.view = view;
-        this.propertiesFile = PropertiesFile.getInstanceOfPropertiesFile();
+        this.propertiesFile = Properties.getInstanceOfPropertiesFile();
     }
 
     public void checkDatabasePath() {
@@ -21,7 +21,8 @@ public class DatabaseController {
             if (path == null || path.trim().isEmpty()) {
                 promptUserForDatabasePath();  // Prompt user to select the database file
             } else {
-                connectToDatabase();
+                Database.getDatabaseInstance().connectToDatabase();
+                Database.getDatabaseInstance().disconnectFromDatabase();
             }
         } catch (SQLException e) {
             if (e.getMessage().contains("El archivo de base de datos no existe")) {
@@ -47,7 +48,7 @@ public class DatabaseController {
             propertiesFile.writeIntoPropertiesFile("path", fullPath);
 
             try {
-                connectToDatabase();
+                Database.getDatabaseInstance().connectToDatabase();
                 view.showSuccess("Conexión establecida correctamente");
             } catch (SQLException e) {
                 view.showError("Error al conectar a la base de datos después de seleccionar un nuevo archivo: " + e.getMessage());
@@ -57,12 +58,5 @@ public class DatabaseController {
             view.showError("No se proporcionó la ruta de la base de datos.");
             System.exit(1);
         }
-    }
-
-    private void connectToDatabase() throws SQLException {
-        DatabaseLink databaseLink = DatabaseLink.getDatabaseInstance();
-        databaseLink.setPathToDatabaseFromPropertiesFile();
-        databaseLink.connectToDatabase();
-        databaseLink.disconnectFromDatabase();
     }
 }

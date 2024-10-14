@@ -1,14 +1,12 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.controller.DatabaseController;
-import org.jonatancarbonellmartinez.model.DatabaseLink;
-import org.jonatancarbonellmartinez.model.PropertiesFile;
+import org.jonatancarbonellmartinez.model.Properties;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +19,7 @@ public class MainView extends JFrame {
         initComponents();
         createMenuBar();
 
-        PropertiesFile propertiesFile = PropertiesFile.getInstanceOfPropertiesFile();
+        Properties propertiesFile = Properties.getInstanceOfPropertiesFile();
 
         if (!propertiesFile.isAllAboutPropertiesIsFine()) {
             System.exit(1);
@@ -60,12 +58,12 @@ public class MainView extends JFrame {
 
 
         // Create buttons
-        JButton viewDataButton = new JButton("View Data");
+        JButton viewDataButton = new JButton("Ver Pilotos");
         viewDataButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open DataView when the button is clicked
-                new DataViewTest().setVisible(true);
+                new DataTestView().setVisible(true);
             }
         });
 

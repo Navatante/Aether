@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
-public class PropertiesFile {
-    // Path to the properties file
-    Properties properties;
-    private static PropertiesFile instanceOfPropertiesFile;
+public class Properties {
+
+    java.util.Properties properties;
+    private static Properties instanceOfPropertiesFile;
     private static final String PROPERTIES_DIRECTORY_PATH = System.getProperty("user.dir") + File.separator + "properties"; // The path to the properties directory always should be from the path where the FlightHub App is installed.
     private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + File.separator + "properties" + File.separator + "flightHubDatabase.properties";
     private File propertiesDirectory;
@@ -17,8 +16,8 @@ public class PropertiesFile {
     private boolean allAboutPropertiesIsFine = false;
 
     // Private constructor for Singleton pattern
-    private PropertiesFile() {
-        this.properties = new Properties();
+    private Properties() {
+        this.properties = new java.util.Properties();
         this.propertiesDirectory = new File(PROPERTIES_DIRECTORY_PATH);
         this.propertiesFile = new File(PROPERTIES_FILE_PATH);
 
@@ -34,9 +33,9 @@ public class PropertiesFile {
     }
 
     // Thread-safe singleton instance retrieval
-    public static synchronized PropertiesFile getInstanceOfPropertiesFile() {
+    public static synchronized Properties getInstanceOfPropertiesFile() {
         if (instanceOfPropertiesFile == null) {
-            instanceOfPropertiesFile = new PropertiesFile();
+            instanceOfPropertiesFile = new Properties();
         }
         return instanceOfPropertiesFile;
     }

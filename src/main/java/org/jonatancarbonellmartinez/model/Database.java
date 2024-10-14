@@ -5,17 +5,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseLink {
-    private static DatabaseLink databaseInstance;
+public class Database { // THIS IS A SINGLETON
+    private static Database databaseInstance;
     private String pathToDatabase;
     private Connection connection;
-    private final PropertiesFile propertiesFile = PropertiesFile.getInstanceOfPropertiesFile();
+    private final Properties propertiesFile = Properties.getInstanceOfPropertiesFile();
 
-    private DatabaseLink() {}
-
-    public static synchronized DatabaseLink getDatabaseInstance() throws SQLException {
+    public static synchronized Database getDatabaseInstance() throws SQLException {
         if (databaseInstance == null) {
-            databaseInstance = new DatabaseLink();
+            databaseInstance = new Database();
         }
         return databaseInstance;
     }
@@ -25,6 +23,7 @@ public class DatabaseLink {
     }
 
     public Connection connectToDatabase() throws SQLException {
+        setPathToDatabaseFromPropertiesFile();
         if (!doesDatabaseFileExist()) {
             throw new SQLException("El archivo de base de datos no existe: " + pathToDatabase);
         }

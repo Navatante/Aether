@@ -1,15 +1,15 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.model.DatabaseLink;
+import org.jonatancarbonellmartinez.model.Database;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 
-public class DataViewTest extends JFrame {
+public class DataTestView extends JFrame {
 
-    public DataViewTest() {
-        super("Data View");
+    public DataTestView() {
+        super("Listado de pilotos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(1024, 576);
         this.setLocationRelativeTo(null);
@@ -38,7 +38,7 @@ public class DataViewTest extends JFrame {
 
         try {
             // Establish the SQLite connection
-            connection = DatabaseLink.getDatabaseInstance().connectToDatabase();
+            connection = Database.getDatabaseInstance().connectToDatabase();
             statement = connection.createStatement();
 
             // SQL query
@@ -70,13 +70,14 @@ public class DataViewTest extends JFrame {
             }
 
             // Disconnect from database
-            DatabaseLink.getDatabaseInstance().disconnectFromDatabase();
+            Database.getDatabaseInstance().disconnectFromDatabase();
 
         } catch (SQLException e) {
             e.printStackTrace();
             // Show a success dialog
             JOptionPane.showMessageDialog(null, "Compruebe la conexión a la base de datos", "Error de conexión", JOptionPane.INFORMATION_MESSAGE);
-            System.exit(1); // aqui en lugar de cerrar tengo que mostrarle al usuario de nuevo el FileChooser para que vuelva a enlazar la base de datos.
+            JOptionPane.showMessageDialog(null,e.getMessage());
+            //System.exit(1); // aqui en lugar de cerrar tengo que mostrarle al usuario de nuevo el FileChooser para que vuelva a enlazar la base de datos.
         }
     }
 }
