@@ -19,6 +19,7 @@ public class Main {
                 // Creamos el controlador que se encargará de la lógica de negocio
                 DAOFactory daoFactory = new DAOFactory();
                 PersonController personController = new PersonController(daoFactory.createDimPersonDAO());
+                // add more here
 
                 // Creamos la vista principal (MainView), que integrará las sub-vistas (como PersonView)
                 new MainView(personController); // Pasamos el controlador a la vista principal

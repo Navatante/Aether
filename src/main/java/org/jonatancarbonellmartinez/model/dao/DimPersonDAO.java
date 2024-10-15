@@ -7,6 +7,6 @@ public interface DimPersonDAO {
     void create(DimPerson person) throws DimPersonDAOSysException;
     void update(DimPerson person) throws DimPersonDAOSysException;
     void delete(int personSk) throws DimPersonDAOSysException;
-    DimPerson findById(int personSk) throws DimPersonDAOSysException;
+    DimPerson read(int personSk) throws DimPersonDAOSysException;
 }
 

@@ -13,5 +13,7 @@ public class DAOFactory {
         return new DimPersonDAOImpl(connection);
     }
 
+
+
     // Métodos para otros DAOs
 }

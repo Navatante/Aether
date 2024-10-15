@@ -4,7 +4,7 @@ import org.jonatancarbonellmartinez.command.*;
 import org.jonatancarbonellmartinez.model.entities.DimPerson;
 import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
 
-// Implementa un controlador que se encargue de manejar las interacciones entre la vista y el modelo.
+// Controller to handle interactions between the view and the model
 public class PersonController {
     private DimPersonDAO personDAO;
 
@@ -28,6 +28,6 @@ public class PersonController {
     }
 
     public DimPerson getPerson(int personSk) {
-        return personDAO.findById(personSk);
+        return personDAO.read(personSk);
     }
 }

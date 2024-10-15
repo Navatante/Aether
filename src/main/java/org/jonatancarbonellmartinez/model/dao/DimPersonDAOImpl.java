@@ -36,7 +36,7 @@ public class DimPersonDAOImpl implements DimPersonDAO {
     }
 
     @Override
-    public DimPerson findById(int personSk) throws DimPersonDAOSysException {
+    public DimPerson read(int personSk) throws DimPersonDAOSysException {
         String sql = "SELECT * FROM dim_person WHERE person_sk = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, personSk);

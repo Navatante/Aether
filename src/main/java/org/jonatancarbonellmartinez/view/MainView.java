@@ -1,185 +1,140 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.controller.DatabaseController;
-import org.jonatancarbonellmartinez.model.Properties;
+
+
+import org.jonatancarbonellmartinez.controller.PersonController;
+import org.jonatancarbonellmartinez.factory.DAOFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
 public class MainView extends JFrame {
-    private Dimension textFieldsDimension = new Dimension(125,30); // Dimension to be used in all of my text fields.
 
-    public MainView() {
-        super("Haverkat - Decimocuarta Escuadrilla");
-        frameConfiguration();
-        initComponents();
+    private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
+    private PersonController personController;
+
+    public MainView(PersonController controllerFactory) throws SQLException {
+        this.personController = new PersonController(new DAOFactory().createDimPersonDAO());
+
+        initializeUI();  // Initializes the UI and binds event listeners
         createMenuBar();
-
-        Properties propertiesFile = Properties.getInstanceOfPropertiesFile();
-
-        if (!propertiesFile.isAllAboutPropertiesIsFine()) {
-            System.exit(1);
-        } else {
-            DatabaseController databaseController = new DatabaseController(new DatabaseFileChooserView());
-            databaseController.checkDatabasePath();
-        }
     }
 
+    private void initializeUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1280, 720);
+        setVisible(true);
+        setLocationRelativeTo(null);
 
-    private void frameConfiguration() {
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1280,720);
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
+        JLabel greeting = createGreetingLabel();
+        JSpinner dateSpinner = createDateSpinner();
+        JPanel mainPanel = createMainPanel(dateSpinner);
+
+        JPanel backgroundPanel = new JPanel(new BorderLayout(8, 8));
+        backgroundPanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        backgroundPanel.add(mainPanel, BorderLayout.NORTH);
+        backgroundPanel.add(new JPanel(), BorderLayout.CENTER);  // Empty panel for layout
+
+        this.setContentPane(backgroundPanel);
     }
 
-    private void initComponents() {
+    private JLabel createGreetingLabel() {
         JLabel greeting = new JLabel("Bienvenido", JLabel.CENTER);
         greeting.setFont(new Font("serif", Font.PLAIN, 20));
         greeting.setForeground(Color.WHITE);
+        return greeting;
+    }
 
-        // Create the SpinnerDateModel with the current date
+    private JSpinner createDateSpinner() {
         SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
+        JSpinner dateSpinner = new JSpinner(dateModel);
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy HH:mm");
+        dateSpinner.setEditor(dateEditor);
+        dateSpinner.setPreferredSize(TEXT_FIELD_DIMENSION);
+        return dateSpinner;
+    }
 
-        // Create the Spinner with the dateModel
-        JSpinner dateTextField = new JSpinner(dateModel);
+    private JPanel createMainPanel(JSpinner dateSpinner) {
+        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        // Set the date format for the JSpinner (e.g., "dd/MM/yyyy")
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateTextField, "dd/MM/yyyy HH:mm");
-        dateTextField.setEditor(dateEditor);
-
-        // Set the already created dimension
-        dateTextField.setPreferredSize(textFieldsDimension);
-        dateTextField.setEnabled(true);
-
-
-        // Create buttons
+        // Add buttons
         JButton viewDataButton = new JButton("Ver Pilotos");
-        viewDataButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Open DataView when the button is clicked
-                new DataTestViewDeleteMe().setVisible(true);
-            }
+        viewDataButton.addActionListener(e -> {
+            // Using the injected PersonController to handle the view logic
+            PersonView personView = new PersonView(personController);
+            personView.setVisible(true);
         });
 
+        mainPanel.add(viewDataButton);
+        mainPanel.add(new JButton("Uno"));
+        mainPanel.add(new JButton("Dos"));
+        mainPanel.add(new JButton("Tres"));
+        mainPanel.add(new JButton("Cuatro"));
+        mainPanel.add(new JButton("Cinco"));
 
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        mainPanel.add(viewDataButton); // adding new button to test sql connection
-        mainPanel.add(new JButton ("Uno"));
-        mainPanel.add(new JButton ("Dos"));
-        mainPanel.add(new JButton ("Tres"));
-        mainPanel.add(new JButton ("Cuatro"));
-        mainPanel.add(new JButton ("Cinco"));
-        mainPanel.add(dateTextField);
+        // Add date spinner
+        mainPanel.add(dateSpinner);
         mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
-
-        // Going to try to place the JPanels around the screen in an ordered way.
-        JPanel backgroundPanel = new JPanel(new BorderLayout(8,8));
-        backgroundPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-        backgroundPanel.add(mainPanel, BorderLayout.NORTH);
-        backgroundPanel.add(new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10) ),BorderLayout.CENTER);
-
-        // Just testing the separator
-        JSeparator verticalSeparator = new JSeparator(SwingConstants.VERTICAL);
-        verticalSeparator.setPreferredSize(new Dimension(10, 50));
-        backgroundPanel.add(verticalSeparator);
-
-
-        // Main JFrame
-        this.setContentPane(backgroundPanel);
-
-
-    } //  este metodo esta fatal, subdividilo en varios 1 METODO SOLO PUEDE HACER 1 COSA!
+        return mainPanel;
+    }
 
     private void createMenuBar() {
-        // Create the JMenu Bar
         JMenuBar menuBar = new JMenuBar();
-
-        // Create the JMenus
-        JMenu registrarMenu = new JMenu("Registrar"); // tpodo lo que sea registro, en una ventana nueva. (al final cada Jmenu en una ventana nueva.)
-        JMenu anadirMenu = new JMenu("Añadir"); // todo lo que sea anadir, en una ventana nueva. (al final cada Jmenu en una ventana nueva.)
-        JMenu modificarMenu = new JMenu("Modificar"); // todo lo que sea modificar, en una ventana nueva. (al final cada Jmenu en una ventana nueva.)
-        JMenu eliminarMenu = new JMenu("Eliminar"); // todo lo que sea eliminar, en una ventana nueva. (al final cada Jmenu en una ventana nueva.)
-        JMenu verMenu = new JMenu("Ver"); // la vista de Ver se queda en la ventana inicial siempre.
-        JMenu generarMenu = new JMenu("Generar"); // todo lo que sea generar, en una ventana nueva. (al final cada Jmenu en una ventana nueva.)
-
-
-        // Registrar Menu Items
-        JMenuItem vueloItemOfRegistrarMenu = new JMenuItem("Vuelo");
-        JMenuItem combustibleItemOfRegistrarMenu = new JMenuItem("Combustible");
-        JMenuItem calificacionItemOfRegistrarMenu = new JMenuItem("Calificación");
-
-
-        // Anadir Menu Items
-        JMenuItem salirItemOfAnadirMenu = new JMenuItem("Salir"); // este quitarlo
-        JMenuItem miembroItem = new JMenuItem("Miembro");
-        JMenuItem eventoItem = new JMenuItem("Evento");
-        // uno por cada tabla dimension...
-
-
-        // Ver Menu Items
-        JMenuItem vistaPrincipalItem = new JMenuItem("Vista principal");
-        JMenuItem cupoAutoridadItem = new JMenuItem("Horas cupo");
-        JMenuItem horasEscuadrillaItem = new JMenuItem("Horas escuadrilla");
-        JMenuItem horasTripulantesItem = new JMenuItem("Horas tripulantes");
-        JMenuItem tomasItem = new JMenuItem("Tomas");
-        // app ifr etc...
-
-        // Generar Menu Items
-        JMenuItem docSemanalItem = new JMenuItem("Documentación semanal");
-        JMenuItem docMensualItem = new JMenuItem("Documentación mensual");
-
-
-
-
-        // Add ActionListener to the "Exit" menu item to close the application
-        salirItemOfAnadirMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);  // Exit the application when "Exit" is clicked
-            }
-        });
-
-        // Add the "File" menu to the menu bar
-        menuBar.add(registrarMenu);
-        menuBar.add(anadirMenu);
-        menuBar.add(modificarMenu);
-        menuBar.add(eliminarMenu);
-        menuBar.add(verMenu);
-        menuBar.add(generarMenu);
-
-        // Add the Items to the Registrar menu
-        registrarMenu.add(vueloItemOfRegistrarMenu);
-        registrarMenu.add(combustibleItemOfRegistrarMenu);
-        registrarMenu.add(calificacionItemOfRegistrarMenu);
-
-
-        // Add the Items to the Anadir menu
-        anadirMenu.add(miembroItem);
-        anadirMenu.add(eventoItem);
-        anadirMenu.add(salirItemOfAnadirMenu);
-
-        // Add the Items to Ver menu
-        verMenu.add(vistaPrincipalItem);
-        verMenu.addSeparator();
-        verMenu.add(cupoAutoridadItem);
-        verMenu.add(horasEscuadrillaItem);
-        verMenu.add(horasTripulantesItem);
-        verMenu.addSeparator();
-        verMenu.add(tomasItem);
-
-        // Add the Items to Generar menu
-        generarMenu.add(docSemanalItem);
-        generarMenu.add(docMensualItem);
-
-        // Set the menu bar to the JFrame
+        // Create and add all menu items
+        menuBar.add(createRegistrarMenu());
+        menuBar.add(createAnadirMenu());
+        menuBar.add(createModificarMenu());
+        menuBar.add(createEliminarMenu());
+        menuBar.add(createVerMenu());
+        menuBar.add(createGenerarMenu());
         this.setJMenuBar(menuBar);
     }
+
+    private JMenu createRegistrarMenu() {
+        JMenu registrarMenu = new JMenu("Registrar");
+        registrarMenu.add(new JMenuItem("Vuelo"));
+        registrarMenu.add(new JMenuItem("Combustible"));
+        registrarMenu.add(new JMenuItem("Calificación"));
+        return registrarMenu;
+    }
+
+    private JMenu createAnadirMenu() {
+        JMenu anadirMenu = new JMenu("Añadir");
+        anadirMenu.add(new JMenuItem("Miembro"));
+        anadirMenu.add(new JMenuItem("Evento"));
+        JMenuItem salirItem = new JMenuItem("Salir");
+        salirItem.addActionListener(e -> System.exit(0));  // Action for "Exit" menu
+        anadirMenu.add(salirItem);
+        return anadirMenu;
+    }
+
+    private JMenu createModificarMenu() {
+        return new JMenu("Modificar");  // Menu stub, add items as needed
+    }
+
+    private JMenu createEliminarMenu() {
+        return new JMenu("Eliminar");  // Menu stub, add items as needed
+    }
+
+    private JMenu createVerMenu() {
+        JMenu verMenu = new JMenu("Ver");
+        verMenu.add(new JMenuItem("Vista principal"));
+        verMenu.addSeparator();
+        verMenu.add(new JMenuItem("Horas cupo"));
+        verMenu.add(new JMenuItem("Horas escuadrilla"));
+        verMenu.add(new JMenuItem("Horas tripulantes"));
+        verMenu.addSeparator();
+        verMenu.add(new JMenuItem("Tomas"));
+        return verMenu;
+    }
+
+    private JMenu createGenerarMenu() {
+        JMenu generarMenu = new JMenu("Generar");
+        generarMenu.add(new JMenuItem("Documentación semanal"));
+        generarMenu.add(new JMenuItem("Documentación mensual"));
+        return generarMenu;
+    }
 }
-
-
