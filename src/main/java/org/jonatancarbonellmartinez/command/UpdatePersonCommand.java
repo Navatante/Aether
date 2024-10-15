@@ -3,17 +3,17 @@ package org.jonatancarbonellmartinez.command;
 import org.jonatancarbonellmartinez.model.entities.DimPerson;
 import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
 
-public class CreatePersonCommand implements Command{
+public class UpdatePersonCommand implements Command {
     private DimPersonDAO personDAO;
     private DimPerson person;
 
-    public CreatePersonCommand(DimPersonDAO personDAO, DimPerson person) {
+    public UpdatePersonCommand(DimPersonDAO personDAO, DimPerson person) {
         this.personDAO = personDAO;
         this.person = person;
     }
 
     @Override
     public void execute() {
-        personDAO.create(person);
+        personDAO.update(person);
     }
 }
