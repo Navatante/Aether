@@ -5,7 +5,7 @@ import org.jonatancarbonellmartinez.model.dao.*;
 
 import java.sql.*;
 
-// Puedes utilizar un patrón de fábrica para crear instancias de tus DAO. Esto es útil si decides cambiar la implementación de tus DAOs en el futuro. (usar MySQL)
+// Esta clase la utilizo para crear los distintos DAOs a traves de ella, por cada dao, tendre que crear un metodo 'createDimNameDAO' or createFactNameDAO.
 public class SQLiteDAOFactory implements DAOFactory {
 
     // Singleton instance
@@ -22,12 +22,6 @@ public class SQLiteDAOFactory implements DAOFactory {
         return instance;
     }
 
-    /**
-     * Creates an instance of DimPersonDAO.
-     *
-     * @return a DimPersonDAO instance
-     * @throws SQLException if a database access error occurs
-     */
     public DimPersonDAO createDimPersonDAO() throws SQLException {
         Connection connection = null;
         try {

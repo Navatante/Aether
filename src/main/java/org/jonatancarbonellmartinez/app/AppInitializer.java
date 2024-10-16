@@ -14,8 +14,7 @@ public class AppInitializer {
 
     public static void initialize() {
         try {
-            // Inicializa la conexión a la base de datos (si aún no se ha hecho)
-            Database database = Database.getInstance();
+            // Obtenemos la instancia de la fábrica DAO
             SQLiteDAOFactory daoFactory = SQLiteDAOFactory.getInstance();  // Usamos el patrón Singleton
 
             // Inicializamos los DAOs necesarios
@@ -33,7 +32,7 @@ public class AppInitializer {
             personView.setController(personController);
 
             // Inicializamos la vista principal que integra todas las sub-vistas
-            MainView mainView = new MainView(personController);
+            MainView mainView = new MainView(personController); // esto debe ser mainViewController, tengo que hacerlo, ahora lo dejo asi para que no de error.
 
             // Mostramos la vista principal
             mainView.setVisible(true);

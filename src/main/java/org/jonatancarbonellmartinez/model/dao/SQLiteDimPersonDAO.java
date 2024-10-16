@@ -124,5 +124,52 @@ public class SQLiteDimPersonDAO implements DimPersonDAO {
 
         return personList; // Return the list of DimPerson objects
     }
+
+    @Override
+    public List<DimPerson> getCurrents(Integer currentFlag) throws DAOException {
+        String sql = "SELECT * FROM dim_person WHERE person_current_flag = 1" +
+                "ORDER BY" +
+                "    CASE" +
+                "        WHEN crew_rank = 'CC' THEN 1" +
+                "        WHEN crew_rank = 'CTE' THEN 1" +
+                "        WHEN crew_rank = 'CAP' THEN 2" +
+                "        WHEN crew_rank = 'TN' THEN 2" +
+                "        WHEN crew_rank = 'TTE' THEN 3" +
+                "        WHEN crew_rank = 'AN' THEN 3" +
+                "        WHEN crew_rank = 'STTE' THEN 4" +
+                "        WHEN crew_rank = 'BG' THEN 4" +
+                "        WHEN crew_rank = 'SG1' THEN 5" +
+                "        WHEN crew_rank = 'SGTO' THEN 5" +
+                "        WHEN crew_rank = 'CBMY' THEN 6" +
+                "        WHEN crew_rank = 'CB1' THEN 7" +
+                "        WHEN crew_rank = 'CBO' THEN 8" +
+                "        WHEN crew_rank = 'SDO' THEN 9" +
+                "        ELSE 10" +
+                "        END," +
+                "    crew_rank_number ASC;";
+        List<DimPerson> currentPersonList = new ArrayList<>();
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+        ResultSet rs = pstmt.executeQuery()) { // Execute the query and retrieve results
+            while(rs.next()) {
+                DimPerson person = new DimPerson(); // Create a new DimPerson object
+                person.setPersonSk(rs.getInt("person_sk"));
+                person.setPersonNk(rs.getString("person_nk"));
+                person.setPersonRankNumber(rs.getInt("person_rank_number"));
+                person.setPersonRank(rs.getString("person_rank"));
+                person.setPersonName(rs.getString("person_name"));
+                person.setPersonLastName1(rs.getString("person_last_name_1"));
+                person.setPersonLastName2(rs.getString("person_last_name_2"));
+                person.setPersonDni(rs.getString("person_dni"));
+                person.setPersonPhone(rs.getString("person_phone"));
+                person.setPersonDivision(rs.getString("person_division"));
+                person.setPersonCurrentFlag(rs.getInt("person_current_flag"));
+                currentPersonList.add(person); // Add the person to the list
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error en SQL", e);
+        }
+        return currentPersonList;
+    }
 }
 
