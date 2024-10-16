@@ -33,6 +33,17 @@ public class AppInitializer {
              * No hay una respuesta definitiva, ya que la mejor práctica puede variar según las necesidades específicas de tu aplicación y su contexto.
              * Es recomendable considerar un enfoque que combine ambos métodos, aprovechando las ventajas de cada uno y minimizando sus desventajas.
              * Además, realizar pruebas de rendimiento y usabilidad puede ayudar a determinar el enfoque más adecuado para tu caso específico.
+             *
+             * Recomendaciones
+             * Inicialización y Configuración: Puedes inicializar y configurar todas las vistas en el constructor y luego hacerlas visibles en el momento adecuado,
+             * por ejemplo, en respuesta a eventos de usuario (como la selección de un menú).
+             *
+             * Uso de un Gestor de Vistas: Considera implementar un patrón de Gestor de Vistas que maneje la visibilidad y la transición entre vistas.
+             * Esto te permitirá encapsular la lógica de visibilidad y hacer que tu código sea más mantenible.
+             *
+             * Lazy Loading de Vistas: Si algunas vistas son pesadas y raramente utilizadas, podrías combinarlas con un enfoque de carga a demanda.
+             * Cargas y haces visible solo aquellas vistas que se necesiten, evitando inicializar y ocupar memoria innecesariamente.
+             *
              */
 
             // Creamos el controlador y le pasamos el DAO y la vista
