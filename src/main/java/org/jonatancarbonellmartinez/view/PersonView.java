@@ -6,53 +6,68 @@ import org.jonatancarbonellmartinez.model.entities.DimPerson;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
 
-public class PersonView extends JFrame implements Observer {
+public class PersonView extends JFrame implements Observer<DimPerson> {
     private PersonController controller;
     private JPanel mainPanel;
-    private JTextField txtPersonSk,txtPersonNk, txtPersonName,
-                        txtRankNumber, txtPersonLastName1, txtPersonLastName2,
-                        txtPersonDni, txtPersonPhone, txtPersonRank,
-                        txtPersonDivision, txtPersonCurrentFlag;
+    public JMenuItem createPersonMenu, updatePersonMenu, deletePersonMenu, searchPersonMenu; // Expose menu items
+    private JTextField txtPersonSk, txtPersonNk, txtPersonName,
+            txtRankNumber, txtPersonLastName1, txtPersonLastName2,
+            txtPersonDni, txtPersonPhone, txtPersonRank,
+            txtPersonDivision, txtPersonCurrentFlag;
+
+    private JList<DimPerson> personList;  // To display the list of persons
 
     public PersonView() {
         setTitle("Gestión de Personas - CRUD");
         setSize(600, 400);
-        setLocationRelativeTo(null);  // Centra la ventana en la pantalla
+        setLocationRelativeTo(null);  // Center the window on the screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        initUI();  // Inicializa los componentes de la interfaz
+        initUI();  // Initialize the UI components
         setVisible(true);
     }
 
-    // Metodo para asignar el controlador a la vista
+    // Asigno el controlador a la vista
     public void setController(PersonController controller) {
         this.controller = controller;
     }
 
-    // Implementación del metodo de la interfaz Observer
+    // Registro la vista como observadora
+    public void registerAsObserver() {
+        if (controller != null) {
+            controller.addObserver(this);  // Register this view as an observer
+        } else {
+            throw new IllegalStateException("Controller must be set before registering as observer");
+        }
+    }
+
+    // Observer interface method to handle updates
     @Override
     public void update(DimPerson person, String propertyName) {
-        // Actualizar la vista con la información de la nueva persona
         if ("create".equals(propertyName)) {
             JOptionPane.showMessageDialog(this, "Persona creada: " + person.getPersonName());
+        } else if ("update".equals(propertyName)) {
+            JOptionPane.showMessageDialog(this, "Persona actualizada: " + person.getPersonName());
+        } else if ("delete".equals(propertyName)) {
+            JOptionPane.showMessageDialog(this, "Persona eliminada: " + person.getPersonName());
         }
-        // Si quieres actualizar una lista de personas, puedes hacerlo aquí.
-        // Por ejemplo, puedes actualizar una tabla o lista en la vista
+
+        // Update the list of persons if necessary
+        // Implement this method to handle updates to the list UI
     }
 
     private void initUI() {
-        // Crear barra de menú
+        // Create menu bar
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Operaciones");
-        JMenuItem createPersonMenu = new JMenuItem("Crear Persona");
-        JMenuItem updatePersonMenu = new JMenuItem("Actualizar Persona");
-        JMenuItem deletePersonMenu = new JMenuItem("Eliminar Persona");
-        JMenuItem searchPersonMenu = new JMenuItem("Buscar Persona");
+        createPersonMenu = new JMenuItem("Crear Persona");
+        updatePersonMenu = new JMenuItem("Actualizar Persona");
+        deletePersonMenu = new JMenuItem("Eliminar Persona");
+        searchPersonMenu = new JMenuItem("Buscar Persona");
 
-        // Agregar items al menú
+        // Add items to the menu
         menu.add(createPersonMenu);
         menu.add(updatePersonMenu);
         menu.add(deletePersonMenu);
@@ -60,185 +75,95 @@ public class PersonView extends JFrame implements Observer {
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        // Panel principal que cambiará dependiendo de la acción
-        mainPanel = new JPanel(new CardLayout());
+        // Main panel with a grid layout for input fields
+        mainPanel = new JPanel(new GridLayout(10, 2));
         add(mainPanel, BorderLayout.CENTER);
 
-        // ActionListeners para los menús
-        createPersonMenu.addActionListener(e -> showCreatePersonForm());
-        updatePersonMenu.addActionListener(e -> showUpdatePersonForm());
-        deletePersonMenu.addActionListener(e -> showDeletePersonForm());
-        searchPersonMenu.addActionListener(e -> showSearchPersonForm());
-
-        // Mostrar el formulario de búsqueda por defecto
-        showSearchPersonForm();
-    }
-
-    // Metodo para mostrar el formulario de creación de una persona
-    private void showCreatePersonForm() {
-        JPanel createPanel = new JPanel(new GridLayout(6, 2, 5, 5));
-        createPanel.setBorder(BorderFactory.createTitledBorder("Crear Persona"));
-
+        // Initialize text fields for person attributes
+        txtPersonSk = new JTextField();
         txtPersonNk = new JTextField();
-        txtPersonRank = new JTextField();
-        txtRankNumber = new JTextField();
         txtPersonName = new JTextField();
+        txtRankNumber = new JTextField();
         txtPersonLastName1 = new JTextField();
         txtPersonLastName2 = new JTextField();
         txtPersonDni = new JTextField();
         txtPersonPhone = new JTextField();
+        txtPersonRank = new JTextField();
         txtPersonDivision = new JTextField();
         txtPersonCurrentFlag = new JTextField();
 
-        createPanel.add(new JLabel("ID Natural (NK):"));
-        createPanel.add(txtPersonNk);
-        createPanel.add(new JLabel("Nombre:"));
-        createPanel.add(txtPersonName);
-        createPanel.add(new JLabel("Apellido:"));
-        createPanel.add(txtPersonLastName1);
-        createPanel.add(new JLabel("DNI:"));
-        createPanel.add(txtPersonDni);
-        createPanel.add(new JLabel("Teléfono:"));
-        createPanel.add(txtPersonPhone);
+        // Add text fields and labels to the panel
+        mainPanel.add(new JLabel("Person SK:"));
+        mainPanel.add(txtPersonSk);
+        mainPanel.add(new JLabel("Person NK:"));
+        mainPanel.add(txtPersonNk);
+        mainPanel.add(new JLabel("Name:"));
+        mainPanel.add(txtPersonName);
+        mainPanel.add(new JLabel("Rank Number:"));
+        mainPanel.add(txtRankNumber);
+        mainPanel.add(new JLabel("Last Name 1:"));
+        mainPanel.add(txtPersonLastName1);
+        mainPanel.add(new JLabel("Last Name 2:"));
+        mainPanel.add(txtPersonLastName2);
+        mainPanel.add(new JLabel("DNI:"));
+        mainPanel.add(txtPersonDni);
+        mainPanel.add(new JLabel("Phone:"));
+        mainPanel.add(txtPersonPhone);
+        mainPanel.add(new JLabel("Rank:"));
+        mainPanel.add(txtPersonRank);
+        mainPanel.add(new JLabel("Division:"));
+        mainPanel.add(txtPersonDivision);
+        mainPanel.add(new JLabel("Current Flag:"));
+        mainPanel.add(txtPersonCurrentFlag);
 
-        JButton createButton = new JButton("Crear Persona");
-        createButton.addActionListener(e -> createPerson());
-
-        createPanel.add(createButton);
-        mainPanel.removeAll();
-        mainPanel.add(createPanel);
-        mainPanel.revalidate();
-        mainPanel.repaint();
+        // Initialize the person list
+        personList = new JList<>();
+        add(new JScrollPane(personList), BorderLayout.EAST); // Display list on the right
     }
 
-    // En la vista, en lugar de crear el objeto DimPerson, solo debes recoger los valores del formulario y pasarlos al controlador:
-    private void createPerson() {
-        String personNk = txtPersonNk.getText();
-        int personRankNumber = Integer.parseInt(txtRankNumber.getText());  // Asegúrate de validar antes de convertir
-        String personRank = txtPersonRank.getText();
-        String personName = txtPersonName.getText();
-        String personLastName1 = txtPersonLastName1.getText();
-        String personLastName2 = txtPersonLastName2.getText();
-        String personDni = txtPersonDni.getText();
-        String personPhone = txtPersonPhone.getText();
-        String personDivision = txtPersonDivision.getText();
-        int personCurrentFlag = Integer.parseInt(txtPersonCurrentFlag.getText());
-
-        // Pasamos los datos al controlador
-        controller.createPerson(personNk, personRankNumber, personRank, personName, personLastName1, personLastName2, personDni, personPhone, personDivision, personCurrentFlag);
-
-        JOptionPane.showMessageDialog(this, "Persona creada con éxito");
+    // Method to get new person data from input fields
+    public DimPerson getNewPersonData() {
+        DimPerson newPerson = new DimPerson();
+        newPerson.setPersonNk(txtPersonNk.getText());
+        newPerson.setPersonRankNumber(Integer.parseInt(txtRankNumber.getText()));
+        newPerson.setPersonRank(txtPersonRank.getText());
+        newPerson.setPersonName(txtPersonName.getText());
+        newPerson.setPersonLastName1(txtPersonLastName1.getText());
+        newPerson.setPersonLastName2(txtPersonLastName2.getText());
+        newPerson.setPersonDni(txtPersonDni.getText());
+        newPerson.setPersonPhone(txtPersonPhone.getText());
+        newPerson.setPersonDivision(txtPersonDivision.getText());
+        newPerson.setPersonCurrentFlag(Integer.parseInt(txtPersonCurrentFlag.getText()));
+        return newPerson;
     }
 
-    // Metodo para mostrar el formulario de actualización
-    private void showUpdatePersonForm() {
-        JPanel updatePanel = new JPanel(new GridLayout(6, 2, 5, 5));
-        updatePanel.setBorder(BorderFactory.createTitledBorder("Actualizar Persona"));
-
-        txtPersonSk = new JTextField();
-        txtPersonNk = new JTextField();
-        txtPersonName = new JTextField();
-        txtPersonLastName1 = new JTextField();
-        txtPersonDni = new JTextField();
-        txtPersonPhone = new JTextField();
-
-        updatePanel.add(new JLabel("ID Persona (SK):"));
-        updatePanel.add(txtPersonSk);
-        updatePanel.add(new JLabel("ID Natural (NK):"));
-        updatePanel.add(txtPersonNk);
-        updatePanel.add(new JLabel("Nombre:"));
-        updatePanel.add(txtPersonName);
-        updatePanel.add(new JLabel("Apellido:"));
-        updatePanel.add(txtPersonLastName1);
-        updatePanel.add(new JLabel("DNI:"));
-        updatePanel.add(txtPersonDni);
-        updatePanel.add(new JLabel("Teléfono:"));
-        updatePanel.add(txtPersonPhone);
-
-        JButton updateButton = new JButton("Actualizar Persona");
-        updateButton.addActionListener(e -> updatePerson());
-
-        updatePanel.add(updateButton);
-        mainPanel.removeAll();
-        mainPanel.add(updatePanel);
-        mainPanel.revalidate();
-        mainPanel.repaint();
+    // Method to get updated person data from input fields
+    public DimPerson getUpdatedPersonData(DimPerson selectedPerson) {
+        // Update the selected person's fields based on user input
+        selectedPerson.setPersonNk(txtPersonNk.getText());
+        selectedPerson.setPersonRankNumber(Integer.parseInt(txtRankNumber.getText()));
+        selectedPerson.setPersonRank(txtPersonRank.getText());
+        selectedPerson.setPersonName(txtPersonName.getText());
+        selectedPerson.setPersonLastName1(txtPersonLastName1.getText());
+        selectedPerson.setPersonLastName2(txtPersonLastName2.getText());
+        selectedPerson.setPersonDni(txtPersonDni.getText());
+        selectedPerson.setPersonPhone(txtPersonPhone.getText());
+        selectedPerson.setPersonDivision(txtPersonDivision.getText());
+        selectedPerson.setPersonCurrentFlag(Integer.parseInt(txtPersonCurrentFlag.getText()));
+        return selectedPerson;
     }
 
-    // Metodo para actualizar una persona
-    private void updatePerson() {
-        int personSk = Integer.parseInt(txtPersonSk.getText());
-        DimPerson person = controller.getPerson(personSk);
+    // Method to return the selected person in the list
+    public DimPerson getSelectedPerson() {
+        return personList.getSelectedValue();
+    }
 
-        if (person != null) {
-            person.setPersonNk(txtPersonNk.getText());
-            person.setPersonName(txtPersonName.getText());
-            person.setPersonLastName1(txtPersonLastName1.getText());
-            person.setPersonDni(txtPersonDni.getText());
-            person.setPersonPhone(txtPersonPhone.getText());
-
-            controller.updatePerson(person);
-            JOptionPane.showMessageDialog(this, "Persona actualizada con éxito");
-        } else {
-            JOptionPane.showMessageDialog(this, "Persona no encontrada");
+    // Method to update the displayed list of persons
+    public void updatePersonList(List<DimPerson> personListData) {
+        DefaultListModel<DimPerson> listModel = new DefaultListModel<>();
+        for (DimPerson person : personListData) {
+            listModel.addElement(person);
         }
-    }
-
-    // Metodo para mostrar el formulario de eliminación
-    private void showDeletePersonForm() {
-        JPanel deletePanel = new JPanel(new GridLayout(2, 2, 5, 5));
-        deletePanel.setBorder(BorderFactory.createTitledBorder("Eliminar Persona"));
-
-        txtPersonSk = new JTextField();
-        deletePanel.add(new JLabel("ID Persona (SK):"));
-        deletePanel.add(txtPersonSk);
-
-        JButton deleteButton = new JButton("Eliminar Persona");
-        deleteButton.addActionListener(e -> deletePerson());
-
-        deletePanel.add(deleteButton);
-        mainPanel.removeAll();
-        mainPanel.add(deletePanel);
-        mainPanel.revalidate();
-        mainPanel.repaint();
-    }
-
-    // Metodo para eliminar una persona
-    private void deletePerson() {
-        int personSk = Integer.parseInt(txtPersonSk.getText());
-        controller.deletePerson(personSk);
-        JOptionPane.showMessageDialog(this, "Persona eliminada con éxito");
-    }
-
-    // Metodo para mostrar el formulario de búsqueda
-    private void showSearchPersonForm() {
-        JPanel searchPanel = new JPanel(new GridLayout(2, 2, 5, 5));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Buscar Persona"));
-
-        txtPersonSk = new JTextField();
-        searchPanel.add(new JLabel("ID Persona (SK):"));
-        searchPanel.add(txtPersonSk);
-
-        JButton searchButton = new JButton("Buscar Persona");
-        searchButton.addActionListener(e -> searchPerson());
-
-        searchPanel.add(searchButton);
-        mainPanel.removeAll();
-        mainPanel.add(searchPanel);
-        mainPanel.revalidate();
-        mainPanel.repaint();
-    }
-
-    // Metodo para buscar una persona por su ID
-    private void searchPerson() {
-        int personSk = Integer.parseInt(txtPersonSk.getText());
-        DimPerson person = controller.getPerson(personSk);
-
-        if (person != null) {
-            JOptionPane.showMessageDialog(this, "Persona encontrada: " + person.getPersonName());
-        } else {
-            JOptionPane.showMessageDialog(this, "Persona no encontrada");
-        }
+        personList.setModel(listModel);
     }
 }
-

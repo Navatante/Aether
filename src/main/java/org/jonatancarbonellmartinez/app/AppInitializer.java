@@ -31,6 +31,9 @@ public class AppInitializer {
             // Asignamos el controlador a la vista
             personView.setController(personController);
 
+            // Registro la vista como observadora
+            personView.registerAsObserver();
+
             // Inicializamos la vista principal que integra todas las sub-vistas
             MainView mainView = new MainView(personController); // esto debe ser mainViewController, tengo que hacerlo, ahora lo dejo asi para que no de error.
 

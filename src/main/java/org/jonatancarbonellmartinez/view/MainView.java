@@ -52,15 +52,6 @@ public class MainView extends JFrame {
     private JPanel createMainPanel(JSpinner dateSpinner) {
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        // Add buttons
-        JButton viewDataButton = new JButton("Ver Pilotos");
-        viewDataButton.addActionListener(e -> {
-            // Using the injected PersonController to handle the view logic
-            PersonView personView = new PersonView().setController();
-            personView.setVisible(true);
-        });
-
-        mainPanel.add(viewDataButton);
         mainPanel.add(new JButton("Uno"));
         mainPanel.add(new JButton("Dos"));
         mainPanel.add(new JButton("Tres"));

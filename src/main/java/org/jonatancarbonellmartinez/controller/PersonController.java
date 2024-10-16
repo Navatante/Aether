@@ -19,9 +19,8 @@ public class PersonController implements Observable {
         this.personDAO = personDAO;
         this.personView = personView;
         this.observers = new ArrayList<>();
-
-        // Configura los listeners para los botones en la vista
-        registerEventHandlers();
+        addObserver(personView);
+        registerEventHandlers(); // Configura los listeners para los botones en la vista
     }
 
     // Implementación de métodos de la interfaz Observable
@@ -43,14 +42,42 @@ public class PersonController implements Observable {
     }
 
     private void registerEventHandlers() {
+        // Manejar la creación de una persona
         personView.createPersonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createPerson();
+                // Aquí deberías obtener los datos necesarios para crear una nueva persona
+                // Supongamos que tienes un metodo en la vista para obtener los datos de la interfaz
+                DimPerson newPerson = personView.getNewPersonData();
+                createPerson(newPerson);
             }
         });
 
-        // Agregar listeners para los otros botones (update, delete, etc.)
+        // Manejar la actualización de una persona
+        personView.updatePersonMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DimPerson selectedPerson = personView.getSelectedPerson();
+                if (selectedPerson != null) {
+                    // Suponiendo que tienes un metodo en la vista para obtener datos actualizados
+                    DimPerson updatedPerson = personView.getUpdatedPersonData(selectedPerson);
+                    updatePerson(updatedPerson);
+                }
+            }
+        });
+
+        // Manejar la eliminación de una persona
+        personView.deletePersonMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DimPerson selectedPerson = personView.getSelectedPerson();
+                if (selectedPerson != null) {
+                    deletePerson(selectedPerson.getPersonSk()); // Asegúrate de que este metodo exista
+                }
+            }
+        });
+
+        // Aquí puedes agregar más manejadores para otros eventos si es necesario
     }
 
     public void createPerson(String personNk, int personRankNumber, String personRank, String personName, String personLastName1, String personLastName2, String personDni, String personPhone, String personDivision, int personCurrentFlag) {
@@ -69,9 +96,8 @@ public class PersonController implements Observable {
 
         // Guardamos la nueva persona usando el DAO
         personDAO.create(newPerson);
-
-        // Actualizamos la lista de personas en la vista
-        personView.updatePersonList(personDAO.getAll());
+        notifyObservers(newPerson, "update"); // Notifica a los observadores
+        personView.updatePersonList(personDAO.getAll()); // Actualizamos la lista de personas
     }
 
 
