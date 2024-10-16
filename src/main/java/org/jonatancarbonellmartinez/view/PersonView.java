@@ -11,13 +11,11 @@ import java.util.List;
 public class PersonView extends JFrame implements Observer<DimPerson> {
     private PersonController controller;
     private JPanel mainPanel;
-    public JMenuItem createPersonMenu, updatePersonMenu, deletePersonMenu, searchPersonMenu; // Expose menu items
-    private JTextField txtPersonSk, txtPersonNk, txtPersonName,
-            txtRankNumber, txtPersonLastName1, txtPersonLastName2,
-            txtPersonDni, txtPersonPhone, txtPersonRank,
-            txtPersonDivision, txtPersonCurrentFlag;
+    public JMenuItem createPersonMenu, updatePersonMenu, deletePersonMenu, searchPersonMenu;
+    private JTextField txtPersonNk, txtPersonName, txtRankNumber, txtPersonLastName1, txtPersonLastName2,
+            txtPersonDni, txtPersonPhone, txtPersonRank, txtPersonDivision, txtPersonCurrentFlag;
 
-    private JList<DimPerson> personList;  // To display the list of persons
+    private JList<DimPerson> personList;
 
     public PersonView() {
         setTitle("Gestión de Personas - CRUD");
@@ -29,12 +27,12 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
         setVisible(true);
     }
 
-    // Asigno el controlador a la vista
+    // Assign the controller
     public void setController(PersonController controller) {
         this.controller = controller;
     }
 
-    // Registro la vista como observadora
+    // Register the view as an observer
     public void registerAsObserver() {
         if (controller != null) {
             controller.addObserver(this);  // Register this view as an observer
@@ -53,9 +51,6 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
         } else if ("delete".equals(propertyName)) {
             JOptionPane.showMessageDialog(this, "Persona eliminada: " + person.getPersonName());
         }
-
-        // Update the list of persons if necessary
-        // Implement this method to handle updates to the list UI
     }
 
     private void initUI() {
@@ -80,7 +75,6 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
         add(mainPanel, BorderLayout.CENTER);
 
         // Initialize text fields for person attributes
-        txtPersonSk = new JTextField();
         txtPersonNk = new JTextField();
         txtPersonName = new JTextField();
         txtRankNumber = new JTextField();
@@ -93,8 +87,6 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
         txtPersonCurrentFlag = new JTextField();
 
         // Add text fields and labels to the panel
-        mainPanel.add(new JLabel("Person SK:"));
-        mainPanel.add(txtPersonSk);
         mainPanel.add(new JLabel("Person NK:"));
         mainPanel.add(txtPersonNk);
         mainPanel.add(new JLabel("Name:"));
@@ -121,37 +113,17 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
         add(new JScrollPane(personList), BorderLayout.EAST); // Display list on the right
     }
 
-    // Method to get new person data from input fields
-    public DimPerson getNewPersonData() {
-        DimPerson newPerson = new DimPerson();
-        newPerson.setPersonNk(txtPersonNk.getText());
-        newPerson.setPersonRankNumber(Integer.parseInt(txtRankNumber.getText()));
-        newPerson.setPersonRank(txtPersonRank.getText());
-        newPerson.setPersonName(txtPersonName.getText());
-        newPerson.setPersonLastName1(txtPersonLastName1.getText());
-        newPerson.setPersonLastName2(txtPersonLastName2.getText());
-        newPerson.setPersonDni(txtPersonDni.getText());
-        newPerson.setPersonPhone(txtPersonPhone.getText());
-        newPerson.setPersonDivision(txtPersonDivision.getText());
-        newPerson.setPersonCurrentFlag(Integer.parseInt(txtPersonCurrentFlag.getText()));
-        return newPerson;
-    }
-
-    // Method to get updated person data from input fields
-    public DimPerson getUpdatedPersonData(DimPerson selectedPerson) {
-        // Update the selected person's fields based on user input
-        selectedPerson.setPersonNk(txtPersonNk.getText());
-        selectedPerson.setPersonRankNumber(Integer.parseInt(txtRankNumber.getText()));
-        selectedPerson.setPersonRank(txtPersonRank.getText());
-        selectedPerson.setPersonName(txtPersonName.getText());
-        selectedPerson.setPersonLastName1(txtPersonLastName1.getText());
-        selectedPerson.setPersonLastName2(txtPersonLastName2.getText());
-        selectedPerson.setPersonDni(txtPersonDni.getText());
-        selectedPerson.setPersonPhone(txtPersonPhone.getText());
-        selectedPerson.setPersonDivision(txtPersonDivision.getText());
-        selectedPerson.setPersonCurrentFlag(Integer.parseInt(txtPersonCurrentFlag.getText()));
-        return selectedPerson;
-    }
+    // Method to get input data from fields (without creating the model object)
+    public String getPersonNk() { return txtPersonNk.getText(); }
+    public String getPersonName() { return txtPersonName.getText(); }
+    public int getRankNumber() { return Integer.parseInt(txtRankNumber.getText()); }
+    public String getPersonLastName1() { return txtPersonLastName1.getText(); }
+    public String getPersonLastName2() { return txtPersonLastName2.getText(); }
+    public String getPersonDni() { return txtPersonDni.getText(); }
+    public String getPersonPhone() { return txtPersonPhone.getText(); }
+    public String getPersonRank() { return txtPersonRank.getText(); }
+    public String getPersonDivision() { return txtPersonDivision.getText(); }
+    public int getPersonCurrentFlag() { return Integer.parseInt(txtPersonCurrentFlag.getText()); }
 
     // Method to return the selected person in the list
     public DimPerson getSelectedPerson() {

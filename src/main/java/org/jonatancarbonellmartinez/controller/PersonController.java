@@ -6,6 +6,8 @@ import org.jonatancarbonellmartinez.model.entities.DimPerson;
 import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
 import org.jonatancarbonellmartinez.view.PersonView;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +21,11 @@ public class PersonController implements Observable {
         this.personDAO = personDAO;
         this.personView = personView;
         this.observers = new ArrayList<>();
-        addObserver(personView);
-        registerEventHandlers(); // Configura los listeners para los botones en la vista
+        addObserver(personView);  // Register the view as an observer
+        registerEventHandlers();  // Configure event listeners for buttons in the view
     }
 
-    // Implementación de métodos de la interfaz Observable
+    // Implement Observable methods
     @Override
     public void addObserver(Observer observer) {
         observers.add(observer);
@@ -42,74 +44,90 @@ public class PersonController implements Observable {
     }
 
     private void registerEventHandlers() {
-        // Manejar la creación de una persona
+        // Handle creating a person
         personView.createPersonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí deberías obtener los datos necesarios para crear una nueva persona
-                // Supongamos que tienes un metodo en la vista para obtener los datos de la interfaz
-                DimPerson newPerson = personView.getNewPersonData();
-                createPerson(newPerson);
+                // Get input data from the view
+                String personNk = personView.getPersonNk();
+                String personName = personView.getPersonName();
+                int rankNumber = personView.getRankNumber();
+                String lastName1 = personView.getPersonLastName1();
+                String lastName2 = personView.getPersonLastName2();
+                String dni = personView.getPersonDni();
+                String phone = personView.getPersonPhone();
+                String rank = personView.getPersonRank();
+                String division = personView.getPersonDivision();
+                int currentFlag = personView.getPersonCurrentFlag();
+
+                // Create a new person in the controller
+                createPerson(personNk, rankNumber, personName, lastName1, lastName2, dni, phone, rank, division, currentFlag);
             }
         });
 
-        // Manejar la actualización de una persona
+        // Handle updating a person
         personView.updatePersonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DimPerson selectedPerson = personView.getSelectedPerson();
                 if (selectedPerson != null) {
-                    // Suponiendo que tienes un metodo en la vista para obtener datos actualizados
-                    DimPerson updatedPerson = personView.getUpdatedPersonData(selectedPerson);
-                    updatePerson(updatedPerson);
+                    // Update the selected person with new data from the view
+                    selectedPerson.setPersonNk(personView.getPersonNk());
+                    selectedPerson.setPersonRankNumber(personView.getRankNumber());
+                    selectedPerson.setPersonName(personView.getPersonName());
+                    selectedPerson.setPersonLastName1(personView.getPersonLastName1());
+                    selectedPerson.setPersonLastName2(personView.getPersonLastName2());
+                    selectedPerson.setPersonDni(personView.getPersonDni());
+                    selectedPerson.setPersonPhone(personView.getPersonPhone());
+                    selectedPerson.setPersonRank(personView.getPersonRank());
+                    selectedPerson.setPersonDivision(personView.getPersonDivision());
+                    selectedPerson.setPersonCurrentFlag(personView.getPersonCurrentFlag());
+                    updatePerson(selectedPerson);
                 }
             }
         });
 
-        // Manejar la eliminación de una persona
+        // Handle deleting a person
         personView.deletePersonMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DimPerson selectedPerson = personView.getSelectedPerson();
                 if (selectedPerson != null) {
-                    deletePerson(selectedPerson.getPersonSk()); // Asegúrate de que este metodo exista
+                    deletePerson(selectedPerson.getPersonSk());
                 }
             }
         });
-
-        // Aquí puedes agregar más manejadores para otros eventos si es necesario
     }
 
-    public void createPerson(String personNk, int personRankNumber, String personRank, String personName, String personLastName1, String personLastName2, String personDni, String personPhone, String personDivision, int personCurrentFlag) {
-        // Aquí creamos la instancia de DimPerson con los datos recibidos
+    public void createPerson(String personNk, int rankNumber, String personName, String lastName1, String lastName2, String dni, String phone, String rank, String division, int currentFlag) {
         DimPerson newPerson = new DimPerson();
         newPerson.setPersonNk(personNk);
-        newPerson.setPersonRankNumber(personRankNumber);
-        newPerson.setPersonRank(personRank);
+        newPerson.setPersonRankNumber(rankNumber);
         newPerson.setPersonName(personName);
-        newPerson.setPersonLastName1(personLastName1);
-        newPerson.setPersonLastName2(personLastName2);
-        newPerson.setPersonDni(personDni);
-        newPerson.setPersonPhone(personPhone);
-        newPerson.setPersonDivision(personDivision);
-        newPerson.setPersonCurrentFlag(personCurrentFlag);
+        newPerson.setPersonLastName1(lastName1);
+        newPerson.setPersonLastName2(lastName2);
+        newPerson.setPersonDni(dni);
+        newPerson.setPersonPhone(phone);
+        newPerson.setPersonRank(rank);
+        newPerson.setPersonDivision(division);
+        newPerson.setPersonCurrentFlag(currentFlag);
 
-        // Guardamos la nueva persona usando el DAO
+        // Save the new person using the DAO
         personDAO.create(newPerson);
-        notifyObservers(newPerson, "update"); // Notifica a los observadores
-        personView.updatePersonList(personDAO.getAll()); // Actualizamos la lista de personas
+        notifyObservers(newPerson, "create");
+        personView.updatePersonList(personDAO.getAll());
     }
-
 
     public void updatePerson(DimPerson person) {
         personDAO.update(person);
-        personView.updatePersonList(personDAO.getAll()); // actualiza la vista
+        notifyObservers(person, "update");
+        personView.updatePersonList(personDAO.getAll());
     }
 
     public void deletePerson(int personSk) {
         personDAO.delete(personSk);
-        personView.updatePersonList(personDAO.getAll()); // actualiza la vista
-
+        notifyObservers(personDAO.read(personSk), "delete");
+        personView.updatePersonList(personDAO.getAll());
     }
 
     public DimPerson getPerson(int personSk) {
