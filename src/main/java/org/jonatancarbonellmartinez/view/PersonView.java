@@ -18,13 +18,14 @@ public class PersonView extends JFrame implements Observer<DimPerson> {
     private JList<DimPerson> personList;
 
     public PersonView() {
+        // setVisible(false); sino pones nada es false por defecto
         setTitle("Gestión de Personas - CRUD");
         setSize(600, 400);
         setLocationRelativeTo(null);  // Center the window on the screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         initUI();  // Initialize the UI components
-        setVisible(true);
+
     }
 
     // Assign the controller

@@ -24,7 +24,7 @@ public class AppInitializer {
 
             // Creamos la vista
             PersonView personView = new PersonView();
-            personView.setVisible(false); // la oculto para solo mostrarla cuando la necesite. creo que esto no es buena practica, investigar si es mejor que cree las vistas y controladores a demanda.
+            //personView.setVisible(false); // la oculto para solo mostrarla cuando la necesite. creo que esto no es buena practica, investigar si es mejor que cree las vistas y controladores a demanda. (ya he puesto que sea visible false en la primera linea del constructor, quiza esa aproximacion es buena)
             /**
              * Híbrido: Una práctica común es combinar ambos enfoques. Puedes inicializar los componentes
              * que son críticos para la interfaz de usuario al inicio y cargar los demás a demanda. Por ejemplo,
