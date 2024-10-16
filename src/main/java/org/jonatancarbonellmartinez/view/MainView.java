@@ -3,7 +3,6 @@ package org.jonatancarbonellmartinez.view;
 
 
 import org.jonatancarbonellmartinez.controller.PersonController;
-import org.jonatancarbonellmartinez.factory.DAOFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +15,8 @@ public class MainView extends JFrame {
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
     private PersonController personController;
 
-    public MainView(PersonController controllerFactory) throws SQLException {
-        this.personController = new PersonController(new DAOFactory().createDimPersonDAO());
+    public MainView(PersonController personController) throws SQLException {
+        this.personController = personController;
 
         initializeUI();  // Initializes the UI and binds event listeners
         createMenuBar();
@@ -29,7 +28,7 @@ public class MainView extends JFrame {
         setVisible(true);
         setLocationRelativeTo(null);
 
-        JLabel greeting = createGreetingLabel();
+
         JSpinner dateSpinner = createDateSpinner();
         JPanel mainPanel = createMainPanel(dateSpinner);
 
@@ -39,13 +38,6 @@ public class MainView extends JFrame {
         backgroundPanel.add(new JPanel(), BorderLayout.CENTER);  // Empty panel for layout
 
         this.setContentPane(backgroundPanel);
-    }
-
-    private JLabel createGreetingLabel() {
-        JLabel greeting = new JLabel("Bienvenido", JLabel.CENTER);
-        greeting.setFont(new Font("serif", Font.PLAIN, 20));
-        greeting.setForeground(Color.WHITE);
-        return greeting;
     }
 
     private JSpinner createDateSpinner() {
@@ -64,7 +56,7 @@ public class MainView extends JFrame {
         JButton viewDataButton = new JButton("Ver Pilotos");
         viewDataButton.addActionListener(e -> {
             // Using the injected PersonController to handle the view logic
-            PersonView personView = new PersonView(personController);
+            PersonView personView = new PersonView().setController();
             personView.setVisible(true);
         });
 

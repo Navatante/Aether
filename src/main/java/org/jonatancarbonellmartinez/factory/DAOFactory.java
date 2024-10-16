@@ -1,19 +1,19 @@
 package org.jonatancarbonellmartinez.factory;
 
-import org.jonatancarbonellmartinez.model.Database;
 import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
-import org.jonatancarbonellmartinez.model.dao.DimPersonDAOImpl;
 
-import java.sql.*;
-// Puedes utilizar un patrón de fábrica para crear instancias de tus DAO. Esto es útil si decides cambiar la implementación de tus DAOs en el futuro.
-public class DAOFactory {
+import java.sql.SQLException;
 
-    public DimPersonDAO createDimPersonDAO() throws SQLException {
-        Connection connection = Database.getInstance().getConnection();
-        return new DimPersonDAOImpl(connection);
-    }
+public interface DAOFactory {
 
+    // Method to create DimPersonDAO
+    DimPersonDAO createDimPersonDAO() throws SQLException;
 
+    // You can add methods to create other DAOs for different entities
+    // For example:
 
-    // Métodos para otros DAOs
+    // OtherDAO createOtherDAO() throws SQLException;
+
+    // This method could be used to close connections or clean up resources if needed
+    // void closeConnection() throws SQLException;
 }

@@ -1,10 +1,12 @@
 package org.jonatancarbonellmartinez.model.entities;
 
+import org.jonatancarbonellmartinez.Observer.Observer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DimPerson {
-    private int personSk;
+    private Integer personSk;
     private String personNk;
     private int personRankNumber;
     private String personRank;
@@ -25,16 +27,16 @@ public class DimPerson {
         observers.add(observer);
     }
 
-    public void notifyObservers() {
+    public void notifyObservers(String propertyName) {
         for (Observer observer : observers) {
-            observer.update(this);
+            observer.update(this, propertyName);
         }
     }
 
     // Method to update a property and notify observers
     public void setPersonName(String personName) {
         this.personName = personName;
-        notifyObservers();
+        notifyObservers("personName");
     }
 
     public int getPersonSk() {
@@ -94,7 +96,11 @@ public class DimPerson {
     }
 
     public void setPersonDni(String personDni) {
+        if (personDni == null || personDni.isEmpty()) {
+            throw new IllegalArgumentException("DNI cannot be null or empty");
+        }
         this.personDni = personDni;
+        notifyObservers("personDni");
     }
 
     public String getPersonPhone() {
