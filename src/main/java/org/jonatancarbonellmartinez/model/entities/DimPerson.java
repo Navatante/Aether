@@ -1,14 +1,9 @@
 package org.jonatancarbonellmartinez.model.entities;
 
-import org.jonatancarbonellmartinez.Observer.Observer;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class DimPerson {
-    private Integer personSk;
-    private String personNk;
-    private int personRankNumber;
+    private Integer personSk; // Primary Key
+    private String personNk; // Unique identifier
+    private Integer personRankNumber;
     private String personRank;
     private String personName;
     private String personLastName1;
@@ -16,34 +11,34 @@ public class DimPerson {
     private String personDni;
     private String personPhone;
     private String personDivision;
-    private int personCurrentFlag;
+    private Integer personCurrentFlag;
 
-    // List to hold observers
-    private List<Observer> observers = new ArrayList<>();
+    // Default constructor
+    public DimPerson() {}
 
-    // Getters y Setters
-
-    public void addObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    public void notifyObservers(String propertyName) {
-        for (Observer observer : observers) {
-            observer.update(this, propertyName);
-        }
-    }
-
-    // Method to update a property and notify observers
-    public void setPersonName(String personName) {
+    // Constructor with parameters
+    public DimPerson(Integer personSk, String personNk, Integer personRankNumber, String personRank,
+                     String personName, String personLastName1, String personLastName2,
+                     String personDni, String personPhone, String personDivision, Integer personCurrentFlag) {
+        this.personSk = personSk;
+        this.personNk = personNk;
+        this.personRankNumber = personRankNumber;
+        this.personRank = personRank;
         this.personName = personName;
-        notifyObservers("personName");
+        this.personLastName1 = personLastName1;
+        this.personLastName2 = personLastName2;
+        this.personDni = personDni;
+        this.personPhone = personPhone;
+        this.personDivision = personDivision;
+        this.personCurrentFlag = personCurrentFlag;
     }
 
-    public int getPersonSk() {
+    // Getters and Setters
+    public Integer getPersonSk() {
         return personSk;
     }
 
-    public void setPersonSk(int personSk) {
+    public void setPersonSk(Integer personSk) {
         this.personSk = personSk;
     }
 
@@ -55,11 +50,11 @@ public class DimPerson {
         this.personNk = personNk;
     }
 
-    public int getPersonRankNumber() {
+    public Integer getPersonRankNumber() {
         return personRankNumber;
     }
 
-    public void setPersonRankNumber(int personRankNumber) {
+    public void setPersonRankNumber(Integer personRankNumber) {
         this.personRankNumber = personRankNumber;
     }
 
@@ -73,6 +68,10 @@ public class DimPerson {
 
     public String getPersonName() {
         return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
     }
 
     public String getPersonLastName1() {
@@ -96,11 +95,7 @@ public class DimPerson {
     }
 
     public void setPersonDni(String personDni) {
-        if (personDni == null || personDni.isEmpty()) {
-            throw new IllegalArgumentException("DNI cannot be null or empty");
-        }
         this.personDni = personDni;
-        notifyObservers("personDni");
     }
 
     public String getPersonPhone() {
@@ -119,19 +114,29 @@ public class DimPerson {
         this.personDivision = personDivision;
     }
 
-    public int getPersonCurrentFlag() {
+    public Integer getPersonCurrentFlag() {
         return personCurrentFlag;
     }
 
-    public void setPersonCurrentFlag(int personCurrentFlag) {
+    public void setPersonCurrentFlag(Integer personCurrentFlag) {
         this.personCurrentFlag = personCurrentFlag;
     }
 
-    public List<Observer> getObservers() {
-        return observers;
-    }
-
-    public void setObservers(List<Observer> observers) {
-        this.observers = observers;
+    // Override toString() for easy debugging
+    @Override
+    public String toString() {
+        return "DimPerson{" +
+                "personSk=" + personSk +
+                ", personNk='" + personNk + '\'' +
+                ", personRankNumber=" + personRankNumber +
+                ", personRank='" + personRank + '\'' +
+                ", personName='" + personName + '\'' +
+                ", personLastName1='" + personLastName1 + '\'' +
+                ", personLastName2='" + personLastName2 + '\'' +
+                ", personDni='" + personDni + '\'' +
+                ", personPhone='" + personPhone + '\'' +
+                ", personDivision='" + personDivision + '\'' +
+                ", personCurrentFlag=" + personCurrentFlag +
+                '}';
     }
 }

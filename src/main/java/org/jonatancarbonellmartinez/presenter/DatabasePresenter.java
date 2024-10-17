@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.controller;
+package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.model.Database;
 import org.jonatancarbonellmartinez.model.Properties;
@@ -8,11 +8,11 @@ import org.jonatancarbonellmartinez.view.FileSelectionListener;
 import javax.swing.*;
 import java.sql.SQLException;
 
-public class DatabaseController implements FileSelectionListener {
+public class DatabasePresenter implements FileSelectionListener {
     private final DatabaseFileChooserView view;
     private final Properties propertiesFile;
 
-    public DatabaseController(DatabaseFileChooserView view) {
+    public DatabasePresenter(DatabaseFileChooserView view) {
         this.view = view;
         this.propertiesFile = Properties.getInstanceOfPropertiesFile();
         this.view.addFileSelectionListener(this); // Register as an observer

@@ -10,6 +10,7 @@ public class DAOException extends RuntimeException {
     public DAOException(String str, SQLException e) {
         super(str);
     }
+    public DAOException(String str) {}
 
     /**
      * Default constructor. Takes no arguments

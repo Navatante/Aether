@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 
 
-import org.jonatancarbonellmartinez.controller.PersonController;
+import org.jonatancarbonellmartinez.presenter.PersonPresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +13,9 @@ import java.util.Date;
 public class MainView extends JFrame {
 
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
-    private PersonController personController;
+    private PersonPresenter personController;
 
-    public MainView(PersonController personController) throws SQLException {
+    public MainView(PersonPresenter personController) throws SQLException {
         this.personController = personController;
 
         initializeUI();  // Initializes the UI and binds event listeners
