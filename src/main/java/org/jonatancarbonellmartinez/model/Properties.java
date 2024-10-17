@@ -7,10 +7,10 @@ import java.io.IOException;
 
 public class Properties {
 
-    java.util.Properties properties;
+    private java.util.Properties properties;
     private static Properties instanceOfPropertiesFile;
-    private static final String PROPERTIES_DIRECTORY_PATH = System.getProperty("user.dir") + File.separator + "properties"; // The path to the properties directory always should be from the path where the FlightHub App is installed.
-    private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + File.separator + "properties" + File.separator + "flightHubDatabase.properties";
+    private static final String PROPERTIES_DIRECTORY_PATH = System.getProperty("user.dir") + File.separator + "properties";
+    private static final String PROPERTIES_FILE_PATH = PROPERTIES_DIRECTORY_PATH + File.separator + "flightHubDatabase.properties";
     private File propertiesDirectory;
     private File propertiesFile;
     private boolean allAboutPropertiesIsFine = false;
@@ -21,11 +21,11 @@ public class Properties {
         this.propertiesDirectory = new File(PROPERTIES_DIRECTORY_PATH);
         this.propertiesFile = new File(PROPERTIES_FILE_PATH);
 
-        if (!propertiesDirectory.exists() && !createPropertiesDirectory()) {
+        if (!checkIfPropertiesDirectoryExists() && !createPropertiesDirectory()) {
             throw new RuntimeException("Failed to create properties directory.");
         }
 
-        if (!propertiesFile.exists() && !createPropertiesFile()) {
+        if (!checkIfPropertiesFileExists() && !createPropertiesFile()) {
             throw new RuntimeException("Failed to create properties file.");
         }
 
@@ -40,21 +40,28 @@ public class Properties {
         return instanceOfPropertiesFile;
     }
 
-    private boolean checkIfPropertiesDirectoryExists() { // This method only checks existence, it won't create a folder in case of inexistence.
+    // Check if the properties directory exists
+    private boolean checkIfPropertiesDirectoryExists() {
         return propertiesDirectory.exists() && propertiesDirectory.isDirectory();
     }
 
+    // Create the properties directory if it doesn't exist
     private boolean createPropertiesDirectory() {
-        return propertiesDirectory.mkdirs(); // Create the directory
+        return propertiesDirectory.mkdirs();
     }
 
-    private boolean checkIfPropertiesFileExists() { // It will check if 'flightHubDatabase.properties' exists inside the directory.
+    // Check if the properties file exists inside the directory
+    private boolean checkIfPropertiesFileExists() {
         return propertiesFile.exists() && propertiesFile.isFile();
     }
 
+    // Create the properties file if it doesn't exist
     private boolean createPropertiesFile() {
         try {
             if (propertiesFile.createNewFile()) {
+                // Add default properties (like an empty path)
+                properties.setProperty("path", "");  // Default to empty path
+                saveProperties();
                 return true;
             } else {
                 System.err.println("File already exists or failed to create.");
@@ -66,36 +73,37 @@ public class Properties {
     }
 
 
-    // Load properties from the file (it reads from the file)
-    private void loadProperties() { // Loads properties from the file into memory.
+    // Load properties from the file into memory
+    private void loadProperties() {
         try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
             properties.load(fileInputStream);
-            allAboutPropertiesIsFine = true; // if we finally arrive here, everything has been good.
+            allAboutPropertiesIsFine = true;
         } catch (IOException e) {
             System.err.println("Failed to load properties: " + e.getMessage());
         }
     }
 
-    // Save properties to the file (it writes into the file)
+    // Save properties to the file
     private void saveProperties() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(PROPERTIES_FILE_PATH)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(propertiesFile)) {
             properties.store(fileOutputStream, null);
         } catch (IOException e) {
             System.err.println("Failed to save properties: " + e.getMessage());
         }
     }
 
-    // Write a key-value pair to properties
+    // Write a key-value pair to the properties file
     public void writeIntoPropertiesFile(String key, String value) {
         properties.setProperty(key, value);
         saveProperties();
     }
 
-    // Read a value by key
+    // Read a value by key from the properties file
     public String readFromPropertiesFile(String key) {
         return properties.getProperty(key);
     }
 
+    // Check if all properties operations were successful
     public boolean isAllAboutPropertiesIsFine() {
         return this.allAboutPropertiesIsFine;
     }

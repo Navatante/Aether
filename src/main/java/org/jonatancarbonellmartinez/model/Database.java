@@ -34,22 +34,17 @@ public class Database { // THIS IS A SINGLETON
     }
 
     public Connection getConnection() throws SQLException {
-        setPathToDatabaseFromPropertiesFile();
-        if (!isDatabaseFilePresent()) {
+        setPathToDatabaseFromPropertiesFile();  // Ensure the path is set before connecting
+
+        if (pathToDatabase == null || pathToDatabase.isEmpty()) {
             throw new SQLException("El archivo de base de datos no existe: " + pathToDatabase);
         }
 
         if (this.connection == null || this.connection.isClosed()) {
             this.connection = DriverManager.getConnection(this.pathToDatabase);
-            System.out.println("Connected to database");
+            System.out.println("Connected to database at " + pathToDatabase);
         }
         return this.connection;
     }
 
-    public void disconnect() throws SQLException {
-        if (this.connection != null && !this.connection.isClosed()) {
-            this.connection.close();
-            System.out.println("Disconnected from database");
-        }
-    }
 }

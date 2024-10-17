@@ -1,9 +1,10 @@
 package org.jonatancarbonellmartinez.app;
 
+import org.jonatancarbonellmartinez.controller.DatabaseController;
 import org.jonatancarbonellmartinez.controller.PersonController;
 import org.jonatancarbonellmartinez.factory.SQLiteDAOFactory;
-import org.jonatancarbonellmartinez.model.Database;
 import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
+import org.jonatancarbonellmartinez.view.DatabaseFileChooserView;
 import org.jonatancarbonellmartinez.view.MainView;
 import org.jonatancarbonellmartinez.view.PersonView;
 
@@ -14,37 +15,18 @@ public class AppInitializer {
 
     public static void initialize() {
         try {
+            // Initialize the file chooser view and controller
+            DatabaseFileChooserView dbFileChooserView = new DatabaseFileChooserView();
+            DatabaseController dbController = new DatabaseController(dbFileChooserView);
+
             // Obtenemos la instancia de la fábrica DAO
             SQLiteDAOFactory daoFactory = SQLiteDAOFactory.getInstance();  // Usamos el patrón Singleton
 
             // Inicializamos los DAOs necesarios
             DimPersonDAO personDAO = daoFactory.createDimPersonDAO();
-            // Puedes seguir creando otros DAOs si los necesitas:
-            // DimHeloDAO heloDAO = daoFactory.createDimHeloDAO();
 
             // Creamos la vista
             PersonView personView = new PersonView();
-            //personView.setVisible(false); // la oculto para solo mostrarla cuando la necesite. creo que esto no es buena practica, investigar si es mejor que cree las vistas y controladores a demanda. (ya he puesto que sea visible false en la primera linea del constructor, quiza esa aproximacion es buena)
-            /**
-             * Híbrido: Una práctica común es combinar ambos enfoques. Puedes inicializar los componentes
-             * que son críticos para la interfaz de usuario al inicio y cargar los demás a demanda. Por ejemplo,
-             * si tienes una pantalla principal que se usa constantemente, la puedes cargar al inicio y otros paneles menos usados se pueden cargar a demanda.
-             *
-             * No hay una respuesta definitiva, ya que la mejor práctica puede variar según las necesidades específicas de tu aplicación y su contexto.
-             * Es recomendable considerar un enfoque que combine ambos métodos, aprovechando las ventajas de cada uno y minimizando sus desventajas.
-             * Además, realizar pruebas de rendimiento y usabilidad puede ayudar a determinar el enfoque más adecuado para tu caso específico.
-             *
-             * Recomendaciones
-             * Inicialización y Configuración: Puedes inicializar y configurar todas las vistas en el constructor y luego hacerlas visibles en el momento adecuado,
-             * por ejemplo, en respuesta a eventos de usuario (como la selección de un menú).
-             *
-             * Uso de un Gestor de Vistas: Considera implementar un patrón de Gestor de Vistas que maneje la visibilidad y la transición entre vistas.
-             * Esto te permitirá encapsular la lógica de visibilidad y hacer que tu código sea más mantenible.
-             *
-             * Lazy Loading de Vistas: Si algunas vistas son pesadas y raramente utilizadas, podrías combinarlas con un enfoque de carga a demanda.
-             * Cargas y haces visible solo aquellas vistas que se necesiten, evitando inicializar y ocupar memoria innecesariamente.
-             *
-             */
 
             // Creamos el controlador y le pasamos el DAO y la vista
             PersonController personController = new PersonController(personDAO, personView);
@@ -56,7 +38,7 @@ public class AppInitializer {
             personView.registerAsObserver();
 
             // Inicializamos la vista principal que integra todas las sub-vistas
-            MainView mainView = new MainView(personController); // esto debe ser mainViewController, tengo que hacerlo, ahora lo dejo asi para que no de error.
+            MainView mainView = new MainView(personController);
 
             // Mostramos la vista principal
             mainView.setVisible(true);

@@ -5,6 +5,7 @@ import org.jonatancarbonellmartinez.model.Properties;
 import org.jonatancarbonellmartinez.view.DatabaseFileChooserView;
 import org.jonatancarbonellmartinez.view.FileSelectionListener;
 
+import javax.swing.*;
 import java.sql.SQLException;
 
 public class DatabaseController implements FileSelectionListener {
@@ -15,34 +16,52 @@ public class DatabaseController implements FileSelectionListener {
         this.view = view;
         this.propertiesFile = Properties.getInstanceOfPropertiesFile();
         this.view.addFileSelectionListener(this); // Register as an observer
+        checkDatabasePath();  // Automatically check the database path on startup
     }
 
     public void checkDatabasePath() {
         try {
             String path = propertiesFile.readFromPropertiesFile("path");
+
+            // Log and check if path is valid
+            System.out.println("Database path from properties file: " + path);
+
             if (path == null || path.trim().isEmpty()) {
-                promptUserForDatabasePath();  // Prompt user to select the database file
+                // If path is missing or empty, prompt user for it
+                view.showError("La ruta de la base de datos no está configurada. Seleccione una base de datos.");
+                promptUserForDatabasePath(); // This will open the FileChooser dialog
             } else {
-                Database.getInstance().getConnection();
-                Database.getInstance().disconnect();
+                connectToDatabase(path);
             }
         } catch (SQLException e) {
-            if (e.getMessage().contains("El archivo de base de datos no existe")) {
-                // Handle the case when the database file doesn't exist
-                view.showError("El archivo de base de datos no existe. Seleccione un archivo de base de datos válido.");
-                promptUserForDatabasePath(); // Show FileChooser dialog again if the file doesn't exist
-            } else {
-                // Handle other SQL errors
-                view.showError("Error al conectar a la base de datos: " + e.getMessage());
-                promptUserForDatabasePath(); // Retry with a new file selection
-            }
+            handleDatabaseConnectionError(e);
         } catch (Exception e) {
-            view.showError("Ocurrió un error inesperado: " + e.getMessage());
+            view.showError("Unexpected error: " + e.getMessage());
+        }
+    }
+
+
+
+    private void connectToDatabase(String path) throws SQLException {
+        Database db = Database.getInstance();
+        db.getConnection();
+        view.showSuccess("Successfully connected to the database.");
+    }
+
+    private void handleDatabaseConnectionError(SQLException e) {
+        if (e.getMessage().contains("El archivo de base de datos no existe")) {
+            // Handle case when the database file doesn't exist
+            view.showError("The database file does not exist. Please select a valid database file.");
+            promptUserForDatabasePath();
+        } else {
+            // Handle other SQL errors
+            view.showError("Error connecting to the database: " + e.getMessage());
+            promptUserForDatabasePath();
         }
     }
 
     private void promptUserForDatabasePath() {
-        view.showFileChooser(); // Show the file chooser dialog
+        view.showFileChooser();  // Show the file chooser dialog to the user
     }
 
     @Override
@@ -51,17 +70,25 @@ public class DatabaseController implements FileSelectionListener {
         propertiesFile.writeIntoPropertiesFile("path", fullPath);
 
         try {
-            Database.getInstance().getConnection();
-            view.showSuccess("Conexión establecida correctamente");
+            connectToDatabase(fullPath);
         } catch (SQLException e) {
-            view.showError("Error al conectar a la base de datos después de seleccionar un nuevo archivo: " + e.getMessage());
-            promptUserForDatabasePath(); // Retry file selection if connection fails again
+            view.showError("Error connecting to the database after selecting a new file: " + e.getMessage());
+            promptUserForDatabasePath();
         }
     }
 
     @Override
     public void onFileSelectionCanceled() {
-        view.showError("No se proporcionó la ruta de la base de datos.");
-        System.exit(1);
+        int choice = JOptionPane.showConfirmDialog(null,
+                "No database file was selected. Do you want to try again?",
+                "File Selection Canceled",
+                JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            promptUserForDatabasePath();
+        } else {
+            view.showError("Database connection is required. Exiting the application.");
+            System.exit(1);  // Exit if the user declines
+        }
     }
 }
