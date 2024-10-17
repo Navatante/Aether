@@ -32,7 +32,8 @@ public class AppInitializer {
             PersonPresenter personPresenter = new PersonPresenter(personDAO, personView);
 
             // Initialize the main view (optional)
-            MainView mainView = new MainView(personPresenter);
+            MainView mainView = new MainView();
+            mainView.setPresenter(personPresenter);
             mainView.setVisible(true);
 
         } catch (SQLException e) {

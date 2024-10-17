@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.util.List;
 
 public class PersonView extends JFrame {
+
     // UI components
     public JMenu createPersonMenu;
     public JMenu updatePersonMenu;

@@ -11,15 +11,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainView extends JFrame {
+    PersonPresenter presenter;
 
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
     private PersonPresenter personController;
 
-    public MainView(PersonPresenter personController) throws SQLException {
-        this.personController = personController;
-
+    public MainView() throws SQLException {
         initializeUI();  // Initializes the UI and binds event listeners
         createMenuBar();
+    }
+
+    // Set the presenter
+    public void setPresenter(PersonPresenter presenter) {
+        this.presenter = presenter;
     }
 
     private void initializeUI() {
@@ -52,9 +56,9 @@ public class MainView extends JFrame {
     private JPanel createMainPanel(JSpinner dateSpinner) {
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        mainPanel.add(new JButton("Uno"));
-        mainPanel.add(new JButton("Dos"));
-        mainPanel.add(new JButton("Tres"));
+        mainPanel.add(new JButton("Principal"));
+        mainPanel.add(new JButton("Pilotos"));
+        mainPanel.add(new JButton("Dotaciones"));
         mainPanel.add(new JButton("Cuatro"));
         mainPanel.add(new JButton("Cinco"));
 
@@ -69,9 +73,7 @@ public class MainView extends JFrame {
         // Create and add all menu items
         menuBar.add(createRegistrarMenu());
         menuBar.add(createAnadirMenu());
-        menuBar.add(createModificarMenu());
-        menuBar.add(createEliminarMenu());
-        menuBar.add(createVerMenu());
+        menuBar.add(createEditarMenu());
         menuBar.add(createGenerarMenu());
         this.setJMenuBar(menuBar);
     }
@@ -86,32 +88,17 @@ public class MainView extends JFrame {
 
     private JMenu createAnadirMenu() {
         JMenu anadirMenu = new JMenu("Añadir");
-        anadirMenu.add(new JMenuItem("Miembro"));
+        anadirMenu.add(new JMenuItem("Personal"));
         anadirMenu.add(new JMenuItem("Evento"));
-        JMenuItem salirItem = new JMenuItem("Salir");
-        salirItem.addActionListener(e -> System.exit(0));  // Action for "Exit" menu
-        anadirMenu.add(salirItem);
         return anadirMenu;
     }
 
-    private JMenu createModificarMenu() {
-        return new JMenu("Modificar");  // Menu stub, add items as needed
-    }
+    private JMenu createEditarMenu() {
+        JMenu editarMenu = new JMenu("Editar");
+        editarMenu.add(new JMenuItem("Personal"));
+        editarMenu.add(new JMenuItem("Evento"));
 
-    private JMenu createEliminarMenu() {
-        return new JMenu("Eliminar");  // Menu stub, add items as needed
-    }
-
-    private JMenu createVerMenu() {
-        JMenu verMenu = new JMenu("Ver");
-        verMenu.add(new JMenuItem("Vista principal"));
-        verMenu.addSeparator();
-        verMenu.add(new JMenuItem("Horas cupo"));
-        verMenu.add(new JMenuItem("Horas escuadrilla"));
-        verMenu.add(new JMenuItem("Horas tripulantes"));
-        verMenu.addSeparator();
-        verMenu.add(new JMenuItem("Tomas"));
-        return verMenu;
+        return editarMenu;
     }
 
     private JMenu createGenerarMenu() {
