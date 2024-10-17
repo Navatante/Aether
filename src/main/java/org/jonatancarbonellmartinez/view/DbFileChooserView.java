@@ -1,19 +1,16 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.presenter.DatabasePresenter;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.util.ArrayList;
-import java.util.List;
 
-public class DatabaseFileChooserView {
-    private final List<FileSelectionListener> listeners = new ArrayList<>();
+public class DbFileChooserView {
 
-    public void addFileSelectionListener(FileSelectionListener listener) {
-        listeners.add(listener);
-    }
+    private DatabasePresenter presenter; // Reference to the presenter
 
-    public void removeFileSelectionListener(FileSelectionListener listener) {
-        listeners.remove(listener);
+    public void setPresenter(DatabasePresenter presenter) {
+        this.presenter = presenter; // Allow the presenter to be set
     }
 
     public void showFileChooser() {
@@ -36,21 +33,15 @@ public class DatabaseFileChooserView {
     private void handleFileChooserResult(int result, JFileChooser fileChooser) {
         if (result == JFileChooser.APPROVE_OPTION) {
             String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-            notifyFileSelected(selectedFilePath);
+            // Notify the presenter directly
+            if (presenter != null) {
+                presenter.onFileSelected(selectedFilePath);
+            }
         } else {
-            notifyFileSelectionCanceled();
-        }
-    }
-
-    private void notifyFileSelected(String filePath) {
-        for (FileSelectionListener listener : listeners) {
-            listener.onFileSelected(filePath);
-        }
-    }
-
-    private void notifyFileSelectionCanceled() {
-        for (FileSelectionListener listener : listeners) {
-            listener.onFileSelectionCanceled();
+            // Notify the presenter about cancellation
+            if (presenter != null) {
+                presenter.onFileSelectionCanceled();
+            }
         }
     }
 

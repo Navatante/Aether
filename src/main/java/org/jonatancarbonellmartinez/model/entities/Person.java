@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.model.entities;
 
-public class DimPerson {
+public class Person {
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
     private Integer personRankNumber;
@@ -14,12 +14,12 @@ public class DimPerson {
     private Integer personCurrentFlag;
 
     // Default constructor
-    public DimPerson() {}
+    public Person() {}
 
     // Constructor with parameters
-    public DimPerson(Integer personSk, String personNk, Integer personRankNumber, String personRank,
-                     String personName, String personLastName1, String personLastName2,
-                     String personDni, String personPhone, String personDivision, Integer personCurrentFlag) {
+    public Person(Integer personSk, String personNk, Integer personRankNumber, String personRank,
+                  String personName, String personLastName1, String personLastName2,
+                  String personDni, String personPhone, String personDivision, Integer personCurrentFlag) {
         this.personSk = personSk;
         this.personNk = personNk;
         this.personRankNumber = personRankNumber;

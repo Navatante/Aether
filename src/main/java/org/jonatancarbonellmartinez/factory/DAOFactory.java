@@ -1,13 +1,13 @@
 package org.jonatancarbonellmartinez.factory;
 
-import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
+import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 
 import java.sql.SQLException;
 
 public interface DAOFactory {
 
     // Method to create DimPersonDAO
-    DimPersonDAO createDimPersonDAO() throws SQLException;
+    PersonDAO createDimPersonDAO() throws SQLException;
 
     // You can add methods to create other DAOs for different entities
     // For example:

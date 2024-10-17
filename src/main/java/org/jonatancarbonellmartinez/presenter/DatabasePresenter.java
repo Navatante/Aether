@@ -2,92 +2,85 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.model.Database;
 import org.jonatancarbonellmartinez.model.Properties;
-import org.jonatancarbonellmartinez.view.DatabaseFileChooserView;
-import org.jonatancarbonellmartinez.view.FileSelectionListener;
+import org.jonatancarbonellmartinez.view.DbFileChooserView;
 
 import javax.swing.*;
 import java.sql.SQLException;
 
-public class DatabasePresenter implements FileSelectionListener {
-    private final DatabaseFileChooserView view;
+public class DatabasePresenter {
+    private final DbFileChooserView view;
     private final Properties propertiesFile;
+    private final Database databaseModel;
 
-    public DatabasePresenter(DatabaseFileChooserView view) {
+    public DatabasePresenter(DbFileChooserView view) {
         this.view = view;
         this.propertiesFile = Properties.getInstanceOfPropertiesFile();
-        this.view.addFileSelectionListener(this); // Register as an observer
-        checkDatabasePath();  // Automatically check the database path on startup
+        this.databaseModel = Database.getInstance();
+        this.view.setPresenter(this); // Set the presenter in the view
+
+        // Check the database path on startup
+        checkDatabasePath();
     }
 
+    /**
+     * Checks if the database path is available and attempts to connect to the database.
+     */
     public void checkDatabasePath() {
+        String path = propertiesFile.readFromPropertiesFile("path");
+        System.out.println("Database path from properties file: " + path);
+
+        if (path == null || path.trim().isEmpty()) {
+            view.showError("La ruta de la base de datos no está configurada. Seleccione una base de datos.");
+            promptUserForDatabasePath(); // Open the file chooser dialog
+        } else {
+            attemptDatabaseConnection(path); // Connect with the stored path
+        }
+    }
+
+    /**
+     * Attempts to connect to the database and updates the view accordingly.
+     */
+    private void attemptDatabaseConnection(String path) {
         try {
-            String path = propertiesFile.readFromPropertiesFile("path");
-
-            // Log and check if path is valid
-            System.out.println("Database path from properties file: " + path);
-
-            if (path == null || path.trim().isEmpty()) {
-                // If path is missing or empty, prompt user for it
-                view.showError("La ruta de la base de datos no está configurada. Seleccione una base de datos.");
-                promptUserForDatabasePath(); // This will open the FileChooser dialog
-            } else {
-                connectToDatabase(path);
-            }
+            databaseModel.getConnection(); // The model handles the connection logic
+            view.showSuccess("Successfully connected to the database.");
         } catch (SQLException e) {
             handleDatabaseConnectionError(e);
-        } catch (Exception e) {
-            view.showError("Unexpected error: " + e.getMessage());
         }
     }
 
-
-
-    private void connectToDatabase(String path) throws SQLException {
-        Database db = Database.getInstance();
-        db.getConnection();
-        view.showSuccess("Successfully connected to the database.");
-    }
-
+    /**
+     * Handles any database connection errors.
+     */
     private void handleDatabaseConnectionError(SQLException e) {
-        if (e.getMessage().contains("El archivo de base de datos no existe")) {
-            // Handle case when the database file doesn't exist
-            view.showError("The database file does not exist. Please select a valid database file.");
-            promptUserForDatabasePath();
-        } else {
-            // Handle other SQL errors
-            view.showError("Error connecting to the database: " + e.getMessage());
-            promptUserForDatabasePath();
-        }
+        view.showError("Error connecting to the database: " + e.getMessage());
+        promptUserForDatabasePath(); // Prompt for a new file if the connection fails
     }
 
+    /**
+     * Prompts the user to select a new database file.
+     */
     private void promptUserForDatabasePath() {
         view.showFileChooser();  // Show the file chooser dialog to the user
     }
 
-    @Override
     public void onFileSelected(String filePath) {
         String fullPath = "jdbc:sqlite:" + filePath.replace("\\", "/");
-        propertiesFile.writeIntoPropertiesFile("path", fullPath);
+        propertiesFile.writeIntoPropertiesFile("path", fullPath);  // Save the selected path
 
-        try {
-            connectToDatabase(fullPath);
-        } catch (SQLException e) {
-            view.showError("Error connecting to the database after selecting a new file: " + e.getMessage());
-            promptUserForDatabasePath();
-        }
+        attemptDatabaseConnection(fullPath); // Attempt to connect after selecting the file
     }
 
-    @Override
     public void onFileSelectionCanceled() {
         int choice = JOptionPane.showConfirmDialog(null,
-                "No database file was selected. Do you want to try again?",
-                "File Selection Canceled",
+                "No ha seleccionado ninguna base de datos. Desea intentarlo de nuevo?",
+                "Selección de base de datos cancelada",
                 JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             promptUserForDatabasePath();
         } else {
-            view.showError("Database connection is required. Exiting the application.");
+            view.showError("Se requiere una conexión a la base de datos. Cerrando aplicación.");
             System.exit(1);  // Exit if the user declines
         }
     }

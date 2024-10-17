@@ -6,27 +6,27 @@ import org.jonatancarbonellmartinez.model.dao.*;
 import java.sql.*;
 
 // Esta clase la utilizo para crear los distintos DAOs a traves de ella, por cada dao, tendre que crear un metodo 'createDimNameDAO' or createFactNameDAO.
-public class SQLiteDAOFactory implements DAOFactory {
+public class DAOFactorySQLite implements DAOFactory {
 
     // Singleton instance
-    private static SQLiteDAOFactory instance;
+    private static DAOFactorySQLite instance;
 
     // Private constructor to prevent instantiation
-    private SQLiteDAOFactory() {}
+    private DAOFactorySQLite() {}
 
     // Public method to return the singleton instance
-    public static synchronized SQLiteDAOFactory getInstance() {
+    public static synchronized DAOFactorySQLite getInstance() {
         if (instance == null) {
-            instance = new SQLiteDAOFactory();
+            instance = new DAOFactorySQLite();
         }
         return instance;
     }
 
-    public DimPersonDAO createDimPersonDAO() throws SQLException {
+    public PersonDAO createDimPersonDAO() throws SQLException {
         Connection connection = null;
         try {
             connection = Database.getInstance().getConnection();
-            return new DimPersonDAOSQLite(connection);
+            return new PersonDAOSQLite(connection);
         } catch (SQLException e) {
             // Handle SQLException appropriately
             throw new SQLException("Failed to create DimPersonDAO: " + e.getMessage(), e);

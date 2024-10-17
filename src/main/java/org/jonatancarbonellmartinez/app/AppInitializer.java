@@ -1,8 +1,10 @@
 package org.jonatancarbonellmartinez.app;
 
-import org.jonatancarbonellmartinez.factory.SQLiteDAOFactory;
-import org.jonatancarbonellmartinez.model.dao.DimPersonDAO;
+import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
+import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.presenter.DatabasePresenter;
 import org.jonatancarbonellmartinez.presenter.PersonPresenter;
+import org.jonatancarbonellmartinez.view.DbFileChooserView;
 import org.jonatancarbonellmartinez.view.MainView;
 import org.jonatancarbonellmartinez.view.PersonView;
 
@@ -13,12 +15,15 @@ public class AppInitializer {
 
     public static void initialize() {
         try {
-            // Initialize the file chooser view (optional)
-            // DatabaseFileChooserView dbFileChooserView = new DatabaseFileChooserView();
+            // Initialize the file chooser view
+            DbFileChooserView dbFileChooserView = new DbFileChooserView();
 
-            // Get DAO Factory and create DAOs
-            SQLiteDAOFactory daoFactory = SQLiteDAOFactory.getInstance();
-            DimPersonDAO personDAO = daoFactory.createDimPersonDAO();
+            // Initialize the DatabasePresenter, which manages the database connection
+            DatabasePresenter dbPresenter = new DatabasePresenter(dbFileChooserView);
+
+            // Get DAO Factory and create DAOs regardless of connection state
+            DAOFactorySQLite daoFactory = DAOFactorySQLite.getInstance();
+            PersonDAO personDAO = daoFactory.createDimPersonDAO();
 
             // Initialize the views
             PersonView personView = new PersonView();

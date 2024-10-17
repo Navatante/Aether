@@ -1,10 +1,9 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.model.entities.DimPerson;
+import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.presenter.PersonPresenter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 public class PersonView extends JFrame {
@@ -21,19 +20,19 @@ public class PersonView extends JFrame {
     }
 
     // Method to update the list of people in the view
-    public void updatePersonList(List<DimPerson> people) {
+    public void updatePersonList(List<Person> people) {
         // Update the UI with the new list of people
     }
 
     // Method to get the selected person from the UI
-    public DimPerson getSelectedPerson() {
+    public Person getSelectedPerson() {
         // Return the currently selected person in the UI
         return null;
     }
 
     // Method to get a new person from form input
-    public DimPerson getPersonFromForm() {
-        DimPerson newPerson = new DimPerson();
+    public Person getPersonFromForm() {
+        Person newPerson = new Person();
         // Populate newPerson with form data
         // (e.g., retrieve text field values and populate the person object)
         return newPerson;
