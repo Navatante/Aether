@@ -18,11 +18,14 @@ public class PersonPresenter {
         this.personView = personView;
 
         // Set the presenter in the view
-        this.personView.setPresenter(this);  // Refactored to setPresenter instead of setController
+        this.personView.setPresenter(this); // We establish a relationship where the view knows about the presenter. This is essential because the view will need to call presenter methods in response to user actions (like button clicks)
 
-        // Load the initial list of people
-        //loadPeople();
-        //registerEventHandlers();
+        //initialize();
+    }
+
+    private void initialize() { // This allows the presenter to immediately prepare the view with data and set up interactions.
+        loadPeople();
+        registerEventHandlers();
     }
 
     // Load initial data from the model and pass it to the view
