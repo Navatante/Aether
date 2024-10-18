@@ -13,7 +13,6 @@ public class Properties {
     private static final String PROPERTIES_FILE_PATH = PROPERTIES_DIRECTORY_PATH + File.separator + "flightHubDatabase.properties";
     private File propertiesDirectory;
     private File propertiesFile;
-    private boolean allAboutPropertiesIsFine = false;
 
     // Private constructor for Singleton pattern
     private Properties() {
@@ -72,12 +71,11 @@ public class Properties {
         }
     }
 
-
     // Load properties from the file into memory
     private void loadProperties() {
         try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
             properties.load(fileInputStream);
-            allAboutPropertiesIsFine = true;
+
         } catch (IOException e) {
             System.err.println("Failed to load properties: " + e.getMessage());
         }
@@ -101,10 +99,5 @@ public class Properties {
     // Read a value by key from the properties file
     public String readFromPropertiesFile(String key) {
         return properties.getProperty(key);
-    }
-
-    // Check if all properties operations were successful
-    public boolean isAllAboutPropertiesIsFine() {
-        return this.allAboutPropertiesIsFine;
     }
 }
