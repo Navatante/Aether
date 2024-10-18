@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.factory;
 
-import org.jonatancarbonellmartinez.model.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 import org.jonatancarbonellmartinez.model.dao.*;
 
 import java.sql.*;

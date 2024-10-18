@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.presenter;
 
-import org.jonatancarbonellmartinez.model.Database;
-import org.jonatancarbonellmartinez.model.Properties;
+import org.jonatancarbonellmartinez.model.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Properties;
 import org.jonatancarbonellmartinez.view.DbFileChooserView;
 
 import javax.swing.*;

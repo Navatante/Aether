@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.model;
+package org.jonatancarbonellmartinez.model.utilities;
 
 import java.io.File;
 import java.sql.*;

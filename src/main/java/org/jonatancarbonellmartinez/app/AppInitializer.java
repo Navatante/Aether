@@ -2,11 +2,8 @@ package org.jonatancarbonellmartinez.app;
 
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.presenter.DatabasePresenter;
-import org.jonatancarbonellmartinez.presenter.PersonPresenter;
-import org.jonatancarbonellmartinez.view.DbFileChooserView;
-import org.jonatancarbonellmartinez.view.MainView;
-import org.jonatancarbonellmartinez.view.PersonView;
+import org.jonatancarbonellmartinez.presenter.*;
+import org.jonatancarbonellmartinez.view.*;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -17,23 +14,36 @@ public class AppInitializer {
         try {
             // Initialize the file chooser view
             DbFileChooserView dbFileChooserView = new DbFileChooserView();
-
             // Initialize the DatabasePresenter, which manages the database connection
             DatabasePresenter dbPresenter = new DatabasePresenter(dbFileChooserView);
 
-            // Get DAO Factory and create DAOs regardless of connection state
-            DAOFactorySQLite daoFactory = DAOFactorySQLite.getInstance();
+            // Initialize DAOs at startup
+            DAOFactorySQLite daoFactory = DAOFactorySQLite.getInstance(); // First create the Factory os DAOs!
             PersonDAO personDAO = daoFactory.createDimPersonDAO();
+            // FlightDAO flightDAO = daoFactory.createFlightDAO();
+            // EventDAO eventDAO = daoFactory.createEventDAO();
 
-            // Initialize the views
-            PersonView personView = new PersonView();
 
-            // Initialize the presenter with DAO and view
-            PersonPresenter personPresenter = new PersonPresenter(personDAO, personView);
+            // Initialize Presenters at startup
+            MainPresenter mainPresenter = new MainPresenter();
+            AddPersonPresenter addPersonPresenter = new AddPersonPresenter(personDAO);
+            EditPersonPresenter editPersonPresenter = new EditPersonPresenter(personDAO);
+            // FlightPresenter flightPresenter = new FlightPresenter(flightDAO);
+            // EventPresenter eventPresenter = new EventPresenter(eventDAO);
 
-            // Initialize the main view (optional)
+
+            // Add Presenters to the Map list of presenters located on MainPresenter
+            mainPresenter.addPresenter("person", addPersonPresenter);
+
+
+            // Initialize the main view
             MainView mainView = new MainView();
-            mainView.setPresenter(personPresenter);
+
+            // Set the presenter to the view and view to the presenter
+            mainView.setPresenter(mainPresenter); // Set the presenter
+            mainPresenter.setView(mainView); // Set the view
+
+            // Setup main view visibility
             mainView.setVisible(true);
 
         } catch (SQLException e) {

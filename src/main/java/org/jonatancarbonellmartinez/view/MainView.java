@@ -1,8 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
-
-
-import org.jonatancarbonellmartinez.presenter.PersonPresenter;
+import org.jonatancarbonellmartinez.presenter.MainPresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,19 +9,24 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainView extends JFrame {
-    PersonPresenter presenter;
+    MainPresenter presenter;
 
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
-    private PersonPresenter personController;
+
 
     public MainView() throws SQLException {
         initializeUI();  // Initializes the UI and binds event listeners
         createMenuBar();
     }
 
-    // Set the presenter
-    public void setPresenter(PersonPresenter presenter) {
+    // Method to set the presenter
+    public void setPresenter(MainPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    // Method to show a specific view (not implemented in this example)
+    public void showView(Object view) {
+        // Logic to display the selected view
     }
 
     private void initializeUI() {
