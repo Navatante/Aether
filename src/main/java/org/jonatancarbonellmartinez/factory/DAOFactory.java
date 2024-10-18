@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public interface DAOFactory {
 
     // Method to create DimPersonDAO
-    PersonDAO createDimPersonDAO() throws SQLException;
+    PersonDAO createPersonDAOSQLite() throws SQLException;
 
     // You can add methods to create other DAOs for different entities
     // For example:

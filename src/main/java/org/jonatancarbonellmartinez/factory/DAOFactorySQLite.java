@@ -22,15 +22,8 @@ public class DAOFactorySQLite implements DAOFactory {
         return instance;
     }
 
-    public PersonDAO createDimPersonDAO() throws SQLException {
-        Connection connection = null;
-        try {
-            connection = Database.getInstance().getConnection();
-            return new PersonDAOSQLite(connection);
-        } catch (SQLException e) {
-            // Handle SQLException appropriately
-            throw new SQLException("Failed to create DimPersonDAO: " + e.getMessage(), e);
-        }
+    public PersonDAO createPersonDAOSQLite() {
+        return new PersonDAOSQLite(); // No need to pass connection
     }
 
     // Add methods for creating other DAOs

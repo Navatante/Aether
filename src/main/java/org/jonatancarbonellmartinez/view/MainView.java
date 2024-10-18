@@ -9,7 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainView extends JFrame {
-    MainPresenter presenter;
+    MainPresenter presenter; // The view holds a reference to his presenter
+    JMenuItem personalMenuItem;
 
     private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
 
@@ -17,6 +18,11 @@ public class MainView extends JFrame {
     public MainView() throws SQLException {
         initializeUI();  // Initializes the UI and binds event listeners
         createMenuBar();
+    }
+
+    // Getter for the "Personal" menu item
+    public JMenuItem getPersonalMenuItem() {
+        return personalMenuItem;
     }
 
     // Method to set the presenter
@@ -30,6 +36,7 @@ public class MainView extends JFrame {
     }
 
     private void initializeUI() {
+        setTitle("Haverkat - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 720);
         setVisible(true);
@@ -91,7 +98,8 @@ public class MainView extends JFrame {
 
     private JMenu createAnadirMenu() {
         JMenu anadirMenu = new JMenu("Añadir");
-        anadirMenu.add(new JMenuItem("Personal"));
+        personalMenuItem = new JMenuItem("Personal");
+        anadirMenu.add(personalMenuItem);
         anadirMenu.add(new JMenuItem("Evento"));
         return anadirMenu;
     }

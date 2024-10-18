@@ -1,7 +1,6 @@
 package org.jonatancarbonellmartinez.app;
 
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.presenter.*;
 import org.jonatancarbonellmartinez.view.*;
 
@@ -9,32 +8,18 @@ import javax.swing.*;
 import java.sql.SQLException;
 
 public class AppInitializer {
+    public static final DAOFactorySQLite daoFactory = DAOFactorySQLite.getInstance(); // I will access this daoFactory from Presenter's methods who show views.
 
     public static void initialize() {
         try {
             // Initialize the file chooser view
             DbFileChooserView dbFileChooserView = new DbFileChooserView();
+
             // Initialize the DatabasePresenter, which manages the database connection
             DatabasePresenter dbPresenter = new DatabasePresenter(dbFileChooserView);
 
-            // Initialize DAOs at startup
-            DAOFactorySQLite daoFactory = DAOFactorySQLite.getInstance(); // First create the Factory os DAOs!
-            PersonDAO personDAO = daoFactory.createDimPersonDAO();
-            // FlightDAO flightDAO = daoFactory.createFlightDAO();
-            // EventDAO eventDAO = daoFactory.createEventDAO();
-
-
-            // Initialize Presenters at startup
+            // Initialize needed Presenters at startup and pass them their DAO.
             MainPresenter mainPresenter = new MainPresenter();
-            AddPersonPresenter addPersonPresenter = new AddPersonPresenter(personDAO);
-            EditPersonPresenter editPersonPresenter = new EditPersonPresenter(personDAO);
-            // FlightPresenter flightPresenter = new FlightPresenter(flightDAO);
-            // EventPresenter eventPresenter = new EventPresenter(eventDAO);
-
-
-            // Add Presenters to the Map list of presenters located on MainPresenter
-            mainPresenter.addPresenter("person", addPersonPresenter);
-
 
             // Initialize the main view
             MainView mainView = new MainView();

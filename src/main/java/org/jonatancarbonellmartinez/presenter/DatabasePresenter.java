@@ -43,7 +43,7 @@ public class DatabasePresenter {
     private void attemptDatabaseConnection(String path) {
         try {
             databaseModel.getConnection(); // The model handles the connection logic
-            view.showSuccess("Successfully connected to the database.");
+            databaseModel.closeConnection(); // Close connection after testing.
         } catch (SQLException e) {
             handleDatabaseConnectionError(e);
         }
