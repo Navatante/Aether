@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.presenter;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.view.AddPersonView;
 
-public class AddPersonPresenter {
+public class AddPersonPresenter implements Presenter<AddPersonView> {
     private final PersonDAO personDAO;  // DAO to handle database operations
     private AddPersonView personView;       // View associated with this presenter, initially null
 
