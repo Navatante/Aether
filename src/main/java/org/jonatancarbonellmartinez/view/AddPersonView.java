@@ -1,18 +1,15 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.util.List;
 
 public class AddPersonView extends JDialog {
     private MainView mainView;
     private AddPersonPresenter presenter;
-
     private JTable personTable;
     private DefaultTableModel tableModel;
 
@@ -92,26 +89,8 @@ public class AddPersonView extends JDialog {
         column.setPreferredWidth(80);
     }
 
-    public void displayPersons(List<Person> persons) {
-        // Clear existing rows
-        tableModel.setRowCount(0);
 
-        // Add persons to the table model
-        for (Person person : persons) {
-            Object[] rowData = {
-                    person.getPersonSk(),
-                    person.getPersonNk(),
-                    person.getPersonRankNumber(),
-                    person.getPersonRank(),
-                    person.getPersonName(),
-                    person.getPersonLastName1(),
-                    person.getPersonLastName2(),
-                    person.getPersonDni(),
-                    person.getPersonPhone(),
-                    person.getPersonDivision(),
-                    person.getPersonCurrentFlag()
-            };
-            tableModel.addRow(rowData);
-        }
+    public DefaultTableModel getTableModel() {
+        return tableModel;
     }
 }
