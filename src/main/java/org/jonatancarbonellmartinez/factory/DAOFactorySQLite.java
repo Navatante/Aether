@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.factory;
 
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.utilities.Database;
 import org.jonatancarbonellmartinez.model.dao.*;
 

@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.factory;
 
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 
 import java.sql.SQLException;
@@ -7,13 +8,11 @@ import java.sql.SQLException;
 public interface DAOFactory {
 
     // Method to create DimPersonDAO
-    PersonDAO createPersonDAOSQLite() throws SQLException;
+    PersonDAO createPersonDAOSQLite() throws DatabaseException;
 
     // You can add methods to create other DAOs for different entities
     // For example:
 
-    // OtherDAO createOtherDAO() throws SQLException;
+    // OtherDAO createOtherDAO() throws DatabaseException;
 
-    // This method could be used to close connections or clean up resources if needed
-    // void closeConnection() throws SQLException;
 }

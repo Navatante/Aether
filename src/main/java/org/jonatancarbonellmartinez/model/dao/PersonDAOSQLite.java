@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.model.dao;
 
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Person;
-import org.jonatancarbonellmartinez.model.dao.exceptions.DAOException;
 import org.jonatancarbonellmartinez.model.utilities.Database;
 
 import java.sql.Connection;
@@ -14,33 +14,33 @@ import java.util.List;
 public class PersonDAOSQLite implements PersonDAO {
 
     @Override
-    public void create(Person person) throws DAOException {
+    public void create(Person person) throws DatabaseException {
 
     }
 
     @Override
-    public Person read(Integer personSk) throws DAOException {
+    public Person read(Integer personSk) throws DatabaseException {
         return null;
     }
 
     @Override
-    public void update(Person person) throws DAOException {
+    public void update(Person person) throws DatabaseException {
 
     }
 
     @Override
-    public void delete(Integer personSk) throws DAOException {
-
+    public void delete(Integer personSk) throws DatabaseException {
+        // I will not permit to delete persons.
     }
 
     @Override
-    public List<Person> getCurrents(Integer currentFlag) throws DAOException {
+    public List<Person> getCurrents(Integer currentFlag) throws DatabaseException {
         return null;
     }
 
     @Override
     // Each DAO method should handle its own connection lifecycle, creating a new connection
-    public List<Person> getAll() throws DAOException {
+    public List<Person> getAll() throws DatabaseException {
         String sql = "SELECT * FROM dim_crew ORDER BY crew_SK DESC";
         List<Person> personList = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class PersonDAOSQLite implements PersonDAO {
                 personList.add(mapResultSetToPerson(rs));
             }
         } catch (SQLException e) {
-            throw new DAOException("Error retrieving all persons", e);
+            throw new DatabaseException("Error retrieving all persons", e);
         }
 
         return personList;

@@ -1,8 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -10,25 +10,16 @@ import java.awt.*;
 import java.util.List;
 
 public class AddPersonView extends JDialog {
+    private MainView mainView;
     private AddPersonPresenter presenter;
+
     private JTable personTable;
     private DefaultTableModel tableModel;
 
-    public AddPersonView() {
+    public AddPersonView(MainView mainView, PersonDAO personDAO) {
+        this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
+        this.presenter = new AddPersonPresenter(this, personDAO);
         initializeUI();
-    }
-
-    // Method to set presenter and fetch data
-    public void setPresenter(AddPersonPresenter presenter) {
-        // You can set up other presenter actions here
-        // For example, loading data into the table when presenter is set
-        this.presenter = presenter;
-        presenter.loadAllPersons();  // Automatically load all persons
-    }
-
-    // Method to set the MainView reference for centering the dialog
-    public void setMainViewReference(MainView mainView) {
-        setLocationRelativeTo(mainView);  // Center the dialog relative to the MainView
     }
 
     private void initializeUI() {
@@ -54,7 +45,12 @@ public class AddPersonView extends JDialog {
 
         setColumnWidths(personTable);
 
-        // Once everything is set I set it visible
+        showView();
+    }
+
+    public void showView() {
+        setLocationRelativeTo(mainView);
+        presenter.loadAllPersons();
         setVisible(true);
     }
 

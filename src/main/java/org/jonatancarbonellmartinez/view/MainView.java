@@ -1,38 +1,21 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
-
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class MainView extends JFrame {
-    MainPresenter presenter; // The view holds a reference to his presenter
-    JMenuItem personalMenuItem;
+    private JMenuItem personalMenuItem;
+    private final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
 
-    private static final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
-
-
-    public MainView() throws SQLException {
-        initializeUI();  // Initializes the UI and binds event listeners
+    public MainView() {
+        initializeUI();
         createMenuBar();
     }
 
-    // Getter for the "Personal" menu item
     public JMenuItem getPersonalMenuItem() {
         return personalMenuItem;
-    }
-
-    // Method to set the presenter
-    public void setPresenter(MainPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    // Method to show a specific view (not implemented in this example)
-    public void showView(Object view) {
-        // Logic to display the selected view
     }
 
     private void initializeUI() {
@@ -66,16 +49,30 @@ public class MainView extends JFrame {
     private JPanel createMainPanel(JSpinner dateSpinner) {
         JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        mainPanel.add(new JButton("Principal"));
-        mainPanel.add(new JButton("Pilotos"));
-        mainPanel.add(new JButton("Dotaciones"));
-        mainPanel.add(new JButton("Cuatro"));
-        mainPanel.add(new JButton("Cinco"));
+        // Set tooltip delay
+        ToolTipManager.sharedInstance().setInitialDelay(0); // Delay in milliseconds. I think about putting the button in the left and only icons, so i want a tooltip to appear fast. like in intellij idea. (Copy Intellij Idea GUI and you will rock, make logo icons accordingly)
+        ToolTipManager.sharedInstance().setDismissDelay(3000); // How long the tooltip stays visible
+
+        // Creating Buttons
+        JButton botonPrincipal = new JButton("Principal");
+        JButton botonPilotos = new JButton("Pilotos");
+        JButton botonDotaciones = new JButton("Dotaciones");
+
+        // Assigning tooltips
+        botonPrincipal.setToolTipText("Principal");
+        botonPilotos.setToolTipText("Pilotos");
+        botonDotaciones.setToolTipText("Dotaciones");
+
+        // Assigning buttons to mainPanel
+        mainPanel.add(botonPrincipal);
+        mainPanel.add(botonPilotos);
+        mainPanel.add(botonDotaciones);
 
         // Add date spinner
         mainPanel.add(dateSpinner);
         mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
         return mainPanel;
+
     }
 
     private void createMenuBar() {
