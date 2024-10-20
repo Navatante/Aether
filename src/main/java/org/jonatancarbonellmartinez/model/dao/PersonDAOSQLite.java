@@ -41,7 +41,7 @@ public class PersonDAOSQLite implements PersonDAO {
     @Override
     // Each DAO method should handle its own connection lifecycle, creating a new connection
     public List<Person> getAll() throws DatabaseException {
-        String sql = "SELECT * FROM dim_crew ORDER BY crew_SK DESC";
+        String sql = "SELECT * FROM dim_person ORDER BY person_sk DESC";
         List<Person> personList = new ArrayList<>();
 
         // Obtain a new connection each time the method is called
@@ -52,7 +52,7 @@ public class PersonDAOSQLite implements PersonDAO {
                 personList.add(mapResultSetToPerson(rs));
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error retrieving all persons", e);
+            throw new DatabaseException("Error al acceder al personal", e);
         }
 
         return personList;
@@ -61,17 +61,17 @@ public class PersonDAOSQLite implements PersonDAO {
     // Utility method to map a ResultSet row to a DimPerson object
     private Person mapResultSetToPerson(ResultSet rs) throws SQLException {
         Person person = new Person();
-        person.setPersonSk(rs.getInt("crew_sk"));
-        person.setPersonNk(rs.getString("crew_nk"));
-        person.setPersonRankNumber(rs.getInt("crew_rank_number"));
-        person.setPersonRank(rs.getString("crew_rank"));
-        person.setPersonName(rs.getString("crew_name"));
-        person.setPersonLastName1(rs.getString("crew_last_name_1"));
-        person.setPersonLastName2(rs.getString("crew_last_name_2"));
-        person.setPersonDni(rs.getString("crew_dni"));
-        person.setPersonPhone(rs.getString("crew_phone"));
-        person.setPersonDivision(rs.getString("crew_division"));
-        person.setPersonCurrentFlag(rs.getInt("crew_current_flag"));
+        person.setPersonSk(rs.getInt("person_sk"));
+        person.setPersonNk(rs.getString("person_nk"));
+        person.setPersonRank(rs.getString("person_rank"));
+        person.setPersonName(rs.getString("person_name"));
+        person.setPersonLastName1(rs.getString("person_last_name_1"));
+        person.setPersonLastName2(rs.getString("person_last_name_2"));
+        person.setPersonPhone(rs.getString("person_phone"));
+        person.setPersonDivision(rs.getString("person_division"));
+        person.setPersonOrder(rs.getInt("person_order"));
+        person.setPersonRol(rs.getString("person_rol"));
+        person.setPersonCurrentFlag(rs.getInt("person_current_flag"));
         return person;
     }
 

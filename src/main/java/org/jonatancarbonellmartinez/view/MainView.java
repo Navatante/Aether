@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -9,22 +10,34 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.*;
 
 public class MainView extends JFrame {
+    private MainPresenter presenter;
+    private JPanel cardPanel; // Panel that will hold the different views (cards)
+    private CardLayout cardLayout;  // CardLayout to manage the views
+    private JButton botonPersonal;
     private JMenuItem personalMenuItem;
-    private final Dimension TEXT_FIELD_DIMENSION = new Dimension(125, 30);
 
-    public MainView() {
+    public MainView(DAOFactory daoFactory) {
         initializeUI();
         createMenuBar();
+        presenter = new MainPresenter(this,daoFactory);
     }
 
     public JMenuItem getPersonalMenuItem() {
         return personalMenuItem;
     }
 
+    public JButton getBotonPersonal() {
+        return botonPersonal;
+    }
+
+    public JPanel getCardPanel() {
+        return cardPanel;
+    }
+
     private void initializeUI() {
         setTitle("Haverkat - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1280, 720);
+        setSize(1920, 1080);
         setVisible(true);
         setLocationRelativeTo(null);
 
@@ -36,7 +49,7 @@ public class MainView extends JFrame {
 
     private JPanel createMainPanel() {
         Color borderColor = new Color(29,31,34);
-        Color menusColor = new Color(43,45,48);
+
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Set tooltip delay
@@ -44,44 +57,79 @@ public class MainView extends JFrame {
         ToolTipManager.sharedInstance().setDismissDelay(3000); // Stays for 3 seconds
 
         // CenterPanel
-        JPanel centerPanel = new JPanel();
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-        centerPanel.setBackground(menusColor);
+        mainPanel.add(createCardPanel(), BorderLayout.CENTER);
 
-        // LeftPanel
-        JPanel leftPanel = new JPanel();
-        leftPanel.setPreferredSize(new Dimension(60, 0)); // Width slightly larger than button size
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS)); // Arrange buttons vertically
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding around panel
-
-        mainPanel.add(leftPanel, BorderLayout.WEST);
+        // TopLeftPanel
+        JPanel topLeftPanel = new JPanel();
+        topLeftPanel.setLayout(new GridLayout(3,1,0,10));
 
         // Creating Buttons with rounded corners (no visible borders)
         JButton botonPrincipal = createRoundedButton("G");
-        leftPanel.add(Box.createVerticalStrut(10));
-        leftPanel.add(botonPrincipal);
-        leftPanel.add(Box.createVerticalStrut(10)); // Space between buttons
-
         JButton botonPilotos = createRoundedButton("P");
-        leftPanel.add(botonPilotos);
-        leftPanel.add(Box.createVerticalStrut(10)); // Space between buttons
-
         JButton botonDotaciones = createRoundedButton("D");
-        leftPanel.add(botonDotaciones);
 
-        // Add vertical glue after the buttons to push them to the top
-        leftPanel.add(Box.createVerticalGlue());
+        //Add buttons to topLeftPanel
+        topLeftPanel.add(botonPrincipal);
+        topLeftPanel.add(botonPilotos);
+        topLeftPanel.add(botonDotaciones);
 
         // Assigning tooltips
-        botonPrincipal.setToolTipText("Principal");
+        botonPrincipal.setToolTipText("General");
         botonPilotos.setToolTipText("Pilotos");
         botonDotaciones.setToolTipText("Dotaciones");
 
 
+        //BottomLeftPanel
+        JPanel bottomLeftPanel = new JPanel();
+        bottomLeftPanel.setLayout(new GridLayout(6,1,0,10));
+
+        // Creating Buttons with rounded corners (no visible borders)
+        botonPersonal = createRoundedButton("P");
+        JButton botonEventos = createRoundedButton("E");
+        JButton botonSesiones = createRoundedButton("S");
+        JButton botonHelos = createRoundedButton("H");
+        JButton botonCapbas = createRoundedButton("C");
+        JButton botonGenerator = createRoundedButton("G");
+
+        //Add buttons to topLeftPanel
+        bottomLeftPanel.add(botonPersonal);
+        bottomLeftPanel.add(botonEventos);
+        bottomLeftPanel.add(botonSesiones);
+        bottomLeftPanel.add(botonHelos);
+        bottomLeftPanel.add(botonCapbas);
+        bottomLeftPanel.add(botonGenerator);
+
+        // Assigning tooltips
+        botonPersonal.setToolTipText("Personal");
+        botonEventos.setToolTipText("Eventos");
+        botonSesiones.setToolTipText("Sesiones");
+        botonHelos.setToolTipText("Helicópteros");
+        botonCapbas.setToolTipText("CAPBAS");
+        botonGenerator.setToolTipText("Generadores");
+
+        // LeftPanel
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setPreferredSize(new Dimension(60, 0)); // Width slightly larger than button size
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Padding around panel
+        leftPanel.add(topLeftPanel,BorderLayout.NORTH);
+        leftPanel.add(bottomLeftPanel,BorderLayout.SOUTH);
+
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+
         //leftPanel.setBackground(menusColor);
-        leftPanel.setBorder(BorderFactory.createMatteBorder(0,0,0,1,borderColor));
         mainPanel.setBorder(BorderFactory.createLineBorder(borderColor));
         return mainPanel;
+    }
+
+    private JPanel createCardPanel() {
+        Color menusColor = new Color(43,45,48);
+        cardPanel = new JPanel();
+        cardLayout = new CardLayout();
+        cardPanel.setLayout(cardLayout);
+        //cardPanel.add(presenter.addPersonCardView(),"Person view");
+        cardPanel.setBackground(menusColor);
+
+        return cardPanel;
     }
 
     // Method to create a button with rounded corners (no painted borders)
@@ -120,13 +168,12 @@ public class MainView extends JFrame {
 
         button.setPreferredSize(new Dimension(38, 38)); // Set button size
         button.setMaximumSize(new Dimension(38, 38));   // Ensure max size is 38x38
-        button.setContentAreaFilled(false);             // Prevents default rectangular background
-        button.setFocusPainted(false);                  // Remove focus painting
-        button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
+        button.setContentAreaFilled(false);                         // Prevents default rectangular background
+        button.setFocusPainted(false);                              // Remove focus painting
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);           // Center alignment
 
         return button;
     }
-
 
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -155,7 +202,6 @@ public class MainView extends JFrame {
         // Set the custom menu bar
         this.setJMenuBar(menuBar);
     }
-
 
     private JMenu createRegistrarMenu() {
         JMenu registrarMenu = new JMenu("Registrar");

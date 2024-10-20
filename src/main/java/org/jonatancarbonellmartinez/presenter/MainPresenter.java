@@ -4,6 +4,9 @@ import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.view.*;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class MainPresenter {
     private final MainView mainView;
     private final DAOFactory daoFactory; // This reference will allow me to create DAOs trough methods (like showAddPersonView is doing)
@@ -15,14 +18,42 @@ public class MainPresenter {
     }
 
     private void bindViewActions() {
+        mainView.getBotonPersonal().addActionListener(e -> showPersonCardView());
         mainView.getPersonalMenuItem().addActionListener(e -> showAddPersonView());
 //        mainView.getPersonMenuItem().addActionListener(e -> showView("person"));
 //        mainView.getFlightMenuItem().addActionListener(e -> showView("flight"));
 //        mainView.getEventMenuItem().addActionListener(e -> showView("event"));
     }
 
+    // Methods to show New Windows, like JDialogs.
     private void showAddPersonView() {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
         new AddPersonView(mainView, personDAOSQLite);
     }
+
+    // Methods to show cards
+    public void showPersonCardView() {
+        CardLayout cardLayout = (CardLayout) mainView.getCardPanel().getLayout(); // Get the CardLayout
+
+        // Check if there are any components in the card panel
+        int componentCount = mainView.getCardPanel().getComponentCount();
+        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonCardView;
+
+        if (!isPersonViewVisible) {
+            // If there are no components or the first component isn't PersonCardView, create and add a new one
+            PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Create the PersonDAO instance
+            PersonCardView personCardView = new PersonCardView(personDAOSQLite);
+            mainView.getCardPanel().add(personCardView, "Person View"); // Add new card
+        }
+
+        // Show the Person View card
+        cardLayout.show(mainView.getCardPanel(), "Person View");
+
+        // Refresh the panel
+        mainView.getCardPanel().revalidate();
+        mainView.getCardPanel().repaint();
+    }
+
+
+
 }

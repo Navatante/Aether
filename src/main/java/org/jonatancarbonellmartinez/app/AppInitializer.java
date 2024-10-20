@@ -15,10 +15,7 @@ public class AppInitializer {
             DAOFactory daoFactory = DAOFactorySQLite.getInstance();
 
             // Initialize the MainView
-            MainView mainView = new MainView();
-
-            // Initialize the MainPresenter
-            MainPresenter mainPresenter = new MainPresenter(mainView,daoFactory);
+            MainView mainView = new MainView(daoFactory);
 
             // Setup main view visibility
             mainView.setVisible(true);

@@ -1,35 +1,60 @@
 package org.jonatancarbonellmartinez.model.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Person {
+    private static final Set<String> VALID_RANKS = new HashSet<>();
+    static {
+        // Initialize the set of valid ranks
+        VALID_RANKS.add("CF");
+        VALID_RANKS.add("TCOL");
+        VALID_RANKS.add("CC");
+        VALID_RANKS.add("CTE");
+        VALID_RANKS.add("TN");
+        VALID_RANKS.add("CAP");
+        VALID_RANKS.add("AN");
+        VALID_RANKS.add("TTE");
+        VALID_RANKS.add("STTE");
+        VALID_RANKS.add("BG");
+        VALID_RANKS.add("SG1");
+        VALID_RANKS.add("SGTO");
+        VALID_RANKS.add("CBMY");
+        VALID_RANKS.add("CB1");
+        VALID_RANKS.add("CBO");
+        VALID_RANKS.add("MRO");
+        VALID_RANKS.add("SDO");
+    }
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
-    private Integer personRankNumber;
     private String personRank;
     private String personName;
     private String personLastName1;
     private String personLastName2;
-    private String personDni;
     private String personPhone;
     private String personDivision;
+    private Integer personOrder;
+    private String personRol;
     private Integer personCurrentFlag;
 
     // Default constructor
     public Person() {}
 
     // Constructor with parameters
-    public Person(Integer personSk, String personNk, Integer personRankNumber, String personRank,
+    public Person(Integer personSk, String personNk, String personRank,
                   String personName, String personLastName1, String personLastName2,
-                  String personDni, String personPhone, String personDivision, Integer personCurrentFlag) {
+                  String personPhone, String personDivision, Integer personOrder,
+                  String personRol, Integer personCurrentFlag) {
         this.personSk = personSk;
         this.personNk = personNk;
-        this.personRankNumber = personRankNumber;
         this.personRank = personRank;
         this.personName = personName;
         this.personLastName1 = personLastName1;
         this.personLastName2 = personLastName2;
-        this.personDni = personDni;
         this.personPhone = personPhone;
         this.personDivision = personDivision;
+        this.personOrder = personOrder;
+        this.personRol = personRol;
         this.personCurrentFlag = personCurrentFlag;
     }
 
@@ -50,19 +75,15 @@ public class Person {
         this.personNk = personNk;
     }
 
-    public Integer getPersonRankNumber() {
-        return personRankNumber;
-    }
-
-    public void setPersonRankNumber(Integer personRankNumber) {
-        this.personRankNumber = personRankNumber;
-    }
 
     public String getPersonRank() {
         return personRank;
     }
 
     public void setPersonRank(String personRank) {
+        if (!VALID_RANKS.contains(personRank)) {
+            throw new IllegalArgumentException("Empleo no válido");
+        }
         this.personRank = personRank;
     }
 
@@ -90,14 +111,6 @@ public class Person {
         this.personLastName2 = personLastName2;
     }
 
-    public String getPersonDni() {
-        return personDni;
-    }
-
-    public void setPersonDni(String personDni) {
-        this.personDni = personDni;
-    }
-
     public String getPersonPhone() {
         return personPhone;
     }
@@ -114,11 +127,33 @@ public class Person {
         this.personDivision = personDivision;
     }
 
+    public Integer getPersonOrder() {
+        return personOrder;
+    }
+
+    public void setPersonOrder(Integer personOrder) {
+        this.personOrder = personOrder;
+    }
+
+    public String getPersonRol() {
+        return personRol;
+    }
+
+    public void setPersonRol(String personRol) {
+        if (!"Piloto".equals(personRol) && !"Dotacion".equals(personRol)) {
+            throw new IllegalArgumentException("Rol inválido: debe ser 'Piloto' o 'Dotacion'");
+        }
+        this.personRol = personRol;
+    }
+
     public Integer getPersonCurrentFlag() {
         return personCurrentFlag;
     }
 
     public void setPersonCurrentFlag(Integer personCurrentFlag) {
+        if(personCurrentFlag!=0 && personCurrentFlag!=1) {
+            throw new IllegalArgumentException("Debe ser 0 o 1");
+        }
         this.personCurrentFlag = personCurrentFlag;
     }
 
@@ -128,14 +163,14 @@ public class Person {
         return "DimPerson{" +
                 "personSk=" + personSk +
                 ", personNk='" + personNk + '\'' +
-                ", personRankNumber=" + personRankNumber +
                 ", personRank='" + personRank + '\'' +
                 ", personName='" + personName + '\'' +
                 ", personLastName1='" + personLastName1 + '\'' +
                 ", personLastName2='" + personLastName2 + '\'' +
-                ", personDni='" + personDni + '\'' +
                 ", personPhone='" + personPhone + '\'' +
                 ", personDivision='" + personDivision + '\'' +
+                ", personOrder=" + personOrder +
+                ", personRol='" + personRol + '\'' +
                 ", personCurrentFlag=" + personCurrentFlag +
                 '}';
     }
