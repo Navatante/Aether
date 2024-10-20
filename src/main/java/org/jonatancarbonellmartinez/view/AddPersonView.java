@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
@@ -13,37 +14,69 @@ public class AddPersonView extends JDialog {
     private MainView mainView;
     private AddPersonPresenter presenter;
 
+    // Components
+    private JTextField phoneField;
+    private JComboBox<String> nameComboBox;
+    private JTextField rankField;
+    private JTextField personNameField;
+    private JTextField personLastName1Field;
+    private JTextField personLastName2Field;
+    private JTextField divisionField;
+    private JTextField orderField;
+    private JTextField roleField;
+    private JTextField currentFlagField;
+
     public AddPersonView(MainView mainView, PersonDAO personDAO) {
-        super(mainView,"Añadir personal",true);
+        super(mainView, "Añadir personal", true);
         this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
         this.presenter = new AddPersonPresenter(this, personDAO);
         initializeUI();
     }
 
     private void initializeUI() {
-        setLayout(new FlowLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER)); // Set BorderLayout() instead of FlowLayout() and place the  elements in top, center and the button in the top.
         setResizable(false);
         setSize(914, 360);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // Combo box test
-        add(myComboBox());
-        add(myTextField());
+        // Initialize UI components
+        nameComboBox = myComboBox();
+        phoneField = myTextField("Número de teléfono");
+        rankField = myTextField("Rango");
+        personNameField = myTextField("Nombre");
+        personLastName1Field = myTextField("Apellido 1");
+        personLastName2Field = myTextField("Apellido 2");
+        divisionField = myTextField("División");
+        orderField = myTextField("Orden");
+        roleField = myTextField("Rol");
+        currentFlagField = myTextField("Flag Actual");
+
+        // Add components to the dialog
+        add(nameComboBox);
+        add(phoneField);
+        add(rankField);
+        add(personNameField);
+        add(personLastName1Field);
+        add(personLastName2Field);
+        add(divisionField);
+        add(orderField);
+        add(roleField);
+        add(currentFlagField);
+
+        // Add an "Add" button with an action listener
+        JButton addButton = new JButton("Añadir");
+        addButton.addActionListener(e -> presenter.addPerson());
+        add(addButton);
 
         setVisible(true);
     }
 
     private JComboBox<String> myComboBox() {
-        // Create a JComboBox with a list of names
         String[] names = {"Alice", "Bob", "Charlie"};
         JComboBox<String> comboBox = new JComboBox<>(names);
-
-        // Add an empty item to act as a placeholder
         comboBox.insertItemAt("", 0);
-        comboBox.setSelectedIndex(0); // Select the empty item initially
-
-        // Set a custom renderer to show the "Name" label when no selection is made
+        comboBox.setSelectedIndex(0);
         comboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -61,54 +94,99 @@ public class AddPersonView extends JDialog {
             }
         });
 
-        // Add a listener to handle when an item is selected
         comboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     if (comboBox.getSelectedIndex() == 0) {
-                        // If the empty item is selected, do nothing or reset
                         comboBox.setSelectedIndex(0);
                     }
                 }
             }
         });
         return comboBox;
-    } // It's a test
+    }
 
-    private JTextField myTextField() {
-        // Create a JTextField for phone number input
-        JTextField textField = new JTextField(12); // You can adjust the width as needed
+    private JTextField myTextField(String placeholder) {
+        JTextField textField = new JTextField(12);
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+        textField.setFont(new Font("Arial", Font.ITALIC, 12));
 
-        // Set a placeholder text for the text field
-        textField.setText("Número de teléfono");
-        textField.setForeground(Color.GRAY); // Set placeholder color
-        textField.setFont(new Font("Arial", Font.ITALIC, 12)); // Optional: Italic font for placeholder
-
-        // Add focus listener to handle placeholder behavior
         textField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                // Clear placeholder text on focus
-                if (textField.getText().equals("Número de teléfono")) {
+                if (textField.getText().equals(placeholder)) {
                     textField.setText("");
-                    textField.setForeground(Color.LIGHT_GRAY); // Reset to normal color
-                    textField.setFont(new Font("Arial",Font.PLAIN,12)); // Enterarme bien cual es la fuente exacta que usa el look and feel para ponerla aqui igual.
+                    textField.setForeground(Color.LIGHT_GRAY);
+                    textField.setFont(new Font("Arial", Font.PLAIN, 12));
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                // Restore placeholder if the field is empty
                 if (textField.getText().isEmpty()) {
-                    textField.setText("Número de teléfono");
-                    textField.setForeground(Color.GRAY); // Set placeholder color
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
                     textField.setFont(new Font("Arial", Font.ITALIC, 12));
                 }
             }
         });
 
         return textField;
-    } // It's a test.
+    }
 
+    // Getter methods for user input
+    public String getPersonNk() {
+        return (String) nameComboBox.getSelectedItem();
+    }
+
+    public String getPersonRank() {
+        return rankField.getText();
+    }
+
+    public String getPersonName() {
+        return personNameField.getText();
+    }
+
+    public String getPersonLastName1() {
+        return personLastName1Field.getText();
+    }
+
+    public String getPersonLastName2() {
+        return personLastName2Field.getText();
+    }
+
+    public String getPersonPhone() {
+        return phoneField.getText();
+    }
+
+    public String getPersonDivision() {
+        return divisionField.getText();
+    }
+
+    public int getPersonOrder() {
+        return Integer.parseInt(orderField.getText());
+    }
+
+    public String getPersonRol() {
+        return roleField.getText();
+    }
+
+    public int getPersonCurrentFlag() {
+        return Integer.parseInt(currentFlagField.getText());
+    }
+
+    public void clearFields() {
+        nameComboBox.setSelectedIndex(0);
+        phoneField.setText("Número de teléfono");
+        rankField.setText("");
+        personNameField.setText("");
+        personLastName1Field.setText("");
+        personLastName2Field.setText("");
+        divisionField.setText("");
+        orderField.setText("");
+        roleField.setText("");
+        currentFlagField.setText("");
+    }
 }
