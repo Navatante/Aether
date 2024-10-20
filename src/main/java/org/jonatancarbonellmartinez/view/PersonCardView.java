@@ -33,7 +33,7 @@ public class PersonCardView extends JPanel {
         JScrollPane scrollPane = new JScrollPane(personTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        setColumnWidths(personTable);
+        //setColumnWidths(personTable);
 
         showView();
     }
@@ -43,43 +43,43 @@ public class PersonCardView extends JPanel {
         setVisible(true);
     }
 
-    private static void setColumnWidths(JTable table) {
-        // Set width for each column individually
-        TableColumn column;
-
-        column = table.getColumnModel().getColumn(0); // ID
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(1); // Codigo
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(2); // Empleo
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(3); // Nombre
-        column.setPreferredWidth(60);
-
-        column = table.getColumnModel().getColumn(4); // Apellido 1
-        column.setPreferredWidth(100);
-
-        column = table.getColumnModel().getColumn(5); // Apellido 2
-        column.setPreferredWidth(100);
-
-        column = table.getColumnModel().getColumn(6); // Telefono
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(7); // Division
-        column.setPreferredWidth(80);
-
-        column = table.getColumnModel().getColumn(8); // Orden
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(9); // Rol
-        column.setPreferredWidth(10);
-
-        column = table.getColumnModel().getColumn(10); // Current flag;
-        column.setPreferredWidth(10);
-    }
+//    private static void setColumnWidths(JTable table) {
+//        // Set width for each column individually
+//        TableColumn column;
+//
+//        column = table.getColumnModel().getColumn(0); // ID
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(1); // Codigo
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(2); // Empleo
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(3); // Nombre
+//        column.setPreferredWidth(60);
+//
+//        column = table.getColumnModel().getColumn(4); // Apellido 1
+//        column.setPreferredWidth(100);
+//
+//        column = table.getColumnModel().getColumn(5); // Apellido 2
+//        column.setPreferredWidth(100);
+//
+//        column = table.getColumnModel().getColumn(6); // Telefono
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(7); // Division
+//        column.setPreferredWidth(80);
+//
+//        column = table.getColumnModel().getColumn(8); // Orden
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(9); // Rol
+//        column.setPreferredWidth(10);
+//
+//        column = table.getColumnModel().getColumn(10); // Current flag;
+//        column.setPreferredWidth(10);
+//    }
 
     public DefaultTableModel getTableModel() {
         return tableModel;
