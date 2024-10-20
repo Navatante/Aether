@@ -1,7 +1,6 @@
 package org.jonatancarbonellmartinez.app;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-
 import javax.swing.SwingUtilities;
 
 public class Main {
