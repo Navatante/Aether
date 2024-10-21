@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FlightHub:jar">
+    <output-path>H:/</output-path>
+    <root id="archive" name="FlightHub.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="H:/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="FlightHub" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/sqlite-jdbc/3.46.1.3/sqlite-jdbc-3.46.1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/3.5.1/flatlaf-3.5.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

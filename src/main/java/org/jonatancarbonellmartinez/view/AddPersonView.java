@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.observers.AddPersonObserver;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
 
 import javax.swing.*;
@@ -11,30 +12,33 @@ import java.awt.event.FocusEvent;
 public class AddPersonView extends JDialog {
     private MainView mainView;
     private AddPersonPresenter presenter;
+    private AddPersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
 
     // Components
     private JTextField phoneField;
     private JComboBox<String> empleoBox;
+    private JTextField personNkField;
     private JTextField personNameField;
     private JTextField personLastName1Field;
     private JTextField personLastName2Field;
     private JComboBox<String> divisionBox;
     private JTextField orderField;
     private JComboBox<String> rolBox;
-    private JTextField dniField;
+    private JTextField personDniField;
     private JComboBox<String> currentFlagBox;
 
-    public AddPersonView(MainView mainView, PersonDAO personDAO) {
+    public AddPersonView(MainView mainView, PersonDAO personDAO, AddPersonObserver observer) {
         super(mainView, "Añadir personal", true);
         this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
         this.presenter = new AddPersonPresenter(this, personDAO);
+        this.observer = observer; // PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
         initializeUI();
     }
 
     private void initializeUI() {
         setLayout(new BorderLayout());
         setResizable(false);
-        //setSize(540, 270);
+        //setSize(600, 300);
         setSize(450,300);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -54,11 +58,12 @@ public class AddPersonView extends JDialog {
         empleoBox = myComboBox(new String[]{
                 "CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
                 "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
+        personNkField = myTextField("Código");
         personNameField = myTextField("Nombre");
         personLastName1Field = myTextField("Apellido 1");
         personLastName2Field = myTextField("Apellido 2");
         phoneField = myTextField("Teléfono");
-        dniField = myTextField("DNI");
+        personDniField = myTextField("DNI");
         divisionBox = myComboBox(new String[] {"Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
         orderField = myTextField("Orden");
@@ -67,6 +72,7 @@ public class AddPersonView extends JDialog {
 
         // Set prefered size
         empleoBox.setPreferredSize(fieldSize);
+        personNkField.setPreferredSize(fieldSize);
         personNameField.setPreferredSize(fieldSize);
         personLastName1Field.setPreferredSize(fieldSize);
         personLastName2Field.setPreferredSize(fieldSize);
@@ -74,25 +80,32 @@ public class AddPersonView extends JDialog {
         divisionBox.setPreferredSize(fieldSize);
         orderField.setPreferredSize(fieldSize);
         rolBox.setPreferredSize(fieldSize);
-        dniField.setPreferredSize(fieldSize);
+        personDniField.setPreferredSize(fieldSize);
         currentFlagBox.setPreferredSize(fieldSize);
 
 
         // Add components to the dialog
         centerPanel.add(empleoBox);
+        centerPanel.add(personNkField);
         centerPanel.add(personNameField);
         centerPanel.add(personLastName1Field);
         centerPanel.add(personLastName2Field);
         centerPanel.add(phoneField);
-        centerPanel.add(dniField);
+        centerPanel.add(personDniField);
         centerPanel.add(divisionBox);
         centerPanel.add(rolBox);
         centerPanel.add(orderField);
         centerPanel.add(currentFlagBox);
 
         // Add an "Add" button with an action listener
-        JButton addButton = new JButton("Añadir");
-        addButton.addActionListener(e -> presenter.addPerson());
+        JButton addButton = new JButton("Guardar");
+        addButton.addActionListener(e -> {
+            if(isFormValid()) {
+                presenter.addPerson();
+                // Notify the observer (MainPresenter) that a person was added
+                observer.onPersonAdded();
+            }
+        });
         bottomPanel.add(addButton);
 
         setVisible(true);
@@ -143,9 +156,6 @@ public class AddPersonView extends JDialog {
         return comboBox;
     }
 
-
-
-
     private JTextField myTextField(String placeholder) {
         JTextField textField = new JTextField(); // 12 columns means the text field is wide enough to show about 12 characters without scrolling.
         textField.setText(placeholder);
@@ -176,8 +186,8 @@ public class AddPersonView extends JDialog {
     }
 
     // Getter methods for user input
-    public String getPersonNk() {
-        return (String) empleoBox.getSelectedItem();
+    public String getPersonNkField() {
+        return personNkField.getText();
     }
 
     public String getPersonRank() {
@@ -198,6 +208,10 @@ public class AddPersonView extends JDialog {
 
     public String getPersonPhone() {
         return phoneField.getText();
+    }
+
+    public String getPersonDni() {
+        return personDniField.getText();
     }
 
     public String getPersonDivision() {
@@ -221,14 +235,75 @@ public class AddPersonView extends JDialog {
     }
 
     public void clearFields() {
+        // Clear text fields and restore placeholder
+        resetTextFieldWithPlaceholder(personNkField, "Código");
+        resetTextFieldWithPlaceholder(phoneField, "Teléfono");
+        resetTextFieldWithPlaceholder(personNameField, "Nombre");
+        resetTextFieldWithPlaceholder(personLastName1Field, "Apellido 1");
+        resetTextFieldWithPlaceholder(personLastName2Field, "Apellido 2");
+        resetTextFieldWithPlaceholder(personDniField, "DNI");
+        resetTextFieldWithPlaceholder(orderField, "Orden");
+
+        // Clear combo boxes and restore their default (placeholder) state
         empleoBox.setSelectedIndex(0);
-        phoneField.setText("Número de teléfono");
-        personNameField.setText("");
-        personLastName1Field.setText("");
-        personLastName2Field.setText("");
         divisionBox.setSelectedIndex(0);
-        orderField.setText("");
         rolBox.setSelectedIndex(0);
         currentFlagBox.setSelectedIndex(0);
     }
+
+    // Helper method to reset text fields with placeholder logic
+    private void resetTextFieldWithPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);  // Reset to placeholder text
+        textField.setForeground(Color.GRAY);  // Placeholder color
+        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));  // Placeholder font
+    }
+
+    public boolean isFormValid() {
+        // List of all JTextField components to validate
+        JTextField[] textFields = {
+                personNkField,
+                personNameField,
+                personLastName1Field,
+                personLastName2Field,
+                phoneField,
+                personDniField,
+                orderField
+        };
+
+        // Iterate through each text field and check if it's empty
+        for (JTextField textField : textFields) {
+            if (textField.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        // List of all JComboBox components to validate
+        JComboBox<?>[] comboBoxes = {
+                empleoBox,
+                divisionBox,
+                rolBox,
+                currentFlagBox
+        };
+
+        // Iterate through each combo box and check if the selected item is empty or the placeholder
+        for (JComboBox<?> comboBox : comboBoxes) {
+            if (comboBox.getSelectedIndex() == 0) { // Assuming the placeholder is at index 0
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona todas las opciones", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        // Ensure the 'order' field is numeric
+        try {
+            Integer.parseInt(orderField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // If all validations pass
+        return true;
+    }
+
 }

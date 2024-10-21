@@ -3,11 +3,8 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
-import java.util.*;
 
 public class MainView extends JFrame {
     private MainPresenter presenter;
@@ -45,6 +42,7 @@ public class MainView extends JFrame {
         JPanel mainPanel = createMainPanel();
         setContentPane(mainPanel);
 
+        //JOptionPane.showMessageDialog(this,"Esta visualizando una app en version de pruebas,\n para cualquier sugerencia: jcarm20@mde.es");
     }
 
     private JPanel createMainPanel() {
@@ -126,7 +124,6 @@ public class MainView extends JFrame {
         cardPanel = new JPanel();
         cardLayout = new CardLayout();
         cardPanel.setLayout(cardLayout);
-        //cardPanel.add(presenter.addPersonCardView(),"Person view");
         cardPanel.setBackground(menusColor);
 
         return cardPanel;

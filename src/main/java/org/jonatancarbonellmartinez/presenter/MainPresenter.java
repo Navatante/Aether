@@ -2,12 +2,13 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.observers.AddPersonObserver;
 import org.jonatancarbonellmartinez.view.*;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MainPresenter {
+public class MainPresenter implements AddPersonObserver {
     private final MainView mainView;
     private final DAOFactory daoFactory; // This reference will allow me to create DAOs trough methods (like showAddPersonView is doing)
 
@@ -28,7 +29,7 @@ public class MainPresenter {
     // Methods to show New Windows, like JDialogs.
     private void showAddPersonView() {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
-        new AddPersonView(mainView, personDAOSQLite);
+        new AddPersonView(mainView, personDAOSQLite, this); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
     }
 
     // Methods to show cards
@@ -55,5 +56,13 @@ public class MainPresenter {
     }
 
 
-
+    @Override
+    public void onPersonAdded() {
+        // Get the current component in the card panel and check if it's an instance of PersonCardView
+        Component currentComponent = mainView.getCardPanel().getComponent(0); // Get first component in card panel
+        if (currentComponent instanceof PersonCardView) {
+            PersonCardView personCardView = (PersonCardView) currentComponent;
+            personCardView.showView(); // Refresh the table by reloading all persons
+        }
+    }
 }

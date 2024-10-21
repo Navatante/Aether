@@ -27,36 +27,36 @@ public class Person {
     }
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
-    private String personDni;
     private String personRank;
     private String personName;
     private String personLastName1;
     private String personLastName2;
     private String personPhone;
+    private String personDni;
     private String personDivision;
-    private Integer personOrder;
     private String personRol;
+    private Integer personOrder;
     private Integer personCurrentFlag;
 
     // Default constructor
     public Person() {}
 
     // Constructor with parameters
-    public Person(Integer personSk, String personNk,String dni, String personRank,
+    public Person(Integer personSk, String personNk, String personRank,
                   String personName, String personLastName1, String personLastName2,
-                  String personPhone, String personDivision, Integer personOrder,
-                  String personRol, Integer personCurrentFlag) {
+                  String personPhone, String dni, String personDivision, String personRol, Integer personOrder,
+                  Integer personCurrentFlag) {
         this.personSk = personSk;
         this.personNk = personNk;
-        this.personDni = dni;
         this.personRank = personRank;
         this.personName = personName;
         this.personLastName1 = personLastName1;
         this.personLastName2 = personLastName2;
         this.personPhone = personPhone;
+        this.personDni = dni;
         this.personDivision = personDivision;
-        this.personOrder = personOrder;
         this.personRol = personRol;
+        this.personOrder = personOrder;
         this.personCurrentFlag = personCurrentFlag;
     }
 
@@ -121,6 +121,14 @@ public class Person {
         this.personPhone = personPhone;
     }
 
+    public String getPersonDni() {
+        return personDni;
+    }
+
+    public void setPersonDni(String personDni) {
+        this.personDni = personDni;
+    }
+
     public String getPersonDivision() {
         return personDivision;
     }
@@ -142,8 +150,8 @@ public class Person {
     }
 
     public void setPersonRol(String personRol) {
-        if (!"Piloto".equals(personRol) && !"Dotacion".equals(personRol)) {
-            throw new IllegalArgumentException("Rol inválido: debe ser 'Piloto' o 'Dotacion'");
+        if (!"Piloto".equals(personRol) && !"Dotación".equals(personRol)) {
+            throw new IllegalArgumentException("Rol inválido: debe ser 'Piloto' o 'Dotación'");
         }
         this.personRol = personRol;
     }
@@ -170,6 +178,7 @@ public class Person {
                 ", personLastName1='" + personLastName1 + '\'' +
                 ", personLastName2='" + personLastName2 + '\'' +
                 ", personPhone='" + personPhone + '\'' +
+                ", personDni='" + personDni + '\'' +
                 ", personDivision='" + personDivision + '\'' +
                 ", personOrder=" + personOrder +
                 ", personRol='" + personRol + '\'' +

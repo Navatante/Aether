@@ -6,8 +6,6 @@ import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.view.AddPersonView;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AddPersonPresenter {
     private final PersonDAO personDAO;  // DAO to handle database operations
@@ -21,15 +19,16 @@ public class AddPersonPresenter {
     public void addPerson() {
         try {
             // Collect user input from the view
-            String personNk = addPersonView.getPersonNk();
+            String personNk = addPersonView.getPersonNkField();
             String personRank = addPersonView.getPersonRank();
             String personName = addPersonView.getPersonName();
             String personLastName1 = addPersonView.getPersonLastName1();
             String personLastName2 = addPersonView.getPersonLastName2();
             String personPhone = addPersonView.getPersonPhone();
+            String personDni = addPersonView.getPersonDni();
             String personDivision = addPersonView.getPersonDivision();
-            int personOrder = addPersonView.getPersonOrder();
             String personRol = addPersonView.getPersonRol();
+            int personOrder = addPersonView.getPersonOrder();
             int personCurrentFlag = addPersonView.getPersonCurrentFlag();
 
             // Create a new Person object
@@ -40,6 +39,7 @@ public class AddPersonPresenter {
             person.setPersonLastName1(personLastName1);
             person.setPersonLastName2(personLastName2);
             person.setPersonPhone(personPhone);
+            person.setPersonDni(personDni);
             person.setPersonDivision(personDivision);
             person.setPersonOrder(personOrder);
             person.setPersonRol(personRol);
@@ -49,17 +49,17 @@ public class AddPersonPresenter {
             personDAO.create(person);
 
             // Optionally, notify the user of success
-            JOptionPane.showMessageDialog(addPersonView, "Person added successfully!");
+            JOptionPane.showMessageDialog(addPersonView, "Persona añadida correctamente.");
 
             // Clear input fields after successful addition
             addPersonView.clearFields();
 
         } catch (DatabaseException ex) {
             // Handle any database-related exceptions
-            JOptionPane.showMessageDialog(addPersonView, "Error adding person: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(addPersonView, "Error al añadir persona: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             // Handle any other exceptions
-            JOptionPane.showMessageDialog(addPersonView, "Unexpected error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(addPersonView, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
