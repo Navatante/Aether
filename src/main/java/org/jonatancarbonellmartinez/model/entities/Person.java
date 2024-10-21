@@ -27,6 +27,7 @@ public class Person {
     }
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
+    private String personDni;
     private String personRank;
     private String personName;
     private String personLastName1;
@@ -41,12 +42,13 @@ public class Person {
     public Person() {}
 
     // Constructor with parameters
-    public Person(Integer personSk, String personNk, String personRank,
+    public Person(Integer personSk, String personNk,String dni, String personRank,
                   String personName, String personLastName1, String personLastName2,
                   String personPhone, String personDivision, Integer personOrder,
                   String personRol, Integer personCurrentFlag) {
         this.personSk = personSk;
         this.personNk = personNk;
+        this.personDni = dni;
         this.personRank = personRank;
         this.personName = personName;
         this.personLastName1 = personLastName1;

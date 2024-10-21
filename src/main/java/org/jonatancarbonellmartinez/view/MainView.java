@@ -37,7 +37,7 @@ public class MainView extends JFrame {
     private void initializeUI() {
         setTitle("Haverkat - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1920, 1080);
+        setSize(1280, 720);
         setVisible(true);
         setLocationRelativeTo(null);
 
