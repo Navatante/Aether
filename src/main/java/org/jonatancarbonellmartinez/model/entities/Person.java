@@ -74,7 +74,8 @@ public class Person {
     }
 
     public void setPersonNk(String personNk) {
-        this.personNk = personNk;
+
+        this.personNk = personNk.toUpperCase();
     }
 
 
@@ -94,7 +95,10 @@ public class Person {
     }
 
     public void setPersonName(String personName) {
-        this.personName = personName;
+        // Convert first character to uppercase and the rest to lowercase
+        String firstLetter = personName.substring(0, 1).toUpperCase();
+        String restOfString = personName.substring(1).toLowerCase();
+        this.personName = firstLetter + restOfString;
     }
 
     public String getPersonLastName1() {
