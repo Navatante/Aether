@@ -4,7 +4,6 @@ import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.utilities.LimitDocumentFilter;
 import org.jonatancarbonellmartinez.observers.AddPersonObserver;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
-
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
@@ -15,7 +14,6 @@ public class AddPersonView extends JDialog {
     private MainView mainView;
     private AddPersonPresenter presenter;
     private AddPersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
-
     // Components
     private JTextField phoneField;
     private JComboBox<String> empleoBox;
@@ -28,6 +26,10 @@ public class AddPersonView extends JDialog {
     private JComboBox<String> rolBox;
     private JTextField personDniField;
     private JComboBox<String> currentFlagBox;
+    private JButton addButton;
+    // Panels
+    JPanel centerPanel;
+    JPanel bottomPanel;
 
     public AddPersonView(MainView mainView, PersonDAO personDAO, AddPersonObserver observer) {
         super(mainView, "Añadir personal", true);
@@ -40,24 +42,48 @@ public class AddPersonView extends JDialog {
     private void initializeUI() {
         setLayout(new BorderLayout());
         setResizable(false);
-        //setSize(600, 300);
         setSize(450,300);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        createPanels();
+        initializeUIcomponents();
+        setPreferedSizeToComponents();
+        setFieldsInputConstraints();
+        addComponentsToCenterPanel();
+        createAddButton();
+        addComponentsToBottomPanel();
 
-        // Create the main panel to hold all form fields.
-        JPanel centerPanel = new JPanel();
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        setVisible(true);
+    }
 
-        // Create a bottom panel for the button
-        JPanel bottomPanel = new JPanel();
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
-
-        // Initialize UI components
+    private void setPreferedSizeToComponents() {
         Dimension fieldSize = new Dimension(180, 25); // Define a common dimension
+
+        empleoBox.setPreferredSize(fieldSize);
+        personNkField.setPreferredSize(fieldSize);
+        personNameField.setPreferredSize(fieldSize);
+        personLastName1Field.setPreferredSize(fieldSize);
+        personLastName2Field.setPreferredSize(fieldSize);
+        phoneField.setPreferredSize(fieldSize);
+        divisionBox.setPreferredSize(fieldSize);
+        orderField.setPreferredSize(fieldSize);
+        rolBox.setPreferredSize(fieldSize);
+        personDniField.setPreferredSize(fieldSize);
+        currentFlagBox.setPreferredSize(fieldSize);
+    }
+
+    private void setFieldsInputConstraints() {
+        ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(3));
+        ((AbstractDocument) personNameField.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personDniField.getDocument()).setDocumentFilter(new LimitDocumentFilter(8));
+        ((AbstractDocument) phoneField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
+        ((AbstractDocument) orderField.getDocument()).setDocumentFilter(new LimitDocumentFilter(5));
+    }
+
+    private void initializeUIcomponents(){
         empleoBox = myComboBox(new String[]{
                 "CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
                 "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
@@ -71,32 +97,21 @@ public class AddPersonView extends JDialog {
         rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
         orderField = myTextField("Orden");
         currentFlagBox = myComboBox(new String[]{"Activo", "Inactivo"},"Situación");
+    }
 
+    private void createPanels() {
+        // Create the main panel to hold all form fields.
+        centerPanel = new JPanel();
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-        // Set prefered size
-        empleoBox.setPreferredSize(fieldSize);
-        personNkField.setPreferredSize(fieldSize);
-        personNameField.setPreferredSize(fieldSize);
-        personLastName1Field.setPreferredSize(fieldSize);
-        personLastName2Field.setPreferredSize(fieldSize);
-        phoneField.setPreferredSize(fieldSize);
-        divisionBox.setPreferredSize(fieldSize);
-        orderField.setPreferredSize(fieldSize);
-        rolBox.setPreferredSize(fieldSize);
-        personDniField.setPreferredSize(fieldSize);
-        currentFlagBox.setPreferredSize(fieldSize);
+        // Create a bottom panel for the button
+        bottomPanel = new JPanel();
+        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
+    }
 
-        // Set fields constraints
-        ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(3));
-        ((AbstractDocument) personNameField.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
-        ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
-        ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
-        ((AbstractDocument) personDniField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
-        ((AbstractDocument) phoneField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
-        ((AbstractDocument) orderField.getDocument()).setDocumentFilter(new LimitDocumentFilter(5));
-
-
-        // Add components to the dialog
+    private void addComponentsToCenterPanel() {
         centerPanel.add(empleoBox);
         centerPanel.add(personNkField);
         centerPanel.add(personNameField);
@@ -108,9 +123,11 @@ public class AddPersonView extends JDialog {
         centerPanel.add(rolBox);
         centerPanel.add(orderField);
         centerPanel.add(currentFlagBox);
+    }
 
+    private void createAddButton() {
         // Add an "Add" button with an action listener
-        JButton addButton = new JButton("Guardar");
+        addButton = new JButton("Guardar");
         addButton.addActionListener(e -> {
             if(isFormValid()) {
                 presenter.addPerson();
@@ -121,10 +138,12 @@ public class AddPersonView extends JDialog {
 
             }
         });
-        bottomPanel.add(addButton);
-
-        setVisible(true);
     }
+
+    private void addComponentsToBottomPanel() {
+        bottomPanel.add(addButton);
+    }
+
 
     private JComboBox<String> myComboBox(String[] listValues, String placeHolder) {
         JComboBox<String> comboBox = new JComboBox<>(listValues);
@@ -172,7 +191,7 @@ public class AddPersonView extends JDialog {
     }
 
     private JTextField myTextField(String placeholder) {
-        JTextField textField = new JTextField(); // 12 columns means the text field is wide enough to show about 12 characters without scrolling.
+        JTextField textField = new JTextField();
         textField.setText(placeholder);
         textField.setForeground(Color.GRAY);
         textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
@@ -202,7 +221,7 @@ public class AddPersonView extends JDialog {
 
     // Getter methods for user input
     public String getPersonNkField() {
-        return personNkField.getText();
+        return personNkField.getText().toUpperCase();
     }
 
     public String getPersonRank() {
@@ -210,15 +229,21 @@ public class AddPersonView extends JDialog {
     }
 
     public String getPersonName() {
-        return personNameField.getText();
+        String firstLetter = personNameField.getText().substring(0, 1).toUpperCase();
+        String restOfString = personNameField.getText().substring(1).toLowerCase();
+        return firstLetter + restOfString;
     }
 
     public String getPersonLastName1() {
-        return personLastName1Field.getText();
+        String firstLetter = personLastName1Field.getText().substring(0, 1).toUpperCase();
+        String restOfString = personLastName1Field.getText().substring(1).toLowerCase();
+        return firstLetter + restOfString;
     }
 
     public String getPersonLastName2() {
-        return personLastName2Field.getText();
+        String firstLetter = personLastName2Field.getText().substring(0, 1).toUpperCase();
+        String restOfString = personLastName2Field.getText().substring(1).toLowerCase();
+        return firstLetter + restOfString;
     }
 
     public String getPersonPhone() {
@@ -226,7 +251,12 @@ public class AddPersonView extends JDialog {
     }
 
     public String getPersonDni() {
-        return personDniField.getText();
+        // Tabla de letras correspondiente a cada resto
+        String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+        int dniNumero = Integer.parseInt(personDniField.getText());
+        // Obtener el resto de dividir el número del DNI entre 23
+        int resto = dniNumero % 23;
+        return personDniField.getText()+ letras.charAt(resto);
     }
 
     public String getPersonDivision() {
@@ -274,6 +304,7 @@ public class AddPersonView extends JDialog {
     }
 
     public boolean isFormValid() {
+
         // List of all JTextField components to validate
         JTextField[] textFields = {
                 personNkField,
@@ -353,5 +384,17 @@ public class AddPersonView extends JDialog {
             JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
             return false; // Return false if parsing fails
         }
+    }
+
+    public boolean noContainsSpecialCharacters(String input) { // to be used on DNI, that is the only one that have numbers and letters
+        return input.matches("^[a-zA-Z0-9 ]*$");
+    }
+
+    public boolean containsOnlyNumbers(String input) {
+        return input.matches("^[0-9]*$");
+    }
+
+    public boolean containsOnlyLetters(String input) {
+        return input.matches("^[a-zA-Z ]*$");
     }
 }

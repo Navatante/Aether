@@ -74,19 +74,14 @@ public class Person {
     }
 
     public void setPersonNk(String personNk) {
-
-        this.personNk = personNk.toUpperCase();
+        this.personNk = personNk;
     }
-
 
     public String getPersonRank() {
         return personRank;
     }
 
     public void setPersonRank(String personRank) {
-        if (!VALID_RANKS.contains(personRank)) {
-            throw new IllegalArgumentException("Empleo no válido");
-        }
         this.personRank = personRank;
     }
 
@@ -95,10 +90,7 @@ public class Person {
     }
 
     public void setPersonName(String personName) {
-        // Convert first character to uppercase and the rest to lowercase
-        String firstLetter = personName.substring(0, 1).toUpperCase();
-        String restOfString = personName.substring(1).toLowerCase();
-        this.personName = firstLetter + restOfString;
+        this.personName = personName;
     }
 
     public String getPersonLastName1() {
@@ -106,9 +98,7 @@ public class Person {
     }
 
     public void setPersonLastName1(String personLastName1) {
-        String firstLetter = personLastName1.substring(0, 1).toUpperCase();
-        String restOfString = personLastName1.substring(1).toLowerCase();
-        this.personLastName1 = firstLetter + restOfString;
+        this.personLastName1 = personLastName1;
     }
 
     public String getPersonLastName2() {
@@ -116,9 +106,7 @@ public class Person {
     }
 
     public void setPersonLastName2(String personLastName2) {
-        String firstLetter = personLastName2.substring(0, 1).toUpperCase();
-        String restOfString = personLastName2.substring(1).toLowerCase();
-        this.personLastName2 = firstLetter + restOfString;
+        this.personLastName2 = personLastName2;
     }
 
     public String getPersonPhone() {
@@ -169,9 +157,6 @@ public class Person {
     }
 
     public void setPersonCurrentFlag(Integer personCurrentFlag) {
-        if(personCurrentFlag!=0 && personCurrentFlag!=1) {
-            throw new IllegalArgumentException("Debe ser 0 o 1");
-        }
         this.personCurrentFlag = personCurrentFlag;
     }
 
