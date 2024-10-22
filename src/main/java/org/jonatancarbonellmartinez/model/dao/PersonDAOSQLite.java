@@ -16,25 +16,32 @@ public class PersonDAOSQLite implements PersonDAO {
 
     @Override
     public void create(Person person) throws DatabaseException {
+        // Paso 1: Verificar si ya existe un registro con el mismo número de orden
+        if (checkIfOrderExists(person.getPersonOrder())) {
+            // Paso 2: Si existe, incrementar el orden de los registros activos con orden >= al nuevo
+            incrementOrders(person.getPersonOrder());
+        }
+
         String sql = "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(Connection connection = Database.getInstance().getConnection();
-        PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, person.getPersonNk());
             pstmt.setString(2, person.getPersonRank());
             pstmt.setString(3, person.getPersonName());
             pstmt.setString(4, person.getPersonLastName1());
             pstmt.setString(5, person.getPersonLastName2());
             pstmt.setString(6, person.getPersonPhone());
-            pstmt.setString(7,person.getPersonDni());
+            pstmt.setString(7, person.getPersonDni());
             pstmt.setString(8, person.getPersonDivision());
             pstmt.setString(9, person.getPersonRol());
             pstmt.setInt(10, person.getPersonOrder());
             pstmt.setInt(11, person.getPersonCurrentFlag());
 
-            pstmt.execute();
+            pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando persona en la base de datos",e);
+            throw new DatabaseException("Error insertando persona en la base de datos", e);
         }
     }
 
@@ -96,4 +103,35 @@ public class PersonDAOSQLite implements PersonDAO {
         return person;
     }
 
+
+    // Metodo para comprobar si ya existe un registro con el mismo orden
+    private boolean checkIfOrderExists(int orden) throws DatabaseException {
+        String sql = "SELECT COUNT(*) FROM dim_person WHERE person_order = ? AND person_current_flag = 1";
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, orden);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {  // Mover el cursor al primer registro
+                    return rs.getInt(1) > 0;  // Obtener el primer valor (COUNT)
+                }
+                return false;  // Si no hay resultados
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al verificar el orden en la base de datos", e);
+        }
+    }
+
+    // Metodo para incrementar el orden de los registros >= al nuevo
+    private void incrementOrders(int orden) throws DatabaseException {
+        String sql = "UPDATE dim_person SET person_order = person_order + 1 WHERE person_order >= ? AND person_current_flag = 1";
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, orden);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al incrementar el orden en la base de datos", e);
+        }
+    }
 }
+
+

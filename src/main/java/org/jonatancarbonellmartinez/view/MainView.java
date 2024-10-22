@@ -42,7 +42,7 @@ public class MainView extends JFrame {
         JPanel mainPanel = createMainPanel();
         setContentPane(mainPanel);
 
-        JOptionPane.showMessageDialog(this,"Esta visualizando una app en version de pruebas,\n para cualquier sugerencia: jcarm20@mde.es");
+        //JOptionPane.showMessageDialog(this,"Esta visualizando una app en version de pruebas,\n para cualquier sugerencia: jcarm20@mde.es");
     }
 
     private JPanel createMainPanel() {
