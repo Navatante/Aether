@@ -1,10 +1,12 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.model.utilities.LimitDocumentFilter;
 import org.jonatancarbonellmartinez.observers.AddPersonObserver;
 import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -42,6 +44,7 @@ public class AddPersonView extends JDialog {
         setSize(450,300);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
 
         // Create the main panel to hold all form fields.
         JPanel centerPanel = new JPanel();
@@ -83,6 +86,15 @@ public class AddPersonView extends JDialog {
         personDniField.setPreferredSize(fieldSize);
         currentFlagBox.setPreferredSize(fieldSize);
 
+        // Set fields constraints
+        ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(3));
+        ((AbstractDocument) personNameField.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
+        ((AbstractDocument) personDniField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
+        ((AbstractDocument) phoneField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
+        ((AbstractDocument) orderField.getDocument()).setDocumentFilter(new LimitDocumentFilter(5));
+
 
         // Add components to the dialog
         centerPanel.add(empleoBox);
@@ -103,7 +115,10 @@ public class AddPersonView extends JDialog {
             if(isFormValid()) {
                 presenter.addPerson();
                 // Notify the observer (MainPresenter) that a person was added
-                observer.onPersonAdded();
+                if (observer!=null) {
+                    observer.onPersonAdded();
+                }
+
             }
         });
         bottomPanel.add(addButton);
@@ -278,6 +293,35 @@ public class AddPersonView extends JDialog {
             }
         }
 
+//        // List of all JComboBox components to validate
+//        JComboBox<?>[] comboBoxes = {
+//                empleoBox,
+//                divisionBox,
+//                rolBox,
+//                currentFlagBox
+//        };
+//
+//        // Iterate through each combo box and check if the selected item is empty or the placeholder
+//        for (JComboBox<?> comboBox : comboBoxes) {
+//            if (comboBox.getSelectedIndex() == 0) { // Assuming the placeholder is at index 0
+//                JOptionPane.showMessageDialog(this, "Por favor, selecciona todas las opciones", "Error", JOptionPane.ERROR_MESSAGE);
+//                return false;
+//            }
+//        }
+
+//        // Ensure the 'order' field is numeric
+//        try {
+//            Integer.parseInt(orderField.getText());
+//        } catch (NumberFormatException e) {
+//            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
+//            return false;
+//        }
+
+        // If all validations pass
+        return true;
+    }
+
+    public boolean areComboBoxesValid() {
         // List of all JComboBox components to validate
         JComboBox<?>[] comboBoxes = {
                 empleoBox,
@@ -290,20 +334,24 @@ public class AddPersonView extends JDialog {
         for (JComboBox<?> comboBox : comboBoxes) {
             if (comboBox.getSelectedIndex() == 0) { // Assuming the placeholder is at index 0
                 JOptionPane.showMessageDialog(this, "Por favor, selecciona todas las opciones", "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
+                return false; // Return false immediately if any combo box is invalid
             }
         }
 
-        // Ensure the 'order' field is numeric
-        try {
-            Integer.parseInt(orderField.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        // If all validations pass
+        // If all combo boxes are valid, return true
         return true;
     }
 
+
+    public boolean isOrderFieldNumeric() {
+        try {
+            // Try to parse the integer from the text field
+            Integer.parseInt(orderField.getText());
+            return true; // Return true if parsing is successful
+        } catch (NumberFormatException e) {
+            // Show an error dialog if parsing fails
+            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
+            return false; // Return false if parsing fails
+        }
+    }
 }

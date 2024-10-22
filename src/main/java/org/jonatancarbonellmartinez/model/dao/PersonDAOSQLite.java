@@ -61,7 +61,7 @@ public class PersonDAOSQLite implements PersonDAO {
     @Override
     // Each DAO method should handle its own connection lifecycle, creating a new connection
     public List<Person> getAll() throws DatabaseException {
-        String sql = "SELECT * FROM dim_person ORDER BY person_order DESC";
+        String sql = "SELECT * FROM dim_person ORDER BY person_order";
         List<Person> personList = new ArrayList<>();
 
         // Obtain a new connection each time the method is called
@@ -88,6 +88,7 @@ public class PersonDAOSQLite implements PersonDAO {
         person.setPersonLastName1(rs.getString("person_last_name_1"));
         person.setPersonLastName2(rs.getString("person_last_name_2"));
         person.setPersonPhone(rs.getString("person_phone"));
+        person.setPersonDni(rs.getString("person_dni"));
         person.setPersonDivision(rs.getString("person_division"));
         person.setPersonOrder(rs.getInt("person_order"));
         person.setPersonRol(rs.getString("person_rol"));

@@ -38,15 +38,15 @@ public class PersonCardPresenter {
         // Add persons to the table model
         for (Person person : persons) {
             Object[] rowData = {
-                    person.getPersonSk(),
+                    person.getPersonOrder(),
                     person.getPersonNk(),
                     person.getPersonRank(),
                     person.getPersonName(),
                     person.getPersonLastName1(),
                     person.getPersonLastName2(),
                     person.getPersonPhone(),
+                    person.getPersonDni(),
                     person.getPersonDivision(),
-                    person.getPersonOrder(),
                     person.getPersonRol(),
                     person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo"
             };

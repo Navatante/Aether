@@ -106,7 +106,9 @@ public class Person {
     }
 
     public void setPersonLastName1(String personLastName1) {
-        this.personLastName1 = personLastName1;
+        String firstLetter = personLastName1.substring(0, 1).toUpperCase();
+        String restOfString = personLastName1.substring(1).toLowerCase();
+        this.personLastName1 = firstLetter + restOfString;
     }
 
     public String getPersonLastName2() {
@@ -114,7 +116,9 @@ public class Person {
     }
 
     public void setPersonLastName2(String personLastName2) {
-        this.personLastName2 = personLastName2;
+        String firstLetter = personLastName2.substring(0, 1).toUpperCase();
+        String restOfString = personLastName2.substring(1).toLowerCase();
+        this.personLastName2 = firstLetter + restOfString;
     }
 
     public String getPersonPhone() {

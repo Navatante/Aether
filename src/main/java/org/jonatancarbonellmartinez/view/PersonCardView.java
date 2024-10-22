@@ -22,9 +22,9 @@ public class PersonCardView extends JPanel {
 
         // Set up the table model
         String[] columnNames = {
-                "ID", "Código", "Empleo",
+                "Orden", "Código", "Empleo",
                 "Nombre", "Apellido 1", "Apellido 2",
-                "Teléfono", "División","Orden", "Rol", "Situación"
+                "Teléfono","DNI", "División", "Rol", "Situación"
         };
         tableModel = new DefaultTableModel(columnNames, 0);
         personTable = new JTable(tableModel);
