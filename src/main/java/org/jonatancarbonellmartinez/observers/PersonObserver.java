@@ -1,5 +1,5 @@
 package org.jonatancarbonellmartinez.observers;
 
-public interface AddPersonObserver {
+public interface PersonObserver {
     void onPersonAdded();
 }

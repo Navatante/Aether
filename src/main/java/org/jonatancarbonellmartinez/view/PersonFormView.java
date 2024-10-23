@@ -2,18 +2,19 @@ package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.utilities.LimitDocumentFilter;
-import org.jonatancarbonellmartinez.observers.AddPersonObserver;
-import org.jonatancarbonellmartinez.presenter.AddPersonPresenter;
+import org.jonatancarbonellmartinez.observers.PersonObserver;
+import org.jonatancarbonellmartinez.presenter.PersonFormPresenter;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-public class AddPersonView extends JDialog {
+public class PersonFormView extends JDialog {
     private MainView mainView;
-    private AddPersonPresenter presenter;
-    private AddPersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
+    private PersonFormPresenter presenter;
+    private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
+    private boolean isEditMode;
     // Components
     private JTextField phoneField;
     private JComboBox<String> empleoBox;
@@ -29,12 +30,14 @@ public class AddPersonView extends JDialog {
     // Panels
     JPanel centerPanel;
     JPanel bottomPanel;
+    JPanel topPanel;
 
-    public AddPersonView(MainView mainView, PersonDAO personDAO, AddPersonObserver observer) {
-        super(mainView, "Añadir personal", true);
+    public PersonFormView(MainView mainView, PersonDAO personDAO, PersonObserver observer, boolean isEditMode) {
+        super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
         this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
-        this.presenter = new AddPersonPresenter(this, personDAO);
+        this.presenter = new PersonFormPresenter(this, personDAO);
         this.observer = observer; // PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
+        this.isEditMode = isEditMode;
         initializeUI();
     }
 
@@ -52,6 +55,10 @@ public class AddPersonView extends JDialog {
         addComponentsToCenterPanel();
         createAddButton();
         addComponentsToBottomPanel();
+
+        if(isEditMode) {
+            createIdSearchGui();
+        }
 
         setVisible(true);
     }
@@ -123,7 +130,7 @@ public class AddPersonView extends JDialog {
 
     private void createAddButton() {
         // Add an "Add" button with an action listener
-        addButton = new JButton("Guardar");
+        addButton = new JButton(isEditMode ? "Aplicar cambios" : "Guardar");
         addButton.addActionListener(e -> {
             if(isFormValid()) {
                 presenter.addPerson();
@@ -247,7 +254,7 @@ public class AddPersonView extends JDialog {
         return textField;
     }
 
-    public String getPersonNkField() {
+    public String getPersonNkField() { // ESTOS GETTERS ESTAN MAL, DEBERIAN DE SER DEL TIPO DE SU COMPONENTE, JTEXTFIELDS EN ESTE CASO.
         return personNkField.getText().toUpperCase();
     }
 
@@ -423,5 +430,14 @@ public class AddPersonView extends JDialog {
             }
         }
         return capitalizedName.toString().trim();
+    }
+
+    private void createIdSearchGui() {
+        topPanel = new JPanel();
+        getContentPane().add(topPanel,BorderLayout.NORTH);
+        JLabel insertIdLabel = new JLabel("Introduzca el ID de la persona");
+        JTextField findPersonById = myTextField("ID");
+        topPanel.add(insertIdLabel);
+        topPanel.add(findPersonById);
     }
 }

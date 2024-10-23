@@ -3,15 +3,15 @@ package org.jonatancarbonellmartinez.presenter;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
-import org.jonatancarbonellmartinez.view.AddPersonView;
+import org.jonatancarbonellmartinez.view.PersonFormView;
 
 import javax.swing.*;
 
-public class AddPersonPresenter {
+public class PersonFormPresenter {
     private final PersonDAO personDAO;  // DAO to handle database operations
-    private final AddPersonView addPersonView;
+    private final PersonFormView addPersonView;
 
-    public AddPersonPresenter(AddPersonView addPersonView, PersonDAO personDAO) {
+    public PersonFormPresenter(PersonFormView addPersonView, PersonDAO personDAO) {
         this.addPersonView = addPersonView;
         this.personDAO = personDAO;
     }

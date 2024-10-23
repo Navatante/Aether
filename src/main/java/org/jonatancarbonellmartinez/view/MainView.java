@@ -11,7 +11,8 @@ public class MainView extends JFrame {
     private JPanel cardPanel; // Panel that will hold the different views (cards)
     private CardLayout cardLayout;  // CardLayout to manage the views
     private JButton botonPersonal;
-    private JMenuItem personalMenuItem;
+    private JMenuItem addPersonalMenuItem;
+    private JMenuItem editPersonalMenuItem;
 
     public MainView(DAOFactory daoFactory) {
         initializeUI();
@@ -19,8 +20,12 @@ public class MainView extends JFrame {
         presenter = new MainPresenter(this,daoFactory);
     }
 
-    public JMenuItem getPersonalMenuItem() {
-        return personalMenuItem;
+    public JMenuItem getAddPersonalMenuItem() {
+        return addPersonalMenuItem;
+    }
+
+    public JMenuItem getEditPersonalMenuItem() {
+        return editPersonalMenuItem;
     }
 
     public JButton getBotonPersonal() {
@@ -210,15 +215,16 @@ public class MainView extends JFrame {
 
     private JMenu createAnadirMenu() {
         JMenu anadirMenu = new JMenu("Añadir");
-        personalMenuItem = new JMenuItem("Personal");
-        anadirMenu.add(personalMenuItem);
+        addPersonalMenuItem = new JMenuItem("Personal");
+        anadirMenu.add(addPersonalMenuItem);
         anadirMenu.add(new JMenuItem("Evento"));
         return anadirMenu;
     }
 
     private JMenu createEditarMenu() {
         JMenu editarMenu = new JMenu("Editar");
-        editarMenu.add(new JMenuItem("Personal"));
+        editPersonalMenuItem = new JMenuItem("Personal");
+        editarMenu.add(editPersonalMenuItem);
         editarMenu.add(new JMenuItem("Evento"));
 
         return editarMenu;

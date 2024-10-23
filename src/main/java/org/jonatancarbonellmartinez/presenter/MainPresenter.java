@@ -2,13 +2,12 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.observers.AddPersonObserver;
+import org.jonatancarbonellmartinez.observers.PersonObserver;
 import org.jonatancarbonellmartinez.view.*;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class MainPresenter implements AddPersonObserver {
+public class MainPresenter implements PersonObserver {
     private final MainView mainView;
     private final DAOFactory daoFactory; // This reference will allow me to create DAOs trough methods (like showAddPersonView is doing)
 
@@ -20,7 +19,8 @@ public class MainPresenter implements AddPersonObserver {
 
     private void bindViewActions() {
         mainView.getBotonPersonal().addActionListener(e -> showPersonCardView());
-        mainView.getPersonalMenuItem().addActionListener(e -> showAddPersonView());
+        mainView.getAddPersonalMenuItem().addActionListener(e -> showAddPersonView());
+        mainView.getEditPersonalMenuItem().addActionListener(e -> showEditPersonView());
 //        mainView.getPersonMenuItem().addActionListener(e -> showView("person"));
 //        mainView.getFlightMenuItem().addActionListener(e -> showView("flight"));
 //        mainView.getEventMenuItem().addActionListener(e -> showView("event"));
@@ -29,7 +29,12 @@ public class MainPresenter implements AddPersonObserver {
     // Methods to show New Windows, like JDialogs.
     private void showAddPersonView() {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
-        new AddPersonView(mainView, personDAOSQLite, this); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
+        new PersonFormView(mainView, personDAOSQLite, this,false); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
+    }
+
+    private void showEditPersonView() {
+        PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
+        new PersonFormView(mainView, personDAOSQLite, this,true); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
     }
 
     // Methods to show cards
