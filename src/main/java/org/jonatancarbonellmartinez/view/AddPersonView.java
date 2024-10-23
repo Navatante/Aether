@@ -25,7 +25,6 @@ public class AddPersonView extends JDialog {
     private JTextField orderField;
     private JComboBox<String> rolBox;
     private JTextField personDniField;
-    private JComboBox<String> currentFlagBox;
     private JButton addButton;
     // Panels
     JPanel centerPanel;
@@ -70,11 +69,9 @@ public class AddPersonView extends JDialog {
         orderField.setPreferredSize(fieldSize);
         rolBox.setPreferredSize(fieldSize);
         personDniField.setPreferredSize(fieldSize);
-        currentFlagBox.setPreferredSize(fieldSize);
     }
 
     private void setFieldsInputConstraints() {
-        ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(3));
         ((AbstractDocument) personNameField.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
@@ -87,16 +84,15 @@ public class AddPersonView extends JDialog {
         empleoBox = myComboBox(new String[]{
                 "CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
                 "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
-        personNkField = myTextField("Código");
+        personNkField = myTextFieldWithLargerPlaceHolder("Código",3,6);
         personNameField = myTextField("Nombre");
         personLastName1Field = myTextField("Apellido 1");
         personLastName2Field = myTextField("Apellido 2");
         phoneField = myTextField("Teléfono");
         personDniField = myTextField("DNI");
-        divisionBox = myComboBox(new String[] {"Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
+        divisionBox = myComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
         orderField = myTextField("Orden");
-        currentFlagBox = myComboBox(new String[]{"Activo", "Inactivo"},"Situación");
     }
 
     private void createPanels() {
@@ -189,6 +185,38 @@ public class AddPersonView extends JDialog {
         return comboBox;
     }
 
+    private JTextField myTextFieldWithLargerPlaceHolder(String placeholder,int inputLimit, int placeholderLimit) {
+        JTextField textField = new JTextField();
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(inputLimit));
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.LIGHT_GRAY);
+                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(placeholderLimit));
+                if (textField.getText().trim().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                    textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+                }
+            }
+
+        });
+
+        return textField;
+    }
+
     private JTextField myTextField(String placeholder) {
         JTextField textField = new JTextField();
         textField.setText(placeholder);
@@ -207,12 +235,13 @@ public class AddPersonView extends JDialog {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (textField.getText().isEmpty()) {
+                if (textField.getText().trim().isEmpty()) {
                     textField.setText(placeholder);
                     textField.setForeground(Color.GRAY);
                     textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
                 }
             }
+
         });
 
         return textField;
@@ -227,21 +256,15 @@ public class AddPersonView extends JDialog {
     }
 
     public String getPersonName() {
-        String firstLetter = personNameField.getText().substring(0, 1).toUpperCase();
-        String restOfString = personNameField.getText().substring(1).toLowerCase();
-        return firstLetter + restOfString;
+        return capitalizeWords(personNameField);
     }
 
     public String getPersonLastName1() {
-        String firstLetter = personLastName1Field.getText().substring(0, 1).toUpperCase();
-        String restOfString = personLastName1Field.getText().substring(1).toLowerCase();
-        return firstLetter + restOfString;
+        return capitalizeWords(personLastName1Field);
     }
 
     public String getPersonLastName2() {
-        String firstLetter = personLastName2Field.getText().substring(0, 1).toUpperCase();
-        String restOfString = personLastName2Field.getText().substring(1).toLowerCase();
-        return firstLetter + restOfString;
+        return capitalizeWords(personLastName2Field);
     }
 
     public String getPersonPhone() {
@@ -269,14 +292,6 @@ public class AddPersonView extends JDialog {
         return rolBox.getSelectedItem().toString();
     }
 
-    public int getPersonCurrentFlag() {
-        int result = 1;
-        if(currentFlagBox.getSelectedItem().equals("Inactivo")) {
-            result = 0;
-        }
-        return result;
-    }
-
     public void clearFields() {
         // Clear text fields and restore placeholder
         resetTextFieldWithPlaceholder(personNkField, "Código");
@@ -291,22 +306,18 @@ public class AddPersonView extends JDialog {
         empleoBox.setSelectedIndex(0);
         divisionBox.setSelectedIndex(0);
         rolBox.setSelectedIndex(0);
-        currentFlagBox.setSelectedIndex(0);
     }
 
-    // Helper method to reset text fields with placeholder logic
     private void resetTextFieldWithPlaceholder(JTextField textField, String placeholder) {
         textField.setText(placeholder);  // Reset to placeholder text
         textField.setForeground(Color.GRAY);  // Placeholder color
         textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));  // Placeholder font
     }
 
-    // Validate the entire form by checking both fields and combo boxes
     public boolean isFormValid() {
         return areFieldsValid() && areComboBoxesValid();
     }
 
-    // Check if all text fields are valid
     public boolean areFieldsValid() {
         JTextField[] textFields = {
                 personNkField,
@@ -330,30 +341,43 @@ public class AddPersonView extends JDialog {
             return false;
         }
 
-        if (!isOrderFieldNumeric()) {
-            return false; // Error is already shown inside isOrderFieldNumeric()
+        if(!containsOnlyLetters(getPersonLastName1())) {
+            showErrorMessage("El Apellido1 solo debe contener letras");
+            return false;
+        }
+
+        if(!containsOnlyLetters(getPersonLastName2())) {
+            showErrorMessage("El Apellido2 solo debe contener letras");
+            return false;
+        }
+
+        if(!containsOnlyNumbers(getPersonPhone())) { // hacer esto para el resto, en lugar de crear un metodo especifico
+            showErrorMessage("El campo 'Teléfono' debe ser numérico");
+            return false;
+        }
+
+        if(!containsOnlyNumbers(personDniField.getText())) {
+            showErrorMessage("El campo 'DNI' debe ser numérico");
+            return false;
+        }
+
+        if(!containsOnlyNumbers(String.valueOf(getPersonOrder()))) {
+            showErrorMessage("El campo 'Orden' debe ser numérico");
+        }
+
+        if (orderField.getText().equals("0")) {
+            showErrorMessage("El campo 'Orden' no puede ser 0");
+            return false;
         }
 
         return true;
     }
 
-    // Validate if the order field contains a numeric value
-    public boolean isOrderFieldNumeric() {
-        if (containsOnlyNumbers(orderField.getText())) {
-            return true;
-        }
-
-        showErrorMessage("El campo 'Orden' debe ser numérico");
-        return false;
-    }
-
-    // Check if all combo boxes have valid selections
     public boolean areComboBoxesValid() {
         JComboBox<?>[] comboBoxes = {
                 empleoBox,
                 divisionBox,
-                rolBox,
-                currentFlagBox
+                rolBox
         };
 
         for (JComboBox<?> comboBox : comboBoxes) {
@@ -366,28 +390,38 @@ public class AddPersonView extends JDialog {
         return true;
     }
 
-    // Helper method to show error messages
     private void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // Check if a text field is empty
     private boolean isTextFieldEmpty(JTextField textField) {
         return textField.getText().trim().isEmpty();
     }
 
-    // Check if a combo box is unselected (assuming placeholder is at index 0)
     private boolean isComboBoxUnselected(JComboBox<?> comboBox) {
         return comboBox.getSelectedIndex() == 0;
     }
 
-    // Check if a string contains only letters (used for person name validation)
-    public boolean containsOnlyLetters(String input) {
-        return input.matches("^[a-zA-Z ]*$");
+    private boolean containsOnlyLetters(String input) {
+        return input != null && input.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*$");
     }
 
-    // Check if a string contains only numbers (used for order field validation)
     public boolean containsOnlyNumbers(String input) {
         return input.matches("^[0-9]*$");
+    }
+
+    public String capitalizeWords(JTextField field) {
+        String text = field.getText();
+        String[] words = text.split("\\s+"); // Split the string by spaces
+        StringBuilder capitalizedName = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) { // Check if the word is not empty
+                String firstLetter = word.substring(0, 1).toUpperCase();
+                String restOfString = word.substring(1).toLowerCase();
+                capitalizedName.append(firstLetter).append(restOfString).append(" ");
+            }
+        }
+        return capitalizedName.toString().trim();
     }
 }

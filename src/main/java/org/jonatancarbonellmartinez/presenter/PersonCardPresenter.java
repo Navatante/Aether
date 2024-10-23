@@ -38,7 +38,7 @@ public class PersonCardPresenter {
         // Add persons to the table model
         for (Person person : persons) {
             Object[] rowData = {
-                    person.getPersonOrder(),
+                    person.getPersonSk(),
                     person.getPersonNk(),
                     person.getPersonRank(),
                     person.getPersonName(),
@@ -48,7 +48,8 @@ public class PersonCardPresenter {
                     person.getPersonDni(),
                     person.getPersonDivision(),
                     person.getPersonRol(),
-                    person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo"
+                    person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo",
+                    person.getPersonOrder()
             };
             personCardView.getTableModel().addRow(rowData);
         }

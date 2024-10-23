@@ -29,7 +29,7 @@ public class AddPersonPresenter {
             String personDivision = addPersonView.getPersonDivision();
             String personRol = addPersonView.getPersonRol();
             int personOrder = addPersonView.getPersonOrder();
-            int personCurrentFlag = addPersonView.getPersonCurrentFlag();
+            int personCurrentFlag = 1;
 
             // Create a new Person object
             Person person = new Person();
