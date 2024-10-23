@@ -4,27 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Person {
-    private static final Set<String> VALID_RANKS = new HashSet<>();
-    static {
-        // Initialize the set of valid ranks
-        VALID_RANKS.add("CF");
-        VALID_RANKS.add("TCOL");
-        VALID_RANKS.add("CC");
-        VALID_RANKS.add("CTE");
-        VALID_RANKS.add("TN");
-        VALID_RANKS.add("CAP");
-        VALID_RANKS.add("AN");
-        VALID_RANKS.add("TTE");
-        VALID_RANKS.add("STTE");
-        VALID_RANKS.add("BG");
-        VALID_RANKS.add("SG1");
-        VALID_RANKS.add("SGTO");
-        VALID_RANKS.add("CBMY");
-        VALID_RANKS.add("CB1");
-        VALID_RANKS.add("CBO");
-        VALID_RANKS.add("MRO");
-        VALID_RANKS.add("SDO");
-    }
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
     private String personRank;

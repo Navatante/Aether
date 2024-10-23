@@ -108,7 +108,7 @@ public class AddPersonView extends JDialog {
         // Create a bottom panel for the button
         bottomPanel = new JPanel();
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 35, 10));
     }
 
     private void addComponentsToCenterPanel() {
@@ -122,7 +122,7 @@ public class AddPersonView extends JDialog {
         centerPanel.add(divisionBox);
         centerPanel.add(rolBox);
         centerPanel.add(orderField);
-        centerPanel.add(currentFlagBox);
+        //centerPanel.add(currentFlagBox);
     }
 
     private void createAddButton() {
@@ -143,7 +143,6 @@ public class AddPersonView extends JDialog {
     private void addComponentsToBottomPanel() {
         bottomPanel.add(addButton);
     }
-
 
     private JComboBox<String> myComboBox(String[] listValues, String placeHolder) {
         JComboBox<String> comboBox = new JComboBox<>(listValues);
@@ -219,7 +218,6 @@ public class AddPersonView extends JDialog {
         return textField;
     }
 
-    // Getter methods for user input
     public String getPersonNkField() {
         return personNkField.getText().toUpperCase();
     }
@@ -303,9 +301,13 @@ public class AddPersonView extends JDialog {
         textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));  // Placeholder font
     }
 
+    // Validate the entire form by checking both fields and combo boxes
     public boolean isFormValid() {
+        return areFieldsValid() && areComboBoxesValid();
+    }
 
-        // List of all JTextField components to validate
+    // Check if all text fields are valid
+    public boolean areFieldsValid() {
         JTextField[] textFields = {
                 personNkField,
                 personNameField,
@@ -316,44 +318,37 @@ public class AddPersonView extends JDialog {
                 orderField
         };
 
-        // Iterate through each text field and check if it's empty
         for (JTextField textField : textFields) {
-            if (textField.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+            if (isTextFieldEmpty(textField)) {
+                showErrorMessage("Por favor, completa todos los campos");
                 return false;
             }
         }
 
-//        // List of all JComboBox components to validate
-//        JComboBox<?>[] comboBoxes = {
-//                empleoBox,
-//                divisionBox,
-//                rolBox,
-//                currentFlagBox
-//        };
-//
-//        // Iterate through each combo box and check if the selected item is empty or the placeholder
-//        for (JComboBox<?> comboBox : comboBoxes) {
-//            if (comboBox.getSelectedIndex() == 0) { // Assuming the placeholder is at index 0
-//                JOptionPane.showMessageDialog(this, "Por favor, selecciona todas las opciones", "Error", JOptionPane.ERROR_MESSAGE);
-//                return false;
-//            }
-//        }
+        if (!containsOnlyLetters(getPersonName())) {
+            showErrorMessage("El nombre solo debe contener letras");
+            return false;
+        }
 
-//        // Ensure the 'order' field is numeric
-//        try {
-//            Integer.parseInt(orderField.getText());
-//        } catch (NumberFormatException e) {
-//            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
-//            return false;
-//        }
+        if (!isOrderFieldNumeric()) {
+            return false; // Error is already shown inside isOrderFieldNumeric()
+        }
 
-        // If all validations pass
         return true;
     }
 
+    // Validate if the order field contains a numeric value
+    public boolean isOrderFieldNumeric() {
+        if (containsOnlyNumbers(orderField.getText())) {
+            return true;
+        }
+
+        showErrorMessage("El campo 'Orden' debe ser numérico");
+        return false;
+    }
+
+    // Check if all combo boxes have valid selections
     public boolean areComboBoxesValid() {
-        // List of all JComboBox components to validate
         JComboBox<?>[] comboBoxes = {
                 empleoBox,
                 divisionBox,
@@ -361,40 +356,38 @@ public class AddPersonView extends JDialog {
                 currentFlagBox
         };
 
-        // Iterate through each combo box and check if the selected item is empty or the placeholder
         for (JComboBox<?> comboBox : comboBoxes) {
-            if (comboBox.getSelectedIndex() == 0) { // Assuming the placeholder is at index 0
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona todas las opciones", "Error", JOptionPane.ERROR_MESSAGE);
-                return false; // Return false immediately if any combo box is invalid
+            if (isComboBoxUnselected(comboBox)) {
+                showErrorMessage("Por favor, selecciona todas las opciones");
+                return false;
             }
         }
 
-        // If all combo boxes are valid, return true
         return true;
     }
 
-
-    public boolean isOrderFieldNumeric() {
-        try {
-            // Try to parse the integer from the text field
-            Integer.parseInt(orderField.getText());
-            return true; // Return true if parsing is successful
-        } catch (NumberFormatException e) {
-            // Show an error dialog if parsing fails
-            JOptionPane.showMessageDialog(this, "El campo 'Orden' debe ser numérico", "Error", JOptionPane.ERROR_MESSAGE);
-            return false; // Return false if parsing fails
-        }
+    // Helper method to show error messages
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    public boolean noContainsSpecialCharacters(String input) { // to be used on DNI, that is the only one that have numbers and letters
-        return input.matches("^[a-zA-Z0-9 ]*$");
+    // Check if a text field is empty
+    private boolean isTextFieldEmpty(JTextField textField) {
+        return textField.getText().trim().isEmpty();
     }
 
-    public boolean containsOnlyNumbers(String input) {
-        return input.matches("^[0-9]*$");
+    // Check if a combo box is unselected (assuming placeholder is at index 0)
+    private boolean isComboBoxUnselected(JComboBox<?> comboBox) {
+        return comboBox.getSelectedIndex() == 0;
     }
 
+    // Check if a string contains only letters (used for person name validation)
     public boolean containsOnlyLetters(String input) {
         return input.matches("^[a-zA-Z ]*$");
+    }
+
+    // Check if a string contains only numbers (used for order field validation)
+    public boolean containsOnlyNumbers(String input) {
+        return input.matches("^[0-9]*$");
     }
 }
