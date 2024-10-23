@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.presenter.PersonCardPresenter;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
@@ -25,10 +26,13 @@ public class PersonCardView extends JPanel {
         radioButton.setSelected(true);
 
 
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(new EmptyBorder(5,25,5,25));
         add(topPanel, BorderLayout.NORTH);
-        topPanel.add(label, BorderLayout.WEST);
-        topPanel.add(textField, BorderLayout.WEST);
+        JPanel insideTopPanel = new JPanel();
+        topPanel.add(insideTopPanel,BorderLayout.WEST);
+        insideTopPanel.add(label);
+        insideTopPanel.add(textField);
         topPanel.add(radioButton, BorderLayout.EAST);
 
 
@@ -47,6 +51,7 @@ public class PersonCardView extends JPanel {
         };
         personTable = new JTable(tableModel);
         personTable.setCellSelectionEnabled(true);
+        personTable.setToolTipText("Ctrl+C para copiar");
 
         // Add the table to a JScrollPane
         JScrollPane scrollPane = new JScrollPane(personTable);

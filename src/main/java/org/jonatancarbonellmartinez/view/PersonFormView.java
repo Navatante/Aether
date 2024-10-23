@@ -11,6 +11,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class PersonFormView extends JDialog {
+    // MVP with Observer
     private MainView mainView;
     private PersonFormPresenter presenter;
     private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
@@ -138,7 +139,6 @@ public class PersonFormView extends JDialog {
                 if (observer!=null) {
                     observer.onPersonAdded();
                 }
-
             }
         });
     }
@@ -254,7 +254,7 @@ public class PersonFormView extends JDialog {
         return textField;
     }
 
-    public String getPersonNkField() { // ESTOS GETTERS ESTAN MAL, DEBERIAN DE SER DEL TIPO DE SU COMPONENTE, JTEXTFIELDS EN ESTE CASO.
+    public String getPersonNkField() {
         return personNkField.getText().toUpperCase();
     }
 
@@ -435,7 +435,7 @@ public class PersonFormView extends JDialog {
     private void createIdSearchGui() {
         topPanel = new JPanel();
         getContentPane().add(topPanel,BorderLayout.NORTH);
-        JLabel insertIdLabel = new JLabel("Introduzca el ID de la persona");
+        JLabel insertIdLabel = new JLabel("Introduzca el ID");
         JTextField findPersonById = myTextField("ID");
         topPanel.add(insertIdLabel);
         topPanel.add(findPersonById);
