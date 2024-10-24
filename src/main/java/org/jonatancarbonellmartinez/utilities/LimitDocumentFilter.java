@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.model.utilities;
+package org.jonatancarbonellmartinez.utilities;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.DocumentFilter;

@@ -1,10 +1,6 @@
 package org.jonatancarbonellmartinez.factory;
 
-import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.model.utilities.Database;
 import org.jonatancarbonellmartinez.model.dao.*;
-
-import java.sql.*;
 
 // Esta clase la utilizo para crear los distintos DAOs a traves de ella, por cada dao, tendre que crear un metodo 'createDimNameDAO' or createFactNameDAO.
 public class DAOFactorySQLite implements DAOFactory {

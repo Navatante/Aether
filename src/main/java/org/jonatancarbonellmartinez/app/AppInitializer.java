@@ -1,7 +1,8 @@
 package org.jonatancarbonellmartinez.app;
 
 import org.jonatancarbonellmartinez.factory.*;
-import org.jonatancarbonellmartinez.presenter.*;
+import org.jonatancarbonellmartinez.utilities.DatabasePresenter;
+import org.jonatancarbonellmartinez.utilities.DbFileChooserView;
 import org.jonatancarbonellmartinez.view.*;
 
 public class AppInitializer {

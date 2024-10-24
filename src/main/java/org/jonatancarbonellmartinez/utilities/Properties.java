@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.model.utilities;
+package org.jonatancarbonellmartinez.utilities;
 
 import java.io.File;
 import java.io.FileInputStream;

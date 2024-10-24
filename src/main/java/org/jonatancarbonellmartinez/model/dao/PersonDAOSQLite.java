@@ -1,11 +1,9 @@
 package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.entities.Person;
-import org.jonatancarbonellmartinez.model.utilities.Database;
+import org.jonatancarbonellmartinez.utilities.Database;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

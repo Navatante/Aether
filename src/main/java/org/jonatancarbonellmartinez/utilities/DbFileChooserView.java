@@ -1,6 +1,4 @@
-package org.jonatancarbonellmartinez.view;
-
-import org.jonatancarbonellmartinez.presenter.DatabasePresenter;
+package org.jonatancarbonellmartinez.utilities;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

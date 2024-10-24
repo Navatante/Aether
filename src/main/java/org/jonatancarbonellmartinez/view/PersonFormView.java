@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.model.utilities.LimitDocumentFilter;
+import org.jonatancarbonellmartinez.utilities.LimitDocumentFilter;
 import org.jonatancarbonellmartinez.observers.PersonObserver;
 import org.jonatancarbonellmartinez.presenter.PersonFormPresenter;
 import javax.swing.*;
