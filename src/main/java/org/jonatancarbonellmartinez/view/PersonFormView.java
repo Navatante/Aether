@@ -279,6 +279,9 @@ public class PersonFormView extends JDialog {
         empleoBox.setSelectedIndex(0);
         divisionBox.setSelectedIndex(0);
         rolBox.setSelectedIndex(0);
+        if(isEditMode) {
+            personStateBox.setSelectedIndex(0);
+        }
     }
 
     private void resetTextFieldWithPlaceholder(JTextField textField, String placeholder) {
