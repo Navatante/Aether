@@ -17,21 +17,11 @@ public class PersonFormView extends JDialog {
     private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
     private boolean isEditMode;
     // Components
-    private JTextField personPhoneField;
-    private JComboBox<String> empleoBox;
-    private JTextField personNkField;
-    private JTextField personNameField;
-    private JTextField personLastName1Field;
-    private JTextField personLastName2Field;
-    private JComboBox<String> divisionBox;
-    private JTextField orderField;
-    private JComboBox<String> rolBox;
-    private JTextField personDniField;
+    private JTextField personPhoneField, personNkField, personNameField, personLastName1Field, personLastName2Field, orderField, personDniField, editPersonIdField;
+    private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;
     private JButton addButton;
-    private JComboBox<String> personStateBox;
-    private JTextField editPersonIdField;
 
-    private Dimension fieldSize = new Dimension(180, 25);
+    private final Dimension fieldSize = new Dimension(180, 25);
 
     // Panels
     JPanel centerPanel;
