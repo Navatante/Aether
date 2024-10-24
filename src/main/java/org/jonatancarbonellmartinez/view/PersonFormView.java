@@ -122,7 +122,7 @@ public class PersonFormView extends JDialog {
 
     private void createAddButton() {
         // Add an "Add" button with an action listener
-        addButton = new JButton(isEditMode ? "Aplicar cambios" : "Guardar");
+        addButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
         addButton.addActionListener(e -> {
             if(isFormValid()) {
                 if(isEditMode) {
