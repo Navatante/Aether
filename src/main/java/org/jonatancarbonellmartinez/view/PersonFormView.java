@@ -50,7 +50,7 @@ public class PersonFormView extends JDialog {
     private void initializeUI() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(450,300);
+        setSize(450,270);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -113,7 +113,7 @@ public class PersonFormView extends JDialog {
         // Create a bottom panel for the button
         bottomPanel = new JPanel();
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 35, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
     }
 
     private void addComponentsToCenterPanel() {
@@ -278,6 +278,7 @@ public class PersonFormView extends JDialog {
         rolBox.setSelectedIndex(0);
         if(isEditMode) {
             personStateBox.setSelectedIndex(0);
+            resetTextFieldWithPlaceholder(editPersonIdField,"ID");
         }
     }
 
@@ -399,7 +400,7 @@ public class PersonFormView extends JDialog {
     }
 
     private void createIdSearchGui() {
-        setSize(450,370);
+        setSize(450,332);
         topPanel = new JPanel();
         getContentPane().add(topPanel, BorderLayout.NORTH);
         JLabel insertIdLabel = new JLabel("Introduzca el ID");
