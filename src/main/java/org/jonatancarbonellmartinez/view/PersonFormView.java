@@ -61,10 +61,7 @@ public class PersonFormView extends JDialog {
         addComponentsToCenterPanel();
         createAddButton();
         addComponentsToBottomPanel();
-
-        if(isEditMode) {
-            createIdSearchGui();
-        }
+        if(isEditMode) createIdSearchGui();
 
         setVisible(true);
     }
