@@ -62,7 +62,7 @@ public class MainPresenter implements PersonObserver {
 
 
     @Override
-    public void onPersonAdded() {
+    public void onPersonChanges() {
         if (mainView.getCardPanel().getComponentCount() > 0) { // Check if there are any component to avoid nullPointerException
             // Safe to access the first component
             // Get the current component in the card panel and check if it's an instance of PersonCardView

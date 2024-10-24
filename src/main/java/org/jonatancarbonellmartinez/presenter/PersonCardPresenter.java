@@ -6,36 +6,35 @@ import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.view.PersonCardView;
 
 import javax.swing.*;
+import javax.swing.RowFilter;
+import javax.swing.table.TableModel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonCardPresenter {
-    private final PersonDAO personDAO;  // DAO to handle database operations
+    private final PersonDAO personDAO;
     private final PersonCardView personCardView;
+    private boolean isShowingActive = true; // Default to showing "Active" persons
 
-    // Constructor to pass DAO
     public PersonCardPresenter(PersonCardView personCardView, PersonDAO personDAO) {
         this.personCardView = personCardView;
         this.personDAO = personDAO;
     }
 
-    // Method to load and display all persons in the view
     public void loadAllPersons() {
         try {
             List<Person> persons = personDAO.getAll();
             if (personCardView != null) {
-                addPersonsToTableModel(persons);  // Display persons in the table
+                addPersonsToTableModel(persons);  // Populate table model with persons
             }
         } catch (DatabaseException e) {
-            // Handle the exception appropriately, perhaps showing a dialog
             JOptionPane.showMessageDialog(personCardView, "Error loading persons: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void addPersonsToTableModel(List<Person> persons) {
-        // Clear existing rows
-        personCardView.getTableModel().setRowCount(0);
+        personCardView.getTableModel().setRowCount(0); // Clear existing rows
 
-        // Add persons to the table model
         for (Person person : persons) {
             Object[] rowData = {
                     person.getPersonSk(),
@@ -53,5 +52,46 @@ public class PersonCardPresenter {
             };
             personCardView.getTableModel().addRow(rowData);
         }
+
+        // Apply filters after loading data
+        applyPersonStateFilter(); // Ensure the correct state filter is applied
+        applySearchFilter(""); // Clear search filter initially
     }
+
+    public void onSearchTextChanged(String searchText) {
+        applySearchFilter(searchText); // Apply the search filter
+    }
+
+    public void onPersonStateChanged(boolean isActiveSelected) {
+        isShowingActive = isActiveSelected;
+        applyPersonStateFilter(); // Apply the state filter
+    }
+
+    private void applyPersonStateFilter() {
+        RowFilter<TableModel, Object> stateFilter = RowFilter.regexFilter(isShowingActive ? "Activo" : "Inactivo", 10);
+        personCardView.getSorter().setRowFilter(stateFilter); // Set the "Situación" filter
+        applySearchFilter(personCardView.getSearchField().getText()); // Reapply the current search filter
+    }
+
+    private void applySearchFilter(String searchText) {
+        List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+
+        // Add the search filter if it's not empty
+        if (searchText.trim().length() > 0) {
+            filters.add(RowFilter.regexFilter("(?i)" + searchText)); // Case-insensitive search
+        }
+
+        // Always add the state filter
+        filters.add(RowFilter.regexFilter(isShowingActive ? "Activo" : "Inactivo", 10));
+
+        // Combine filters
+        RowFilter<TableModel, Object> combinedFilter = null;
+        if (!filters.isEmpty()) {
+            combinedFilter = RowFilter.andFilter(filters);
+        }
+
+        // Set the combined filter or reset if both are null
+        personCardView.getSorter().setRowFilter(combinedFilter);
+    }
+
 }

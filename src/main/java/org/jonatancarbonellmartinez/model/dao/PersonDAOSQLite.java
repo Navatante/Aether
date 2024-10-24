@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
+import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.model.utilities.Database;
 
@@ -47,12 +48,76 @@ public class PersonDAOSQLite implements PersonDAO {
 
     @Override
     public Person read(Integer personSk) throws DatabaseException {
-        return null;
+        String sql = "SELECT * FROM dim_person WHERE person_sk = ?";
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, personSk);
+
+            // Execute the query and get the ResultSet
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // Check if a person with the given ID exists
+                if (rs.next()) {
+                    // Create a new Person object and populate it from the ResultSet
+                    Person person = new Person();
+                    person.setPersonSk(rs.getInt("person_sk")); // Assuming your column name is "person_sk"
+                    person.setPersonNk(rs.getString("person_nk")); // Assuming your column name is "person_nk"
+                    person.setPersonRank(rs.getString("person_rank")); // Assuming your column name is "person_rank"
+                    person.setPersonName(rs.getString("person_name")); // Assuming your column name is "person_name"
+                    person.setPersonLastName1(rs.getString("person_last_name_1")); // Assuming your column name is "person_last_name1"
+                    person.setPersonLastName2(rs.getString("person_last_name_2")); // Assuming your column name is "person_last_name2"
+                    person.setPersonPhone(rs.getString("person_phone")); // Assuming your column name is "person_phone"
+                    person.setPersonDni(rs.getString("person_dni")); // Assuming your column name is "person_dni"
+                    person.setPersonDivision(rs.getString("person_division")); // Assuming your column name is "person_division"
+                    person.setPersonRol(rs.getString("person_rol")); // Assuming your column name is "person_rol"
+                    person.setPersonCurrentFlag(rs.getInt("person_current_flag")); // Assuming your column name is "person_current_flag"
+                    person.setPersonOrder(rs.getInt("person_order")); // Assuming your column name is "person_order"
+
+                    return person; // Return the populated Person object
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error buscando persona por ID", e);
+        }
+        return null; // Return null if no person was found with the given ID
     }
 
     @Override
-    public void update(Person person) throws DatabaseException {
+    public void update(Person person, int idToUpdate) throws DatabaseException {
+        String sql = "UPDATE dim_person\n" +
+                    "SET \n" +
+                    "    person_nk = ?," +
+                    "    person_rank = ?," +
+                    "    person_name = ?," +
+                    "    person_last_name_1 = ?," +
+                    "    person_last_name_2 = ?," +
+                    "    person_phone = ?," +
+                    "    person_dni = ?," +
+                    "    person_division = ?," +
+                    "    person_rol = ?," +
+                    "    person_order = ?," +
+                    "    person_current_flag = ?" +
+                    "WHERE person_sk = ?";
 
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, person.getPersonNk());
+            pstmt.setString(2, person.getPersonRank());
+            pstmt.setString(3, person.getPersonName());
+            pstmt.setString(4, person.getPersonLastName1());
+            pstmt.setString(5, person.getPersonLastName2());
+            pstmt.setString(6, person.getPersonPhone());
+            pstmt.setString(7, person.getPersonDni());
+            pstmt.setString(8, person.getPersonDivision());
+            pstmt.setString(9, person.getPersonRol());
+            pstmt.setInt(10, person.getPersonOrder());
+            pstmt.setInt(11, person.getPersonCurrentFlag());
+            pstmt.setInt(12, idToUpdate);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error editando persona en la base de datos", e);
+        }
     }
 
     @Override

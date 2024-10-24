@@ -17,7 +17,7 @@ public class PersonFormView extends JDialog {
     private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
     private boolean isEditMode;
     // Components
-    private JTextField phoneField;
+    private JTextField personPhoneField;
     private JComboBox<String> empleoBox;
     private JTextField personNkField;
     private JTextField personNameField;
@@ -28,6 +28,11 @@ public class PersonFormView extends JDialog {
     private JComboBox<String> rolBox;
     private JTextField personDniField;
     private JButton addButton;
+    private JComboBox<String> personStateBox;
+    private JTextField editPersonIdField;
+
+    private Dimension fieldSize = new Dimension(180, 25);
+
     // Panels
     JPanel centerPanel;
     JPanel bottomPanel;
@@ -65,14 +70,13 @@ public class PersonFormView extends JDialog {
     }
 
     private void setPreferedSizeToComponents() {
-        Dimension fieldSize = new Dimension(180, 25); // Define a common dimension
 
         empleoBox.setPreferredSize(fieldSize);
         personNkField.setPreferredSize(fieldSize);
         personNameField.setPreferredSize(fieldSize);
         personLastName1Field.setPreferredSize(fieldSize);
         personLastName2Field.setPreferredSize(fieldSize);
-        phoneField.setPreferredSize(fieldSize);
+        personPhoneField.setPreferredSize(fieldSize);
         divisionBox.setPreferredSize(fieldSize);
         orderField.setPreferredSize(fieldSize);
         rolBox.setPreferredSize(fieldSize);
@@ -84,7 +88,7 @@ public class PersonFormView extends JDialog {
         ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personDniField.getDocument()).setDocumentFilter(new LimitDocumentFilter(8));
-        ((AbstractDocument) phoneField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
+        ((AbstractDocument) personPhoneField.getDocument()).setDocumentFilter(new LimitDocumentFilter(9));
         ((AbstractDocument) orderField.getDocument()).setDocumentFilter(new LimitDocumentFilter(5));
     }
 
@@ -96,7 +100,7 @@ public class PersonFormView extends JDialog {
         personNameField = myTextField("Nombre");
         personLastName1Field = myTextField("Apellido 1");
         personLastName2Field = myTextField("Apellido 2");
-        phoneField = myTextField("Teléfono");
+        personPhoneField = myTextField("Teléfono");
         personDniField = myTextField("DNI");
         divisionBox = myComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
@@ -121,7 +125,7 @@ public class PersonFormView extends JDialog {
         centerPanel.add(personNameField);
         centerPanel.add(personLastName1Field);
         centerPanel.add(personLastName2Field);
-        centerPanel.add(phoneField);
+        centerPanel.add(personPhoneField);
         centerPanel.add(personDniField);
         centerPanel.add(divisionBox);
         centerPanel.add(rolBox);
@@ -134,10 +138,14 @@ public class PersonFormView extends JDialog {
         addButton = new JButton(isEditMode ? "Aplicar cambios" : "Guardar");
         addButton.addActionListener(e -> {
             if(isFormValid()) {
-                presenter.addPerson();
+                if(isEditMode) {
+                    presenter.editPerson();
+                } else {
+                    presenter.addPerson();
+                }
                 // Notify the observer (MainPresenter) that a person was added
                 if (observer!=null) {
-                    observer.onPersonAdded();
+                    observer.onPersonChanges();
                 }
             }
         });
@@ -195,8 +203,10 @@ public class PersonFormView extends JDialog {
     private JTextField myTextFieldWithLargerPlaceHolder(String placeholder,int inputLimit, int placeholderLimit) {
         JTextField textField = new JTextField();
         textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        if(textField.getText().equals(placeholder)) {
+            textField.setForeground(Color.GRAY);
+            textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        }
 
         textField.addFocusListener(new FocusAdapter() {
             @Override
@@ -218,7 +228,6 @@ public class PersonFormView extends JDialog {
                     textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
                 }
             }
-
         });
 
         return textField;
@@ -227,8 +236,10 @@ public class PersonFormView extends JDialog {
     private JTextField myTextField(String placeholder) {
         JTextField textField = new JTextField();
         textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        if(textField.getText().equals(placeholder)) {
+            textField.setForeground(Color.GRAY);
+            textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        }
 
         textField.addFocusListener(new FocusAdapter() {
             @Override
@@ -254,55 +265,10 @@ public class PersonFormView extends JDialog {
         return textField;
     }
 
-    public String getPersonNkField() {
-        return personNkField.getText().toUpperCase();
-    }
-
-    public String getPersonRank() {
-        return empleoBox.getSelectedItem().toString(); // maybe is not correct
-    }
-
-    public String getPersonName() {
-        return capitalizeWords(personNameField);
-    }
-
-    public String getPersonLastName1() {
-        return capitalizeWords(personLastName1Field);
-    }
-
-    public String getPersonLastName2() {
-        return capitalizeWords(personLastName2Field);
-    }
-
-    public String getPersonPhone() {
-        return phoneField.getText();
-    }
-
-    public String getPersonDni() {
-        // Tabla de letras correspondiente a cada resto
-        String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
-        int dniNumero = Integer.parseInt(personDniField.getText());
-        // Obtener el resto de dividir el número del DNI entre 23
-        int resto = dniNumero % 23;
-        return personDniField.getText()+ letras.charAt(resto);
-    }
-
-    public String getPersonDivision() {
-        return divisionBox.getSelectedItem().toString();
-    }
-
-    public int getPersonOrder() {
-        return Integer.parseInt(orderField.getText());
-    }
-
-    public String getPersonRol() {
-        return rolBox.getSelectedItem().toString();
-    }
-
     public void clearFields() {
         // Clear text fields and restore placeholder
         resetTextFieldWithPlaceholder(personNkField, "Código");
-        resetTextFieldWithPlaceholder(phoneField, "Teléfono");
+        resetTextFieldWithPlaceholder(personPhoneField, "Teléfono");
         resetTextFieldWithPlaceholder(personNameField, "Nombre");
         resetTextFieldWithPlaceholder(personLastName1Field, "Apellido 1");
         resetTextFieldWithPlaceholder(personLastName2Field, "Apellido 2");
@@ -331,7 +297,7 @@ public class PersonFormView extends JDialog {
                 personNameField,
                 personLastName1Field,
                 personLastName2Field,
-                phoneField,
+                personPhoneField,
                 personDniField,
                 orderField
         };
@@ -433,11 +399,140 @@ public class PersonFormView extends JDialog {
     }
 
     private void createIdSearchGui() {
+        setSize(450,370);
         topPanel = new JPanel();
-        getContentPane().add(topPanel,BorderLayout.NORTH);
+        getContentPane().add(topPanel, BorderLayout.NORTH);
         JLabel insertIdLabel = new JLabel("Introduzca el ID");
-        JTextField findPersonById = myTextField("ID");
+        editPersonIdField = myTextField("ID");
+        editPersonIdField.setPreferredSize(new Dimension(60, 25));
+        editPersonIdField.setToolTipText("Presiona Enter para buscar");
+        personStateBox = myComboBox(new String[] {"Activo","Inactivo"}, "Situación");
+        personStateBox.setPreferredSize(fieldSize);
+        centerPanel.add(personStateBox);
         topPanel.add(insertIdLabel);
-        topPanel.add(findPersonById);
+        topPanel.add(editPersonIdField);
+
+        // Add an ActionListener to the ID text field
+        editPersonIdField.addActionListener(e -> {
+            String idText = editPersonIdField.getText();
+            if (!idText.trim().isEmpty()) {
+                try {
+
+                    JTextField[] fieldArray = {editPersonIdField, personNameField,
+                                                personLastName1Field, personLastName2Field,
+                                                personNkField, personDniField, orderField, personPhoneField};
+                    for(JTextField textField : fieldArray) {
+                        textField.setForeground(Color.LIGHT_GRAY);
+                        textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                    }
+
+                    int personId = Integer.parseInt(idText);
+                    presenter.getPerson(personId);  // Call the presenter to fetch the person
+                } catch (NumberFormatException ex) {
+                    showErrorMessage("Por favor, introduce un ID válido");
+                }
+            }
+        });
+    }
+
+
+
+    // GETTERS AND SETTERS
+
+    public String getPersonNkField() {
+        return personNkField.getText().toUpperCase();
+    }
+
+    public String getPersonRank() {
+        return empleoBox.getSelectedItem().toString(); // maybe is not correct
+    }
+
+    public String getPersonName() {
+        return capitalizeWords(personNameField);
+    }
+
+    public String getPersonLastName1() {
+        return capitalizeWords(personLastName1Field);
+    }
+
+    public String getPersonLastName2() {
+        return capitalizeWords(personLastName2Field);
+    }
+
+    public String getPersonPhone() {
+        return personPhoneField.getText();
+    }
+
+    public String getPersonDni() {
+        // Tabla de letras correspondiente a cada resto
+        String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+        int dniNumero = Integer.parseInt(personDniField.getText());
+        // Obtener el resto de dividir el número del DNI entre 23
+        int resto = dniNumero % 23;
+        return personDniField.getText()+ letras.charAt(resto);
+    }
+
+    public String getPersonDivision() {
+        return divisionBox.getSelectedItem().toString();
+    }
+
+    public int getPersonOrder() {
+        return Integer.parseInt(orderField.getText());
+    }
+
+    public String getPersonRol() {
+        return rolBox.getSelectedItem().toString();
+    }
+
+    public String getPersonState() {
+        return personStateBox.getSelectedItem().toString();
+    }
+
+    public String getEditPersonIdField() {
+        return editPersonIdField.getText();
+    }
+
+    public void setPersonNk(String personNk) {
+        personNkField.setText(personNk);
+    }
+
+    public void setPersonRank(String personRank) {
+        empleoBox.setSelectedItem(personRank);
+    }
+
+    public void setPersonName(String personName) {
+        personNameField.setText(personName);
+    }
+
+    public void setPersonLastName1(String personLastName1) {
+        personLastName1Field.setText(personLastName1);
+    }
+
+    public void setPersonLastName2(String personLastName2) {
+        personLastName2Field.setText(personLastName2);
+    }
+
+    public void setPersonPhone(String personPhone) {
+        personPhoneField.setText(personPhone);
+    }
+
+    public void setPersonDni(String personDni) {
+        personDniField.setText(personDni);
+    }
+
+    public void setPersonDivision(String personDivision) {
+        divisionBox.setSelectedItem(personDivision);
+    }
+
+    public void setPersonRol(String personRol) {
+        rolBox.setSelectedItem(personRol);
+    }
+
+    public void setPersonOrder(int personOrder) {
+        orderField.setText(String.valueOf(personOrder));
+    }
+
+    public void setPersonStateBox(String personState) {
+        personStateBox.setSelectedItem(personState);
     }
 }
