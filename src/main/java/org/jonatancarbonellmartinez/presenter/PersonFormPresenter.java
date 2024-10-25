@@ -8,106 +8,44 @@ import org.jonatancarbonellmartinez.view.PersonFormView;
 import javax.swing.*;
 
 public class PersonFormPresenter {
-    private final PersonDAO personDAO;  // DAO to handle database operations
-    private final PersonFormView PersonFormView;
+    private final PersonDAO personDAO;
+    private final PersonFormView personFormView;
 
     public PersonFormPresenter(PersonFormView addPersonView, PersonDAO personDAO) {
-        this.PersonFormView = addPersonView;
+        this.personFormView = addPersonView;
         this.personDAO = personDAO;
     }
 
     public void addPerson() {
         try {
-            // Collect user input from the view
-            String personNk = PersonFormView.getPersonNkField();
-            String personRank = PersonFormView.getPersonRank();
-            String personName = PersonFormView.getPersonName();
-            String personLastName1 = PersonFormView.getPersonLastName1();
-            String personLastName2 = PersonFormView.getPersonLastName2();
-            String personPhone = PersonFormView.getPersonPhone();
-            String personDni = PersonFormView.getPersonDni();
-            String personDivision = PersonFormView.getPersonDivision();
-            String personRol = PersonFormView.getPersonRol();
-            int personOrder = PersonFormView.getPersonOrder();
-            int personCurrentFlag = 1;
-
-            // Create a new Person object
-            Person person = new Person();
-            person.setPersonNk(personNk);
-            person.setPersonRank(personRank);
-            person.setPersonName(personName);
-            person.setPersonLastName1(personLastName1);
-            person.setPersonLastName2(personLastName2);
-            person.setPersonPhone(personPhone);
-            person.setPersonDni(personDni);
-            person.setPersonDivision(personDivision);
-            person.setPersonOrder(personOrder);
-            person.setPersonRol(personRol);
-            person.setPersonCurrentFlag(personCurrentFlag);
-
-            // Call the create method in the DAO
+            Person person = collectPersonData();
+            person.setPersonCurrentFlag(1);
             personDAO.create(person);
-
-            // Optionally, notify the user of success
-            JOptionPane.showMessageDialog(PersonFormView, "Persona añadida correctamente.");
-
-            // Clear input fields after successful addition
-            PersonFormView.clearFields();
+            showMessage("Persona añadida correctamente.");
+            personFormView.clearFields();
 
         } catch (DatabaseException ex) {
-            // Handle any database-related exceptions
-            JOptionPane.showMessageDialog(PersonFormView, "Error al añadir persona: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            showError("Error al añadir persona: ", ex);
         } catch (Exception ex) {
-            // Handle any other exceptions
-            JOptionPane.showMessageDialog(PersonFormView, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            handleUnexpectedError(ex);
         }
     }
 
     public void editPerson() {
         try {
-            // Collect user input from the view
-            String personNk = PersonFormView.getPersonNkField();
-            String personRank = PersonFormView.getPersonRank();
-            String personName = PersonFormView.getPersonName();
-            String personLastName1 = PersonFormView.getPersonLastName1();
-            String personLastName2 = PersonFormView.getPersonLastName2();
-            String personPhone = PersonFormView.getPersonPhone();
-            String personDni = PersonFormView.getPersonDni();
-            String personDivision = PersonFormView.getPersonDivision();
-            String personRol = PersonFormView.getPersonRol();
-            int personOrder = PersonFormView.getPersonState().equals("Activo") ? PersonFormView.getPersonOrder() : 99999;
-            int personCurrentFlag = PersonFormView.getPersonState().equals("Activo") ? 1 : 0;
+            Person person = collectPersonData();
+            int personId = Integer.parseInt(personFormView.getEditPersonIdField());
+            int currentFlag = personFormView.getPersonState().equals("Activo") ? 1 : 0;
+            person.setPersonCurrentFlag(currentFlag);
+            person.setPersonOrder(calculatePersonOrder());
+            personDAO.update(person, personId);
+            showMessage("Persona editada correctamente.");
+            personFormView.clearFields();
 
-            // Create a new Person object
-            Person person = new Person();
-            person.setPersonNk(personNk);
-            person.setPersonRank(personRank);
-            person.setPersonName(personName);
-            person.setPersonLastName1(personLastName1);
-            person.setPersonLastName2(personLastName2);
-            person.setPersonPhone(personPhone);
-            person.setPersonDni(personDni);
-            person.setPersonDivision(personDivision);
-            person.setPersonOrder(personOrder);
-            person.setPersonRol(personRol);
-            person.setPersonCurrentFlag(personCurrentFlag);
-
-            // Call the Update method in the dao
-            personDAO.update(person,Integer.parseInt(PersonFormView.getEditPersonIdField()));
-
-            // Optionally, notify the user of success
-            JOptionPane.showMessageDialog(PersonFormView, "Persona editada correctamente.");
-
-            // Clear input fields after successful addition
-            PersonFormView.clearFields();
-
-        } catch (DatabaseException ex) {
-            // Handle any database-related exceptions
-            JOptionPane.showMessageDialog(PersonFormView, "Error al editar persona: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            // Handle any other exceptions
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(PersonFormView, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatabaseException e) {
+            showError("Error al editar persona: ", e);
+        } catch (Exception e) {
+            handleUnexpectedError(e);
         }
     }
 
@@ -115,30 +53,65 @@ public class PersonFormPresenter {
         try {
             Person person = personDAO.read(personId);
             if (person != null) {
-                // Update the view with person data
-                updateEditPersonFormView(person);
+                populatePersonForm(person);
             } else {
-                JOptionPane.showMessageDialog(PersonFormView, "No se encontró ninguna persona con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                showMessage("No se encontró ninguna persona con ese ID.");
             }
-        } catch (DatabaseException ex) {
-            JOptionPane.showMessageDialog(PersonFormView, "Error al obtener la persona: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(PersonFormView, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatabaseException e) {
+            showError("Error al obtener la persona: ", e);
+        } catch (Exception e) {
+            handleUnexpectedError(e);
         }
     }
 
-    public void updateEditPersonFormView(Person person) {
-        // Fill the view components with person data
-        PersonFormView.setPersonNk(person.getPersonNk());
-        PersonFormView.setPersonRank(person.getPersonRank());
-        PersonFormView.setPersonName(person.getPersonName());
-        PersonFormView.setPersonLastName1(person.getPersonLastName1());
-        PersonFormView.setPersonLastName2(person.getPersonLastName2());
-        PersonFormView.setPersonPhone(person.getPersonPhone());
-        PersonFormView.setPersonDni(person.getPersonDni().substring(0, person.getPersonDni().length() - 1)); // as the field only permits numbers, i substract the letter
-        PersonFormView.setPersonDivision(person.getPersonDivision());
-        PersonFormView.setPersonRol(person.getPersonRol());
-        PersonFormView.setPersonOrder(person.getPersonOrder());
-        PersonFormView.setPersonStateBox(person.getPersonCurrentFlag().equals(1) ? "Activo": "Inactivo");
+    private Person collectPersonData() {
+        Person person = new Person();
+        person.setPersonNk(personFormView.getPersonNkField());
+        person.setPersonRank(personFormView.getPersonRank());
+        person.setPersonName(personFormView.getPersonName());
+        person.setPersonLastName1(personFormView.getPersonLastName1());
+        person.setPersonLastName2(personFormView.getPersonLastName2());
+        person.setPersonPhone(personFormView.getPersonPhone());
+        person.setPersonDni(personFormView.getPersonDni());
+        person.setPersonDivision(personFormView.getPersonDivision());
+        person.setPersonRol(personFormView.getPersonRol());
+        person.setPersonOrder(personFormView.getPersonOrder());
+        return person;
     }
+
+    private void populatePersonForm(Person person) {
+        personFormView.setPersonNk(person.getPersonNk());
+        personFormView.setPersonRank(person.getPersonRank());
+        personFormView.setPersonName(person.getPersonName());
+        personFormView.setPersonLastName1(person.getPersonLastName1());
+        personFormView.setPersonLastName2(person.getPersonLastName2());
+        personFormView.setPersonPhone(person.getPersonPhone());
+        personFormView.setPersonDni(stripDniLetter(person.getPersonDni()));
+        personFormView.setPersonDivision(person.getPersonDivision());
+        personFormView.setPersonRol(person.getPersonRol());
+        personFormView.setPersonOrder(person.getPersonOrder());
+        personFormView.setPersonStateBox(person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo");
+    }
+
+    private int calculatePersonOrder() {
+        return personFormView.getPersonState().equals("Activo") ? personFormView.getPersonOrder() : 99999;
+    }
+
+    private String stripDniLetter(String dni) {
+        return dni != null && dni.length() > 0 ? dni.substring(0, dni.length() - 1) : "";
+    }
+
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(personFormView, message);
+    }
+
+    private void showError(String prefix, Exception e) {
+        JOptionPane.showMessageDialog(personFormView, prefix + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void handleUnexpectedError(Exception e) {
+        e.printStackTrace();
+        showError("Error inesperado: ", e);
+    }
+
 }

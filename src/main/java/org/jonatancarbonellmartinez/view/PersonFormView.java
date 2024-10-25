@@ -12,6 +12,8 @@ import java.awt.event.FocusEvent;
 
 public class PersonFormView extends JDialog {
 
+    private final Dimension FIELD_SIZE = new Dimension(180, 25);
+
     private MainView mainView;
     private PersonFormPresenter presenter;
     private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
@@ -20,14 +22,9 @@ public class PersonFormView extends JDialog {
     private JTextField personPhoneField, personNkField, personNameField, personLastName1Field,
                        personLastName2Field, orderField, personDniField, editPersonIdField;
     private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;
-    private JButton addButton;
-
-    private final Dimension FIELD_SIZE = new Dimension(180, 25);
-
-    JPanel topPanel;
-    JPanel centerPanel;
-    JPanel bottomPanel;
-
+    private JLabel insertIdLabel;
+    private JButton saveButton;
+    private JPanel topPanel, centerPanel, bottomPanel;
 
     public PersonFormView(MainView mainView, PersonDAO personDAO, PersonObserver observer, boolean isEditMode) {
         super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
@@ -41,52 +38,206 @@ public class PersonFormView extends JDialog {
     private void initializeUI() {
         setupDialogProperties();
         createPanels();
-        initializeUIcomponents();
-        setPreferedSizeToComponents();
-        setFieldsInputConstraints();
-        addComponentsToCenterPanel();
-        createAddButton();
-        addComponentsToBottomPanel();
-        if(isEditMode) createIdSearchGui();
-
+        initializeComponents();
+        configureComponents();
+        assembleUI();
         setVisible(true);
     }
 
     private void setupDialogProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(450, isEditMode ? 332 : 270);
+        setSize(450, isEditMode ? 340 : 280);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void createPanels() {
-        // Create the main panel to hold all form fields.
+        if (isEditMode) {
+            topPanel = new JPanel();
+            add(topPanel, BorderLayout.NORTH);
+        }
+
         centerPanel = new JPanel();
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
 
-        // Create a bottom panel for the button
         bottomPanel = new JPanel();
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
+        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private void setPreferedSizeToComponents() {
+    private void initializeComponents(){
+        empleoBox = createComboBox(new String[]{"CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
+                                                "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
+        divisionBox = createComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento",
+                                                   "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
+        rolBox = createComboBox(new String[] {"Piloto", "Dotación"},"Rol");
 
-        empleoBox.setPreferredSize(FIELD_SIZE);
-        personNkField.setPreferredSize(FIELD_SIZE);
-        personNameField.setPreferredSize(FIELD_SIZE);
-        personLastName1Field.setPreferredSize(FIELD_SIZE);
-        personLastName2Field.setPreferredSize(FIELD_SIZE);
-        personPhoneField.setPreferredSize(FIELD_SIZE);
-        divisionBox.setPreferredSize(FIELD_SIZE);
-        orderField.setPreferredSize(FIELD_SIZE);
-        rolBox.setPreferredSize(FIELD_SIZE);
-        personDniField.setPreferredSize(FIELD_SIZE);
+        personNkField = createTextField("Código",3,6);
+        personNameField = createTextField("Nombre");
+        personLastName1Field = createTextField("Apellido 1");
+        personLastName2Field = createTextField("Apellido 2");
+        personPhoneField = createTextField("Teléfono");
+        personDniField = createTextField("DNI");
+        orderField = createTextField("Orden");
+
+        saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
+        saveButton.addActionListener(e -> onSaveButtonClicked());
+
+        if (isEditMode) {
+            createEditModeComponents();
+        }
     }
 
-    private void setFieldsInputConstraints() {
+    private void configureComponents() {
+        setFieldSizeAndConstraints();
+        if (isEditMode) configureEditModeComponents();
+    }
+
+    private void assembleUI() {
+        addComponentsToPanel(centerPanel, empleoBox, personNkField, personNameField, personLastName1Field,
+                personLastName2Field, personPhoneField, personDniField, divisionBox, rolBox, orderField);
+        bottomPanel.add(saveButton);
+        if (isEditMode) {
+            topPanel.add(insertIdLabel);
+            topPanel.add(editPersonIdField);
+            centerPanel.add(personStateBox);
+        }
+    }
+
+    private void createEditModeComponents() {
+        editPersonIdField = createTextField("ID", 0, 60);
+        personStateBox = createComboBox(new String[]{"Activo", "Inactivo"}, "Situación");
+        insertIdLabel = new JLabel("Introduzca el ID");
+        editPersonIdField.addActionListener(e -> onEditPersonIdFieldAction());
+    }
+
+    private void setFieldSizeAndConstraints() {
+        setPreferredSizeForComponents(FIELD_SIZE, empleoBox, divisionBox, rolBox, personNkField, personNameField,
+                personLastName1Field, personLastName2Field, personPhoneField, personDniField, orderField);
+        setDocumentFilters();
+        setInitialComboBoxLook(empleoBox,divisionBox,rolBox);
+    }
+
+    private void setInitialComboBoxLook(JComponent... comboBox) {
+        for (JComponent box : comboBox) {
+            box.setForeground(Color.GRAY);
+            box.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        }
+    }
+
+    private void configureEditModeComponents() {
+        editPersonIdField.setPreferredSize(new Dimension(60, 25));
+        editPersonIdField.setToolTipText("Presiona Enter para buscar");
+        personStateBox.setPreferredSize(FIELD_SIZE);
+        personStateBox.setForeground(Color.GRAY);
+        personStateBox.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+    }
+
+    private void onSaveButtonClicked() {
+        if (isFormValid()) {
+            if (isEditMode) {
+                presenter.editPerson();
+            } else {
+                presenter.addPerson();
+            }
+            notifyObserver();
+        }
+    }
+
+    private void notifyObserver() {
+        if (observer != null) {
+            observer.onPersonChanges();
+        }
+    }
+
+    private void onEditPersonIdFieldAction() {
+        String idText = editPersonIdField.getText();
+        if (!idText.trim().isEmpty()) {
+            try {
+
+                JTextField[] fieldArray = {editPersonIdField, personNameField,
+                        personLastName1Field, personLastName2Field,
+                        personNkField, personDniField, orderField, personPhoneField};
+                for(JTextField textField : fieldArray) {
+                    textField.setForeground(Color.LIGHT_GRAY);
+                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+                }
+
+                int personId = Integer.parseInt(idText);
+                ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(3));
+                presenter.getPerson(personId);  // Call the presenter to fetch the person
+            } catch (NumberFormatException ex) {
+                showErrorMessage("Por favor, introduce un ID válido");
+            }
+        }
+    }
+
+    private JComboBox<String> createComboBox(String[] values, String placeholder) {
+        JComboBox<String> comboBox = new JComboBox<>(values);
+        comboBox.insertItemAt("", 0);
+        comboBox.setSelectedIndex(0);
+        comboBox.setRenderer(createComboBoxRenderer(placeholder));
+        comboBox.addActionListener(e -> updateComboBoxAppearance(comboBox, placeholder));
+        return comboBox;
+    }
+
+    private JTextField createTextField(String placeholder) {
+        JTextField textField = new JTextField(placeholder);
+        setPlaceholder(textField, placeholder);
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                onTextFieldFocusGained(textField, placeholder);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                onTextFieldFocusLost(textField, placeholder);
+            }
+        });
+        return textField;
+    }
+
+    private JTextField createTextField(String placeholder, int inputLimit, int placeHolderLimit) {
+        JTextField textField = new JTextField(placeholder);
+        setPlaceholder(textField, placeholder);
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                onTextFieldFocusGained(textField, placeholder, inputLimit);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                onTextFieldFocusLost(textField, placeholder, placeHolderLimit);
+            }
+        });
+        return textField;
+    }
+
+    private ListCellRenderer<Object> createComboBoxRenderer(String placeholder) {
+        return new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                if (value == null || value.equals("")) value = placeholder;
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                c.setFont(new Font("Segoe UI", value.equals(placeholder) ? Font.ITALIC : Font.PLAIN, 15));
+                c.setForeground(value.equals(placeholder) ? Color.GRAY : Color.LIGHT_GRAY);
+                return c;
+            }
+        };
+    }
+
+    private void setPreferredSizeForComponents(Dimension size, JComponent... components) {
+        for (JComponent component : components) {
+            component.setPreferredSize(size);
+        }
+    }
+
+    private void setDocumentFilters() {
         ((AbstractDocument) personNameField.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personLastName1Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
         ((AbstractDocument) personLastName2Field.getDocument()).setDocumentFilter(new LimitDocumentFilter(30));
@@ -95,165 +246,50 @@ public class PersonFormView extends JDialog {
         ((AbstractDocument) orderField.getDocument()).setDocumentFilter(new LimitDocumentFilter(5));
     }
 
-    private void initializeUIcomponents(){
-        empleoBox = myComboBox(new String[]{
-                "CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
-                "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
-        personNkField = myTextFieldWithLargerPlaceHolder("Código",3,6);
-        personNameField = myTextField("Nombre");
-        personLastName1Field = myTextField("Apellido 1");
-        personLastName2Field = myTextField("Apellido 2");
-        personPhoneField = myTextField("Teléfono");
-        personDniField = myTextField("DNI");
-        divisionBox = myComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
-        rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
-        orderField = myTextField("Orden");
-    }
-
-    private void addComponentsToCenterPanel() {
-        centerPanel.add(empleoBox);
-        centerPanel.add(personNkField);
-        centerPanel.add(personNameField);
-        centerPanel.add(personLastName1Field);
-        centerPanel.add(personLastName2Field);
-        centerPanel.add(personPhoneField);
-        centerPanel.add(personDniField);
-        centerPanel.add(divisionBox);
-        centerPanel.add(rolBox);
-        centerPanel.add(orderField);
-        //centerPanel.add(currentFlagBox);
-    }
-
-    private void createAddButton() {
-        // Add an "Add" button with an action listener
-        addButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
-        addButton.addActionListener(e -> {
-            if(isFormValid()) {
-                if(isEditMode) {
-                    presenter.editPerson();
-                } else {
-                    presenter.addPerson();
-                }
-                // Notify the observer (MainPresenter) that a person was added
-                if (observer!=null) {
-                    observer.onPersonChanges();
-                }
-            }
-        });
-    }
-
-    private void addComponentsToBottomPanel() {
-        bottomPanel.add(addButton);
-    }
-
-    private JComboBox<String> myComboBox(String[] listValues, String placeHolder) {
-        JComboBox<String> comboBox = new JComboBox<>(listValues);
-        comboBox.insertItemAt("", 0); // Add empty item at index 0
-        comboBox.setSelectedIndex(0); // Set it as the selected item initially
-        comboBox.setForeground(Color.GRAY); // Set default color for placeholder
-        comboBox.setFont(new Font("Segoe UI", Font.ITALIC, 15)); // Initial font for placeholder
-
-        // Custom renderer to display the placeholder
-        comboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                // If the value is empty or null, use the placeholder
-                if (value == null || value.equals("")) {
-                    value = placeHolder; // Use placeholder text
-                }
-                // Call super to get the default component
-                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                // Set color and font based on whether the placeholder is shown
-                if (value.equals(placeHolder)) {
-                    c.setForeground(Color.GRAY); // Placeholder color
-                    c.setFont(new Font("Segoe UI", Font.ITALIC, 15)); // Italic font for placeholder
-                } else {
-                    c.setForeground(Color.LIGHT_GRAY); // Normal color for selected items
-                    c.setFont(new Font("Segoe UI", Font.PLAIN, 15)); // Plain font for other selections
-                }
-                return c;
-            }
-        });
-
-        // Add an ActionListener to handle selection changes
-        comboBox.addActionListener(e -> {
-            // Check the selected item and set the foreground color and font accordingly
-            if (!comboBox.getSelectedItem().equals("") && !comboBox.getSelectedItem().equals(placeHolder)) {
-                comboBox.setForeground(Color.LIGHT_GRAY); // Change to white if selected item is not the placeholder
-                comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15)); // Set font to plain
-            } else {
-                comboBox.setForeground(Color.GRAY); // Set back to gray if it is the placeholder
-                comboBox.setFont(new Font("Segoe UI", Font.ITALIC, 15)); // Set back to italic
-            }
-        });
-
-        return comboBox;
-    }
-
-    private JTextField myTextFieldWithLargerPlaceHolder(String placeholder,int inputLimit, int placeholderLimit) {
-        JTextField textField = new JTextField();
+    private void setPlaceholder(JTextField textField, String placeholder) {
         textField.setText(placeholder);
-        if(textField.getText().equals(placeholder)) {
-            textField.setForeground(Color.GRAY);
-            textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-        }
-
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(inputLimit));
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.LIGHT_GRAY);
-                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(placeholderLimit));
-                if (textField.getText().trim().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                    textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-                }
-            }
-        });
-
-        return textField;
+        textField.setForeground(Color.GRAY);
+        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
     }
 
-    private JTextField myTextField(String placeholder) {
-        JTextField textField = new JTextField();
-        textField.setText(placeholder);
-        if(textField.getText().equals(placeholder)) {
-            textField.setForeground(Color.GRAY);
-            textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+    private void updateComboBoxAppearance(JComboBox<String> comboBox, String placeholder) {
+        if (!comboBox.getSelectedItem().equals("") && !comboBox.getSelectedItem().equals(placeholder)) {
+            comboBox.setForeground(Color.LIGHT_GRAY);
+            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        } else {
+            comboBox.setForeground(Color.GRAY);
+            comboBox.setFont(new Font("Segoe UI", Font.ITALIC, 15));
         }
+    }
 
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.LIGHT_GRAY);
-                    textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-                }
-            }
+    private void onTextFieldFocusGained(JTextField textField, String placeholder) {
+        if (textField.getText().equals(placeholder)) {
+            textField.setText("");
+            textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            textField.setForeground(Color.LIGHT_GRAY);
+        }
+    }
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (textField.getText().trim().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                    textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-                }
-            }
+    private void onTextFieldFocusGained(JTextField textField, String placeholder, int limit) {
+        if (textField.getText().equals(placeholder)) {
+            ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(limit));
+            textField.setText("");
+            textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            textField.setForeground(Color.LIGHT_GRAY);
+        }
+    }
 
-        });
+    private void onTextFieldFocusLost(JTextField textField, String placeholder) {
+        if (textField.getText().isEmpty()) {
+            setPlaceholder(textField, placeholder);
+        }
+    }
 
-        return textField;
+    private void onTextFieldFocusLost(JTextField textField, String placeholder, int limit) {
+        if (textField.getText().isEmpty()) {
+            ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(limit));
+            setPlaceholder(textField, placeholder);
+        }
     }
 
     public void clearFields() {
@@ -277,105 +313,75 @@ public class PersonFormView extends JDialog {
     }
 
     private void resetTextFieldWithPlaceholder(JTextField textField, String placeholder) {
+        ((AbstractDocument) personNkField.getDocument()).setDocumentFilter(new LimitDocumentFilter(6));
         textField.setText(placeholder);  // Reset to placeholder text
         textField.setForeground(Color.GRAY);  // Placeholder color
         textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));  // Placeholder font
     }
 
-    public boolean isFormValid() {
-        return areFieldsValid() && areComboBoxesValid();
+    private boolean isFormValid() {
+        return validateComboBox(empleoBox, "Empleo") &&
+                validateComboBox(divisionBox, "División") &&
+                validateComboBox(rolBox, "Rol") &&
+                validateField(personNkField, "Código") &&
+                validateField(personNameField, "Nombre") &&
+                validateField(personLastName1Field, "Apellido 1") &&
+                validateField(personLastName2Field, "Apellido 2") &&
+                validateField(personPhoneField, "Teléfono") &&
+                validateField(personDniField, "DNI") &&
+                validateField(orderField, "Orden") &&
+                fieldContainsOnlyLetters(personNkField,"Código") &&
+                fieldContainsOnlyLetters(personNameField,"Nombre") &&
+                fieldContainsOnlyLetters(personLastName1Field,"Apellido 1") &&
+                fieldContainsOnlyLetters(personLastName2Field,"Apellido 2") &&
+                containsOnlyNumbers(personPhoneField,"Teléfono") &&
+                containsOnlyNumbers(personDniField,"DNI") &&
+                fieldDoesntContainZero(orderField, "Orden");
     }
 
-    public boolean areFieldsValid() {
-        JTextField[] textFields = {
-                personNkField,
-                personNameField,
-                personLastName1Field,
-                personLastName2Field,
-                personPhoneField,
-                personDniField,
-                orderField
-        };
-
-        for (JTextField textField : textFields) {
-            if (isTextFieldEmpty(textField)) {
-                showErrorMessage("Por favor, completa todos los campos");
-                return false;
-            }
-        }
-
-        if (!containsOnlyLetters(getPersonName())) {
-            showErrorMessage("El nombre solo debe contener letras");
+    private boolean validateComboBox(JComboBox<String> comboBox, String fieldName) {
+        if (comboBox.getSelectedIndex() == 0) {
+            showErrorMessage("Por favor, selecciona un valor para " + fieldName);
             return false;
         }
-
-        if(!containsOnlyLetters(getPersonLastName1())) {
-            showErrorMessage("El Apellido1 solo debe contener letras");
-            return false;
-        }
-
-        if(!containsOnlyLetters(getPersonLastName2())) {
-            showErrorMessage("El Apellido2 solo debe contener letras");
-            return false;
-        }
-
-        if(!containsOnlyNumbers(getPersonPhone())) { // hacer esto para el resto, en lugar de crear un metodo especifico
-            showErrorMessage("El campo 'Teléfono' debe ser numérico");
-            return false;
-        }
-
-        if(!containsOnlyNumbers(personDniField.getText())) {
-            showErrorMessage("El campo 'DNI' debe ser numérico");
-            return false;
-        }
-
-        if(!containsOnlyNumbers(String.valueOf(getPersonOrder()))) {
-            showErrorMessage("El campo 'Orden' debe ser numérico");
-        }
-
-        if (orderField.getText().equals("0")) {
-            showErrorMessage("El campo 'Orden' no puede ser 0");
-            return false;
-        }
-
         return true;
     }
 
-    public boolean areComboBoxesValid() {
-        JComboBox<?>[] comboBoxes = {
-                empleoBox,
-                divisionBox,
-                rolBox
-        };
-
-        for (JComboBox<?> comboBox : comboBoxes) {
-            if (isComboBoxUnselected(comboBox)) {
-                showErrorMessage("Por favor, selecciona todas las opciones");
-                return false;
-            }
+    private boolean validateField(JTextField field, String fieldName) {
+        if (field.getText().isEmpty() || field.getText().equals(fieldName)) {
+            showErrorMessage("Por favor, completa el campo " + fieldName);
+            return false;
         }
-
         return true;
     }
 
-    private void showErrorMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    private boolean fieldDoesntContainZero(JTextField field, String fieldName) {
+        if(field.getText().equals("0")) {
+            showErrorMessage("El campo " + fieldName + " no puede ser 0.");
+            return false;
+        }
+        return true;
     }
 
-    private boolean isTextFieldEmpty(JTextField textField) {
-        return textField.getText().trim().isEmpty();
+    private void addComponentsToPanel(JPanel panel, JComponent... components) {
+        for (JComponent component : components) {
+            panel.add(component);
+        }
     }
 
-    private boolean isComboBoxUnselected(JComboBox<?> comboBox) {
-        return comboBox.getSelectedIndex() == 0;
+    private boolean fieldContainsOnlyLetters(JTextField field, String fieldName) {
+        if(!field.getText().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*$")) {
+            showErrorMessage("El campo " + fieldName + " solo acepta letras.");
+            return false;
+        }
+        return  true;
     }
 
-    private boolean containsOnlyLetters(String input) {
-        return input != null && input.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*$");
-    }
-
-    public boolean containsOnlyNumbers(String input) {
-        return input.matches("^[0-9]*$");
+    public boolean containsOnlyNumbers(JTextField field, String fieldName) {
+        if(!field.getText().matches("^[0-9]*$")) {
+            showErrorMessage("El campo " + fieldName + " solo acepta números.");
+        }
+        return true;
     }
 
     public String capitalizeWords(JTextField field) {
@@ -393,44 +399,9 @@ public class PersonFormView extends JDialog {
         return capitalizedName.toString().trim();
     }
 
-    private void createIdSearchGui() {
-        setSize(450,332);
-        topPanel = new JPanel();
-        getContentPane().add(topPanel, BorderLayout.NORTH);
-        JLabel insertIdLabel = new JLabel("Introduzca el ID");
-        editPersonIdField = myTextField("ID");
-        editPersonIdField.setPreferredSize(new Dimension(60, 25));
-        editPersonIdField.setToolTipText("Presiona Enter para buscar");
-        personStateBox = myComboBox(new String[] {"Activo","Inactivo"}, "Situación");
-        personStateBox.setPreferredSize(FIELD_SIZE);
-        centerPanel.add(personStateBox);
-        topPanel.add(insertIdLabel);
-        topPanel.add(editPersonIdField);
-
-        // Add an ActionListener to the ID text field
-        editPersonIdField.addActionListener(e -> {
-            String idText = editPersonIdField.getText();
-            if (!idText.trim().isEmpty()) {
-                try {
-
-                    JTextField[] fieldArray = {editPersonIdField, personNameField,
-                                                personLastName1Field, personLastName2Field,
-                                                personNkField, personDniField, orderField, personPhoneField};
-                    for(JTextField textField : fieldArray) {
-                        textField.setForeground(Color.LIGHT_GRAY);
-                        textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-                    }
-
-                    int personId = Integer.parseInt(idText);
-                    presenter.getPerson(personId);  // Call the presenter to fetch the person
-                } catch (NumberFormatException ex) {
-                    showErrorMessage("Por favor, introduce un ID válido");
-                }
-            }
-        });
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
-
-
 
     // GETTERS AND SETTERS
 
