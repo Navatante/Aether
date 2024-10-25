@@ -11,22 +11,23 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class PersonFormView extends JDialog {
-    // MVP with Observer
+
     private MainView mainView;
     private PersonFormPresenter presenter;
     private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
     private boolean isEditMode;
-    // Components
-    private JTextField personPhoneField, personNkField, personNameField, personLastName1Field, personLastName2Field, orderField, personDniField, editPersonIdField;
+
+    private JTextField personPhoneField, personNkField, personNameField, personLastName1Field,
+                       personLastName2Field, orderField, personDniField, editPersonIdField;
     private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;
     private JButton addButton;
 
-    private final Dimension fieldSize = new Dimension(180, 25);
+    private final Dimension FIELD_SIZE = new Dimension(180, 25);
 
-    // Panels
+    JPanel topPanel;
     JPanel centerPanel;
     JPanel bottomPanel;
-    JPanel topPanel;
+
 
     public PersonFormView(MainView mainView, PersonDAO personDAO, PersonObserver observer, boolean isEditMode) {
         super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
@@ -38,12 +39,7 @@ public class PersonFormView extends JDialog {
     }
 
     private void initializeUI() {
-        setLayout(new BorderLayout());
-        setResizable(false);
-        setSize(450,270);
-        setLocationRelativeTo(mainView);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+        setupDialogProperties();
         createPanels();
         initializeUIcomponents();
         setPreferedSizeToComponents();
@@ -56,18 +52,38 @@ public class PersonFormView extends JDialog {
         setVisible(true);
     }
 
+    private void setupDialogProperties() {
+        setLayout(new BorderLayout());
+        setResizable(false);
+        setSize(450, isEditMode ? 332 : 270);
+        setLocationRelativeTo(mainView);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    private void createPanels() {
+        // Create the main panel to hold all form fields.
+        centerPanel = new JPanel();
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+
+        // Create a bottom panel for the button
+        bottomPanel = new JPanel();
+        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
+    }
+
     private void setPreferedSizeToComponents() {
 
-        empleoBox.setPreferredSize(fieldSize);
-        personNkField.setPreferredSize(fieldSize);
-        personNameField.setPreferredSize(fieldSize);
-        personLastName1Field.setPreferredSize(fieldSize);
-        personLastName2Field.setPreferredSize(fieldSize);
-        personPhoneField.setPreferredSize(fieldSize);
-        divisionBox.setPreferredSize(fieldSize);
-        orderField.setPreferredSize(fieldSize);
-        rolBox.setPreferredSize(fieldSize);
-        personDniField.setPreferredSize(fieldSize);
+        empleoBox.setPreferredSize(FIELD_SIZE);
+        personNkField.setPreferredSize(FIELD_SIZE);
+        personNameField.setPreferredSize(FIELD_SIZE);
+        personLastName1Field.setPreferredSize(FIELD_SIZE);
+        personLastName2Field.setPreferredSize(FIELD_SIZE);
+        personPhoneField.setPreferredSize(FIELD_SIZE);
+        divisionBox.setPreferredSize(FIELD_SIZE);
+        orderField.setPreferredSize(FIELD_SIZE);
+        rolBox.setPreferredSize(FIELD_SIZE);
+        personDniField.setPreferredSize(FIELD_SIZE);
     }
 
     private void setFieldsInputConstraints() {
@@ -92,18 +108,6 @@ public class PersonFormView extends JDialog {
         divisionBox = myComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento","Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = myComboBox(new String[] {"Piloto", "Dotación"},"Rol");
         orderField = myTextField("Orden");
-    }
-
-    private void createPanels() {
-        // Create the main panel to hold all form fields.
-        centerPanel = new JPanel();
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-
-        // Create a bottom panel for the button
-        bottomPanel = new JPanel();
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
     }
 
     private void addComponentsToCenterPanel() {
@@ -398,7 +402,7 @@ public class PersonFormView extends JDialog {
         editPersonIdField.setPreferredSize(new Dimension(60, 25));
         editPersonIdField.setToolTipText("Presiona Enter para buscar");
         personStateBox = myComboBox(new String[] {"Activo","Inactivo"}, "Situación");
-        personStateBox.setPreferredSize(fieldSize);
+        personStateBox.setPreferredSize(FIELD_SIZE);
         centerPanel.add(personStateBox);
         topPanel.add(insertIdLabel);
         topPanel.add(editPersonIdField);
