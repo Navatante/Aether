@@ -1,9 +1,6 @@
 package org.jonatancarbonellmartinez.model.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class Person {
+public class Person implements Entity {
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
     private String personRank;

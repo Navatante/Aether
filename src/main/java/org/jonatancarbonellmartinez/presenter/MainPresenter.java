@@ -29,12 +29,12 @@ public class MainPresenter implements PersonObserver {
     // Methods to show New Windows, like JDialogs.
     private void showAddPersonView() {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
-        new PersonFormView(mainView, personDAOSQLite, this,false); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
+        new PersonDialogView(mainView, personDAOSQLite, this,false); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
     }
 
     private void showEditPersonView() {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Here the PersonDAOSQLITE instance is created! (At the moment the button is clicked)
-        new PersonFormView(mainView, personDAOSQLite, this,true); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
+        new PersonDialogView(mainView, personDAOSQLite, this,true); // ese this lo he metido tras implementar la logica del observer, quiza se quite cuando me aclare con ese patron.
     }
 
     // Methods to show cards
@@ -43,12 +43,12 @@ public class MainPresenter implements PersonObserver {
 
         // Check if there are any components in the card panel
         int componentCount = mainView.getCardPanel().getComponentCount();
-        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonCardView;
+        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonPanelView;
 
         if (!isPersonViewVisible) {
             // If there are no components or the first component isn't PersonCardView, create and add a new one
             PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Create the PersonDAO instance
-            PersonCardView personCardView = new PersonCardView(personDAOSQLite);
+            PersonPanelView personCardView = new PersonPanelView(personDAOSQLite);
             mainView.getCardPanel().add(personCardView, "Person View"); // Add new card
         }
 
@@ -60,16 +60,15 @@ public class MainPresenter implements PersonObserver {
         mainView.getCardPanel().repaint();
     }
 
-
     @Override
     public void onPersonChanges() {
         if (mainView.getCardPanel().getComponentCount() > 0) { // Check if there are any component to avoid nullPointerException
             // Safe to access the first component
             // Get the current component in the card panel and check if it's an instance of PersonCardView
             Component currentComponent = mainView.getCardPanel().getComponent(0);
-            if (currentComponent instanceof PersonCardView) {
-                PersonCardView personCardView = (PersonCardView) currentComponent;
-                personCardView.showView(); // Refresh the table by reloading all persons
+            if (currentComponent instanceof PersonPanelView) {
+                PersonPanelView personCardView = (PersonPanelView) currentComponent;
+                personCardView.showPanel(); // Refresh the table by reloading all persons
             }
         }
     }
