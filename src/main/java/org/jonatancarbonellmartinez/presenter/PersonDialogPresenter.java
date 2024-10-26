@@ -110,7 +110,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
 
     @Override
     public void notifyObserver() {
-        observer.onPersonChanges();
+        observer.update();
     }
 
     private void populatePersonDialog(Person person) {

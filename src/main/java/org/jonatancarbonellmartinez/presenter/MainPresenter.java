@@ -61,16 +61,17 @@ public class MainPresenter implements Observer {
     }
 
     @Override
-    public void onPersonChanges() {
-        if (mainView.getCardPanel().getComponentCount() > 0) { // Check if there are any component to avoid nullPointerException
+    public void update() {
+        if (mainView.getCardPanel().getComponentCount() > 0) {
             // Safe to access the first component
-            // Get the current component in the card panel and check if it's an instance of PersonCardView
             Component currentComponent = mainView.getCardPanel().getComponent(0);
             if (currentComponent instanceof PersonPanelView) {
                 PersonPanelView personPanelView = (PersonPanelView) currentComponent;
-                personPanelView.refreshPanel(); // Refresh the table by reloading all persons
-            }
+                personPanelView.updatePanel();
+            } //else if (currentComponent instanceof EventPanelView) {
+                //EventPanelView eventPanelView = (EventPanelView) currentComponent;
+                //eventPanelView.updatePanel();
+            //}
         }
     }
-
 }

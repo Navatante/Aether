@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public interface PanelView {
 
-    void refreshPanel();
+    void updatePanel();
 
     /**
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.

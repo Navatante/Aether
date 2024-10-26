@@ -34,7 +34,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         addActionListeners();
         configureComponents();
         assembleUI();
-        refreshPanel();
+        updatePanel();
         setVisible(true);
     }
 
@@ -95,8 +95,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     }
 
     @Override
-    public void refreshPanel() {
-        presenter.loadAllPersons();  // Load data through presenter
+    public void updatePanel() {
+        presenter.loadAllPersons();
     }
 
     private void createSearchFieldListener() {
