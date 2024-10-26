@@ -34,7 +34,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         addActionListeners();
         configureComponents();
         assembleUI();
-        showPanel();
+        refreshPanel();
+        setVisible(true);
     }
 
     @Override
@@ -89,14 +90,13 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
     @Override
     public void assembleUI() {
-    View.addComponentsToPanel(insideTopPanel,searchField, new JLabel("Buscar"));
+    View.addComponentsToPanel(insideTopPanel, new JLabel("Buscar"), searchField);
     topPanel.add(togglePersonState, BorderLayout.EAST);
     }
 
     @Override
-    public void showPanel() {
+    public void refreshPanel() {
         presenter.loadAllPersons();  // Load data through presenter
-        setVisible(true);
     }
 
     private void createSearchFieldListener() {

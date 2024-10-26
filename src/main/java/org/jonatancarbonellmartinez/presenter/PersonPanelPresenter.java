@@ -60,7 +60,7 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
     }
 
     public void onSearchTextChanged(String searchText) {
-        applySearchFilter(searchText); // Apply the search filter
+        applySearchFilter(searchText);
     }
 
     public void onPersonStateChanged(boolean isActiveSelected) {

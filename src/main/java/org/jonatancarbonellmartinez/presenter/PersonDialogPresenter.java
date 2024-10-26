@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.presenter;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
+import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.PersonDialogView;
 
@@ -11,10 +12,12 @@ import javax.swing.*;
 public class PersonDialogPresenter implements Presenter, DialogPresenter {
     private final PersonDAO personDAO;
     private final PersonDialogView view;
+    private final Observer observer;
 
-    public PersonDialogPresenter(PersonDialogView addPersonView, PersonDAO personDAO) {
+    public PersonDialogPresenter(PersonDialogView addPersonView, PersonDAO personDAO, Observer observer) {
         this.view = addPersonView;
         this.personDAO = personDAO;
+        this.observer = observer;
     }
 
     @Override
@@ -103,6 +106,11 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         person.setPersonRol(view.getRolBox().getSelectedItem().toString());
         person.setPersonOrder(Integer.parseInt(view.getOrderField().getText()));
         return person;
+    }
+
+    @Override
+    public void notifyObserver() {
+        observer.onPersonChanges();
     }
 
     private void populatePersonDialog(Person person) {

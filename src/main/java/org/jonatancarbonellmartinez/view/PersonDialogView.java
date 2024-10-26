@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.observers.PersonObserver;
+import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     private MainView mainView;
     private PersonDialogPresenter presenter;
-    private PersonObserver observer;  // Observer to notify when a person is added PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
     private boolean isEditMode;
 
     private JTextField personPhoneField, personNkField, personNameField, personLastName1Field,
@@ -20,11 +19,10 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     private JButton saveButton;
     private JPanel topPanel, centerPanel, bottomPanel;
 
-    public PersonDialogView(MainView mainView, PersonDAO personDAO, PersonObserver observer, boolean isEditMode) {
+    public PersonDialogView(MainView mainView, PersonDAO personDAO, Observer observer, boolean isEditMode) {
         super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
         this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
-        this.presenter = new PersonDialogPresenter(this, personDAO);
-        this.observer = observer; // PROBABLY DELETE WHEN OBSERVER PATTERN LEARNED
+        this.presenter = new PersonDialogPresenter(this, personDAO, observer);
         this.isEditMode = isEditMode;
         initializeUI();
     }
@@ -139,7 +137,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
             } else {
                 presenter.addEntity();
             }
-            View.notifyObserver(observer);
+            presenter.notifyObserver();
         }
     }
 
@@ -215,10 +213,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     public PersonDialogPresenter getPresenter() {
         return presenter;
-    }
-
-    public PersonObserver getObserver() {
-        return observer;
     }
 
     public boolean isEditMode() {

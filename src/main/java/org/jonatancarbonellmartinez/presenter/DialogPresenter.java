@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.presenter;
 
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
+import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public interface DialogPresenter {
     void editEntity();
     void getEntity(int entityId);
     Entity collectEntityData();
+    void notifyObserver();
 
     /**
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.

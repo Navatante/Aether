@@ -2,12 +2,12 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.observers.PersonObserver;
+import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.*;
 
 import java.awt.*;
 
-public class MainPresenter implements PersonObserver {
+public class MainPresenter implements Observer {
     private final MainView mainView;
     private final DAOFactory daoFactory; // This reference will allow me to create DAOs trough methods (like showAddPersonView is doing)
 
@@ -48,8 +48,8 @@ public class MainPresenter implements PersonObserver {
         if (!isPersonViewVisible) {
             // If there are no components or the first component isn't PersonCardView, create and add a new one
             PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Create the PersonDAO instance
-            PersonPanelView personCardView = new PersonPanelView(personDAOSQLite);
-            mainView.getCardPanel().add(personCardView, "Person View"); // Add new card
+            PersonPanelView personPanelView = new PersonPanelView(personDAOSQLite);
+            mainView.getCardPanel().add(personPanelView, "Person View"); // Add new card
         }
 
         // Show the Person View card
@@ -67,8 +67,8 @@ public class MainPresenter implements PersonObserver {
             // Get the current component in the card panel and check if it's an instance of PersonCardView
             Component currentComponent = mainView.getCardPanel().getComponent(0);
             if (currentComponent instanceof PersonPanelView) {
-                PersonPanelView personCardView = (PersonPanelView) currentComponent;
-                personCardView.showPanel(); // Refresh the table by reloading all persons
+                PersonPanelView personPanelView = (PersonPanelView) currentComponent;
+                personPanelView.refreshPanel(); // Refresh the table by reloading all persons
             }
         }
     }

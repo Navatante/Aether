@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.observers.PersonObserver;
+import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.utilities.LimitDocumentFilter;
 
 import javax.swing.*;
@@ -148,11 +148,5 @@ public interface View {
                 return c;
             }
         };
-    }
-
-    static void notifyObserver(PersonObserver observer) {
-        if (observer != null) {
-            observer.onPersonChanges();
-        }
     }
 }
