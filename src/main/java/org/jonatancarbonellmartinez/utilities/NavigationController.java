@@ -13,7 +13,6 @@ public class NavigationController {
 
     public NavigationController(MainView mainView) {
         this.mainView = mainView;
-
     }
 
     public void navigateTo(String view) {
@@ -27,7 +26,6 @@ public class NavigationController {
 
             case "Test":
                 break;
-
             // Add more cases for other views as necessary
         }
     }
