@@ -1,8 +1,8 @@
 package org.jonatancarbonellmartinez.model.entities;
 
-public class Person implements Entity { // TODO 3. Study data binding and perform a manual implementation to bind Entities with form fields (JTextFields, JComboBox, etc)
-    private Integer personSk; // Primary Key
-    private String personNk; // Unique identifier
+public class Person implements Entity {
+    private Integer personSk;
+    private String personNk;
     private String personRank;
     private String personName;
     private String personLastName1;
@@ -13,28 +13,6 @@ public class Person implements Entity { // TODO 3. Study data binding and perfor
     private String personRol;
     private Integer personOrder;
     private Integer personCurrentFlag;
-
-    // Default constructor
-    public Person() {}
-
-    // Constructor with parameters
-    public Person(Integer personSk, String personNk, String personRank,
-                  String personName, String personLastName1, String personLastName2,
-                  String personPhone, String dni, String personDivision, String personRol, Integer personOrder,
-                  Integer personCurrentFlag) {
-        this.personSk = personSk;
-        this.personNk = personNk;
-        this.personRank = personRank;
-        this.personName = personName;
-        this.personLastName1 = personLastName1;
-        this.personLastName2 = personLastName2;
-        this.personPhone = personPhone;
-        this.personDni = dni;
-        this.personDivision = personDivision;
-        this.personRol = personRol;
-        this.personOrder = personOrder;
-        this.personCurrentFlag = personCurrentFlag;
-    }
 
     // Getters and Setters
     public Integer getPersonSk() {
@@ -122,9 +100,6 @@ public class Person implements Entity { // TODO 3. Study data binding and perfor
     }
 
     public void setPersonRol(String personRol) {
-        if (!"Piloto".equals(personRol) && !"Dotación".equals(personRol)) {
-            throw new IllegalArgumentException("Rol inválido: debe ser 'Piloto' o 'Dotación'");
-        }
         this.personRol = personRol;
     }
 

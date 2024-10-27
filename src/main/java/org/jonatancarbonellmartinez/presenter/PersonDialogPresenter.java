@@ -48,8 +48,10 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         try {
             Person person = collectEntityData();
             person.setPersonCurrentFlag(1);
+
             personDAO.create(person);
             DialogView.showMessage(view,"Persona añadida correctamente.");
+
             view.clearFields();
 
         } catch (DatabaseException ex) {
@@ -63,12 +65,14 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     public void editEntity() {
         try {
             Person person = collectEntityData();
+
             int personId = Integer.parseInt(view.getEditPersonIdField().getText());
-            int currentFlag = view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0;
-            person.setPersonCurrentFlag(currentFlag);
+            person.setPersonCurrentFlag(view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0);
             person.setPersonOrder(calculatePersonOrder());
+
             personDAO.update(person, personId);
             DialogView.showMessage(view,"Persona editada correctamente.");
+
             view.clearFields();
 
         } catch (DatabaseException e) {
@@ -115,6 +119,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     @Override
     public Person collectEntityData() {
         Person person = new Person();
+
         person.setPersonNk(view.getPersonNkField().getText().toUpperCase());
         person.setPersonRank(view.getEmpleoBox().getSelectedItem().toString());
         person.setPersonName(DialogPresenter.capitalizeWords(view.getPersonNameField()));
