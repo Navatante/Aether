@@ -34,18 +34,6 @@ public class NavigationController {
         }
     }
 
-    private void createAndShowPersonPanelView() {
-        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonPanelView;
-        if (!isPersonViewVisible) {
-            PersonPanelView personPanelView = new PersonPanelView(personDAOSQLite);
-            mainView.getCardPanel().add(personPanelView, "PersonPanelView");
-        }
-        mainView.getCardLayout().show(mainView.getCardPanel(), "PersonPanelView");
-        // Refresh the panel
-        mainView.getCardPanel().revalidate();
-        mainView.getCardPanel().repaint();
-    }
-
     public void openDialog(String dialogType) {
         PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite();// Used to open dialogs
         switch (dialogType) {
@@ -58,5 +46,18 @@ public class NavigationController {
             // Additional dialog cases
         }
     }
+
+    private void createAndShowPersonPanelView() {
+        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonPanelView;
+        if (!isPersonViewVisible) {
+            PersonPanelView personPanelView = new PersonPanelView(personDAOSQLite);
+            mainView.getCardPanel().add(personPanelView, "PersonPanelView");
+        }
+        mainView.getCardLayout().show(mainView.getCardPanel(), "PersonPanelView");
+        // Refresh the panel
+        mainView.getCardPanel().revalidate();
+        mainView.getCardPanel().repaint();
+    }
+
 }
 
