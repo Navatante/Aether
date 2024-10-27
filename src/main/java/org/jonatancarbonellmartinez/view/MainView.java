@@ -2,13 +2,17 @@ package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
+import org.jonatancarbonellmartinez.utilities.NavigationController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
 public class MainView extends JFrame { // TODO implement View interface and refactor code accordingly.
+
     private MainPresenter presenter;
     private JPanel cardPanel; // Panel that will hold the different views (cards)
+
     private CardLayout cardLayout;  // CardLayout to manage the views
     private JButton botonPersonal;
     private JMenuItem addPersonalMenuItem;
@@ -28,18 +32,6 @@ public class MainView extends JFrame { // TODO implement View interface and refa
 
     public JMenuItem getAddPersonalMenuItem() {
         return addPersonalMenuItem;
-    }
-
-    public JMenuItem getEditPersonalMenuItem() {
-        return editPersonalMenuItem;
-    }
-
-    public JButton getBotonPersonal() {
-        return botonPersonal;
-    }
-
-    public JPanel getCardPanel() {
-        return cardPanel;
     }
 
     public void initializeUI() {
@@ -239,5 +231,27 @@ public class MainView extends JFrame { // TODO implement View interface and refa
         generarMenu.add(new JMenuItem("Documentación semanal"));
         generarMenu.add(new JMenuItem("Documentación mensual"));
         return generarMenu;
+    }
+
+
+    // Getters
+    public MainPresenter getPresenter() {
+        return presenter;
+    }
+
+    public JMenuItem getEditPersonalMenuItem() {
+        return editPersonalMenuItem;
+    }
+
+    public JButton getBotonPersonal() {
+        return botonPersonal;
+    }
+
+    public JPanel getCardPanel() {
+        return cardPanel;
+    }
+
+    public CardLayout getCardLayout() {
+        return cardLayout;
     }
 }
