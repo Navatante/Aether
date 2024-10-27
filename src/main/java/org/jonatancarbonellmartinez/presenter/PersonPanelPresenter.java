@@ -8,33 +8,60 @@ import org.jonatancarbonellmartinez.view.PersonPanelView;
 
 import javax.swing.*;
 import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PersonPanelPresenter implements Presenter, PanelPresenter {
     private final PersonDAO personDAO;
-    private final PersonPanelView personPanelView;
+    private final PersonPanelView view;
     private boolean isShowingActive = true; // Default to showing "Active" persons
 
     public PersonPanelPresenter(PersonPanelView personCardView, PersonDAO personDAO) {
-        this.personPanelView = personCardView;
+        this.view = personCardView;
         this.personDAO = personDAO;
+    }
+
+    @Override
+    public void setActionListeners() {
+        createSearchFieldListener();
+        view.getTogglePersonState().addActionListener(e -> onPersonStateChanged(view.getTogglePersonState().isSelected()));
+    }
+
+    private void createSearchFieldListener() {
+        view.getSearchField().getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+            }
+        });
     }
 
     public void loadAllPersons() {
         try {
             List<Person> persons = personDAO.getAll();
-            if (personPanelView != null) {
+            if (view != null) {
                 addPersonsToTableModel(persons);  // Populate table model with persons
             }
         } catch (DatabaseException e) {
-            PanelView.showError(personPanelView,"Error loading persons: " + e.getMessage());
+            PanelView.showError(view,"Error loading persons: " + e.getMessage());
         }
     }
 
     public void addPersonsToTableModel(List<Person> persons) {
-        personPanelView.getTableModel().setRowCount(0); // Clear existing rows
+        view.getTableModel().setRowCount(0); // Clear existing rows
 
         for (Person person : persons) {
             Object[] rowData = {
@@ -51,7 +78,7 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
                     person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo",
                     person.getPersonOrder()
             };
-            personPanelView.getTableModel().addRow(rowData);
+            view.getTableModel().addRow(rowData);
         }
 
         // Apply filters after loading data
@@ -70,8 +97,8 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
 
     private void applyPersonStateFilter() {
         RowFilter<TableModel, Object> stateFilter = RowFilter.regexFilter(isShowingActive ? "Activo" : "Inactivo", 10);
-        personPanelView.getSorter().setRowFilter(stateFilter); // Set the "Situación" filter
-        applySearchFilter(personPanelView.getSearchField().getText()); // Reapply the current search filter
+        view.getSorter().setRowFilter(stateFilter); // Set the "Situación" filter
+        applySearchFilter(view.getSearchField().getText()); // Reapply the current search filter
     }
 
     private void applySearchFilter(String searchText) {
@@ -92,7 +119,6 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
         }
 
         // Set the combined filter or reset if both are null
-        personPanelView.getSorter().setRowFilter(combinedFilter);
+        view.getSorter().setRowFilter(combinedFilter);
     }
-
 }

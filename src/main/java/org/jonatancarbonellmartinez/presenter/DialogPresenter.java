@@ -12,7 +12,6 @@ public interface DialogPresenter {
     void addEntity();
     void editEntity();
     void getEntity(int entityId);
-    void setActionListeners();
     void onSaveButtonClicked();
     Entity collectEntityData();
     void notifyObserver();

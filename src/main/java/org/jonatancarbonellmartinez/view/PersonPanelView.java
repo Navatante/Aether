@@ -16,6 +16,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     private JTable personTable;
     private DefaultTableModel tableModel;
     private TableRowSorter<TableModel> sorter;
+
     private JRadioButton togglePersonState;
     private JTextField searchField;
     private JPanel topPanel, insideTopPanel;
@@ -74,8 +75,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
     @Override
     public void addActionListeners() {
-        createSearchFieldListener();
-        togglePersonState.addActionListener(e -> presenter.onPersonStateChanged(togglePersonState.isSelected()));
+        presenter.setActionListeners();
     }
 
     @Override
@@ -99,25 +99,6 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         presenter.loadAllPersons();
     }
 
-    private void createSearchFieldListener() {
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                presenter.onSearchTextChanged(searchField.getText()); // Forward search text to presenter
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                presenter.onSearchTextChanged(searchField.getText()); // Forward search text to presenter
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                presenter.onSearchTextChanged(searchField.getText()); // Forward search text to presenter
-            }
-        });
-    }
-
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
@@ -128,6 +109,10 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
     public TableRowSorter<TableModel> getSorter() {
         return sorter;
+    }
+
+    public JRadioButton getTogglePersonState() {
+        return togglePersonState;
     }
 
 }
