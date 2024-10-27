@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class PersonDialogView extends JDialog implements View, DialogView {
 
-    private MainView mainView;
+    private MainView view;
     private PersonDialogPresenter presenter;
     private boolean isEditMode;
 
@@ -19,9 +19,9 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     private JButton saveButton;
     private JPanel topPanel, centerPanel, bottomPanel;
 
-    public PersonDialogView(MainView mainView, PersonDAO personDAO, Observer observer, boolean isEditMode) {
-        super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
-        this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
+    public PersonDialogView(MainView view, PersonDAO personDAO, Observer observer, boolean isEditMode) {
+        super(view, isEditMode ? "Editar personal" : "Añadir personal", true);
+        this.view = view; // This is mainly used to do things like setLocationRelativeTo(mainView);
         this.presenter = new PersonDialogPresenter(this, personDAO, observer);
         this.isEditMode = isEditMode;
         initializeUI();
@@ -43,7 +43,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         setLayout(new BorderLayout());
         setResizable(false);
         setSize(450, isEditMode ? 340 : 280);
-        setLocationRelativeTo(mainView);
+        setLocationRelativeTo(view);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -194,8 +194,8 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         return empleoBox;
     }
 
-    public MainView getMainView() {
-        return mainView;
+    public MainView getView() {
+        return view;
     }
 
     public PersonDialogPresenter getPresenter() {

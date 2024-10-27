@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class MainView extends JFrame {
+public class MainView extends JFrame { // TODO implement View interface and refactor code accordingly.
     private MainPresenter presenter;
     private JPanel cardPanel; // Panel that will hold the different views (cards)
     private CardLayout cardLayout;  // CardLayout to manage the views
@@ -17,7 +17,13 @@ public class MainView extends JFrame {
     public MainView(DAOFactory daoFactory) {
         initializeUI();
         createMenuBar();
-        presenter = new MainPresenter(this,daoFactory);
+        presenter = new MainPresenter(this, daoFactory);
+        addActionListeners();
+    }
+
+    //@Override
+    public void addActionListeners() {
+        presenter.setActionListeners();
     }
 
     public JMenuItem getAddPersonalMenuItem() {
@@ -46,7 +52,6 @@ public class MainView extends JFrame {
 
         JPanel mainPanel = createMainPanel();
         setContentPane(mainPanel);
-
     }
 
     private JPanel createMainPanel() {
