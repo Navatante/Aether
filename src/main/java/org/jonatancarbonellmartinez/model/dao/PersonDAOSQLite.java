@@ -166,7 +166,6 @@ public class PersonDAOSQLite implements PersonDAO {
         return person;
     }
 
-
     // Metodo para comprobar si ya existe un registro con el mismo orden
     private boolean checkIfOrderExists(int orden) throws DatabaseException {
         String sql = "SELECT COUNT(*) FROM dim_person WHERE person_order = ? AND person_current_flag = 1";
