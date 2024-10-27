@@ -36,7 +36,7 @@ public class MainView extends JFrame {
         return cardPanel;
     }
 
-    private void initializeUI() {
+    public void initializeUI() {
         setTitle("Haverkat - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 720);
@@ -47,7 +47,6 @@ public class MainView extends JFrame {
         JPanel mainPanel = createMainPanel();
         setContentPane(mainPanel);
 
-        //JOptionPane.showMessageDialog(this,"Esta visualizando una app en version de pruebas,\n para cualquier sugerencia: jcarm20@mde.es");
     }
 
     private JPanel createMainPanel() {

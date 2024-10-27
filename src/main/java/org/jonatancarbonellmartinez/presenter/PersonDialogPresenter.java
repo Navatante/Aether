@@ -93,6 +93,24 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     }
 
     @Override
+    public void setActionListeners() {
+        view.getSaveButton().addActionListener(e -> onSaveButtonClicked());
+        if (view.isEditMode()) view.getEditPersonIdField().addActionListener(e -> view.onEditPersonIdFieldAction());
+    }
+
+    @Override
+    public void onSaveButtonClicked() {
+        if (isFormValid()) {
+            if (view.isEditMode()) {
+                editEntity();
+            } else {
+                addEntity();
+            }
+            notifyObserver();
+        }
+    }
+
+    @Override
     public Person collectEntityData() {
         Person person = new Person();
         person.setPersonNk(view.getPersonNkField().getText().toUpperCase());

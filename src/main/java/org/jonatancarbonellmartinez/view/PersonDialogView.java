@@ -86,8 +86,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void addActionListeners() {
-        saveButton.addActionListener(e -> onSaveButtonClicked());
-        if (isEditMode) editPersonIdField.addActionListener(e -> onEditPersonIdFieldAction());
+        presenter.setActionListeners();
     }
 
     @Override
@@ -127,18 +126,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         personStateBox.setPreferredSize(DialogView.FIELD_SIZE);
         personStateBox.setForeground(Color.GRAY);
         personStateBox.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-    }
-
-    @Override
-    public void onSaveButtonClicked() {
-        if (presenter.isFormValid()) {
-            if (isEditMode) {
-                presenter.editEntity();
-            } else {
-                presenter.addEntity();
-            }
-            presenter.notifyObserver();
-        }
     }
 
     @Override

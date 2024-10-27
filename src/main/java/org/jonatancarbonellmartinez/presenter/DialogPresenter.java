@@ -2,7 +2,6 @@ package org.jonatancarbonellmartinez.presenter;
 
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 
 import javax.swing.*;
@@ -13,6 +12,8 @@ public interface DialogPresenter {
     void addEntity();
     void editEntity();
     void getEntity(int entityId);
+    void setActionListeners();
+    void onSaveButtonClicked();
     Entity collectEntityData();
     void notifyObserver();
 

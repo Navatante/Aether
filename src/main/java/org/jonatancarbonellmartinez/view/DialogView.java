@@ -9,8 +9,6 @@ public interface DialogView {
 
     void configureEditModeComponents();
 
-    void onSaveButtonClicked();
-
     void clearFields();
 
     /**
