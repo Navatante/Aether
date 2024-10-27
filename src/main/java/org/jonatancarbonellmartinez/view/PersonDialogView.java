@@ -1,28 +1,27 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
-import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
 import javax.swing.*;
 import java.awt.*;
 
 public class PersonDialogView extends JDialog implements View, DialogView {
 
-    private MainView view;
+    private MainView mainView;
     private PersonDialogPresenter presenter;
     private boolean isEditMode;
 
     private JTextField personPhoneField, personNkField, personNameField, personLastName1Field,
                        personLastName2Field, orderField, personDniField, editPersonIdField;
+
     private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;
     private JLabel insertIdLabel;
     private JButton saveButton;
     private JPanel topPanel, centerPanel, bottomPanel;
 
-    public PersonDialogView(MainView view, PersonDAO personDAO, Observer observer, boolean isEditMode) {
-        super(view, isEditMode ? "Editar personal" : "Añadir personal", true);
-        this.view = view; // This is mainly used to do things like setLocationRelativeTo(mainView);
-        this.presenter = new PersonDialogPresenter(this, personDAO, observer);
+    public PersonDialogView(MainView mainView, boolean isEditMode) {
+        super(mainView, isEditMode ? "Editar personal" : "Añadir personal", true);
+        this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
+        this.presenter = new PersonDialogPresenter(this, mainView.getPresenter());
         this.isEditMode = isEditMode;
         initializeUI();
     }
@@ -43,7 +42,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         setLayout(new BorderLayout());
         setResizable(false);
         setSize(450, isEditMode ? 340 : 280);
-        setLocationRelativeTo(view);
+        setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
@@ -194,8 +193,8 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         return empleoBox;
     }
 
-    public MainView getView() {
-        return view;
+    public MainView getMainView() {
+        return mainView;
     }
 
     public PersonDialogPresenter getPresenter() {

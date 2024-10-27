@@ -8,18 +8,16 @@ import org.jonatancarbonellmartinez.view.PersonPanelView;
 
 public class NavigationController {
 
-    private DAOFactory daoFactory;
-    private PersonDAO personDAOSQLite;
     private int componentCount;
     private MainView mainView;
 
-    public NavigationController(MainView mainView, DAOFactory daoFactory) {
+    public NavigationController(MainView mainView) {
         this.mainView = mainView;
-        this.daoFactory = daoFactory;
+
     }
 
     public void navigateTo(String view) {
-        personDAOSQLite = daoFactory.createPersonDAOSQLite(); // Create DAO to access data
+
         componentCount = mainView.getCardPanel().getComponentCount(); // Check if there are any components in the card panel
 
         switch (view) {
@@ -35,13 +33,13 @@ public class NavigationController {
     }
 
     public void openDialog(String dialogType) {
-        PersonDAO personDAOSQLite = daoFactory.createPersonDAOSQLite();// Used to open dialogs
+
         switch (dialogType) {
             case "AddPerson":
-                new PersonDialogView(mainView, personDAOSQLite, mainView.getPresenter(),false);
+                new PersonDialogView(mainView,false);
                 break;
             case "EditPerson":
-                new PersonDialogView(mainView, personDAOSQLite, mainView.getPresenter(),true);
+                new PersonDialogView(mainView,true);
                 break;
             // Additional dialog cases
         }
@@ -50,7 +48,7 @@ public class NavigationController {
     private void createAndShowPersonPanelView() {
         boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonPanelView;
         if (!isPersonViewVisible) {
-            PersonPanelView personPanelView = new PersonPanelView(personDAOSQLite);
+            PersonPanelView personPanelView = new PersonPanelView();
             mainView.getCardPanel().add(personPanelView, "PersonPanelView");
         }
         mainView.getCardLayout().show(mainView.getCardPanel(), "PersonPanelView");

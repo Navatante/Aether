@@ -22,8 +22,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     private JPanel topPanel, insideTopPanel;
     JScrollPane scrollPane;
 
-    public PersonPanelView(PersonDAO personDAO) {
-        this.presenter = new PersonPanelPresenter(this, personDAO);
+    public PersonPanelView() {
+        this.presenter = new PersonPanelPresenter(this);
         initializeUI();
     }
 

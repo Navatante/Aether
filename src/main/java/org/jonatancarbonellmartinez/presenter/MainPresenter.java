@@ -12,9 +12,9 @@ public class MainPresenter implements Observer, Presenter { // TODO 2. after ref
     private final MainView view;
     private final  NavigationController navigationController;
 
-    public MainPresenter(MainView view, DAOFactory daoFactory) {
+    public MainPresenter(MainView view) {
         this.view = view;
-        navigationController = new NavigationController(view, daoFactory);
+        navigationController = new NavigationController(view);
     }
 
     @Override

@@ -11,9 +11,6 @@ public class Main {
             e.printStackTrace();
         }
         // Use SwingUtilities.invokeLater to make sure GUI runs inside Event Dispatch Thread.
-        SwingUtilities.invokeLater(() -> {
-            AppInitializer appInitializer = new AppInitializer();
-            appInitializer.initialize();
-        });
+        SwingUtilities.invokeLater(AppInitializer::new);
     }
 }

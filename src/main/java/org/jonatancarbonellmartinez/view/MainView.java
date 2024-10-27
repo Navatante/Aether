@@ -18,10 +18,10 @@ public class MainView extends JFrame { // TODO 1. implement View interface and r
     private JMenuItem addPersonalMenuItem;
     private JMenuItem editPersonalMenuItem;
 
-    public MainView(DAOFactory daoFactory) {
+    public MainView() {
         initializeUI();
         createMenuBar();
-        presenter = new MainPresenter(this, daoFactory);
+        presenter = new MainPresenter(this);
         addActionListeners();
     }
 

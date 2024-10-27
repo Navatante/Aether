@@ -1,6 +1,8 @@
 package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
+import org.jonatancarbonellmartinez.factory.DAOFactory;
+import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.observers.Observer;
@@ -14,9 +16,9 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     private final PersonDialogView view;
     private final Observer observer;
 
-    public PersonDialogPresenter(PersonDialogView addPersonView, PersonDAO personDAO, Observer observer) {
+    public PersonDialogPresenter(PersonDialogView addPersonView, Observer observer) {
         this.view = addPersonView;
-        this.personDAO = personDAO;
+        this.personDAO = DAOFactorySQLite.getInstance().createPersonDAOSQLite(); // new
         this.observer = observer;
     }
 
