@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class MainView extends JFrame { // TODO implement View interface and refactor code accordingly.
+public class MainView extends JFrame { // TODO 1. implement View interface and refactor code accordingly.
 
     private MainPresenter presenter;
     private JPanel cardPanel; // Panel that will hold the different views (cards)

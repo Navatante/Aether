@@ -8,7 +8,7 @@ import org.jonatancarbonellmartinez.view.*;
 
 import java.awt.*;
 
-public class MainPresenter implements Observer, Presenter { // TODO after refactoring MainView, the Presenter will handle more logic than now, is it good that i have moved navigation logic to NavigationController.
+public class MainPresenter implements Observer, Presenter { // TODO 2. after refactoring MainView, the Presenter will handle more logic than now, is it good that i have moved navigation logic to NavigationController.
     private final MainView view;
     private final  NavigationController navigationController;
 

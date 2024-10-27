@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.model.entities;
 
-public class Person implements Entity {
+public class Person implements Entity { // TODO 3. Study data binding and perform a manual implementation to bind Entities with form fields (JTextFields, JComboBox, etc)
     private Integer personSk; // Primary Key
     private String personNk; // Unique identifier
     private String personRank;
