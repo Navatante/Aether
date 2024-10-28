@@ -1,104 +1,147 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
-import org.jonatancarbonellmartinez.utilities.NavigationController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-public class MainView extends JFrame { // TODO 1. implement View interface and refactor code accordingly.
+public class MainView extends JFrame implements View {
 
     private MainPresenter presenter;
+
+    private JPanel mainPanel;
+    private JPanel topLeftPanel;
+    private JPanel leftPanel;
+    private JPanel bottomLeftPanel;
     private JPanel cardPanel; // Panel that will hold the different views (cards)
+    private JPanel leftGapPanel;
 
     private CardLayout cardLayout;  // CardLayout to manage the views
+
+    private JMenuBar menuBar;
+
+    private JMenu registrarMenu;
+    private JMenu anadirMenu;
+    private JMenu editarMenu;
+    private JMenu generarMenu;
+
+    private JMenuItem registrarVueloMenuItem;
+    private JMenuItem registrarCombustibleMenuItem;
+    private JMenuItem registrarCalificacionMenuItem;
+
+    private JMenuItem anadirPersonalMenuItem;
+    private JMenuItem anadirEventoMenuItem;
+
+    private JMenuItem editarPersonalMenuItem;
+    private JMenuItem editarEventoMenuItem;
+
+    private JMenuItem docSemanalMenuItem;
+    private JMenuItem docMensualMenuItem;
+
     private JButton botonPersonal;
-    private JMenuItem addPersonalMenuItem;
-    private JMenuItem editPersonalMenuItem;
+    private JButton botonPrincipal;
+    private JButton botonPilotos;
+    private JButton botonDotaciones;
+    private JButton botonEventos;
+    private JButton botonSesiones;
+    private JButton botonHelos;
+    private JButton botonCapbas;
+    private JButton botonGenerator;
+
+    private Color menusColor;
+    private Color borderColor;
 
     public MainView() {
-        initializeUI();
-        createMenuBar();
         presenter = new MainPresenter(this);
-        addActionListeners();
+        this.initializeUI();
+        setVisible(true);
     }
 
-    //@Override
-    public void addActionListeners() {
-        presenter.setActionListeners();
-    }
-
-    public JMenuItem getAddPersonalMenuItem() {
-        return addPersonalMenuItem;
-    }
-
-    public void initializeUI() {
+    @Override
+    public void setupUIProperties() {
         setTitle("Haverkat - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 720);
-        setVisible(true);
         setLocationRelativeTo(null);
-
-
-        JPanel mainPanel = createMainPanel();
-        setContentPane(mainPanel);
     }
 
-    private JPanel createMainPanel() {
-        Color borderColor = new Color(29,31,34);
+    @Override
+    public void createPanels() {
+        mainPanel = new JPanel(new BorderLayout());
+        topLeftPanel = new JPanel();
+        bottomLeftPanel = new JPanel();
+        leftPanel = new JPanel(new BorderLayout());
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        cardPanel = new JPanel();
+        cardLayout = new CardLayout();
 
-        // Set tooltip delay
+        leftGapPanel = new JPanel();
+    }
+
+    @Override
+    public void createComponents() {
+        menusColor = new Color(43,45,48);
+        borderColor = new Color(29,31,34);
+
+        menuBar = new JMenuBar();
+
+        registrarMenu = new JMenu("Registrar");
+        anadirMenu = new JMenu("Añadir");
+        editarMenu = new JMenu("Editar");
+        generarMenu = new JMenu("Generar");
+
+        registrarVueloMenuItem = (new JMenuItem("Vuelo"));
+        registrarCombustibleMenuItem = (new JMenuItem("Combustible"));
+        registrarCalificacionMenuItem = (new JMenuItem("Calificación"));
+
+        anadirPersonalMenuItem = new JMenuItem("Personal");
+        anadirEventoMenuItem = new JMenuItem("Evento");
+
+        editarPersonalMenuItem = new JMenuItem("Personal");
+        editarEventoMenuItem = new JMenuItem("Evento");
+
+        docSemanalMenuItem = new JMenuItem("Documentación semanal");
+        docMensualMenuItem = new JMenuItem("Documentación mensual");
+
+
+        botonPrincipal = createRoundedButton("G");
+        botonPilotos = createRoundedButton("P");
+        botonDotaciones = createRoundedButton("D");
+        botonPersonal = createRoundedButton("P");
+        botonEventos = createRoundedButton("E");
+        botonSesiones = createRoundedButton("S");
+        botonHelos = createRoundedButton("H");
+        botonCapbas = createRoundedButton("C");
+        botonGenerator = createRoundedButton("G");
+    }
+
+    @Override
+    public void configurePanels() {
+        setContentPane(mainPanel);
+        mainPanel.setBorder(BorderFactory.createLineBorder(borderColor));
+        topLeftPanel.setLayout(new GridLayout(3,1,0,10));
+        topLeftPanel.setLayout(new GridLayout(3,1,0,10));
+        bottomLeftPanel.setLayout(new GridLayout(6,1,0,10));
+        leftPanel.setPreferredSize(new Dimension(60, 0)); // Width slightly larger than button size
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Padding around panel
+
+        cardPanel.setLayout(cardLayout);
+        cardPanel.setBackground(menusColor);
+
+        leftGapPanel.setPreferredSize(new Dimension(55, 0));
+        leftGapPanel.setOpaque(false); // Make the panel transparent
+
+
+    }
+
+    @Override
+    public void configureComponents() {
         ToolTipManager.sharedInstance().setInitialDelay(0); // Tooltip appears instantly
         ToolTipManager.sharedInstance().setDismissDelay(3000); // Stays for 3 seconds
-
-        // CenterPanel
-        mainPanel.add(createCardPanel(), BorderLayout.CENTER);
-
-        // TopLeftPanel
-        JPanel topLeftPanel = new JPanel();
-        topLeftPanel.setLayout(new GridLayout(3,1,0,10));
-
-        // Creating Buttons with rounded corners (no visible borders)
-        JButton botonPrincipal = createRoundedButton("G");
-        JButton botonPilotos = createRoundedButton("P");
-        JButton botonDotaciones = createRoundedButton("D");
-
-        //Add buttons to topLeftPanel
-        topLeftPanel.add(botonPrincipal);
-        topLeftPanel.add(botonPilotos);
-        topLeftPanel.add(botonDotaciones);
-
-        // Assigning tooltips
         botonPrincipal.setToolTipText("General");
         botonPilotos.setToolTipText("Pilotos");
         botonDotaciones.setToolTipText("Dotaciones");
-
-
-        //BottomLeftPanel
-        JPanel bottomLeftPanel = new JPanel();
-        bottomLeftPanel.setLayout(new GridLayout(6,1,0,10));
-
-        // Creating Buttons with rounded corners (no visible borders)
-        botonPersonal = createRoundedButton("P");
-        JButton botonEventos = createRoundedButton("E");
-        JButton botonSesiones = createRoundedButton("S");
-        JButton botonHelos = createRoundedButton("H");
-        JButton botonCapbas = createRoundedButton("C");
-        JButton botonGenerator = createRoundedButton("G");
-
-        //Add buttons to topLeftPanel
-        bottomLeftPanel.add(botonPersonal);
-        bottomLeftPanel.add(botonEventos);
-        bottomLeftPanel.add(botonSesiones);
-        bottomLeftPanel.add(botonHelos);
-        bottomLeftPanel.add(botonCapbas);
-        bottomLeftPanel.add(botonGenerator);
-
-        // Assigning tooltips
         botonPersonal.setToolTipText("Personal");
         botonEventos.setToolTipText("Eventos");
         botonSesiones.setToolTipText("Sesiones");
@@ -106,31 +149,36 @@ public class MainView extends JFrame { // TODO 1. implement View interface and r
         botonCapbas.setToolTipText("CAPBAS");
         botonGenerator.setToolTipText("Generadores");
 
-        // LeftPanel
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setPreferredSize(new Dimension(60, 0)); // Width slightly larger than button size
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Padding around panel
+        this.setJMenuBar(menuBar);
+    }
+
+    @Override
+    public void assemblePanels() {
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(cardPanel, BorderLayout.CENTER);
         leftPanel.add(topLeftPanel,BorderLayout.NORTH);
         leftPanel.add(bottomLeftPanel,BorderLayout.SOUTH);
 
-        mainPanel.add(leftPanel, BorderLayout.WEST);
-
-        //leftPanel.setBackground(menusColor);
-        mainPanel.setBorder(BorderFactory.createLineBorder(borderColor));
-        return mainPanel;
     }
 
-    private JPanel createCardPanel() {
-        Color menusColor = new Color(43,45,48);
-        cardPanel = new JPanel();
-        cardLayout = new CardLayout();
-        cardPanel.setLayout(cardLayout);
-        cardPanel.setBackground(menusColor);
+    @Override
+    public void assembleComponents() {
+        menuBar.add(leftGapPanel);
+        View.addMenusToMenu(menuBar, registrarMenu, anadirMenu, anadirMenu, editarMenu, generarMenu);
+        View.addMenusToMenu(registrarMenu,registrarVueloMenuItem, registrarCombustibleMenuItem, registrarCalificacionMenuItem);
+        View.addMenusToMenu(anadirMenu,anadirPersonalMenuItem,anadirEventoMenuItem);
+        View.addMenusToMenu(editarMenu, editarPersonalMenuItem, editarEventoMenuItem);
+        View.addMenusToMenu(generarMenu, docSemanalMenuItem, docMensualMenuItem);
 
-        return cardPanel;
+        View.addComponentsToPanel(bottomLeftPanel, botonPersonal, botonEventos, botonSesiones, botonHelos, botonCapbas, botonGenerator);
+        View.addComponentsToPanel(topLeftPanel, botonPrincipal, botonPilotos, botonDotaciones);
     }
 
-    // Method to create a button with rounded corners (no painted borders)
+    @Override
+    public void addActionListeners() {
+        presenter.setActionListeners();
+    }
+
     private JButton createRoundedButton(String text) {
         JButton button = new JButton(text) {
             @Override
@@ -173,74 +221,17 @@ public class MainView extends JFrame { // TODO 1. implement View interface and r
         return button;
     }
 
-    private void createMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-
-        // Create a panel for the icon and gap
-        JPanel leftPanel = new JPanel();
-        leftPanel.setPreferredSize(new Dimension(55, 0));
-        leftPanel.setOpaque(false); // Make the panel transparent
-
-        // Load the Java icon (adjust path to your icon if needed)
-        //ImageIcon javaIcon = new ImageIcon(getClass().getResource("/path/to/java_icon.png")); // Use a valid path to your icon
-
-        // Create a label to hold the icon
-        //JLabel iconLabel = new JLabel(javaIcon);
-        //leftPanel.add(iconLabel); // Add icon to the panel
-
-        // Add the icon panel to the menu bar
-        menuBar.add(leftPanel);
-
-        // Create and add all menu items
-        menuBar.add(createRegistrarMenu());
-        menuBar.add(createAnadirMenu());
-        menuBar.add(createEditarMenu());
-        menuBar.add(createGenerarMenu());
-
-        // Set the custom menu bar
-        this.setJMenuBar(menuBar);
-    }
-
-    private JMenu createRegistrarMenu() {
-        JMenu registrarMenu = new JMenu("Registrar");
-        registrarMenu.add(new JMenuItem("Vuelo"));
-        registrarMenu.add(new JMenuItem("Combustible"));
-        registrarMenu.add(new JMenuItem("Calificación"));
-        return registrarMenu;
-    }
-
-    private JMenu createAnadirMenu() {
-        JMenu anadirMenu = new JMenu("Añadir");
-        addPersonalMenuItem = new JMenuItem("Personal");
-        anadirMenu.add(addPersonalMenuItem);
-        anadirMenu.add(new JMenuItem("Evento"));
-        return anadirMenu;
-    }
-
-    private JMenu createEditarMenu() {
-        JMenu editarMenu = new JMenu("Editar");
-        editPersonalMenuItem = new JMenuItem("Personal");
-        editarMenu.add(editPersonalMenuItem);
-        editarMenu.add(new JMenuItem("Evento"));
-
-        return editarMenu;
-    }
-
-    private JMenu createGenerarMenu() {
-        JMenu generarMenu = new JMenu("Generar");
-        generarMenu.add(new JMenuItem("Documentación semanal"));
-        generarMenu.add(new JMenuItem("Documentación mensual"));
-        return generarMenu;
-    }
-
-
     // Getters
+    public JMenuItem getAnadirPersonalMenuItem() {
+        return anadirPersonalMenuItem;
+    }
+
     public MainPresenter getPresenter() {
         return presenter;
     }
 
-    public JMenuItem getEditPersonalMenuItem() {
-        return editPersonalMenuItem;
+    public JMenuItem getEditarPersonalMenuItem() {
+        return editarPersonalMenuItem;
     }
 
     public JButton getBotonPersonal() {

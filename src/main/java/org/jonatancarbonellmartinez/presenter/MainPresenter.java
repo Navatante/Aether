@@ -1,7 +1,5 @@
 package org.jonatancarbonellmartinez.presenter;
 
-import org.jonatancarbonellmartinez.factory.DAOFactory;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.utilities.NavigationController;
 import org.jonatancarbonellmartinez.view.*;
@@ -20,8 +18,8 @@ public class MainPresenter implements Observer, Presenter { // TODO 2. after ref
     @Override
     public void setActionListeners() {
         view.getBotonPersonal().addActionListener(e -> navigationController.navigateTo("PersonPanelView"));
-        view.getAddPersonalMenuItem().addActionListener(e -> navigationController.openDialog("AddPerson"));
-        view.getEditPersonalMenuItem().addActionListener(e -> navigationController.openDialog("EditPerson"));
+        view.getAnadirPersonalMenuItem().addActionListener(e -> navigationController.openDialog("AddPerson"));
+        view.getEditarPersonalMenuItem().addActionListener(e -> navigationController.openDialog("EditPerson"));
         // Add more
     }
 

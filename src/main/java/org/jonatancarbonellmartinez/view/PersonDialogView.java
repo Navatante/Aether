@@ -23,17 +23,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         this.mainView = mainView; // This is mainly used to do things like setLocationRelativeTo(mainView);
         this.presenter = new PersonDialogPresenter(this, mainView.getPresenter());
         this.isEditMode = isEditMode;
-        initializeUI();
-    }
-
-    @Override
-    public void initializeUI() {
-        setupUIProperties();
-        createPanels();
-        initializeComponents();
-        addActionListeners();
-        configureComponents();
-        assembleUI();
+        this.initializeUI();
         setVisible(true);
     }
 
@@ -48,26 +38,17 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createPanels() {
-        if (isEditMode) {
-            topPanel = new JPanel();
-            getContentPane().add(topPanel, BorderLayout.NORTH);
-        }
-
+        if (isEditMode) topPanel = new JPanel();
         centerPanel = new JPanel();
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-        getContentPane().add(centerPanel, BorderLayout.CENTER);
-
         bottomPanel = new JPanel();
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
     }
 
     @Override
-    public void initializeComponents(){
+    public void createComponents(){
         empleoBox = View.createComboBox(new String[]{"CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
-                                                "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
+                "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
         divisionBox = View.createComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento",
-                                                   "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
+                "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = View.createComboBox(new String[] {"Piloto", "Dotación"},"Rol");
 
         personNkField = View.createTextField("Código",3,6);
@@ -84,14 +65,15 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     }
 
     @Override
-    public void addActionListeners() {
-        presenter.setActionListeners();
+    public void configurePanels() {
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 20, 10));
     }
 
     @Override
     public void configureComponents() {
         View.setPreferredSizeForComponents(DialogView.FIELD_SIZE, empleoBox, divisionBox, rolBox, personNkField, personNameField, personLastName1Field,
-                                                        personLastName2Field, personPhoneField, personDniField, orderField);
+                personLastName2Field, personPhoneField, personDniField, orderField);
         setDocumentFilters();
         View.setInitialComboBoxLook(empleoBox,divisionBox,rolBox);
 
@@ -99,7 +81,14 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     }
 
     @Override
-    public void assembleUI() {
+    public void assemblePanels() {
+        if (isEditMode) getContentPane().add(topPanel, BorderLayout.NORTH);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
+        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void assembleComponents() {
 
         View.addComponentsToPanel(centerPanel, empleoBox, personNkField, personNameField, personLastName1Field, personLastName2Field,
                                     personPhoneField, personDniField, divisionBox, rolBox, orderField);
@@ -109,6 +98,11 @@ public class PersonDialogView extends JDialog implements View, DialogView {
             View.addComponentsToPanel(topPanel,insertIdLabel,editPersonIdField);
             View.addComponentsToPanel(centerPanel, personStateBox);
         }
+    }
+
+    @Override
+    public void addActionListeners() {
+        presenter.setActionListeners();
     }
 
     @Override

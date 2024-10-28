@@ -1,6 +1,5 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.utilities.LimitDocumentFilter;
 
 import javax.swing.*;
@@ -11,13 +10,36 @@ import java.awt.event.FocusEvent;
 
 public interface View {
 
-    void initializeUI();
+    default void initializeUI() {
+        setupUIProperties();
+        createPanels();
+        createComponents();
+        configurePanels();
+        configureComponents();
+        assemblePanels();
+        assembleComponents();
+        addActionListeners();
+    };
+
+    /**
+     * createPanels();
+     * createComponents();
+     * configurePanels();
+     * configureComponents();
+     * assemblePanels();
+     * assembleComponents();
+     * setupUIProperties();
+     * addActionListeners();
+     */
+
     void setupUIProperties();
     void createPanels();
-    void initializeComponents();
-    void addActionListeners();
+    void configurePanels();
+    void assemblePanels();
+    void createComponents();
     void configureComponents();
-    void assembleUI();
+    void assembleComponents();
+    void addActionListeners();
 
     /**
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
@@ -70,6 +92,12 @@ public interface View {
     static void addComponentsToPanel(JPanel panel, JComponent... components) {
         for (JComponent component : components) {
             panel.add(component);
+        }
+    }
+
+    static void addMenusToMenu(JComponent component, JMenuItem... menus) {
+        for (JMenuItem menu : menus) {
+            component.add(menu);
         }
     }
 

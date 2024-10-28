@@ -1,11 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
 import org.jonatancarbonellmartinez.presenter.PersonPanelPresenter;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -24,20 +21,11 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
     public PersonPanelView() {
         this.presenter = new PersonPanelPresenter(this);
-        initializeUI();
-    }
-
-    @Override
-    public void initializeUI() {
-        setupUIProperties();
-        initializeComponents();
-        createPanels();
-        addActionListeners();
-        configureComponents();
-        assembleUI();
+        this.initializeUI();
         updatePanel();
         setVisible(true);
     }
+
 
     @Override
     public void setupUIProperties() {
@@ -47,18 +35,11 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     @Override
     public void createPanels() {
         topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(new EmptyBorder(5, 25, 5, 25));
-        add(topPanel, BorderLayout.NORTH);
-
         insideTopPanel = new JPanel();
-        topPanel.add(insideTopPanel, BorderLayout.WEST);
-
-        scrollPane = new JScrollPane(personTable);
-        add(scrollPane, BorderLayout.CENTER);
     }
 
     @Override
-    public void initializeComponents() {
+    public void createComponents() {
 
         tableModel = new DefaultTableModel(new String[] {"ID", "Código", "Empleo", "Nombre", "Apellido 1", "Apellido 2", "Teléfono", "DNI", "División", "Rol", "Situación", "Orden"}, 0) {
             @Override
@@ -68,14 +49,17 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         };
 
         personTable = new JTable(tableModel);
+
+        scrollPane = new JScrollPane(personTable);
+
         searchField = new JTextField();
         sorter = new TableRowSorter<>(tableModel);
         togglePersonState = new JRadioButton("Activos");
     }
 
     @Override
-    public void addActionListeners() {
-        presenter.setActionListeners();
+    public void configurePanels() {
+        topPanel.setBorder(new EmptyBorder(5, 25, 5, 25));
     }
 
     @Override
@@ -89,9 +73,21 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     }
 
     @Override
-    public void assembleUI() {
+    public void assemblePanels() {
+        this.add(topPanel, BorderLayout.NORTH);
+        topPanel.add(insideTopPanel, BorderLayout.WEST);
+        this.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void assembleComponents() {
     View.addComponentsToPanel(insideTopPanel, new JLabel("Buscar"), searchField);
     topPanel.add(togglePersonState, BorderLayout.EAST);
+    }
+
+    @Override
+    public void addActionListeners() {
+        presenter.setActionListeners();
     }
 
     @Override
@@ -99,6 +95,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         presenter.loadAllPersons();
     }
 
+    // Getters
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
