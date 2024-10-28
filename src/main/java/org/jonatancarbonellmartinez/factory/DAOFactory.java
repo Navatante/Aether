@@ -1,18 +1,17 @@
 package org.jonatancarbonellmartinez.factory;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.model.dao.GenericDAO;
+import org.jonatancarbonellmartinez.model.entities.Event;
+import org.jonatancarbonellmartinez.model.entities.Person;
 
-import java.sql.SQLException;
 
 public interface DAOFactory {
-
-    // Method to create DimPersonDAO
-    PersonDAO createPersonDAOSQLite() throws DatabaseException;
+    GenericDAO<Person,Integer> createPersonDAOSQLite() throws DatabaseException;
+    GenericDAO<Event,Integer> createEventDAOSQLite() throws DatabaseException;
 
     // You can add methods to create other DAOs for different entities
     // For example:
-
-    // OtherDAO createOtherDAO() throws DatabaseException;
+    // OtherDAO createEventDAOSQLite() throws DatabaseException;
 
 }

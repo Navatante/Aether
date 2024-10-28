@@ -1,9 +1,8 @@
 package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.factory.DAOFactory;
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
@@ -12,7 +11,7 @@ import org.jonatancarbonellmartinez.view.PersonDialogView;
 import javax.swing.*;
 
 public class PersonDialogPresenter implements Presenter, DialogPresenter {
-    private final PersonDAO personDAO;
+    private final GenericDAO<Person,Integer> personDAO;
     private final PersonDialogView view;
     private final Observer observer;
 
@@ -85,7 +84,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     @Override
     public void getEntity(int entityId) {
         try {
-            Person person = personDAO.read(entityId);
+            Person person = (Person) personDAO.read(entityId);
             if (person != null) {
                 populatePersonDialog(person);
             } else {

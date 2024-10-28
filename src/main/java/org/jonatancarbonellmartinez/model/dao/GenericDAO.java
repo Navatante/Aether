@@ -2,14 +2,17 @@ package org.jonatancarbonellmartinez.model.dao;
 
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.model.entities.Person;
+import org.jonatancarbonellmartinez.model.entities.Entity;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface GenericDAO<T,K> {
-    void create(T person) throws DatabaseException;
-    Person read(K personSk) throws DatabaseException;
-    void update(T person, int idToUpdate) throws DatabaseException;
-    void delete(K personSk) throws DatabaseException; // I think im not gonna let to delete persons
+    void create(T entity) throws DatabaseException;
+    Entity read(K entitySk) throws DatabaseException;
+    void update(T entity, int skToUpdate) throws DatabaseException;
+    void delete(K entitySk) throws DatabaseException; // I think im not gonna let to delete persons
     List<T> getAll() throws DatabaseException;
+    Entity  mapResultSetToEntity(ResultSet rs) throws SQLException;
 }

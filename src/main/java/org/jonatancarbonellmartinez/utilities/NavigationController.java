@@ -1,7 +1,6 @@
 package org.jonatancarbonellmartinez.utilities;
 
-import org.jonatancarbonellmartinez.factory.DAOFactory;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+
 import org.jonatancarbonellmartinez.view.MainView;
 import org.jonatancarbonellmartinez.view.PersonDialogView;
 import org.jonatancarbonellmartinez.view.PersonPanelView;

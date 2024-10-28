@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
-import org.jonatancarbonellmartinez.model.dao.PersonDAO;
+import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.view.PanelView;
 import org.jonatancarbonellmartinez.view.PersonPanelView;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonPanelPresenter implements Presenter, PanelPresenter {
-    private final PersonDAO personDAO;
+    private final GenericDAO<Person,Integer> personDAO;
     private final PersonPanelView view;
     private boolean isShowingActive = true; // Default to showing "Active" persons
 
