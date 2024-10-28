@@ -46,6 +46,14 @@ public class PersonPanelView extends JPanel implements View, PanelView {
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
             }
+            // Define "ID" and "Orden" as Integer; other columns default to String (in order to sort properly when headers are clicked)
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0 || columnIndex == 11) {
+                    return Integer.class;
+                }
+                return String.class;
+            }
         };
 
         personTable = new JTable(tableModel);

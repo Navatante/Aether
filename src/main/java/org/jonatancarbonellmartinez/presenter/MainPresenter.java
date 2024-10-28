@@ -6,7 +6,7 @@ import org.jonatancarbonellmartinez.view.*;
 
 import java.awt.*;
 
-public class MainPresenter implements Observer, Presenter { // TODO 2. after refactoring MainView, the Presenter will handle more logic than now, is it good that i have moved navigation logic to NavigationController.
+public class MainPresenter implements Observer, Presenter {
     private final MainView view;
     private final  NavigationController navigationController;
 
@@ -28,13 +28,18 @@ public class MainPresenter implements Observer, Presenter { // TODO 2. after ref
         if (view.getCardPanel().getComponentCount() > 0) {
             // Safe to access the first component
             Component currentComponent = view.getCardPanel().getComponent(0);
-            if (currentComponent instanceof PersonPanelView) {
-                PersonPanelView personPanelView = (PersonPanelView) currentComponent;
-                personPanelView.updatePanel();
-            } //else if (currentComponent instanceof EventPanelView) {
-                //EventPanelView eventPanelView = (EventPanelView) currentComponent;
-                //eventPanelView.updatePanel();
-            //}
+            String currentComponentName = currentComponent.getClass().getSimpleName();
+
+            switch (currentComponentName) {
+                case "PersonPanelView":
+                    ((PersonPanelView) currentComponent).updatePanel();
+                    break;
+                //case "EventPanelView":
+                    //((EventPanelView) currentComponent).updatePanel();
+                    //break;
+                // Add more cases if needed
+            }
         }
     }
+
 }
