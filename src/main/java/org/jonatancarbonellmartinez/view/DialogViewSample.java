@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 import javax.swing.*;
 
-public class DialogViewSample extends JDialog implements View, DialogView { // TODO to reuse dialog code. Favor composition over inheritance
+public class DialogViewSample extends JDialog implements View, DialogView { // TODO delete this class, composition is going to be used only in panelViews, because dialogs change a lot.
 
 
     @Override
