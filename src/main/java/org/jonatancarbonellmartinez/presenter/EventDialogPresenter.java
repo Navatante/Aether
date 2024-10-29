@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
 
-public class EventDialogPresenter implements Presenter, DialogPresenter { // TODO
+public class EventDialogPresenter implements Presenter, DialogPresenter {
     @Override
     public boolean isFormValid() {
         return false;

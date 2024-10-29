@@ -39,7 +39,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     }
 
     @Override
-    public void createComponents() { // TODO this method could have the argument: DefaultTableModel tableModel to pass it as argument and reutilize the method in composition.
+    public void createComponents() {
 
         tableModel = new DefaultTableModel(new String[] {"ID", "Código", "Empleo", "Nombre", "Apellido 1", "Apellido 2", "Teléfono", "DNI", "División", "Rol", "Situación", "Orden"}, 0) {
             @Override
@@ -56,13 +56,13 @@ public class PersonPanelView extends JPanel implements View, PanelView {
             }
         };
 
-        personTable = new JTable(tableModel); // TODO rename, entityTable
+        personTable = new JTable(tableModel);
 
         scrollPane = new JScrollPane(personTable);
 
         searchField = new JTextField();
-        sorter = new TableRowSorter<>(tableModel); // TODO the sorter i think also changes, so maybe extract it.
-        togglePersonState = new JRadioButton("Activos"); // TODO extract this because is not flexible.
+        sorter = new TableRowSorter<>(tableModel);
+        togglePersonState = new JRadioButton("Activos");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         personTable.setRowSorter(sorter);
         personTable.setCellSelectionEnabled(true);
         personTable.setToolTipText("Ctrl+C para copiar");
-        togglePersonState.setSelected(true); // Initially selected (Active state) // TODO extract this because is not flexible
+        togglePersonState.setSelected(true); // Initially selected (Active state)
 
     }
 
@@ -90,16 +90,16 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     @Override
     public void assembleComponents() {
     View.addComponentsToPanel(insideTopPanel, new JLabel("Buscar"), searchField);
-    topPanel.add(togglePersonState, BorderLayout.EAST); // TODO extract this
+    topPanel.add(togglePersonState, BorderLayout.EAST);
     }
 
     @Override
-    public void addActionListeners() { // TODO no incluir este metodo en el sample porque cada uno tiene su implementacion. Por lo que la plantilla que no implemente interfaces.
+    public void addActionListeners() {
         presenter.setActionListeners();
     }
 
     @Override
-    public void updatePanel() { // TODO no incluir este metodo en el sample porque cada uno tiene su implementacion. Por lo que la plantilla que no implemente interfaces.
+    public void updatePanel() {
         presenter.loadAllPersons();
     }
 
