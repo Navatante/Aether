@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.utilities;
 
 
+import org.jonatancarbonellmartinez.view.EventDialogView;
 import org.jonatancarbonellmartinez.view.MainView;
 import org.jonatancarbonellmartinez.view.PersonDialogView;
 import org.jonatancarbonellmartinez.view.PersonPanelView;
@@ -37,6 +38,12 @@ public class NavigationController {
                 break;
             case "EditPerson":
                 new PersonDialogView(mainView,true);
+                break;
+            case "AddEvent":
+                new EventDialogView(mainView,false);
+                break;
+            case "EditEvent":
+                new EventDialogView(mainView,true);
                 break;
             // Additional dialog cases
         }

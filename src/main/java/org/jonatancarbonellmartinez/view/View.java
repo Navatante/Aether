@@ -34,10 +34,10 @@ public interface View {
 
     void setupUIProperties();
     void createPanels();
-    void configurePanels();
-    void assemblePanels();
     void createComponents();
+    void configurePanels();
     void configureComponents();
+    void assemblePanels();
     void assembleComponents();
     void addActionListeners();
 

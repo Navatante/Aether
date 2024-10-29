@@ -33,6 +33,14 @@ public class MainView extends JFrame implements View {
     private JMenuItem anadirPersonalMenuItem;
     private JMenuItem anadirEventoMenuItem;
 
+    public JMenuItem getAnadirEventoMenuItem() {
+        return anadirEventoMenuItem;
+    }
+
+    public JMenuItem getEditarEventoMenuItem() {
+        return editarEventoMenuItem;
+    }
+
     private JMenuItem editarPersonalMenuItem;
     private JMenuItem editarEventoMenuItem;
 

@@ -20,6 +20,8 @@ public class MainPresenter implements Observer, Presenter {
         view.getBotonPersonal().addActionListener(e -> navigationController.navigateTo("PersonPanelView"));
         view.getAnadirPersonalMenuItem().addActionListener(e -> navigationController.openDialog("AddPerson"));
         view.getEditarPersonalMenuItem().addActionListener(e -> navigationController.openDialog("EditPerson"));
+        view.getAnadirEventoMenuItem().addActionListener(e -> navigationController.openDialog("AddEvent"));
+        view.getEditarEventoMenuItem().addActionListener(e -> navigationController.openDialog("EditEvent"));
         // Add more
     }
 

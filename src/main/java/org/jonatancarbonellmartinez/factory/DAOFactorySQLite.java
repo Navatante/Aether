@@ -23,12 +23,12 @@ public class DAOFactorySQLite implements DAOFactory {
     }
 
     public GenericDAO<Person,Integer> createPersonDAOSQLite() {
-        return new PersonDAOSQLite(); // No need to pass connection
+        return new PersonDAOSQLite();
     }
 
     @Override
     public GenericDAO<Event, Integer> createEventDAOSQLite() throws DatabaseException {
-        return null;
+        return new EventDAOSQLite();
     }
 
     // Add methods for creating other DAOs

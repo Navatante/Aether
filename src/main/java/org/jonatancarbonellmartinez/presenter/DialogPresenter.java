@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.view.DialogView;
+import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
 
@@ -14,6 +15,7 @@ public interface DialogPresenter {
     void getEntity(int entityId);
     void onSaveButtonClicked();
     Entity collectEntityData();
+    void populateEntityDialog(Entity entity);
     void notifyObserver();
 
     /**
@@ -73,5 +75,10 @@ public interface DialogPresenter {
         // Obtener el resto de dividir el número del DNI entre 23
         int resto = dniNumero % 23;
         return personDniField.getText()+ letras.charAt(resto);
+    }
+
+    static void handleUnexpectedError(Exception e, JDialog view) {
+        e.printStackTrace();
+        DialogView.showError(view,"Error inesperado: ");
     }
 }

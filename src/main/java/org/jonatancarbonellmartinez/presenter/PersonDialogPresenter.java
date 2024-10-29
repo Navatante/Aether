@@ -3,20 +3,19 @@ package org.jonatancarbonellmartinez.presenter;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.model.dao.GenericDAO;
+import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.PersonDialogView;
-
-import javax.swing.*;
 
 public class PersonDialogPresenter implements Presenter, DialogPresenter {
     private final GenericDAO<Person,Integer> personDAO;
     private final PersonDialogView view;
     private final Observer observer;
 
-    public PersonDialogPresenter(PersonDialogView addPersonView, Observer observer) {
-        this.view = addPersonView;
+    public PersonDialogPresenter(PersonDialogView personView, Observer observer) {
+        this.view = personView;
         this.personDAO = DAOFactorySQLite.getInstance().createPersonDAOSQLite(); // new
         this.observer = observer;
     }
@@ -56,7 +55,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         } catch (DatabaseException ex) {
             DialogView.showError(view,"Error al añadir persona: ");
         } catch (Exception ex) {
-            handleUnexpectedError(ex);
+            DialogPresenter.handleUnexpectedError(ex, view);
         }
     }
 
@@ -76,8 +75,8 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
 
         } catch (DatabaseException e) {
             DialogView.showError(view,"Error al editar persona: ");
-        } catch (Exception e) {
-            handleUnexpectedError(e);
+        } catch (Exception ex) {
+            DialogPresenter.handleUnexpectedError(ex, view);
         }
     }
 
@@ -86,21 +85,21 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         try {
             Person person = (Person) personDAO.read(entityId);
             if (person != null) {
-                populatePersonDialog(person);
+                populateEntityDialog(person);
             } else {
                 DialogView.showMessage(view,"No se encontró ninguna persona con ese ID.");
             }
         } catch (DatabaseException e) {
             DialogView.showError(view,"Error al obtener la persona: ");
-        } catch (Exception e) {
-            handleUnexpectedError(e);
+        } catch (Exception ex) {
+            DialogPresenter.handleUnexpectedError(ex,view);
         }
     }
 
     @Override
     public void setActionListeners() {
         view.getSaveButton().addActionListener(e -> onSaveButtonClicked());
-        if (view.isEditMode()) view.getEditPersonIdField().addActionListener(e -> view.onEditPersonIdFieldAction());
+        if (view.isEditMode()) view.getEditPersonIdField().addActionListener(e -> view.onEditEntityIdFieldAction());
     }
 
     @Override
@@ -137,7 +136,9 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         observer.update();
     }
 
-    private void populatePersonDialog(Person person) {
+    @Override
+    public void populateEntityDialog(Entity entity) {
+        Person person = (Person) entity;
         view.setPersonNk(person.getPersonNk());
         view.setPersonRank(person.getPersonRank());
         view.setPersonName(person.getPersonName());
@@ -158,10 +159,4 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     private String stripDniLetter(String dni) {
         return dni != null && dni.length() > 0 ? dni.substring(0, dni.length() - 1) : "";
     }
-
-    private void handleUnexpectedError(Exception e) {
-        e.printStackTrace();
-        DialogView.showError(view,"Error inesperado: ");
-    }
-
 }

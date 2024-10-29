@@ -4,7 +4,7 @@ import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
 import javax.swing.*;
 import java.awt.*;
 
-public class PersonDialogView extends JDialog implements View, DialogView {
+public class PersonDialogView extends JDialog implements View, DialogView { // TODO when Maniobra Interancional is selected in the combobox, it doesnt fit. make the boxer wider.
 
     private MainView mainView;
     private PersonDialogPresenter presenter;
@@ -89,7 +89,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void assembleComponents() {
-
         View.addComponentsToPanel(centerPanel, empleoBox, personNkField, personNameField, personLastName1Field, personLastName2Field,
                                     personPhoneField, personDniField, divisionBox, rolBox, orderField);
         View.addComponentsToPanel(bottomPanel, saveButton);
@@ -141,7 +140,8 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         }
     }
 
-    public void onEditPersonIdFieldAction() {
+    @Override
+    public void onEditEntityIdFieldAction() {
         String idText = editPersonIdField.getText();
         if (!idText.trim().isEmpty()) {
             try {
@@ -163,6 +163,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         }
     }
 
+    @Override
     public void setDocumentFilters() {
         View.setDocumentFilter(personNkField,30);
         View.setDocumentFilter(personLastName1Field,30);
@@ -185,10 +186,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     public JComboBox<String> getEmpleoBox() {
         return empleoBox;
-    }
-
-    public MainView getMainView() {
-        return mainView;
     }
 
     public PersonDialogPresenter getPresenter() {
@@ -235,24 +232,8 @@ public class PersonDialogView extends JDialog implements View, DialogView {
         return personStateBox;
     }
 
-    public JLabel getInsertIdLabel() {
-        return insertIdLabel;
-    }
-
     public JButton getSaveButton() {
         return saveButton;
-    }
-
-    public JPanel getTopPanel() {
-        return topPanel;
-    }
-
-    public JPanel getCenterPanel() {
-        return centerPanel;
-    }
-
-    public JPanel getBottomPanel() {
-        return bottomPanel;
     }
 
     public JTextField getPersonNkField() {

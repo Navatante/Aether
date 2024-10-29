@@ -46,12 +46,12 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
     }
 
     @Override
-    public Person read(Integer personSk) throws DatabaseException {
+    public Person read(Integer entitySk) throws DatabaseException {
         String sql = "SELECT * FROM dim_person WHERE person_sk = ?";
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-            pstmt.setInt(1, personSk);
+            pstmt.setInt(1, entitySk);
 
             // Execute the query and get the ResultSet
             try (ResultSet rs = pstmt.executeQuery()) {
