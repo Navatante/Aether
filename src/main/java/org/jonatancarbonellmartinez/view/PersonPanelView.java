@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.presenter.PersonPanelPresenter;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -30,6 +31,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     @Override
     public void setupUIProperties() {
         setLayout(new BorderLayout());
+        setBorder(new EmptyBorder(0, 0, 10, 10));
     }
 
     @Override
@@ -58,6 +60,11 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
         personTable = new JTable(tableModel);
 
+        // Left-align the "ID" column
+        DefaultTableCellRenderer leftAlignRenderer = new DefaultTableCellRenderer();
+        leftAlignRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        personTable.getColumnModel().getColumn(0).setCellRenderer(leftAlignRenderer);
+
         scrollPane = new JScrollPane(personTable);
 
         searchField = new JTextField();
@@ -77,7 +84,6 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         personTable.setCellSelectionEnabled(true);
         personTable.setToolTipText("Ctrl+C para copiar");
         togglePersonState.setSelected(true); // Initially selected (Active state)
-
     }
 
     @Override
@@ -119,5 +125,4 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     public JRadioButton getTogglePersonState() {
         return togglePersonState;
     }
-
 }

@@ -1,10 +1,7 @@
 package org.jonatancarbonellmartinez.utilities;
 
 
-import org.jonatancarbonellmartinez.view.EventDialogView;
-import org.jonatancarbonellmartinez.view.MainView;
-import org.jonatancarbonellmartinez.view.PersonDialogView;
-import org.jonatancarbonellmartinez.view.PersonPanelView;
+import org.jonatancarbonellmartinez.view.*;
 
 public class NavigationController {
 
@@ -24,7 +21,8 @@ public class NavigationController {
                 createAndShowPersonPanelView();
                 break;
 
-            case "Test":
+            case "EventPanelView":
+                createAndShowEventPanelView();
                 break;
             // Add more cases for other views as necessary
         }
@@ -50,16 +48,39 @@ public class NavigationController {
     }
 
     private void createAndShowPersonPanelView() {
-        boolean isPersonViewVisible = componentCount > 0 && mainView.getCardPanel().getComponent(0) instanceof PersonPanelView;
-        if (!isPersonViewVisible) {
+        // Check if "PersonPanelView" is already present in the CardPanel
+        if (!isPanelPresent(PersonPanelView.class)) {
             PersonPanelView personPanelView = new PersonPanelView();
             mainView.getCardPanel().add(personPanelView, "PersonPanelView");
         }
+
         mainView.getCardLayout().show(mainView.getCardPanel(), "PersonPanelView");
-        // Refresh the panel
         mainView.getCardPanel().revalidate();
         mainView.getCardPanel().repaint();
     }
+
+    private void createAndShowEventPanelView() {
+        // Check if "EventPanelView" is already present in the CardPanel
+        if (!isPanelPresent(EventPanelView.class)) {
+            EventPanelView eventPanelView = new EventPanelView();
+            mainView.getCardPanel().add(eventPanelView, "EventPanelView");
+        }
+
+        mainView.getCardLayout().show(mainView.getCardPanel(), "EventPanelView");
+        mainView.getCardPanel().revalidate();
+        mainView.getCardPanel().repaint();
+    }
+
+    // Helper method to check if a specific panel is present
+    private boolean isPanelPresent(Class<?> panelClass) {
+        for (int i = 0; i < mainView.getCardPanel().getComponentCount(); i++) {
+            if (panelClass.isInstance(mainView.getCardPanel().getComponent(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
 

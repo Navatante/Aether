@@ -7,7 +7,6 @@ import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.view.PanelView;
 import org.jonatancarbonellmartinez.view.PersonPanelView;
 
-import javax.swing.*;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

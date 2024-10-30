@@ -18,6 +18,7 @@ public class MainPresenter implements Observer, Presenter {
     @Override
     public void setActionListeners() {
         view.getBotonPersonal().addActionListener(e -> navigationController.navigateTo("PersonPanelView"));
+        view.getBotonEventos().addActionListener(e -> navigationController.navigateTo("EventPanelView"));
         view.getAnadirPersonalMenuItem().addActionListener(e -> navigationController.openDialog("AddPerson"));
         view.getEditarPersonalMenuItem().addActionListener(e -> navigationController.openDialog("EditPerson"));
         view.getAnadirEventoMenuItem().addActionListener(e -> navigationController.openDialog("AddEvent"));
@@ -36,9 +37,9 @@ public class MainPresenter implements Observer, Presenter {
                 case "PersonPanelView":
                     ((PersonPanelView) currentComponent).updatePanel();
                     break;
-                //case "EventPanelView":
-                    //((EventPanelView) currentComponent).updatePanel();
-                    //break;
+                case "EventPanelView":
+                    ((EventPanelView) currentComponent).updatePanel();
+                    break;
                 // Add more cases if needed
             }
         }

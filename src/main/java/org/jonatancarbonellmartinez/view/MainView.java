@@ -51,6 +51,7 @@ public class MainView extends JFrame implements View {
     private JButton botonPrincipal;
     private JButton botonPilotos;
     private JButton botonDotaciones;
+
     private JButton botonEventos;
     private JButton botonSesiones;
     private JButton botonHelos;
@@ -244,6 +245,10 @@ public class MainView extends JFrame implements View {
 
     public JButton getBotonPersonal() {
         return botonPersonal;
+    }
+
+    public JButton getBotonEventos() {
+        return botonEventos;
     }
 
     public JPanel getCardPanel() {
