@@ -81,7 +81,7 @@ public class EventDialogPresenter implements Presenter, DialogPresenter {
     }
 
     @Override
-    public void onSaveButtonClicked() { // TODO POR AQUI
+    public void onSaveButtonClicked() {
         if (isFormValid()) {
             if (view.isEditMode()) {
                 editEntity();

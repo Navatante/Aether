@@ -67,7 +67,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
     }
 
     @Override
-    public void update(Person person, int idToUpdate) throws DatabaseException {
+    public void update(Person entity, int skToUpdate) throws DatabaseException {
         String sql = "UPDATE dim_person\n" +
                     "SET \n" +
                     "    person_nk = ?," +
@@ -85,18 +85,18 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, person.getPersonNk());
-            pstmt.setString(2, person.getPersonRank());
-            pstmt.setString(3, person.getPersonName());
-            pstmt.setString(4, person.getPersonLastName1());
-            pstmt.setString(5, person.getPersonLastName2());
-            pstmt.setString(6, person.getPersonPhone());
-            pstmt.setString(7, person.getPersonDni());
-            pstmt.setString(8, person.getPersonDivision());
-            pstmt.setString(9, person.getPersonRol());
-            pstmt.setInt(10, person.getPersonOrder());
-            pstmt.setInt(11, person.getPersonCurrentFlag());
-            pstmt.setInt(12, idToUpdate);
+            pstmt.setString(1, entity.getPersonNk());
+            pstmt.setString(2, entity.getPersonRank());
+            pstmt.setString(3, entity.getPersonName());
+            pstmt.setString(4, entity.getPersonLastName1());
+            pstmt.setString(5, entity.getPersonLastName2());
+            pstmt.setString(6, entity.getPersonPhone());
+            pstmt.setString(7, entity.getPersonDni());
+            pstmt.setString(8, entity.getPersonDivision());
+            pstmt.setString(9, entity.getPersonRol());
+            pstmt.setInt(10, entity.getPersonOrder());
+            pstmt.setInt(11, entity.getPersonCurrentFlag());
+            pstmt.setInt(12, skToUpdate);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {

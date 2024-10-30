@@ -4,7 +4,7 @@ import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
 import javax.swing.*;
 import java.awt.*;
 
-public class PersonDialogView extends JDialog implements View, DialogView { // TODO when Maniobra Interancional is selected in the combobox, it doesnt fit. make the boxer wider.
+public class PersonDialogView extends JDialog implements View, DialogView {
 
     private MainView mainView;
     private PersonDialogPresenter presenter;

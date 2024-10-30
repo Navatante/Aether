@@ -30,7 +30,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(450, isEditMode ? 340 : 280);
+        setSize(500, isEditMode ? 200 : 162);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -63,7 +63,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
         eventPlaceField = View.createTextField("Lugar");
 
-
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
         if (isEditMode) createEditModeComponents();
@@ -71,7 +70,8 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void configureComponents() {
-        View.setPreferredSizeForComponents(DialogView.FIELD_SIZE, eventNameBox, eventPlaceField);
+        View.setPreferredSizeForComponents(DialogView.FIELD_SIZE, eventPlaceField);
+        View.setPreferredSizeForComponents(new Dimension(200, 25), eventNameBox);
         setDocumentFilters();
         View.setInitialComboBoxLook(eventNameBox);
 
@@ -90,7 +90,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
     }
 
     @Override
-    public void addActionListeners() { // TODO
+    public void addActionListeners() {
         presenter.setActionListeners();
     }
 
