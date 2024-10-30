@@ -11,6 +11,7 @@ import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,23 +32,36 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
     }
 
     private void createSearchFieldListener() {
+        // Placeholder text
+        final String placeholder = "Buscar";
+
         view.getSearchField().getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    onSearchTextChanged(searchText); // Forward search text to presenter
+                }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    onSearchTextChanged(searchText); // Forward search text to presenter
+                }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    onSearchTextChanged(searchText); // Forward search text to presenter
+                }
             }
         });
     }
+
 
     public void loadAllPersons() {
         try {
@@ -98,15 +112,27 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
     private void applyPersonStateFilter() {
         RowFilter<TableModel, Object> stateFilter = RowFilter.regexFilter(isShowingActive ? "Activo" : "Inactivo", 10);
         view.getSorter().setRowFilter(stateFilter); // Set the "Situación" filter
-        applySearchFilter(view.getSearchField().getText()); // Reapply the current search filter
+
+        // Get the current text from the search field
+        String searchText = view.getSearchField().getText();
+
+        // Ignore the placeholder text "Buscar"
+        if (searchText != null && !searchText.trim().isEmpty() && !searchText.equals("Buscar")) {
+            applySearchFilter(searchText); // Reapply the current search filter if it's not the placeholder
+        } else {
+            applySearchFilter(""); // Clears the search filter if the placeholder is present
+        }
     }
 
     private void applySearchFilter(String searchText) {
         List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
 
+        // Escape special characters in the search text
+        String escapedSearchText = escapeSpecialCharacters(searchText);
+
         // Add the search filter if it's not empty
-        if (searchText.trim().length() > 0) {
-            filters.add(RowFilter.regexFilter("(?i)" + searchText)); // Case-insensitive search
+        if (!escapedSearchText.trim().isEmpty()) {
+            filters.add(RowFilter.regexFilter("(?i)" + escapedSearchText)); // Case-insensitive search
         }
 
         // Always add the state filter
@@ -114,11 +140,17 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
 
         // Combine filters
         RowFilter<TableModel, Object> combinedFilter = null;
-        if (!filters.isEmpty()) {
-            combinedFilter = RowFilter.andFilter(filters);
-        }
+        combinedFilter = RowFilter.andFilter(filters);
 
         // Set the combined filter or reset if both are null
         view.getSorter().setRowFilter(combinedFilter);
     }
+
+    // Method to escape special regex characters
+    static String escapeSpecialCharacters(String text) {
+        // This will escape the backslash and any other regex special characters
+        return text.replaceAll("([\\\\\\^\\.\\$\\|\\?\\*\\+\\(\\)\\[\\]\\{\\}])", "\\\\$1");
+    }
+
+
 }

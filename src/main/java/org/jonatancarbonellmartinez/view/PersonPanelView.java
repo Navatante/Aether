@@ -17,7 +17,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
     private JRadioButton togglePersonState;
     private JTextField searchField;
-    private JPanel topPanel, insideTopPanel;
+    private JLabel personTitleLabel;
+    private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     JScrollPane scrollPane;
 
     public PersonPanelView() {
@@ -37,7 +38,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     @Override
     public void createPanels() {
         topPanel = new JPanel(new BorderLayout());
-        insideTopPanel = new JPanel();
+        insideTopPanelLeft = new JPanel();
+        insideTopPanelRight = new JPanel();
     }
 
     @Override
@@ -67,36 +69,41 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
         scrollPane = new JScrollPane(personTable);
 
-        searchField = new JTextField();
+        searchField = View.createTextField("Buscar");
         sorter = new TableRowSorter<>(tableModel);
         togglePersonState = new JRadioButton("Activos");
+        personTitleLabel = new JLabel("Personal");
     }
 
     @Override
     public void configurePanels() {
-        topPanel.setBorder(new EmptyBorder(5, 25, 5, 25));
+        topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
     }
 
     @Override
     public void configureComponents() {
+        personTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
         searchField.setPreferredSize(new Dimension(200, 25));
         personTable.setRowSorter(sorter);
         personTable.setCellSelectionEnabled(true);
         personTable.setToolTipText("Ctrl+C para copiar");
         togglePersonState.setSelected(true); // Initially selected (Active state)
+        togglePersonState.setBorder(new EmptyBorder(0, 25, 0, 0));
     }
 
     @Override
     public void assemblePanels() {
         this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(insideTopPanel, BorderLayout.WEST);
+        topPanel.add(insideTopPanelLeft, BorderLayout.WEST);
+        topPanel.add(insideTopPanelRight, BorderLayout.EAST);
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
     @Override
     public void assembleComponents() {
-    View.addComponentsToPanel(insideTopPanel, new JLabel("Buscar"), searchField);
-    topPanel.add(togglePersonState, BorderLayout.EAST);
+    View.addComponentsToPanel(insideTopPanelLeft, personTitleLabel);
+    View.addComponentsToPanel(insideTopPanelRight, searchField, togglePersonState);
+
     }
 
     @Override

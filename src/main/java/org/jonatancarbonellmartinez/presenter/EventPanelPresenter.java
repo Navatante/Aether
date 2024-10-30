@@ -4,7 +4,6 @@ import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Event;
-import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.view.EventPanelView;
 import org.jonatancarbonellmartinez.view.PanelView;
 
@@ -29,20 +28,35 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
     }
 
     private void createSearchFieldListener() {
+        // Placeholder text
+        final String placeholder = "Buscar";
+
         view.getSearchField().getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    //onSearchTextChanged(searchText); // Forward search text to presenter
+                    PanelPresenter.applySearchFilter(searchText,view.getSorter());
+                }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    //onSearchTextChanged(searchText); // Forward search text to presenter
+                    PanelPresenter.applySearchFilter(searchText,view.getSorter());
+                }
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                onSearchTextChanged(view.getSearchField().getText()); // Forward search text to presenter
+                String searchText = view.getSearchField().getText();
+                if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
+                    //onSearchTextChanged(searchText); // Forward search text to presenter
+                    PanelPresenter.applySearchFilter(searchText,view.getSorter());
+                }
             }
         });
     }
@@ -71,29 +85,7 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
         }
 
         // Apply filters after loading data
-        applySearchFilter(""); // Clear search filter initially
-    }
-
-    public void onSearchTextChanged(String searchText) {
-        applySearchFilter(searchText);
-    }
-
-
-    private void applySearchFilter(String searchText) {
-        List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
-
-        // Add the search filter if it's not empty
-        if (searchText.trim().length() > 0) {
-            filters.add(RowFilter.regexFilter("(?i)" + searchText)); // Case-insensitive search
-        }
-
-        // Combine filters
-        RowFilter<TableModel, Object> combinedFilter = null;
-        if (!filters.isEmpty()) {
-            combinedFilter = RowFilter.andFilter(filters);
-        }
-
-        // Set the combined filter or reset if both are null
-        view.getSorter().setRowFilter(combinedFilter);
+        //applySearchFilter(""); // Clear search filter initially
+        PanelPresenter.applySearchFilter("", view.getSorter());
     }
 }

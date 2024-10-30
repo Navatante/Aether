@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import javax.swing.*;
+import java.awt.*;
 
 public interface PanelView {
 
@@ -9,6 +10,8 @@ public interface PanelView {
     /**
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
      */
+
+    public static final Font ENTITY_TITLE_LABEL_FONT = new Font("Segoe UI", Font.BOLD, 15);
 
     static void showMessage(JPanel parentView, String message) {
         JOptionPane.showMessageDialog(parentView, message);

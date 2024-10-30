@@ -14,8 +14,10 @@ public class EventPanelView extends JPanel implements View, PanelView {
     private DefaultTableModel tableModel;
     private TableRowSorter<TableModel> sorter;
 
+    JLabel eventTitleLabel;
+
     private JTextField searchField;
-    private JPanel topPanel, insideTopPanel;
+    private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     JScrollPane scrollPane;
 
     public EventPanelView() {
@@ -34,18 +36,20 @@ public class EventPanelView extends JPanel implements View, PanelView {
     @Override
     public void createPanels() {
         topPanel = new JPanel(new BorderLayout());
-        insideTopPanel = new JPanel();
+        insideTopPanelLeft = new JPanel();
+        insideTopPanelRight = new JPanel();
     }
 
     @Override
     public void configurePanels() {
-        topPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
+        topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
     }
 
     @Override
     public void assemblePanels() {
         this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(insideTopPanel, BorderLayout.WEST);
+        topPanel.add(insideTopPanelLeft, BorderLayout.WEST);
+        topPanel.add(insideTopPanelRight, BorderLayout.EAST);
         this.add(scrollPane, BorderLayout.CENTER);
 
     }
@@ -76,12 +80,16 @@ public class EventPanelView extends JPanel implements View, PanelView {
 
         scrollPane = new JScrollPane(eventTable);
 
-        searchField = new JTextField();
+        searchField = View.createTextField("Buscar");
         sorter = new TableRowSorter<>(tableModel);
+
+        eventTitleLabel = new JLabel("Eventos");
     }
 
     @Override
     public void configureComponents() {
+
+        eventTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
         searchField.setPreferredSize(new Dimension(200, 25));
         eventTable.setRowSorter(sorter);
         eventTable.setCellSelectionEnabled(true);
@@ -90,7 +98,8 @@ public class EventPanelView extends JPanel implements View, PanelView {
 
     @Override
     public void assembleComponents() {
-        View.addComponentsToPanel(insideTopPanel, new JLabel("Buscar"), searchField);
+        View.addComponentsToPanel(insideTopPanelLeft, eventTitleLabel);
+        View.addComponentsToPanel(insideTopPanelRight, searchField);
     }
 
     @Override
