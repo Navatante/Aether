@@ -22,7 +22,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
 
     @Override
     public boolean isFormValid() {
-        return DialogPresenter.validateComboBox(view, view.getEmpleoBox(), "Empleo") &&
+        boolean isValid = DialogPresenter.validateComboBox(view, view.getEmpleoBox(), "Empleo") &&
                 DialogPresenter.validateComboBox(view, view.getDivisionBox(), "División") &&
                 DialogPresenter.validateComboBox(view, view.getRolBox(), "Rol") &&
                 DialogPresenter.validateField(view, view.getPersonNkField(), "Código") &&
@@ -31,14 +31,21 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
                 DialogPresenter.validateField(view, view.getPersonLastName2Field(), "Apellido 2") &&
                 DialogPresenter.validateField(view, view.getPersonPhoneField(), "Teléfono") &&
                 DialogPresenter.validateField(view, view.getPersonDniField(), "DNI") &&
-                DialogPresenter.validateField(view,view.getOrderField(), "Orden") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonNkField(),"Código") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonNameField(),"Nombre") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName1Field(),"Apellido 1") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName2Field(),"Apellido 2") &&
-                DialogPresenter.containsOnlyNumbers(view, view.getPersonPhoneField(),"Teléfono") &&
-                DialogPresenter.containsOnlyNumbers(view, view.getPersonDniField(),"DNI") &&
+                DialogPresenter.validateField(view, view.getOrderField(), "Orden") &&
+                DialogPresenter.containsOnlyLetters(view, view.getPersonNkField(), "Código") &&
+                DialogPresenter.containsOnlyLetters(view, view.getPersonNameField(), "Nombre") &&
+                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName1Field(), "Apellido 1") &&
+                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName2Field(), "Apellido 2") &&
+                DialogPresenter.containsOnlyNumbers(view, view.getPersonPhoneField(), "Teléfono") &&
+                DialogPresenter.containsOnlyNumbers(view, view.getPersonDniField(), "DNI") &&
                 view.doNotContainZero(view.getOrderField(), "Orden");
+
+        // Additional validation if in edit mode
+        if (view.isEditMode()) {
+            isValid = isValid && DialogPresenter.validateField(view, view.getEditPersonIdField(), "ID");
+        }
+
+        return isValid;
     }
 
     @Override

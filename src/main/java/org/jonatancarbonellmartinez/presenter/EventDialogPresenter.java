@@ -23,10 +23,18 @@ public class EventDialogPresenter implements Presenter, DialogPresenter {
 
     @Override
     public boolean isFormValid() {
-        return DialogPresenter.validateComboBox(view, view.getEventNameBox(), "Nombre") &&
+        boolean isValid = DialogPresenter.validateComboBox(view, view.getEventNameBox(), "Nombre") &&
                 DialogPresenter.validateField(view, view.getEventPlaceField(), "Lugar") &&
-                DialogPresenter.containsOnlyLetters(view, view.getEventPlaceField(),"Lugar");
+                DialogPresenter.containsOnlyLetters(view, view.getEventPlaceField(), "Lugar");
+
+        // If edit mode is active, add the extra validation
+        if (view.isEditMode()) {
+            isValid = isValid && DialogPresenter.validateField(view, view.getEditEventIdField(), "ID");
+        }
+
+        return isValid;
     }
+
 
     @Override
     public void addEntity() {

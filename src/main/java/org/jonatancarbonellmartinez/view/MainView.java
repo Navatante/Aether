@@ -4,6 +4,8 @@ import org.jonatancarbonellmartinez.presenter.MainPresenter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class MainView extends JFrame implements View {
@@ -159,6 +161,30 @@ public class MainView extends JFrame implements View {
         botonGenerator.setToolTipText("Generadores");
 
         this.setJMenuBar(menuBar);
+
+//        // Make the button transparent
+//        botonPersonal.setOpaque(false);
+//        botonPersonal.setContentAreaFilled(false);
+//        botonPersonal.setBorderPainted(false);
+//        botonPersonal.setBackground(new Color(0, 0, 0, 0));
+//
+//
+//        // Add mouse listener for hover effect
+//        botonPersonal.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                botonPersonal.setOpaque(true); // Make it visible on hover
+//                botonPersonal.setBackground(Color.LIGHT_GRAY); // Set hover color to light gray
+//                botonPersonal.setContentAreaFilled(true); // Ensure background fills on hover
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                botonPersonal.setOpaque(false); // Make it transparent again
+//                botonPersonal.setBackground(new Color(0, 0, 0, 0)); // Reset to transparent color
+//                botonPersonal.setContentAreaFilled(false); // Remove filled area
+//            }
+//        });
     }
 
     @Override
