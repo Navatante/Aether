@@ -6,12 +6,8 @@ import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Event;
 import org.jonatancarbonellmartinez.view.EventPanelView;
 import org.jonatancarbonellmartinez.view.PanelView;
-
-import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.TableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventPanelPresenter implements Presenter, PanelPresenter {
@@ -36,7 +32,6 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
             public void insertUpdate(DocumentEvent e) {
                 String searchText = view.getSearchField().getText();
                 if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
-                    //onSearchTextChanged(searchText); // Forward search text to presenter
                     PanelPresenter.applySearchFilter(searchText,view.getSorter());
                 }
             }
@@ -45,7 +40,6 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
             public void removeUpdate(DocumentEvent e) {
                 String searchText = view.getSearchField().getText();
                 if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
-                    //onSearchTextChanged(searchText); // Forward search text to presenter
                     PanelPresenter.applySearchFilter(searchText,view.getSorter());
                 }
             }
@@ -54,7 +48,6 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
             public void changedUpdate(DocumentEvent e) {
                 String searchText = view.getSearchField().getText();
                 if (!searchText.equals(placeholder)) { // Ignore if it matches the placeholder
-                    //onSearchTextChanged(searchText); // Forward search text to presenter
                     PanelPresenter.applySearchFilter(searchText,view.getSorter());
                 }
             }
@@ -85,7 +78,6 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
         }
 
         // Apply filters after loading data
-        //applySearchFilter(""); // Clear search filter initially
         PanelPresenter.applySearchFilter("", view.getSorter());
     }
 }

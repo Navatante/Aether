@@ -1,20 +1,12 @@
 package org.jonatancarbonellmartinez.presenter;
 
-import org.jonatancarbonellmartinez.view.View;
-
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface PanelPresenter {
-
-    // TODO mirate los metodos de los PanelPresenters y mira cuales son comunes y puedes meterlos en la interfaz para que sigan la misma estructura.
-
-
 
     static void applySearchFilter(String searchText, TableRowSorter<TableModel> sorter) {
         List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
