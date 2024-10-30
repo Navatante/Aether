@@ -59,7 +59,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
     public void createComponents() {
 
         eventNameBox = View.createComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
-                "Maniobra internacional", "Misión", "Pruebas"}, "Nombre");
+                "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO los valores estos, aunque sean fijos, que los coja de la base de datos. Igual para otros comboboxes. Asi si yo quito o pongo en la base de datos, no tener que venir a modificar el programa.
 
         eventPlaceField = View.createTextField("Lugar");
 
