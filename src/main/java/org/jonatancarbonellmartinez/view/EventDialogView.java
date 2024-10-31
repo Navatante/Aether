@@ -108,7 +108,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void clearFields() {
-        //View.setDocumentFilter(personNkField,6); // Because input was shorter than placeholder.
         View.setPlaceholder(eventPlaceField, "Lugar");
 
         eventNameBox.setSelectedIndex(0);
@@ -129,7 +128,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
                 }
 
                 int eventId = Integer.parseInt(idText);
-                //View.setDocumentFilter(personNkField,3);
                 presenter.getEntity(eventId);
             } catch (NumberFormatException ex) {
                 DialogView.showError(this, "Por favor, introduce un ID válido");

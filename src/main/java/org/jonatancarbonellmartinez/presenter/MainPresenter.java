@@ -28,21 +28,14 @@ public class MainPresenter implements Observer, Presenter {
 
     @Override
     public void update() {
-        if (view.getCardPanel().getComponentCount() > 0) {
-            // Safe to access the first component
-            Component currentComponent = view.getCardPanel().getComponent(0);
-            String currentComponentName = currentComponent.getClass().getSimpleName();
-
-            switch (currentComponentName) {
-                case "PersonPanelView":
-                    ((PersonPanelView) currentComponent).updatePanel();
-                    break;
-                case "EventPanelView":
-                    ((EventPanelView) currentComponent).updatePanel();
-                    break;
-                // Add more cases if needed
+        // Iterate through all components in the CardPanel
+        for (Component component : view.getCardPanel().getComponents()) {
+            if (component instanceof PersonPanelView) {
+                ((PersonPanelView) component).updatePanel();
+            } else if (component instanceof EventPanelView) {
+                ((EventPanelView) component).updatePanel();
             }
+            // Add more `else if` blocks for other component types as needed
         }
     }
-
 }

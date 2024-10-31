@@ -45,6 +45,11 @@ public interface View {
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
      */
 
+    public static final Color mouseEnteredColor = new Color(78,80,82);
+    Color transparentColor = new Color(0, 0, 0, 0);
+    Color mousePressedColor = new Color(93,95,98);
+    Color borderColor = new Color(48,50,51);
+
     // To be used when Placeholder is larger than input.
     static JTextField createTextField(String placeholder) {
         JTextField textField = new JTextField(placeholder);

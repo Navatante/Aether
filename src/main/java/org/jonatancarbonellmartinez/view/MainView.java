@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,8 +61,7 @@ public class MainView extends JFrame implements View {
     private JButton botonCapbas;
     private JButton botonGenerator;
 
-    private Color menusColor;
-    private Color borderColor;
+    private ImageIcon iconPersonal, iconEvent, iconPending;
 
     public MainView() {
         presenter = new MainPresenter(this);
@@ -92,9 +92,6 @@ public class MainView extends JFrame implements View {
 
     @Override
     public void createComponents() {
-        menusColor = new Color(43,45,48);
-        borderColor = new Color(29,31,34);
-
         menuBar = new JMenuBar();
 
         registrarMenu = new JMenu("Registrar");
@@ -115,22 +112,26 @@ public class MainView extends JFrame implements View {
         docSemanalMenuItem = new JMenuItem("Documentación semanal");
         docMensualMenuItem = new JMenuItem("Documentación mensual");
 
+        iconPersonal = new ImageIcon(getClass().getResource("/Icon_Personal.png"));
+        iconEvent = new ImageIcon(getClass().getResource("/Icon_Event.png"));
+        iconPending = new ImageIcon(getClass().getResource("/Icon_Pending.png"));
 
-        botonPrincipal = createRoundedButton("G");
-        botonPilotos = createRoundedButton("P");
-        botonDotaciones = createRoundedButton("D");
-        botonPersonal = createRoundedButton("P");
-        botonEventos = createRoundedButton("E");
-        botonSesiones = createRoundedButton("S");
-        botonHelos = createRoundedButton("H");
-        botonCapbas = createRoundedButton("C");
-        botonGenerator = createRoundedButton("G");
+        botonPrincipal = createRoundedButton(iconPending);
+        botonPilotos = createRoundedButton(iconPending);
+        botonDotaciones = createRoundedButton(iconPending);
+        botonPersonal = createRoundedButton(iconPersonal);
+        botonEventos = createRoundedButton(iconEvent);
+        botonSesiones = createRoundedButton(iconPending);
+        botonHelos = createRoundedButton(iconPending);
+        botonCapbas = createRoundedButton(iconPending);
+        botonGenerator = createRoundedButton(iconPending);
+
     }
 
     @Override
     public void configurePanels() {
         setContentPane(mainPanel);
-        mainPanel.setBorder(BorderFactory.createLineBorder(borderColor));
+        mainPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
         topLeftPanel.setLayout(new GridLayout(3,1,0,10));
         topLeftPanel.setLayout(new GridLayout(3,1,0,10));
         bottomLeftPanel.setLayout(new GridLayout(6,1,0,10));
@@ -138,12 +139,24 @@ public class MainView extends JFrame implements View {
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Padding around panel
 
         cardPanel.setLayout(cardLayout);
-        cardPanel.setBackground(menusColor);
+        cardPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, borderColor));
 
         leftGapPanel.setPreferredSize(new Dimension(55, 0));
         leftGapPanel.setOpaque(false); // Make the panel transparent
 
-
+        // TODO a medida que meta funcionalidades, eliminar este codigo.
+        botonPrincipal.setEnabled(false);
+        botonPilotos.setEnabled(false);
+        botonDotaciones.setEnabled(false);
+        botonSesiones.setEnabled(false);
+        botonHelos.setEnabled(false);
+        botonCapbas.setEnabled(false);
+        botonGenerator.setEnabled(false);
+        registrarVueloMenuItem.setEnabled(false);
+        registrarCombustibleMenuItem.setEnabled(false);
+        registrarCalificacionMenuItem.setEnabled(false);
+        docSemanalMenuItem.setEnabled(false);
+        docMensualMenuItem.setEnabled(false);
     }
 
     @Override
@@ -214,14 +227,14 @@ public class MainView extends JFrame implements View {
         presenter.setActionListeners();
     }
 
-    private JButton createRoundedButton(String text) {
-        JButton button = new JButton(text) {
+    private JButton createRoundedButton(ImageIcon icon) {
+        JButton button = new JButton(icon) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Set the background color
+                // Set the background color, which changes on hover.
                 g2.setColor(getBackground());
 
                 // Create a rounded rectangle for the button background
@@ -252,9 +265,39 @@ public class MainView extends JFrame implements View {
         button.setContentAreaFilled(false);                         // Prevents default rectangular background
         button.setFocusPainted(false);                              // Remove focus painting
         button.setAlignmentX(Component.CENTER_ALIGNMENT);           // Center alignment
+        button.setBackground(new Color(0, 0, 0, 0)); // Set initial transparent background
+
+        // Add a mouse listener to change the background color on hover
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(mouseEnteredColor); // Change to gray when hovered
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(transparentColor); // Reset to transparent when not hovered
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                button.setBackground(mousePressedColor); // Change to dark gray when pressed
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                // Return to hover color if mouse is still over the button, otherwise transparent
+                if (button.getBounds().contains(e.getPoint())) {
+                    button.setBackground(mouseEnteredColor);
+                } else {
+                    button.setBackground(transparentColor);
+                }
+            }
+        });
 
         return button;
     }
+
 
     // Getters
     public JMenuItem getAnadirPersonalMenuItem() {

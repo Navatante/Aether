@@ -30,7 +30,7 @@ public class EventPanelView extends JPanel implements View, PanelView {
     @Override
     public void setupUIProperties() {
         setLayout(new BorderLayout());
-        setBorder(new EmptyBorder(0, 200, 10, 200));
+        setBorder(new EmptyBorder(0, 10, 10, 10));
     }
 
     @Override
@@ -51,7 +51,6 @@ public class EventPanelView extends JPanel implements View, PanelView {
         topPanel.add(insideTopPanelLeft, BorderLayout.WEST);
         topPanel.add(insideTopPanelRight, BorderLayout.EAST);
         this.add(scrollPane, BorderLayout.CENTER);
-
     }
 
     @Override
