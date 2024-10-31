@@ -135,8 +135,8 @@ public class MainView extends JFrame implements View {
         topLeftPanel.setLayout(new GridLayout(3,1,0,10));
         topLeftPanel.setLayout(new GridLayout(3,1,0,10));
         bottomLeftPanel.setLayout(new GridLayout(6,1,0,10));
-        leftPanel.setPreferredSize(new Dimension(60, 0)); // Width slightly larger than button size
-        leftPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Padding around panel
+        leftPanel.setPreferredSize(new Dimension(50, 0)); // Width slightly larger than button size
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5)); // Padding around panel
 
         cardPanel.setLayout(cardLayout);
         cardPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, borderColor));
@@ -174,30 +174,6 @@ public class MainView extends JFrame implements View {
         botonGenerator.setToolTipText("Generadores");
 
         this.setJMenuBar(menuBar);
-
-//        // Make the button transparent
-//        botonPersonal.setOpaque(false);
-//        botonPersonal.setContentAreaFilled(false);
-//        botonPersonal.setBorderPainted(false);
-//        botonPersonal.setBackground(new Color(0, 0, 0, 0));
-//
-//
-//        // Add mouse listener for hover effect
-//        botonPersonal.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                botonPersonal.setOpaque(true); // Make it visible on hover
-//                botonPersonal.setBackground(Color.LIGHT_GRAY); // Set hover color to light gray
-//                botonPersonal.setContentAreaFilled(true); // Ensure background fills on hover
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                botonPersonal.setOpaque(false); // Make it transparent again
-//                botonPersonal.setBackground(new Color(0, 0, 0, 0)); // Reset to transparent color
-//                botonPersonal.setContentAreaFilled(false); // Remove filled area
-//            }
-//        });
     }
 
     @Override

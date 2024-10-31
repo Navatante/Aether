@@ -32,7 +32,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     @Override
     public void setupUIProperties() {
         setLayout(new BorderLayout());
-        setBorder(new EmptyBorder(0, 10, 10, 10));
+        setBorder(new EmptyBorder(0, 5, 5, 5));
     }
 
     @Override
