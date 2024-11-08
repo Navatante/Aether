@@ -7,6 +7,7 @@ import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Vector;
 
 public interface View {
 
@@ -85,7 +86,7 @@ public interface View {
         return textField;
     }
 
-    static JComboBox<String> createComboBox(String[] values, String placeholder) {
+    static JComboBox<String> createComboBox(String[] values, String placeholder) { // TODO sera sustituido por Vector
         JComboBox<String> comboBox = new JComboBox<>(values);
         comboBox.insertItemAt("", 0);
         comboBox.setSelectedIndex(0);
@@ -93,6 +94,16 @@ public interface View {
         comboBox.addActionListener(e -> View.updateComboBoxAppearance(comboBox, placeholder));
         return comboBox;
     }
+
+    static JComboBox<String> createComboBox(Vector<String> values, String placeholder) { // TODO los combobox se van a llenar a partir de un Vector que se llena de un getAll()
+        JComboBox<String> comboBox = new JComboBox<>(values);
+        comboBox.insertItemAt("", 0); // Inserta un elemento vacío al inicio
+        comboBox.setSelectedIndex(0); // Selecciona el elemento vacío por defecto
+        comboBox.setRenderer(View.createComboBoxRenderer(placeholder)); // Configura el renderer para el placeholder
+        comboBox.addActionListener(e -> View.updateComboBoxAppearance(comboBox, placeholder)); // Actualiza la apariencia
+        return comboBox;
+    }
+
 
     static void addComponentsToPanel(JPanel panel, JComponent... components) {
         for (JComponent component : components) {

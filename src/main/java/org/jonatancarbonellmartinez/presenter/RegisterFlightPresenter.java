@@ -10,6 +10,10 @@ import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.RegisterFlightView.RegisterFlightDialogView;
 
+import java.util.List;
+import java.util.Vector;
+import java.util.stream.Collectors;
+
 public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final GenericDAO<Helo, Integer> heloDAO;
     private final GenericDAO<Event,Integer> eventDAO;
@@ -70,7 +74,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     }
 
-    public String[] getHeloArray() {
-        DAOFactorySQLite.getInstance().createEventDAOSQLite().getAll(); // TODO fix this
+    public Vector<String> getHeloNumbers() {
+        List<Helo> helos = heloDAO.getAll();
+        return helos.stream()
+                .map(Helo::getHeloName) // Extrae el nombre de cada objeto Helo
+                .collect(Collectors.toCollection(Vector::new)); // Convierte a un Vector
     }
 }
