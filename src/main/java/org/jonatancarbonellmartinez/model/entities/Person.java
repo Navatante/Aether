@@ -114,19 +114,6 @@ public class Person implements Entity {
     // Override toString() for easy debugging
     @Override
     public String toString() {
-        return "DimPerson{" +
-                "personSk=" + personSk +
-                ", personNk='" + personNk + '\'' +
-                ", personRank='" + personRank + '\'' +
-                ", personName='" + personName + '\'' +
-                ", personLastName1='" + personLastName1 + '\'' +
-                ", personLastName2='" + personLastName2 + '\'' +
-                ", personPhone='" + personPhone + '\'' +
-                ", personDni='" + personDni + '\'' +
-                ", personDivision='" + personDivision + '\'' +
-                ", personOrder=" + personOrder +
-                ", personRol='" + personRol + '\'' +
-                ", personCurrentFlag=" + personCurrentFlag +
-                '}';
+        return personNk;
     }
 }

@@ -23,17 +23,17 @@ public class DAOFactorySQLite implements DAOFactory {
         return instance;
     }
 
-    public GenericDAO<Person,Integer> createPersonDAOSQLite() {
+    public PersonDAOSQLite createPersonDAOSQLite() {
         return new PersonDAOSQLite();
     }
 
     @Override
-    public GenericDAO<Event, Integer> createEventDAOSQLite() throws DatabaseException {
+    public EventDAOSQLite createEventDAOSQLite() throws DatabaseException {
         return new EventDAOSQLite();
     }
 
     @Override
-    public GenericDAO<Helo, Integer> createHeloDAOSQLite() throws DatabaseException {
+    public HeloDAOSQLite createHeloDAOSQLite() throws DatabaseException {
         return new HeloDAOSQLite();
     }
 

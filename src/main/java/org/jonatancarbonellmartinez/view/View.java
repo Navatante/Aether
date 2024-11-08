@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
+import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.utilities.LimitDocumentFilter;
 
 import javax.swing.*;
@@ -86,21 +87,22 @@ public interface View {
         return textField;
     }
 
-    static JComboBox<String> createComboBox(String[] values, String placeholder) { // TODO sera sustituido por Vector
+    static JComboBox<String> createFixedComboBox(String[] values, String placeholder) {
         JComboBox<String> comboBox = new JComboBox<>(values);
         comboBox.insertItemAt("", 0);
         comboBox.setSelectedIndex(0);
         comboBox.setRenderer(View.createComboBoxRenderer(placeholder));
-        comboBox.addActionListener(e -> View.updateComboBoxAppearance(comboBox, placeholder));
+        comboBox.addActionListener(e -> View.updateFixedComboBoxAppearance(comboBox, placeholder));
         return comboBox;
     }
 
-    static JComboBox<String> createComboBox(Vector<String> values, String placeholder) { // TODO los combobox se van a llenar a partir de un Vector que se llena de un getAll()
-        JComboBox<String> comboBox = new JComboBox<>(values);
-        comboBox.insertItemAt("", 0); // Inserta un elemento vacío al inicio
+    static JComboBox<Entity> createDynamicComboBox(Vector<Entity> entityList, String placeholder) {
+        JComboBox<Entity> comboBox = new JComboBox<>(entityList);
+
+        comboBox.insertItemAt(null, 0); // Inserta un elemento vacío al inicio
         comboBox.setSelectedIndex(0); // Selecciona el elemento vacío por defecto
         comboBox.setRenderer(View.createComboBoxRenderer(placeholder)); // Configura el renderer para el placeholder
-        comboBox.addActionListener(e -> View.updateComboBoxAppearance(comboBox, placeholder)); // Actualiza la apariencia
+        comboBox.addActionListener(e -> View.updateDynamicComboBoxAppearance(comboBox, placeholder)); // Actualiza la apariencia
         return comboBox;
     }
 
@@ -170,8 +172,21 @@ public interface View {
         }
     }
 
-    static void updateComboBoxAppearance(JComboBox<String> comboBox, String placeholder) {
+    static void updateFixedComboBoxAppearance(JComboBox<String> comboBox, String placeholder) {
         if (!comboBox.getSelectedItem().equals("") && !comboBox.getSelectedItem().equals(placeholder)) {
+            comboBox.setForeground(Color.LIGHT_GRAY);
+            comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        } else {
+            comboBox.setForeground(Color.GRAY);
+            comboBox.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+        }
+    }
+
+    static void updateDynamicComboBoxAppearance(JComboBox<Entity> comboBox, String placeholder) {
+        Object selectedItem = comboBox.getSelectedItem();
+
+        // Check if selectedItem is null before proceeding
+        if (selectedItem != null && !selectedItem.equals("") && !selectedItem.equals(placeholder)) {
             comboBox.setForeground(Color.LIGHT_GRAY);
             comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         } else {

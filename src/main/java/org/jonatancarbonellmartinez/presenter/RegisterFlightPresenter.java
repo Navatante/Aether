@@ -1,8 +1,10 @@
 package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
+import org.jonatancarbonellmartinez.model.dao.EventDAOSQLite;
 import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.dao.HeloDAOSQLite;
+import org.jonatancarbonellmartinez.model.dao.PersonDAOSQLite;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Event;
 import org.jonatancarbonellmartinez.model.entities.Helo;
@@ -11,13 +13,11 @@ import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.RegisterFlightView.RegisterFlightDialogView;
 
 import java.util.List;
-import java.util.Vector;
-import java.util.stream.Collectors;
 
 public class RegisterFlightPresenter implements Presenter, DialogPresenter {
-    private final GenericDAO<Helo, Integer> heloDAO;
-    private final GenericDAO<Event,Integer> eventDAO;
-    private final GenericDAO<Person,Integer> personDAO;
+    private final HeloDAOSQLite heloDAO;
+    private final EventDAOSQLite eventDAO;
+    private final PersonDAOSQLite personDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
@@ -74,10 +74,16 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     }
 
-    public Vector<String> getHeloNumbers() {
-        List<Helo> helos = heloDAO.getAll();
-        return helos.stream()
-                .map(Helo::getHeloName) // Extrae el nombre de cada objeto Helo
-                .collect(Collectors.toCollection(Vector::new)); // Convierte a un Vector
+    public List<Helo> getHeloList() {
+            return heloDAO.getAll();
+    }
+
+    public List<Event> getEventList() {
+        return eventDAO.getAll();
+    }
+
+
+    public List<Person> getOnlyActualPilots() {
+        return  personDAO.getOnlyActualPilots();
     }
 }

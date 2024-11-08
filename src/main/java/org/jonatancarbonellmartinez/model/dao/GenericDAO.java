@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
+import org.jonatancarbonellmartinez.model.entities.Person;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,4 +16,5 @@ public interface GenericDAO<T,K> {
     void delete(K entitySk) throws DatabaseException; // I think im not gonna let to delete persons
     List<T> getAll() throws DatabaseException;
     Entity  mapResultSetToEntity(ResultSet rs) throws SQLException;
+
 }

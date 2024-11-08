@@ -31,10 +31,10 @@ public class Event implements Entity {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "eventSk=" + eventSk +
-                ", eventName='" + eventName + '\'' +
-                ", eventPlace='" + eventPlace + '\'' +
-                '}';
+        return eventName + " " + eventPlace;
+    }
+
+    public String toStringJustName() {
+        return eventName;
     }
 }

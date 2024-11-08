@@ -129,6 +129,42 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
         return personList;
     }
 
+    public List<Person> getOnlyActualPilots() throws DatabaseException {
+        String sql = "SELECT * FROM dim_person WHERE person_rol='Piloto' AND Person_current_flag=1 ORDER BY person_order";
+        List<Person> pilotList = new ArrayList<>();
+
+        // Obtain a new connection each time the method is called
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                pilotList.add( (Person)mapResultSetToEntity(rs) );
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a los pilotos", e);
+        }
+
+        return pilotList;
+    }
+
+    public List<Person> getOnlyActualDVs() throws DatabaseException {
+        String sql = "SELECT * FROM dim_person WHERE person_rol='Dotación' AND Person_current_flag=1 ORDER BY person_order";
+        List<Person> dvList = new ArrayList<>();
+
+        // Obtain a new connection each time the method is called
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                dvList.add( (Person)mapResultSetToEntity(rs) );
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a los pilotos", e);
+        }
+
+        return dvList;
+    }
+
     // Utility method to map a ResultSet row to a DimPerson object
     @Override
     public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {

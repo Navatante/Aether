@@ -45,11 +45,11 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createComponents(){
-        empleoBox = View.createComboBox(new String[]{"CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
+        empleoBox = View.createFixedComboBox(new String[]{"CF","TCOL","CC","CTE","TN","CAP","AN","TTE","STTE",
                 "BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO"},"Empleo");
-        divisionBox = View.createComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento",
+        divisionBox = View.createFixedComboBox(new String[] {"Jefe", "Segundo", "Operaciones","Mantenimiento",
                 "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
-        rolBox = View.createComboBox(new String[] {"Piloto", "Dotación"},"Rol");
+        rolBox = View.createFixedComboBox(new String[] {"Piloto", "Dotación"},"Rol");
 
         personNkField = View.createTextField("Código",3,6);
         personNameField = View.createTextField("Nombre");
@@ -107,7 +107,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     @Override
     public void createEditModeComponents() {
         editPersonIdField = View.createTextField("ID");
-        personStateBox = View.createComboBox(new String[]{"Activo", "Inactivo"}, "Situación");
+        personStateBox = View.createFixedComboBox(new String[]{"Activo", "Inactivo"}, "Situación");
         insertIdLabel = new JLabel("Introduzca el ID");
     }
 

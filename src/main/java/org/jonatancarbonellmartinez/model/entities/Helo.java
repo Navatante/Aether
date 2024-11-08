@@ -6,6 +6,7 @@ public class Helo implements Entity {
     private String heloName;
     private String heloNumber;
 
+
     public Integer getHeloSk() {
         return heloSk;
     }
@@ -40,11 +41,6 @@ public class Helo implements Entity {
 
     @Override
     public String toString() {
-        return "Helo{" +
-                "heloSk=" + heloSk +
-                ", heloPlateNk='" + heloPlateNk + '\'' +
-                ", heloName='" + heloName + '\'' +
-                ", heloNumber='" + heloNumber + '\'' +
-                '}';
+        return heloNumber;
     }
 }
