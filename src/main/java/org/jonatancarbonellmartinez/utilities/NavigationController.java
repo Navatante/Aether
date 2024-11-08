@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.utilities;
 
 
 import org.jonatancarbonellmartinez.view.*;
+import org.jonatancarbonellmartinez.view.RegisterFlightView.RegisterFlightDialogView;
 
 public class NavigationController {
 
@@ -42,6 +43,9 @@ public class NavigationController {
                 break;
             case "EditEvent":
                 new EventDialogView(mainView,true);
+                break;
+            case "RegistrarVuelo":
+                new RegisterFlightDialogView(mainView);
                 break;
             // Additional dialog cases
         }

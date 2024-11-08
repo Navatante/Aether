@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.factory;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.*;
 import org.jonatancarbonellmartinez.model.entities.Event;
+import org.jonatancarbonellmartinez.model.entities.Helo;
 import org.jonatancarbonellmartinez.model.entities.Person;
 
 // Esta clase la utilizo para crear los distintos DAOs a traves de ella, por cada dao, tendre que crear un metodo 'createDimNameDAO' or createFactNameDAO.
@@ -29,6 +30,11 @@ public class DAOFactorySQLite implements DAOFactory {
     @Override
     public GenericDAO<Event, Integer> createEventDAOSQLite() throws DatabaseException {
         return new EventDAOSQLite();
+    }
+
+    @Override
+    public GenericDAO<Helo, Integer> createHeloDAOSQLite() throws DatabaseException {
+        return new HeloDAOSQLite();
     }
 
     // Add methods for creating other DAOs

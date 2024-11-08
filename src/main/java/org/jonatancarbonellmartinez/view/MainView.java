@@ -152,7 +152,6 @@ public class MainView extends JFrame implements View {
         botonHelos.setEnabled(false);
         botonCapbas.setEnabled(false);
         botonGenerator.setEnabled(false);
-        registrarVueloMenuItem.setEnabled(false);
         registrarCombustibleMenuItem.setEnabled(false);
         registrarCalificacionMenuItem.setEnabled(false);
         docSemanalMenuItem.setEnabled(false);
@@ -302,5 +301,9 @@ public class MainView extends JFrame implements View {
 
     public CardLayout getCardLayout() {
         return cardLayout;
+    }
+
+    public JMenuItem getRegistrarVueloMenuItem() {
+        return registrarVueloMenuItem;
     }
 }
