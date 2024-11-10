@@ -43,4 +43,9 @@ public class Helo implements Entity {
     public String toString() {
         return heloNumber;
     }
+
+    @Override
+    public int getSk() {
+        return heloSk;
+    }
 }

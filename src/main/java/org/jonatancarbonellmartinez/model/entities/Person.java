@@ -116,4 +116,9 @@ public class Person implements Entity {
     public String toString() {
         return personNk;
     }
+
+    @Override
+    public int getSk() {
+        return personSk;
+    }
 }

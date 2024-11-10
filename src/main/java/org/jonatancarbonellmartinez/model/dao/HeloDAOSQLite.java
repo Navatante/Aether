@@ -14,7 +14,7 @@ import java.util.List;
 
 public class HeloDAOSQLite implements GenericDAO<Helo,Integer> {
     @Override
-    public void create(Helo entity) throws DatabaseException {
+    public void insert(Helo entity) throws DatabaseException {
         // helo is only readable.
     }
 
@@ -59,13 +59,13 @@ public class HeloDAOSQLite implements GenericDAO<Helo,Integer> {
              PreparedStatement pstmt = connection.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                heloList.add( (Helo)mapResultSetToEntity(rs) );
+                heloList.add( (Helo)mapResultSetToEntity(rs) ); // Anade cada fila como un objeto helo individual.
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error al acceder al los helicóptero", e);
         }
 
-        return heloList;
+        return heloList; // pasa una lista llena de objetos helos, un objeto por cada fila que haya.
     }
 
     @Override

@@ -125,6 +125,12 @@ public interface View {
         }
     }
 
+    static void setHorizontalAlignmentToFields(JTextField... fields) {
+        for (JTextField component : fields) {
+            component.setHorizontalAlignment(JTextField.CENTER);
+        }
+    }
+
     static void setDocumentFilter(JTextField field, int limit) {
         ((AbstractDocument) field.getDocument()).setDocumentFilter(new LimitDocumentFilter(limit));
     }

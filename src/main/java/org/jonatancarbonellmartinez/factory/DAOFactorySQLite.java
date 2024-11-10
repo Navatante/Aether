@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.factory;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.*;
 import org.jonatancarbonellmartinez.model.entities.Event;
+import org.jonatancarbonellmartinez.model.entities.Flight;
 import org.jonatancarbonellmartinez.model.entities.Helo;
 import org.jonatancarbonellmartinez.model.entities.Person;
 
@@ -23,19 +24,26 @@ public class DAOFactorySQLite implements DAOFactory {
         return instance;
     }
 
-    public PersonDAOSQLite createPersonDAOSQLite() {
+    @Override
+    public PersonDAOSQLite createPersonDAO() {
         return new PersonDAOSQLite();
     }
 
     @Override
-    public EventDAOSQLite createEventDAOSQLite() throws DatabaseException {
+    public EventDAOSQLite createEventDAO() throws DatabaseException {
         return new EventDAOSQLite();
     }
 
     @Override
-    public HeloDAOSQLite createHeloDAOSQLite() throws DatabaseException {
+    public HeloDAOSQLite createHeloDAO() throws DatabaseException {
         return new HeloDAOSQLite();
     }
+
+    @Override
+    public FlightDAOSQLite createFlightDAO() throws DatabaseException {
+        return new FlightDAOSQLite();
+    }
+
 
     // Add methods for creating other DAOs
     // public OtherDAO createOtherDAO() throws SQLException {

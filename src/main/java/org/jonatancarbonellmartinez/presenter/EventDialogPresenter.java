@@ -5,7 +5,6 @@ import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Event;
-import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.EventDialogView;
@@ -17,13 +16,13 @@ public class EventDialogPresenter implements Presenter, DialogPresenter {
 
     public EventDialogPresenter(EventDialogView eventView, Observer observer) {
         this.view = eventView;
-        this.eventDAO = DAOFactorySQLite.getInstance().createEventDAOSQLite(); // new
+        this.eventDAO = DAOFactorySQLite.getInstance().createEventDAO(); // new
         this.observer = observer;
     }
 
     @Override
     public boolean isFormValid() {
-        boolean isValid = DialogPresenter.validateComboBox(view, view.getEventNameBox(), "Nombre") &&
+        boolean isValid = DialogPresenter.validateSimpleComboBox(view, view.getEventNameBox(), "Nombre") &&
                 DialogPresenter.validateField(view, view.getEventPlaceField(), "Lugar");
 
         // If edit mode is active, add the extra validation
@@ -35,11 +34,11 @@ public class EventDialogPresenter implements Presenter, DialogPresenter {
     }
 
     @Override
-    public void addEntity() {
+    public void insertEntity() {
         try {
             Event event = collectEntityData();
 
-            eventDAO.create(event);
+            eventDAO.insert(event);
             DialogView.showMessage(view,"Evento añadido correctamente.");
 
             view.clearFields();
@@ -92,7 +91,7 @@ public class EventDialogPresenter implements Presenter, DialogPresenter {
             if (view.isEditMode()) {
                 editEntity();
             } else {
-                addEntity();
+                insertEntity();
             }
             notifyObserver();
         }

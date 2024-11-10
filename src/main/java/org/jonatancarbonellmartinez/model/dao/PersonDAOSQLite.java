@@ -15,7 +15,7 @@ import java.util.List;
 public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
     @Override
-    public void create(Person person) throws DatabaseException {
+    public void insert(Person person) throws DatabaseException {
         // Paso 1: Verificar si ya existe un registro con el mismo número de orden
         if (checkIfOrderExists(person.getPersonOrder())) {
             // Paso 2: Si existe, incrementar el orden de los registros activos con orden >= al nuevo

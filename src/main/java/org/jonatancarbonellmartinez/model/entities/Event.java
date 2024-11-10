@@ -37,4 +37,9 @@ public class Event implements Entity {
     public String toStringJustName() {
         return eventName;
     }
+
+    @Override
+    public int getSk() {
+        return eventSk;
+    }
 }

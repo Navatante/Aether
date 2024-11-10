@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.view;
 import javax.swing.*;
 import java.awt.*;
 
-public interface DialogView {
+public interface DialogView { // TODO hacer esto mejor, porque hay algunos que no utilizo en algunas views. quiza crear una interfaz distinta por tipo de Dialog, ejemplo: RegisterDialogView, AddDialogView, EditDialogView.
 
     void createEditModeComponents();
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EventDAOSQLite implements GenericDAO<Event, Integer> {
     @Override
-    public void create(Event entity) throws DatabaseException {
+    public void insert(Event entity) throws DatabaseException {
         String sql = "INSERT INTO dim_event (event_name, event_place)" +
                 " VALUES (?, ?)";
 
@@ -29,7 +29,6 @@ public class EventDAOSQLite implements GenericDAO<Event, Integer> {
         } catch (SQLException e) {
             throw new DatabaseException("Error insertando persona en la base de datos", e);
         }
-
     }
 
     @Override

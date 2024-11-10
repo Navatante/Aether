@@ -3,14 +3,16 @@ package org.jonatancarbonellmartinez.factory;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.GenericDAO;
 import org.jonatancarbonellmartinez.model.entities.Event;
+import org.jonatancarbonellmartinez.model.entities.Flight;
 import org.jonatancarbonellmartinez.model.entities.Helo;
 import org.jonatancarbonellmartinez.model.entities.Person;
 
 
 public interface DAOFactory {
-    GenericDAO<Person,Integer> createPersonDAOSQLite() throws DatabaseException;
-    GenericDAO<Event,Integer> createEventDAOSQLite() throws DatabaseException;
-    GenericDAO<Helo,Integer> createHeloDAOSQLite() throws DatabaseException;
+    GenericDAO<Person,Integer> createPersonDAO() throws DatabaseException;
+    GenericDAO<Event,Integer> createEventDAO() throws DatabaseException;
+    GenericDAO<Helo,Integer> createHeloDAO() throws DatabaseException;
+    GenericDAO<Flight,Integer> createFlightDAO() throws DatabaseException;
 
     // You can add methods to create other DAOs for different entities
     // For example:

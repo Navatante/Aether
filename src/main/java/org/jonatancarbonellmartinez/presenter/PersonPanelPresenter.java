@@ -21,7 +21,7 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
 
     public PersonPanelPresenter(PersonPanelView personCardView) {
         this.view = personCardView;
-        this.personDAO = DAOFactorySQLite.getInstance().createPersonDAOSQLite(); // new
+        this.personDAO = DAOFactorySQLite.getInstance().createPersonDAO(); // new
     }
 
     @Override

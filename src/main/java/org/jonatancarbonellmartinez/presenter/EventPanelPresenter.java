@@ -16,7 +16,7 @@ public class EventPanelPresenter implements Presenter, PanelPresenter {
 
     public EventPanelPresenter(EventPanelView eventPanelView) {
         this.view = eventPanelView;
-        this.eventDAO = DAOFactorySQLite.getInstance().createEventDAOSQLite();
+        this.eventDAO = DAOFactorySQLite.getInstance().createEventDAO();
     }
     @Override
     public void setActionListeners() {

@@ -3,14 +3,13 @@ package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.view.DialogView;
-import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
 
 public interface DialogPresenter {
 
     boolean isFormValid();
-    void addEntity();
+    void insertEntity();
     void editEntity();
     void getEntity(int entityId);
     void onSaveButtonClicked();
@@ -22,8 +21,16 @@ public interface DialogPresenter {
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
      */
 
-    static boolean validateComboBox(JDialog parentView, JComboBox<String> comboBox, String fieldName) {
+    static boolean validateSimpleComboBox(JDialog parentView, JComboBox<String> comboBox, String fieldName) {
         if (comboBox.getSelectedIndex() == 0) {
+            DialogView.showError(parentView,"Por favor, selecciona un valor para " + fieldName);
+            return false;
+        }
+        return true;
+    }
+
+    static boolean validateDynamicComboBox(JDialog parentView, JComboBox<Entity> comboBox, String fieldName) {
+        if (comboBox.getSelectedItem() == null) {
             DialogView.showError(parentView,"Por favor, selecciona un valor para " + fieldName);
             return false;
         }
@@ -59,6 +66,15 @@ public interface DialogPresenter {
             return false;
         }
         return  true;
+    }
+
+    static boolean isAValidHour(JDialog parentView, JTextField field, String fieldName) {
+        if (field.getText().matches("\\d{1,2}\\.\\d{1,1}")) {
+            return true;
+        } else {
+            DialogView.showError(parentView,"El formato de hora no es correcto para " + fieldName);
+            return false;
+        }
     }
 
     static boolean containsOnlyNumbers(JDialog parentView, JTextField field, String fieldName) {

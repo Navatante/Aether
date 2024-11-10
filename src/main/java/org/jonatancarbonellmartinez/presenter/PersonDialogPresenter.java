@@ -16,29 +16,29 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
 
     public PersonDialogPresenter(PersonDialogView personView, Observer observer) {
         this.view = personView;
-        this.personDAO = DAOFactorySQLite.getInstance().createPersonDAOSQLite(); // new
+        this.personDAO = DAOFactorySQLite.getInstance().createPersonDAO(); // new
         this.observer = observer;
     }
 
     @Override
     public boolean isFormValid() {
-        boolean isValid = DialogPresenter.validateComboBox(view, view.getEmpleoBox(), "Empleo") &&
-                DialogPresenter.validateComboBox(view, view.getDivisionBox(), "División") &&
-                DialogPresenter.validateComboBox(view, view.getRolBox(), "Rol") &&
-                DialogPresenter.validateField(view, view.getPersonNkField(), "Código") &&
-                DialogPresenter.validateField(view, view.getPersonNameField(), "Nombre") &&
-                DialogPresenter.validateField(view, view.getPersonLastName1Field(), "Apellido 1") &&
-                DialogPresenter.validateField(view, view.getPersonLastName2Field(), "Apellido 2") &&
-                DialogPresenter.validateField(view, view.getPersonPhoneField(), "Teléfono") &&
-                DialogPresenter.validateField(view, view.getPersonDniField(), "DNI") &&
-                DialogPresenter.validateField(view, view.getOrderField(), "Orden") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonNkField(), "Código") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonNameField(), "Nombre") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName1Field(), "Apellido 1") &&
-                DialogPresenter.containsOnlyLetters(view, view.getPersonLastName2Field(), "Apellido 2") &&
-                DialogPresenter.containsOnlyNumbers(view, view.getPersonPhoneField(), "Teléfono") &&
-                DialogPresenter.containsOnlyNumbers(view, view.getPersonDniField(), "DNI") &&
-                view.doNotContainZero(view.getOrderField(), "Orden");
+        boolean isValid = DialogPresenter.validateSimpleComboBox(view, view.getEmpleoBox(), "Empleo") &&
+                            DialogPresenter.validateSimpleComboBox(view, view.getDivisionBox(), "División") &&
+                            DialogPresenter.validateSimpleComboBox(view, view.getRolBox(), "Rol") &&
+                            DialogPresenter.validateField(view, view.getPersonNkField(), "Código") &&
+                            DialogPresenter.validateField(view, view.getPersonNameField(), "Nombre") &&
+                            DialogPresenter.validateField(view, view.getPersonLastName1Field(), "Apellido 1") &&
+                            DialogPresenter.validateField(view, view.getPersonLastName2Field(), "Apellido 2") &&
+                            DialogPresenter.validateField(view, view.getPersonPhoneField(), "Teléfono") &&
+                            DialogPresenter.validateField(view, view.getPersonDniField(), "DNI") &&
+                            DialogPresenter.validateField(view, view.getOrderField(), "Orden") &&
+                            DialogPresenter.containsOnlyLetters(view, view.getPersonNkField(), "Código") &&
+                            DialogPresenter.containsOnlyLetters(view, view.getPersonNameField(), "Nombre") &&
+                            DialogPresenter.containsOnlyLetters(view, view.getPersonLastName1Field(), "Apellido 1") &&
+                            DialogPresenter.containsOnlyLetters(view, view.getPersonLastName2Field(), "Apellido 2") &&
+                            DialogPresenter.containsOnlyNumbers(view, view.getPersonPhoneField(), "Teléfono") &&
+                            DialogPresenter.containsOnlyNumbers(view, view.getPersonDniField(), "DNI") &&
+                            view.doNotContainZero(view.getOrderField(), "Orden");
 
         // Additional validation if in edit mode
         if (view.isEditMode()) {
@@ -49,12 +49,12 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
     }
 
     @Override
-    public void addEntity() {
+    public void insertEntity() {
         try {
             Person person = collectEntityData();
             person.setPersonCurrentFlag(1);
 
-            personDAO.create(person);
+            personDAO.insert(person);
             DialogView.showMessage(view,"Persona añadida correctamente.");
 
             view.clearFields();
@@ -115,7 +115,7 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
             if (view.isEditMode()) {
                 editEntity();
             } else {
-                addEntity();
+                insertEntity();
             }
             notifyObserver();
         }
