@@ -41,7 +41,7 @@ public class PilotCardView extends JPanel implements View, CardView {
 
 
 
-    JComboBox personBox;
+    JComboBox pilotBox;
 
     public PilotCardView(RegisterFlightDialogView registerFlightDialogView) { // TODO I have to do another class for DvCardView
         this.presenter = new PilotCardPresenter(this);
@@ -92,7 +92,7 @@ public class PilotCardView extends JPanel implements View, CardView {
 
     @Override
     public void createComponents() {
-        personBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"Piloto");
+        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"Piloto");
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");
@@ -141,12 +141,14 @@ public class PilotCardView extends JPanel implements View, CardView {
     @Override
     public void configureComponents() {
         View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField);
-        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION, personBox);
+        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION, pilotBox);
 
         View.setPreferredSizeForComponents(APP_FIELD_DIMENSION, ilsField, parField, rnavField, gcaField, vorField, tacField);
 
         View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField);
         View.setHorizontalAlignmentToFields(ilsField, parField, rnavField, gcaField, vorField, tacField);
+
+        View.setInitialComboBoxLook(pilotBox);
     }
 
     @Override
@@ -189,7 +191,7 @@ public class PilotCardView extends JPanel implements View, CardView {
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(37, 5, 10, 5);
-        personPanel.add(personBox,gbc);
+        personPanel.add(pilotBox,gbc);
 
 
         hoursTituloPanel.add(horasLabel);
