@@ -106,7 +106,6 @@ public interface View {
         return comboBox;
     }
 
-
     static void addComponentsToPanel(JPanel panel, JComponent... components) {
         for (JComponent component : components) {
             panel.add(component);
