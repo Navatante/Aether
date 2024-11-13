@@ -127,7 +127,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         dvCardView1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         dvCardView2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
 
-        tripulantesScrollPane.setPreferredSize(new Dimension(1375, 185)); // Width and max height
+        tripulantesScrollPane.setPreferredSize(new Dimension(1375, 180));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
