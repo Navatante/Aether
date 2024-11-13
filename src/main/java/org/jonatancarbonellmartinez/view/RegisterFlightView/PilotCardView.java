@@ -23,18 +23,20 @@ public class PilotCardView extends JPanel implements View, CardView {
                     instructorPanel, instructorTituloPanel, instructorDataPanel;
 
     private JPanel appsPanel, appsTituloPanel, appsDetailPanel,
-                    appsDataPanel;
+                    precisionPanel, precisionTituloPanel, precisionDataPanel,
+                    noPrecisionPanel, noPrecisionTituloPanel, noPrecisionDataPanel,
+                    sarnPanel, sarnTituloPanel, sarnDataPanel;
 
     private JPanel landingsPanel, landingsTituloPanel, landingsDetailPanel,
                     monospotPanel, monospotTituloPanel, monospotDataPanel,
                     multispotPanel, multispotTituloPanel, multispotDataPanel,
                     tierraPanel, tierraTituloPanel, tierraDataPanel;
 
-    private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, aproximacionesLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel;
+    private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, aproximacionesLabel, precisionLabel, noPrecisionLabel, sarnLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel;
 
     private JTextField dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField;
 
-    private JTextField ilsField, parField, sarnField, gcaField, vorField, tacField;
+    private JTextField precisionField, noPrecisionField, sarnField;
 
     private JTextField monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField;
 
@@ -49,7 +51,7 @@ public class PilotCardView extends JPanel implements View, CardView {
 
     @Override
     public void setupUIProperties() {
-        setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+        setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
         setSize(400,400);
     }
 
@@ -84,7 +86,17 @@ public class PilotCardView extends JPanel implements View, CardView {
         appsTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         appsDetailPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-            appsDataPanel = new JPanel(new GridLayout(2,3,10,11));
+            precisionPanel = new JPanel(new BorderLayout());
+            precisionTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            precisionDataPanel = new JPanel(new FlowLayout());
+
+            noPrecisionPanel = new JPanel(new BorderLayout());
+            noPrecisionTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            noPrecisionDataPanel = new JPanel(new FlowLayout());
+
+            sarnPanel = new JPanel(new BorderLayout());
+            sarnTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            sarnDataPanel = new JPanel(new FlowLayout());
 
         landingsPanel = new JPanel(new BorderLayout());
         landingsTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -105,13 +117,14 @@ public class PilotCardView extends JPanel implements View, CardView {
 
     @Override
     public void createComponents() {
-        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"Piloto");
+        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"PIL");
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");
         instrumentosLabel = new JLabel("Instrumentos");
         hdmsLabel = new JLabel("HDMS");
         instructorLabel = new JLabel("Instructor");
+
         dayHourField = View.createTextField("D");
         nightHourField = View.createTextField("N");
         gvnHourField = View.createTextField("G");
@@ -121,13 +134,12 @@ public class PilotCardView extends JPanel implements View, CardView {
         instructorHourField = View.createTextField("I");
 
         aproximacionesLabel = new JLabel("Aproximaciones");
-        ilsField = View.createTextField("ILS");
-        parField = View.createTextField("PAR");
-        sarnField = View.createTextField("SARN");
-        sarnField.setToolTipText("Caladas nocturnas bla bla bla"); // TODO colocar esto en si sitio , no aqui
-        gcaField = View.createTextField("GCA");
-        vorField = View.createTextField("VOR");
-        tacField = View.createTextField("TAC");
+        precisionLabel = new JLabel("Precisión");
+        noPrecisionLabel = new JLabel("No Precisión");
+        sarnLabel = new JLabel("SAR-N");
+        precisionField = View.createTextField("P");
+        noPrecisionField = View.createTextField("N");
+        sarnField = View.createTextField("S");
 
         tomasLabel = new JLabel("Tomas");
         monospotLabel = new JLabel("Monospot");
@@ -157,16 +169,16 @@ public class PilotCardView extends JPanel implements View, CardView {
 
     @Override
     public void configureComponents() {
-        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION, pilotBox);
-        View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField);
-        View.setPreferredSizeForComponents(APP_FIELD_DIMENSION, ilsField, parField, sarnField, gcaField, vorField, tacField);
-        View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField);
-
-        View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField);
-        View.setHorizontalAlignmentToFields(ilsField, parField, sarnField, gcaField, vorField, tacField);
-        View.setHorizontalAlignmentToFields(monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField,  tierraDayField, tierraNightField, tierraGvnField);
-
         View.setInitialComboBoxLook(pilotBox);
+        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION, pilotBox);
+        View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
+                                                                            precisionField, noPrecisionField, sarnField,
+                                                                            monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField);
+
+        View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
+                                            precisionField, noPrecisionField, sarnField,
+                                            monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField,  tierraDayField, tierraNightField, tierraGvnField);
+        sarnField.setToolTipText("Caladas nocturnas");
     }
 
     @Override
@@ -193,7 +205,13 @@ public class PilotCardView extends JPanel implements View, CardView {
 
         appsPanel.add(appsTituloPanel, BorderLayout.NORTH);
         appsPanel.add(appsDetailPanel,BorderLayout.CENTER);
-        appsDetailPanel.add(appsDataPanel);
+        View.addComponentsToPanel(appsDetailPanel, precisionPanel, noPrecisionPanel, sarnPanel);
+        precisionPanel.add(precisionTituloPanel, BorderLayout.NORTH);
+        precisionPanel.add(precisionDataPanel, BorderLayout.CENTER);
+        noPrecisionPanel.add(noPrecisionTituloPanel, BorderLayout.NORTH);
+        noPrecisionPanel.add(noPrecisionDataPanel, BorderLayout.CENTER);
+        sarnPanel.add(sarnTituloPanel, BorderLayout.NORTH);
+        sarnPanel.add(sarnDataPanel, BorderLayout.CENTER);
 
         landingsPanel.add(landingsTituloPanel, BorderLayout.NORTH);
         landingsPanel.add(landingsDetailPanel, BorderLayout.CENTER);
@@ -227,7 +245,12 @@ public class PilotCardView extends JPanel implements View, CardView {
         instructorDataPanel.add(instructorHourField);
 
         appsTituloPanel.add(aproximacionesLabel);
-        View.addComponentsToPanel(appsDataPanel, ilsField, parField, sarnField, gcaField, vorField, tacField);
+        precisionTituloPanel.add(precisionLabel);
+        precisionDataPanel.add(precisionField);
+        noPrecisionTituloPanel.add(noPrecisionLabel);
+        noPrecisionDataPanel.add(noPrecisionField);
+        sarnTituloPanel.add(sarnLabel);
+        sarnDataPanel.add(sarnField);
 
         landingsTituloPanel.add(tomasLabel);
         monospotTituloPanel.add(monospotLabel);

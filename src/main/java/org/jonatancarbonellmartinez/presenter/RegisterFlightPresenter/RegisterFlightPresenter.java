@@ -90,6 +90,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.deleteExtraPilotCardView();
     }
 
+    public void onAddDvCardViewClicked() {
+        view.addExtraDvCardView();
+    }
+
+    public void onDeleteDvCardViewClicked() {
+        view.deleteExtraDvCardView();
+    }
+
     @Override
     public Entity collectEntityData() { // TODO this will be the method who will manage all CollectXData method created in the methods below.
         // Maybe simply i just dont need it.
@@ -142,6 +150,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getSaveButton().addActionListener(e -> onSaveButtonClicked());
         view.getCreatePilotButton().addActionListener(e -> onAddPilotCardViewClicked());
         view.getDeletePilotButton().addActionListener(e -> onDeletePilotCardViewClicked());
+        view.getCreateDvButton().addActionListener(e -> onAddDvCardViewClicked());
+        view.getDeleteDvButton().addActionListener(e -> onDeleteDvCardViewClicked());
     }
 
     public List<Helo> getHeloList() {
@@ -155,9 +165,5 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public List<Person> getOnlyActualPilots() {
         return  personDAO.getOnlyActualPilots();
-    }
-
-    public List<Person> getOnlyActualDvs() {
-        return  personDAO.getOnlyActualDVs();
     }
 }

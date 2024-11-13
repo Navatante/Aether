@@ -40,7 +40,4 @@ public class PilotCardPresenter implements Presenter {
         return  personDAO.getOnlyActualPilots();
     }
 
-    public List<Person> getOnlyActualDvs() {
-        return  personDAO.getOnlyActualDVs();
-    }
 }
