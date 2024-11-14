@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.utilities;
 
 
 import org.jonatancarbonellmartinez.view.*;
-import org.jonatancarbonellmartinez.view.RegisterFlightView.RegisterFlightDialogView;
+import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 
 public class NavigationController {
 

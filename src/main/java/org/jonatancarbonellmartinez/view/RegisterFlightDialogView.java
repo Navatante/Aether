@@ -1,9 +1,8 @@
-package org.jonatancarbonellmartinez.view.RegisterFlightView;
+package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.view.DialogView;
-import org.jonatancarbonellmartinez.view.MainView;
-import org.jonatancarbonellmartinez.view.View;
+import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
+import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -19,11 +18,11 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private MainView mainView;
     private RegisterFlightPresenter presenter;
 
-    private PilotCardView pilotCardView1, pilotCardView2;
-    private DvCardView dvCardView1, dvCardView2;
+    private PilotCardPanel pilotCardPanel1, pilotCardPanel2;
+    private DvCardPanel dvCardPanel1, dvCardPanel2;
 
-    private ArrayDeque<PilotCardView> extraPilotCardViewDeque;
-    private ArrayDeque<DvCardView> extraDvCardViewDeque;
+    private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
+    private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
 
     JSpinner dateTimeSpinner;
 
@@ -79,10 +78,10 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         crewLabelsPanel = new JPanel();
         crewLabelsPanel.setLayout(new BoxLayout(crewLabelsPanel, BoxLayout.Y_AXIS));
         crewButtonsPanel = new JPanel(new GridLayout(2, 3,15,15));
-        pilotCardView1 = new PilotCardView(this);
-        pilotCardView2 = new PilotCardView(this);
-        dvCardView1 = new DvCardView(this);
-        dvCardView2 = new DvCardView(this);
+        pilotCardPanel1 = new PilotCardPanel(this, presenter);
+        pilotCardPanel2 = new PilotCardPanel(this, presenter);
+        dvCardPanel1 = new DvCardPanel(this, presenter);
+        dvCardPanel2 = new DvCardPanel(this, presenter);
     }
 
     @Override
@@ -99,8 +98,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         dotacionLaebl = new JLabel("Dotación");
         createDvButton = new JButton("+");
         deleteDvButton = new JButton("-");
-        extraPilotCardViewDeque = new ArrayDeque<>();
-        extraDvCardViewDeque  = new ArrayDeque<>();
+        extraPilotCardPanelDeque = new ArrayDeque<>();
+        extraDvCardPanelDeque = new ArrayDeque<>();
     }
 
     @Override
@@ -114,7 +113,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder
         ));
 
-        TitledBorder titleBorder2 = new TitledBorder("Tripulantes");
+        TitledBorder titleBorder2 = new TitledBorder("Horas, Aproximaciones, Tomas y Proyectiles");
         titleBorder2.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         tripulantesScrollPane.setBorder(BorderFactory.createCompoundBorder(
@@ -122,18 +121,18 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder2
         ));
 
-        pilotCardView1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        pilotCardView2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        dvCardView1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        dvCardView2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        pilotCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        pilotCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        dvCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        dvCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
 
-        tripulantesScrollPane.setPreferredSize(new Dimension(1375, 180));
+        tripulantesScrollPane.setPreferredSize(new Dimension(1375, 175));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
 
         createTripulantePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         crewButtonsPanel.setPreferredSize(new Dimension(55, 55));
-
     }
 
     @Override
@@ -164,10 +163,10 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         centerPanel.add(tripulantesScrollPane);
 
-        tripulantesPanel.add(pilotCardView1);
-        tripulantesPanel.add(pilotCardView2);
-        tripulantesPanel.add(dvCardView1);
-        tripulantesPanel.add(dvCardView2);
+        tripulantesPanel.add(pilotCardPanel1);
+        tripulantesPanel.add(pilotCardPanel2);
+        tripulantesPanel.add(dvCardPanel1);
+        tripulantesPanel.add(dvCardPanel2);
     }
 
     @Override
@@ -191,7 +190,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     @Override
     public void configureEditModeComponents() {
-
     }
 
     @Override
@@ -214,45 +212,46 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     }
 
     public void addExtraPilotCardView() {
-        PilotCardView pilotCardView = new PilotCardView(this);
-        pilotCardView.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        tripulantesPanel.add(pilotCardView);
-        extraPilotCardViewDeque.add(pilotCardView);
+        PilotCardPanel pilotCardPanel = new PilotCardPanel(this, presenter);
+        pilotCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        tripulantesPanel.add(pilotCardPanel);
+        extraPilotCardPanelDeque.add(pilotCardPanel);
         // Ensure the UI updates to reflect the added component
         tripulantesPanel.revalidate();
         tripulantesPanel.repaint();
     }
 
     public void addExtraDvCardView() {
-        DvCardView dvCardView = new DvCardView(this);
-        dvCardView.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        tripulantesPanel.add(dvCardView);
-        extraDvCardViewDeque.add(dvCardView);
+        DvCardPanel dvCardPanel = new DvCardPanel(this, presenter);
+        dvCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        tripulantesPanel.add(dvCardPanel);
+        extraDvCardPanelDeque.add(dvCardPanel);
         // Ensure the UI updates to reflect the added component
         tripulantesPanel.revalidate();
         tripulantesPanel.repaint();
     }
 
     public void deleteExtraPilotCardView() {
-        if (!extraPilotCardViewDeque.isEmpty()) {
+        if (!extraPilotCardPanelDeque.isEmpty()) {
             // Get and remove the last added PilotCardView from the Deque
-            PilotCardView lastPilotCardView = extraPilotCardViewDeque.removeLast();
+            PilotCardPanel lastPilotCardPanel = extraPilotCardPanelDeque.removeLast();
 
             // Remove it from the panel
-            tripulantesPanel.remove(lastPilotCardView);
+            tripulantesPanel.remove(lastPilotCardPanel);
 
             // Revalidate and repaint the panel to reflect the changes
             tripulantesPanel.revalidate();
             tripulantesPanel.repaint();
         }
     }
-        public void deleteExtraDvCardView() {
-            if (!extraDvCardViewDeque.isEmpty()) {
+
+    public void deleteExtraDvCardView() {
+            if (!extraDvCardPanelDeque.isEmpty()) {
                 // Get and remove the last added PilotCardView from the Deque
-                DvCardView lastDvCardView = extraDvCardViewDeque.removeLast();
+                DvCardPanel lastDvCardPanel = extraDvCardPanelDeque.removeLast();
 
                 // Remove it from the panel
-                tripulantesPanel.remove(lastDvCardView);
+                tripulantesPanel.remove(lastDvCardPanel);
 
                 // Revalidate and repaint the panel to reflect the changes
                 tripulantesPanel.revalidate();
@@ -306,5 +305,21 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     public JButton getDeleteDvButton() {
         return deleteDvButton;
+    }
+
+    public PilotCardPanel getPilotCardPanel1() {
+        return pilotCardPanel1;
+    }
+
+    public PilotCardPanel getPilotCardPanel2() {
+        return pilotCardPanel2;
+    }
+
+    public DvCardPanel getDvCardPanel1() {
+        return dvCardPanel1;
+    }
+
+    public DvCardPanel getDvCardPanel2() {
+        return dvCardPanel2;
     }
 }

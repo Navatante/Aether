@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.factory.DAOFactorySQLite;
@@ -8,15 +8,13 @@ import org.jonatancarbonellmartinez.model.dao.HeloDAOSQLite;
 import org.jonatancarbonellmartinez.model.dao.PersonDAOSQLite;
 import org.jonatancarbonellmartinez.model.entities.*;
 import org.jonatancarbonellmartinez.observers.Observer;
-import org.jonatancarbonellmartinez.presenter.DialogPresenter;
-import org.jonatancarbonellmartinez.presenter.Presenter;
 import org.jonatancarbonellmartinez.view.DialogView;
-import org.jonatancarbonellmartinez.view.RegisterFlightView.RegisterFlightDialogView;
+import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 
+import javax.swing.*;
 import java.util.List;
 
 public class RegisterFlightPresenter implements Presenter, DialogPresenter {
-    PilotCardPresenter pilotCardPresenter;
 
     private final HeloDAOSQLite heloDAO;
     private final EventDAOSQLite eventDAO;
@@ -24,7 +22,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final FlightDAOSQLite flightDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
-    // TODO this is just an example to see how can I interact from this presenter to other card presenters: view.getPilotCardView().getPresenter().setActionListeners();
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -37,10 +34,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     @Override
     public boolean isFormValid() {
-        boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
-                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
-                            DialogPresenter.validateDynamicComboBox(view, view.getPersonBox(), "Cte. Aeronave") &&
-                            DialogPresenter.isAValidHour(view, view.getTotalHoursField(),"Horas totales");
+        boolean isValid = isVueloCardValid() &&
+                            arePilotCardsValid();
         return isValid;
     }
 
@@ -133,8 +128,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 //
 //    }
 
-
-
     @Override
     public void populateEntityDialog(Entity entity) {
         // NOT USE HERE, THIS IS FOR EDIT MODE
@@ -162,8 +155,46 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return eventDAO.getAll();
     }
 
-
     public List<Person> getOnlyActualPilots() {
         return  personDAO.getOnlyActualPilots();
+    }
+
+    public List<Person> getOnlyActualDvs() {
+        return  personDAO.getOnlyActualDvs();
+    }
+
+    private boolean isVueloCardValid() {
+        boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
+                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
+                            DialogPresenter.validateDynamicComboBox(view, view.getPersonBox(), "Cte. Aeronave") &&
+                            DialogPresenter.isAValidMandatoryHour(view, view.getTotalHoursField(),"Horas totales");
+        return isValid;
+    }
+
+    private boolean arePilotCardsValid() {
+        boolean isValid = isAnyFlightHourInserted() &&
+                            arePilotCardsHoursValid();
+        return isValid;
+    }
+
+    private boolean isAnyFlightHourInserted() {
+        boolean isDayHourDefault = view.getPilotCardPanel1().getDayHourField().equals("D");
+        boolean isNightHourDefault = view.getPilotCardPanel2().getNightHourField().equals("N");
+        boolean isGvnHourDefault = view.getPilotCardPanel1().getGvnHourField().equals("G");
+
+        if (isDayHourDefault && isNightHourDefault && isGvnHourDefault) {
+            JOptionPane.showMessageDialog(view, "Inserte almenos una hora de vuelo", "Error", JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean arePilotCardsHoursValid() {
+        boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getPilotCardPanel1().getPilotBox(),"PIL") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getDayHourField(),view.getPilotCardPanel1().getPilotBox().getSelectedItem() + " Horas Dia", "D") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getNightHourField(), view.getPilotCardPanel1().getPilotBox().getSelectedItem() + " Horas Noche", "N") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getGvnHourField(), view.getPilotCardPanel1().getPilotBox().getSelectedItem() + " Horas GVN", "G");
+        return isValid;
     }
 }

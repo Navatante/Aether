@@ -1,6 +1,7 @@
-package org.jonatancarbonellmartinez.view.RegisterFlightView;
+package org.jonatancarbonellmartinez.view.panels;
 
-import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter.DvCardPresenter;
+import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
@@ -9,8 +10,8 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.Vector;
 
-public class DvCardView extends JPanel implements View, CardView {
-    private DvCardPresenter presenter;
+public class DvCardPanel extends JPanel implements View, CardPanel {
+    private RegisterFlightPresenter presenter;
     RegisterFlightDialogView registerFlightDialogView;
 
     private JPanel mainPanel, personPanel, dvPanel;
@@ -29,14 +30,13 @@ public class DvCardView extends JPanel implements View, CardView {
 
     private JComboBox dvBox;
 
-    public DvCardView(RegisterFlightDialogView registerFlightDialogView) {
-        this.presenter = new DvCardPresenter(this);
+    public DvCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
+        this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView;
         this.initializeUI();
         setVisible(true);
     }
 
-    JComboBox pilotBox;
     @Override
     public void setupUIProperties() {
         setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
@@ -106,8 +106,8 @@ public class DvCardView extends JPanel implements View, CardView {
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(dvBox);
-        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION,dvBox);
-        View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
+        View.setPreferredSizeForComponents(CardPanel.PERSON_BOX_DIMENSION,dvBox);
+        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
         View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
     }
 

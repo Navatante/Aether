@@ -1,6 +1,7 @@
-package org.jonatancarbonellmartinez.view.RegisterFlightView;
+package org.jonatancarbonellmartinez.view.panels;
 
-import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter.PilotCardPresenter;
+import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
@@ -9,9 +10,9 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.Vector;
 
-public class PilotCardView extends JPanel implements View, CardView {
+public class PilotCardPanel extends JPanel implements View, CardPanel {
 
-    private PilotCardPresenter presenter;
+    private RegisterFlightPresenter presenter;
     RegisterFlightDialogView registerFlightDialogView;
 
     private JPanel mainPanel, personPanel, pilotPanel;
@@ -42,8 +43,8 @@ public class PilotCardView extends JPanel implements View, CardView {
 
     JComboBox pilotBox;
 
-    public PilotCardView(RegisterFlightDialogView registerFlightDialogView) { // TODO I have to do another class for DvCardView
-        this.presenter = new PilotCardPresenter(this);
+    public PilotCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) { // TODO I have to do another class for DvCardView
+        this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView; // this way i have access to data like pilotList or dvList, si mas adelante doy con una mejor solucion pues cambialo.
         this.initializeUI();
         setVisible(true);
@@ -170,8 +171,8 @@ public class PilotCardView extends JPanel implements View, CardView {
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(pilotBox);
-        View.setPreferredSizeForComponents(CardView.PERSON_BOX_DIMENSION, pilotBox);
-        View.setPreferredSizeForComponents(CardView.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
+        View.setPreferredSizeForComponents(CardPanel.PERSON_BOX_DIMENSION, pilotBox);
+        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
                                                                             precisionField, noPrecisionField, sarnField,
                                                                             monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField);
 
@@ -267,7 +268,84 @@ public class PilotCardView extends JPanel implements View, CardView {
     }
 
     //Getters
-    public PilotCardPresenter getPresenter() {
-        return presenter;
+
+    public JTextField getDayHourField() {
+        return dayHourField;
+    }
+
+    public JTextField getNightHourField() {
+        return nightHourField;
+    }
+
+    public JTextField getGvnHourField() {
+        return gvnHourField;
+    }
+
+    public JTextField getRealIftHourField() {
+        return realIftHourField;
+    }
+
+    public JTextField getSimIftHourField() {
+        return simIftHourField;
+    }
+
+    public JTextField getHdmsHourField() {
+        return hdmsHourField;
+    }
+
+    public JTextField getInstructorHourField() {
+        return instructorHourField;
+    }
+
+    public JTextField getPrecisionField() {
+        return precisionField;
+    }
+
+    public JTextField getNoPrecisionField() {
+        return noPrecisionField;
+    }
+
+    public JTextField getSarnField() {
+        return sarnField;
+    }
+
+    public JTextField getMonoDayField() {
+        return monoDayField;
+    }
+
+    public JTextField getMonoNightField() {
+        return monoNightField;
+    }
+
+    public JTextField getMonoGvnField() {
+        return monoGvnField;
+    }
+
+    public JTextField getMultiDayField() {
+        return multiDayField;
+    }
+
+    public JTextField getMultiNightField() {
+        return multiNightField;
+    }
+
+    public JTextField getMultiGvnField() {
+        return multiGvnField;
+    }
+
+    public JTextField getTierraDayField() {
+        return tierraDayField;
+    }
+
+    public JTextField getTierraNightField() {
+        return tierraNightField;
+    }
+
+    public JTextField getTierraGvnField() {
+        return tierraGvnField;
+    }
+
+    public JComboBox getPilotBox() {
+        return pilotBox;
     }
 }

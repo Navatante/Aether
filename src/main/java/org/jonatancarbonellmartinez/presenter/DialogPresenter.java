@@ -68,11 +68,23 @@ public interface DialogPresenter {
         return  true;
     }
 
-    static boolean isAValidHour(JDialog parentView, JTextField field, String fieldName) {
+    static boolean isAValidMandatoryHour(JDialog parentView, JTextField field, String fieldName) {
         if (field.getText().matches("\\d{1,2}\\.\\d{1,1}")) {
             return true;
         } else {
             DialogView.showError(parentView,"El formato de hora no es correcto para " + fieldName);
+            return false;
+        }
+    }
+
+    static boolean isAValidOptionalHour(JDialog parentView, JTextField field, String fieldName, String placeHolder) {
+        String text = field.getText();
+        if (text.isEmpty() || text.equals(placeHolder)) {
+            return true; // Field is empty or contains the placeholder, considered valid
+        } else if (text.matches("\\d{1,2}\\.\\d{1}")) {
+            return true; // Matches valid hour format
+        } else {
+            DialogView.showError(parentView, "El formato de hora no es correcto para " + fieldName);
             return false;
         }
     }

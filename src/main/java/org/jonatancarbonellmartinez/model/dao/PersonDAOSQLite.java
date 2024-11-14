@@ -147,7 +147,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
         return pilotList;
     }
 
-    public List<Person> getOnlyActualDVs() throws DatabaseException {
+    public List<Person> getOnlyActualDvs() throws DatabaseException {
         String sql = "SELECT * FROM dim_person WHERE person_rol='Dotación' AND Person_current_flag=1 ORDER BY person_order";
         List<Person> dvList = new ArrayList<>();
 

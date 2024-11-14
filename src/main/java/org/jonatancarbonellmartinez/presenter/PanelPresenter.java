@@ -1,5 +1,8 @@
 package org.jonatancarbonellmartinez.presenter;
 
+import org.jonatancarbonellmartinez.model.entities.Entity;
+import org.jonatancarbonellmartinez.view.DialogView;
+
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -34,5 +37,4 @@ public interface PanelPresenter {
         // This will escape the backslash and any other regex special characters
         return text.replaceAll("([\\\\\\^\\.\\$\\|\\?\\*\\+\\(\\)\\[\\]\\{\\}])", "\\\\$1");
     }
-
 }
