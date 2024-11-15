@@ -322,4 +322,12 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public DvCardPanel getDvCardPanel2() {
         return dvCardPanel2;
     }
+
+    public ArrayDeque<PilotCardPanel> getExtraPilotCardPanelDeque() {
+        return extraPilotCardPanelDeque;
+    }
+
+    public ArrayDeque<DvCardPanel> getExtraDvCardPanelDeque() {
+        return extraDvCardPanelDeque;
+    }
 }
