@@ -57,7 +57,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createComponents() {
-
         eventNameBox = View.createFixedComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
                 "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO demomento este lo dejo asi porque el metodo toString() de Event devuevle nombre y lugar, y aqui solo necesito nombre.
 

@@ -178,8 +178,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         boolean isValid = arePilotsSelected() &&
                             selectedPilotsAreNotRepeated() &&
                             isAnyFlightHourInsertedPerCard() &&
-                            doesTotalHoursEqualsSumOfPilotHours() &&
-                            arePilotCardsHoursValid();
+                            arePilotCardsHoursValid() &&
+                            doesTotalHoursEqualsSumOfPilotHours();
         return isValid;
     }
 
