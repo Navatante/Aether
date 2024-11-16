@@ -179,7 +179,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                             selectedPilotsAreNotRepeated() &&
                             isAnyFlightHourInsertedPerCard() &&
                             arePilotCardsHoursValid() &&
-                            doesTotalHoursEqualsSumOfPilotHours();
+                            doesTotalHoursEqualsSumOfPilotHours() &&
+                            areDvCardsHoursValid();
         return isValid;
     }
 
@@ -355,5 +356,20 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getTierraNightField(), view.getPilotCardPanel2().getPilotBox().getSelectedItem() + " Toma Tierra Noche", "N") &&
                 DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getTierraGvnField(), view.getPilotCardPanel2().getPilotBox().getSelectedItem() + " Toma Tierra GVN", "G");
         return isValid;
+    }
+
+    private boolean areDvCardsHoursValid() {
+        boolean isValid =
+                // DV CARD PANEL 1
+                // Check Horas fields
+                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getDayHourField(),view.getDvCardPanel1().getDvBox().getSelectedItem() + " Horas Vuelo Dia", "D") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getNightHourField(),view.getDvCardPanel1().getDvBox().getSelectedItem() + " Horas Vuelo Noche", "N") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getGvnHourField(),view.getDvCardPanel1().getDvBox().getSelectedItem() + " Horas Vuelo Gvn", "G") &&
+                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getWinchTrimHourField(),view.getDvCardPanel1().getDvBox().getSelectedItem() + " Horas Winch Trim", "W") &&
+                // Check Proyectiles fields
+                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel1().getM3mField(), view.getDvCardPanel1().getDvBox().getSelectedItem() + " Proyectil M3M", "P") &&
+                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel1().getMagField(), view.getDvCardPanel1().getDvBox().getSelectedItem() + " Proyectil MAG56", "P");
+
+                return isValid;
     }
 }

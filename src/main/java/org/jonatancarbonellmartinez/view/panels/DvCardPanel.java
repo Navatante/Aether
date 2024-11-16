@@ -164,4 +164,33 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
     public void addActionListeners() {
 
     }
+
+    // Getters
+    public JTextField getDayHourField() {
+        return dayHourField;
+    }
+
+    public JTextField getNightHourField() {
+        return nightHourField;
+    }
+
+    public JTextField getGvnHourField() {
+        return gvnHourField;
+    }
+
+    public JTextField getWinchTrimHourField() {
+        return winchTrimHourField;
+    }
+
+    public JTextField getM3mField() {
+        return m3mField;
+    }
+
+    public JTextField getMagField() {
+        return magField;
+    }
+
+    public JComboBox getDvBox() {
+        return dvBox;
+    }
 }
