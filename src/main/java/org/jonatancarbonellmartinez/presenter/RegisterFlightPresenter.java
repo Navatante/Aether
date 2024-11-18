@@ -8,9 +8,11 @@ import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.panels.CardPanel;
+import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
 
 import javax.swing.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +27,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final PersonHourDAOSQLite personHourDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
+
+    private int lastFlightSk;
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -62,13 +66,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public void insertFlight() {
         flightDAO.insert(collectFlightData());
+        lastFlightSk = flightDAO.getLastFlightSk(); // Al meter el vuelo en la base de datos, del tiron lo asigno a la variable para utilizarla en otros metodos.
     }
 
 
 
     public void insertPersonHour() {
         // Get the last flight foreign key once
-        int flightFk = flightDAO.getLastFlightSk();
+
 
         // Create a list of all pilot card panels to iterate through, including extra dynamically added ones
         ArrayList<CardPanel> allCrewCardPanels = new ArrayList<>();
@@ -77,7 +82,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         allCrewCardPanels.add(view.getPilotCardPanel1());
         allCrewCardPanels.add(view.getPilotCardPanel2());
         allCrewCardPanels.add(view.getDvCardPanel1());
-        allCrewCardPanels.add(view.getDvCardPanel2());
 
         // Add dynamically added panels from the deque
         allCrewCardPanels.addAll(view.getExtraPilotCardPanelDeque());
@@ -93,7 +97,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 // Only insert if the field is not equal to the default value
                 if (!hourFieldText.equals(defaultValue)) {
                     PersonHour personHour = new PersonHour();
-                    personHour.setFlightFk(flightFk);
+                    personHour.setFlightFk(lastFlightSk);
                     personHour.setPersonFk(getForeignKey(crewCardPanel.getCrewBox().getSelectedItem()));
                     personHour.setPeriodFk(periodFk);
                     personHour.setHourQty(Double.parseDouble(hourFieldText));
@@ -223,7 +227,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     public List<Helo> getHeloList() {
-            return heloDAO.getAll();
+        return heloDAO.getAll();
     }
 
     public List<Event> getEventList() {
@@ -345,29 +349,23 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private boolean doesTotalHoursEqualsSumOfPilotHours() {
-        // Parse total hours from the text field, treating non-numeric placeholders as 0
-        double totalHours = parseDoubleOrZero(view.getTotalHoursField().getText());
+        BigDecimal totalHours = parseBigDecimalOrZero(view.getTotalHoursField().getText());
 
-        // Sum the hours of the first pilot (Aircraft Commander)
-        double sumOfAircraftCommanderHours = parseDoubleOrZero(view.getPilotCardPanel1().getDayHourField().getText()) +
-                parseDoubleOrZero(view.getPilotCardPanel1().getNightHourField().getText()) +
-                parseDoubleOrZero(view.getPilotCardPanel1().getGvnHourField().getText());
+        BigDecimal sumOfAircraftCommanderHours = parseBigDecimalOrZero(view.getPilotCardPanel1().getDayHourField().getText())
+                .add(parseBigDecimalOrZero(view.getPilotCardPanel1().getNightHourField().getText()))
+                .add(parseBigDecimalOrZero(view.getPilotCardPanel1().getGvnHourField().getText()));
 
-        // Sum the hours of the second pilot (Other Pilot)
-        double sumOfOtherPilotsHours = parseDoubleOrZero(view.getPilotCardPanel2().getDayHourField().getText()) +
-                parseDoubleOrZero(view.getPilotCardPanel2().getNightHourField().getText()) +
-                parseDoubleOrZero(view.getPilotCardPanel2().getGvnHourField().getText());
+        BigDecimal sumOfOtherPilotsHours = parseBigDecimalOrZero(view.getPilotCardPanel2().getDayHourField().getText())
+                .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getNightHourField().getText()))
+                .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getGvnHourField().getText()));
 
-        // Add the hours from extra pilot card panels
         for (PilotCardPanel extraPanel : view.getExtraPilotCardPanelDeque()) {
-            sumOfOtherPilotsHours += parseDoubleOrZero(extraPanel.getDayHourField().getText()) +
-                    parseDoubleOrZero(extraPanel.getNightHourField().getText()) +
-                    parseDoubleOrZero(extraPanel.getGvnHourField().getText());
+            sumOfOtherPilotsHours = sumOfOtherPilotsHours.add(parseBigDecimalOrZero(extraPanel.getDayHourField().getText()))
+                    .add(parseBigDecimalOrZero(extraPanel.getNightHourField().getText()))
+                    .add(parseBigDecimalOrZero(extraPanel.getGvnHourField().getText()));
         }
 
-        // Check if total hours match the sum of pilot hours
-        if (!(totalHours == sumOfAircraftCommanderHours && totalHours == sumOfOtherPilotsHours)) {
-            // Show error message if hours don't match
+        if (!totalHours.equals(sumOfAircraftCommanderHours) || !totalHours.equals(sumOfOtherPilotsHours)) {
             JOptionPane.showMessageDialog(view, "Las horas totales del vuelo no coinciden con las horas de los pilotos.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -376,76 +374,77 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method to safely parse a double, treating non-numeric values as 0
-    private double parseDoubleOrZero(String text) {
+    private BigDecimal parseBigDecimalOrZero(String text) {
         try {
-            // Attempt to parse the value, if it's valid
-            return Double.parseDouble(text);
+            return new BigDecimal(text);
         } catch (NumberFormatException e) {
-            // If parsing fails (e.g., non-numeric value), return 0
-            return 0.0;
+            return BigDecimal.ZERO;
         }
     }
 
     private boolean arePilotCardsHoursValid() {
-        boolean isValid =
-                // PILOT CARD PANEL 1
-                // Check Horas fields
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getDayHourField(),view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo Dia", "D") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getNightHourField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo Noche", "N") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getGvnHourField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo GVN", "G") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getRealIftHourField(),view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Instrumentos Real", "R") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getSimIftHourField(),view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Instrumentos Simulado", "S") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getHdmsHourField(),view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas HDMS", "H") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel1().getInstructorHourField(),view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Horas Instructor", "I") &&
-                // Check Precision fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getPrecisionField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Aproximación de Precisión", "P") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getNoPrecisionField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Aproximación de No precisión", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getSarnField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Aproximación SAR-N", "S") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMonoDayField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Monospot Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMonoNightField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Monospot Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMonoGvnField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Monospot GVN", "G") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMultiDayField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Multispot Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMultiNightField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Multispot Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getMultiGvnField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Multispot GVN", "G") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getTierraDayField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Tierra Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getTierraNightField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Tierra Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel1().getTierraGvnField(), view.getPilotCardPanel1().getCrewBox().getSelectedItem() + " Toma Tierra GVN", "G") &&
+        // Gather all PilotCardPanels
+        ArrayList<PilotCardPanel> pilotCardPanelList = new ArrayList<>();
+        pilotCardPanelList.add(view.getPilotCardPanel1());
+        pilotCardPanelList.add(view.getPilotCardPanel2());
+        pilotCardPanelList.addAll(view.getExtraPilotCardPanelDeque());
 
-                // PILOT CARD PANEL 2
-                // Check Horas fields
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getDayHourField(),view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo Dia", "D") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getNightHourField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo Noche", "N") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getGvnHourField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo GVN", "G") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getRealIftHourField(),view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Instrumentos Real", "R") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getSimIftHourField(),view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Instrumentos Simulado", "S") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getHdmsHourField(),view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas HDMS", "H") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getPilotCardPanel2().getInstructorHourField(),view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Horas Instructor", "I") &&
-                // Check Precision fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getPrecisionField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Aproximación de Precisión", "P") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getNoPrecisionField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Aproximación de No precisión", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getSarnField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Aproximación SAR-N", "S") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMonoDayField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Monospot Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMonoNightField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Monospot Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMonoGvnField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Monospot GVN", "G") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMultiDayField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Multispot Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMultiNightField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Multispot Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getMultiGvnField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Multispot GVN", "G") &&
-                // Check Tomas fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getTierraDayField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Tierra Día", "D") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getTierraNightField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Tierra Noche", "N") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getPilotCardPanel2().getTierraGvnField(), view.getPilotCardPanel2().getCrewBox().getSelectedItem() + " Toma Tierra GVN", "G");
-        return isValid;
+        // Validate each PilotCardPanel
+        for (PilotCardPanel panel : pilotCardPanelList) {
+            if (!validatePilotCardPanel(panel)) {
+                return false; // Return false immediately if any panel is invalid
+            }
+        }
+        return true;
+    }
+
+    // Validates a single PilotCardPanel
+    private boolean validatePilotCardPanel(PilotCardPanel panel) {
+        String crewName = panel.getCrewBox().getSelectedItem().toString();
+
+        // Validate "Horas" fields
+        if (!DialogPresenter.isAValidOptionalHour(view, panel.getDayHourField(), crewName + " Horas Vuelo Dia", "D") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getNightHourField(), crewName + " Horas Vuelo Noche", "N") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getGvnHourField(), crewName + " Horas Vuelo GVN", "G") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getRealIftHourField(), crewName + " Horas Instrumentos Real", "R") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getSimIftHourField(), crewName + " Horas Instrumentos Simulado", "S") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getHdmsHourField(), crewName + " Horas HDMS", "H") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getInstructorHourField(), crewName + " Horas Instructor", "I")) {
+            return false;
+        }
+
+        // Validate "Precision" fields
+        if (!DialogPresenter.isAValidOptionalNumber(view, panel.getPrecisionField(), crewName + " Aproximación de Precisión", "P") ||
+                !DialogPresenter.isAValidOptionalNumber(view, panel.getNoPrecisionField(), crewName + " Aproximación de No precisión", "N") ||
+                !DialogPresenter.isAValidOptionalNumber(view, panel.getSarnField(), crewName + " Aproximación SAR-N", "S")) {
+            return false;
+        }
+
+        // Validate "Tomas" fields
+        if (!validateTomasFields(panel, crewName)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Helper method for validating "Tomas" fields
+    private boolean validateTomasFields(PilotCardPanel panel, String crewName) {
+        return
+                DialogPresenter.isAValidOptionalNumber(view, panel.getMonoDayField(), crewName + " Toma Monospot Día", "D") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getMonoNightField(), crewName + " Toma Monospot Noche", "N") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getMonoGvnField(), crewName + " Toma Monospot GVN", "G") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiDayField(), crewName + " Toma Multispot Día", "D") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiNightField(), crewName + " Toma Multispot Noche", "N") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiGvnField(), crewName + " Toma Multispot GVN", "G") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraDayField(), crewName + " Toma Tierra Día", "D") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraNightField(), crewName + " Toma Tierra Noche", "N") &&
+                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraGvnField(), crewName + " Toma Tierra GVN", "G");
     }
 
     private boolean areDvsSelected() {
         // Validate pilot boxes for primary and secondary pilots
         boolean isDv1Selected = DialogPresenter.validateDynamicComboBox(view, view.getDvCardPanel1().getCrewBox(), "Primer DV");
-        boolean isDv2Selected = DialogPresenter.validateDynamicComboBox(view, view.getDvCardPanel2().getCrewBox(), "Segundo DV");
 
         // Validate all extra pilot boxes
         boolean areExtraDvsSelected = view.getExtraDvCardPanelDeque()
@@ -453,26 +452,22 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 .allMatch(panel -> DialogPresenter.validateDynamicComboBox(view, panel.getCrewBox(), "Extra DV"));
 
         // Return true only if all validations pass
-        return isDv1Selected && isDv2Selected && areExtraDvsSelected;
+        return isDv1Selected && areExtraDvsSelected;
     }
 
     private boolean selectedDvsAreNotRepeated() {
-        // Collect all selected pilots from primary, secondary, and extra pilot panels
+        // Collect all selected dvs from primary, secondary, and extra dv panels
         Set<String> selectedDvs = new HashSet<>();
 
-        // Check primary and secondary pilot boxes
+        // Check primary and secondary dv boxes
         String dv1 = view.getDvCardPanel1().getCrewBox().getSelectedItem().toString();
-        String dv2 = view.getDvCardPanel2().getCrewBox().getSelectedItem().toString();
 
-        // Add pilots to the set if they are not null or empty
+        // Add dvs to the set if they are not null or empty
         if (dv1 != null && !dv1.isEmpty()) {
             selectedDvs.add(dv1);
         }
-        if (dv2 != null && !dv2.isEmpty()) {
-            selectedDvs.add(dv2);
-        }
 
-        // Check extra pilot combo boxes
+        // Check extra dv combo boxes
         view.getExtraDvCardPanelDeque().forEach(panel -> {
             String extraDv = panel.getCrewBox().getSelectedItem().toString();
             if (extraDv != null && !extraDv.isEmpty()) {
@@ -480,9 +475,9 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
         });
 
-        // If the number of selected pilots is equal to the number of entries in the set,
+        // If the number of selected dvs is equal to the number of entries in the set,
         // it means no duplicates were found
-        if (selectedDvs.size() != (view.getExtraDvCardPanelDeque().size() + 2)) {
+        if (selectedDvs.size() != (view.getExtraDvCardPanelDeque().size() + 1)) {
             // Show error message if duplicate pilots are found
             JOptionPane.showMessageDialog(view,
                     "Hay dotaciones repetidos.",
@@ -497,12 +492,11 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private boolean isAnyFlightHourInsertedPerDvCard() {
 
         boolean isDvCardPanel1Default = isAtLeastOneHourFieldInserted(view.getDvCardPanel1());
-        boolean isDvCardPanel2Default = isAtLeastOneHourFieldInserted(view.getDvCardPanel2());
         boolean allDynamicDefault = view.getExtraDvCardPanelDeque()
                 .stream()
                 .allMatch(this::isAtLeastOneHourFieldInserted);
 
-        if (!isDvCardPanel1Default || !isDvCardPanel2Default || !allDynamicDefault) {
+        if (!isDvCardPanel1Default || !allDynamicDefault) {
             JOptionPane.showMessageDialog(view, "Inserte al menos una hora de vuelo", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -510,28 +504,40 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private boolean areDvCardsHoursValid() {
-        boolean isValid =
-                // DV CARD PANEL 1
-                // Check Horas fields
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getDayHourField(),view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo Dia", "D") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getNightHourField(),view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo Noche", "N") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getGvnHourField(),view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Horas Vuelo Gvn", "G") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel1().getWinchTrimHourField(),view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Horas Winch Trim", "W") &&
-                // Check Proyectiles fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel1().getM3mField(), view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Proyectil M3M", "P") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel1().getMagField(), view.getDvCardPanel1().getCrewBox().getSelectedItem() + " Proyectil MAG56", "P") &&
+        // Gather all DvCardPanels
+        ArrayList<DvCardPanel> dvCardPanelList = new ArrayList<>();
+        dvCardPanelList.add(view.getDvCardPanel1());
+        dvCardPanelList.addAll(view.getExtraDvCardPanelDeque());
 
-                // DV CARD PANEL 2
-                // Check Horas fields
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel2().getDayHourField(),view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo Dia", "D") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel2().getNightHourField(),view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo Noche", "N") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel2().getGvnHourField(),view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Horas Vuelo Gvn", "G") &&
-                DialogPresenter.isAValidOptionalHour(view, view.getDvCardPanel2().getWinchTrimHourField(),view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Horas Winch Trim", "W") &&
-                // Check Proyectiles fields
-                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel2().getM3mField(), view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Proyectil M3M", "P") &&
-                DialogPresenter.isAValidOptionalNumber(view, view.getDvCardPanel2().getMagField(), view.getDvCardPanel2().getCrewBox().getSelectedItem() + " Proyectil MAG56", "P");
-
-        return isValid;
+        // Validate each DvCardPanel
+        for (DvCardPanel panel : dvCardPanelList) {
+            if (!validateDvCardPanel(panel)) {
+                return false; // Return false immediately if any panel is invalid
+            }
+        }
+        return true;
     }
+
+    // Validates a single DvCardPanel
+    private boolean validateDvCardPanel(DvCardPanel panel) {
+        String crewName = panel.getCrewBox().getSelectedItem().toString();
+
+        // Validate "Horas" fields
+        if (!DialogPresenter.isAValidOptionalHour(view, panel.getDayHourField(), crewName + " Horas Vuelo Dia", "D") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getNightHourField(), crewName + " Horas Vuelo Noche", "N") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getGvnHourField(), crewName + " Horas Vuelo GVN", "G") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getWinchTrimHourField(), crewName + " Horas Winch Trim", "W")) {
+            return false;
+        }
+
+        // Validate "Proyectiles" fields
+        if (!DialogPresenter.isAValidOptionalNumber(view, panel.getM3mField(), crewName + " Proyectil M3M", "P") ||
+                !DialogPresenter.isAValidOptionalNumber(view, panel.getMagField(), crewName + " Proyectil MAG56", "P")) {
+            return false;
+        }
+
+        return true;
+    }
+
 
 }

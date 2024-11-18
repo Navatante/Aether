@@ -19,7 +19,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private RegisterFlightPresenter presenter;
 
     private PilotCardPanel pilotCardPanel1, pilotCardPanel2;
-    private DvCardPanel dvCardPanel1, dvCardPanel2;
+    private DvCardPanel dvCardPanel1;
 
     private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
     private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
@@ -81,7 +81,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         pilotCardPanel1 = new PilotCardPanel(this, presenter);
         pilotCardPanel2 = new PilotCardPanel(this, presenter);
         dvCardPanel1 = new DvCardPanel(this, presenter);
-        dvCardPanel2 = new DvCardPanel(this, presenter);
     }
 
     @Override
@@ -124,7 +123,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         pilotCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         pilotCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         dvCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        dvCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
 
         tripulantesScrollPane.setPreferredSize(new Dimension(1375, 175));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -166,7 +164,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         tripulantesPanel.add(pilotCardPanel1);
         tripulantesPanel.add(pilotCardPanel2);
         tripulantesPanel.add(dvCardPanel1);
-        tripulantesPanel.add(dvCardPanel2);
     }
 
     @Override
@@ -317,10 +314,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     public DvCardPanel getDvCardPanel1() {
         return dvCardPanel1;
-    }
-
-    public DvCardPanel getDvCardPanel2() {
-        return dvCardPanel2;
     }
 
     public ArrayDeque<PilotCardPanel> getExtraPilotCardPanelDeque() {
