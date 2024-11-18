@@ -183,7 +183,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         flight.setDateTime(view.getDateTimeSpinner());
         flight.setHelo(getForeignKey(view.getHeloBox().getSelectedItem()));
         flight.setEvent(getForeignKey(view.getEventBox().getSelectedItem()));
-        flight.setPersonCta(getForeignKey(view.getPersonBox().getSelectedItem()));
+        //flight.setPersonCta(getForeignKey(view.getPersonBox().getSelectedItem()));
+        flight.setPersonCta(getForeignKey(view.getPilotCardPanel1().getCrewBox().getSelectedItem())); // TODO Si esta linea funciona, puedo quitar la seleccion de cte aeronave de la card vuelo.
         flight.setTotalHours(Double.parseDouble(view.getTotalHoursField().getText()));
 
         return flight;
@@ -245,7 +246,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private boolean isVueloCardValid() {
         boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
                             DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
-                            DialogPresenter.validateDynamicComboBox(view, view.getPersonBox(), "Cte. Aeronave") &&
                             DialogPresenter.isAValidMandatoryHour(view, view.getTotalHoursField(),"Horas totales");
         return isValid;
     }
@@ -253,7 +253,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private boolean arePilotCardsValid() {
         boolean isValid = arePilotsSelected() &&
                             selectedPilotsAreNotRepeated() &&
-                            aircraftCommanderMatch() &&
                             isAnyFlightHourInsertedPerPilotCard() &&
                             arePilotCardsHoursValid() &&
                             doesTotalHoursEqualsSumOfPilotHours() &&
@@ -316,15 +315,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             return false;
         }
         return true;
-    }
-
-    private boolean aircraftCommanderMatch() {
-        if(view.getPersonBox().getSelectedItem().toString().equals(view.getPilotCardPanel1().getCrewBox().getSelectedItem().toString())) {
-            return true;
-        } else {
-            JOptionPane.showMessageDialog(view, "El comandante de aeronave no coincide.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
     }
 
     private boolean isAnyFlightHourInsertedPerPilotCard() {

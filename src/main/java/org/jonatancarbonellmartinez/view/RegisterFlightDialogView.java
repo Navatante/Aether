@@ -26,7 +26,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     JSpinner dateTimeSpinner;
 
-    JComboBox heloBox, eventBox, personBox;
+    JComboBox heloBox, eventBox;
 
     JTextField totalHoursField;
 
@@ -88,7 +88,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         dateTimeSpinner = new JSpinner(new SpinnerDateModel(new Date(), null, null, java.util.Calendar.MINUTE));
         heloBox = View.createDynamicComboBox(new Vector<>(presenter.getHeloList()),"Helicóptero");
         eventBox = View.createDynamicComboBox(new Vector<>(presenter.getEventList()),"Evento");
-        personBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"Cte. Aeronave");
         totalHoursField = View.createTextField("Horas totales",4,13);
         saveButton = new JButton("Guardar");
         pilotoLabel = new JLabel("Piloto");
@@ -131,14 +130,16 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         createTripulantePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         crewButtonsPanel.setPreferredSize(new Dimension(55, 55));
+
+        pilotCardPanel1.getCrewBox().setToolTipText("Comandante de Aeronave");
     }
 
     @Override
     public void configureComponents() {
         dateTimeSpinner.setEditor(new JSpinner.DateEditor(dateTimeSpinner, "dd/MM/yyyy HH:mm"));
-        View.setInitialComboBoxLook(heloBox,eventBox, personBox);
+        View.setInitialComboBoxLook(heloBox,eventBox);
         View.setPreferredSizeForComponents(new Dimension(eventBox.getPreferredSize().width+10, 25), eventBox);
-        View.setPreferredSizeForComponents(new Dimension(155,24),dateTimeSpinner,heloBox, personBox, totalHoursField);
+        View.setPreferredSizeForComponents(new Dimension(155,24),dateTimeSpinner,heloBox, totalHoursField);
         totalHoursField.setHorizontalAlignment(JTextField.CENTER);
         setDocumentFilters();
 
@@ -168,7 +169,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     @Override
     public void assembleComponents() {
-        View.addComponentsToPanel(vueloPanel,dateTimeSpinner, heloBox, eventBox, personBox, totalHoursField);
+        View.addComponentsToPanel(vueloPanel,dateTimeSpinner, heloBox, eventBox, totalHoursField);
         View.addComponentsToPanel(crewButtonsPanel,createPilotButton,deletePilotButton, createDvButton, deleteDvButton);
         View.addComponentsToPanel(bottomPanel,saveButton);
         crewLabelsPanel.add(pilotoLabel);
@@ -194,7 +195,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         View.setDocumentFilter(totalHoursField,13); // This is set because placeholder is larger than value permitted limit.
         heloBox.setSelectedIndex(0);
         eventBox.setSelectedIndex(0);
-        personBox.setSelectedIndex(0);
         View.setPlaceholder(totalHoursField,"Horas totales");
     }
 
@@ -259,10 +259,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     // GETTERS
     public JComboBox getHeloBox() {
         return heloBox;
-    }
-
-    public JComboBox getPersonBox() {
-        return personBox;
     }
 
     public JComboBox getEventBox() {
