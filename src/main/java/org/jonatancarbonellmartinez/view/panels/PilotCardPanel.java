@@ -268,15 +268,15 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
     }
 
     //Getters
-
+    @Override
     public JTextField getDayHourField() {
         return dayHourField;
     }
-
+    @Override
     public JTextField getNightHourField() {
         return nightHourField;
     }
-
+    @Override
     public JTextField getGvnHourField() {
         return gvnHourField;
     }
@@ -345,7 +345,8 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         return tierraGvnField;
     }
 
-    public JComboBox getPilotBox() {
+    @Override
+    public JComboBox getCrewBox() {
         return pilotBox;
     }
 }

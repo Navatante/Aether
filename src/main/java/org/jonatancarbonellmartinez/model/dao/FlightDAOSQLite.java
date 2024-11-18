@@ -57,4 +57,24 @@ public class FlightDAOSQLite implements GenericDAO<Flight, Integer>{
     public Entity mapResultSetToEntity(ResultSet rs) throws SQLException { // TODO
         return null;
     }
+
+    public int getLastFlightSk() throws DatabaseException {
+        String sql = "SELECT flight_sk FROM fact_flight ORDER BY flight_sk DESC LIMIT 1";
+
+        try(Connection connection = Database.getInstance().getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {  // Check if the result set contains any data
+                return rs.getInt("flight_sk");  // Get the value of the flight_sk column
+            } else {
+                // Handle the case where no result is found
+                throw new DatabaseException("No se han encontrado resgistros de flight_sk en la base de datos.");
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al obtener ultimo flight_sk de la base de datos", e);
+        }
+    }
 }

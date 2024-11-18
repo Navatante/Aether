@@ -44,6 +44,11 @@ public class DAOFactorySQLite implements DAOFactory {
         return new FlightDAOSQLite();
     }
 
+    @Override
+    public PersonHourDAOSQLite createPersonHourDAO() throws DatabaseException {
+        return new PersonHourDAOSQLite();
+    }
+
 
     // Add methods for creating other DAOs
     // public OtherDAO createOtherDAO() throws SQLException {

@@ -8,6 +8,16 @@ public class Flight implements Entity {
     private Integer personCta;
     private Double totalHours;
 
+    @Override
+    public int getSk() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(flightSk);
+    }
+
     // Getters and Setters
     public Integer getFlightSk() {
         return flightSk;
@@ -55,15 +65,5 @@ public class Flight implements Entity {
 
     public void setTotalHours(Double totalHours) {
         this.totalHours = totalHours;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(flightSk);
-    }
-
-    @Override
-    public int getSk() {
-        return 0;
     }
 }

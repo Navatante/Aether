@@ -166,14 +166,15 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
     }
 
     // Getters
+    @Override
     public JTextField getDayHourField() {
         return dayHourField;
     }
-
+    @Override
     public JTextField getNightHourField() {
         return nightHourField;
     }
-
+    @Override
     public JTextField getGvnHourField() {
         return gvnHourField;
     }
@@ -190,7 +191,8 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
         return magField;
     }
 
-    public JComboBox getDvBox() {
+    @Override
+    public JComboBox getCrewBox() {
         return dvBox;
     }
 }
