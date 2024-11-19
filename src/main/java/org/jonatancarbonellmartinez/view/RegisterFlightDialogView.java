@@ -60,7 +60,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(1400,1000);
+        setSize(1350,900);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -107,7 +107,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         //titleBorder.setTitleJustification(TitledBorder.CENTER); // In case i want to center the Vuelo title.
 
         vueloPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 55, 10, 25),
+                BorderFactory.createEmptyBorder(10, 5, 10, 100),
                 titleBorder
         ));
 
@@ -115,7 +115,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder2.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         tripulantesScrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 55, 10, 45),
+                BorderFactory.createEmptyBorder(10, 5, 10, 45),
                 titleBorder2
         ));
 

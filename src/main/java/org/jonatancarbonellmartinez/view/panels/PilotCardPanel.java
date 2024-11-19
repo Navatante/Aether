@@ -25,7 +25,9 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
     private JPanel appsPanel, appsTituloPanel, appsDetailPanel,
                     precisionPanel, precisionTituloPanel, precisionDataPanel,
-                    noPrecisionPanel, noPrecisionTituloPanel, noPrecisionDataPanel,
+                    noPrecisionPanel, noPrecisionTituloPanel, noPrecisionDataPanel;
+
+    private JPanel cuartoEjePanel, cuartoEjeTituloPanel, cuartoEjeDetailPanel,
                     sarnPanel, sarnTituloPanel, sarnDataPanel;
 
     private JPanel landingsPanel, landingsTituloPanel, landingsDetailPanel,
@@ -33,11 +35,13 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
                     multispotPanel, multispotTituloPanel, multispotDataPanel,
                     tierraPanel, tierraTituloPanel, tierraDataPanel;
 
-    private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, aproximacionesLabel, precisionLabel, noPrecisionLabel, sarnLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel;
+    private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, aproximacionesLabel, cuartoEjeLabel, precisionLabel, noPrecisionLabel, sarnLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel;
 
-    private JTextField dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField;
+    private JTextField dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField;
 
-    private JTextField precisionField, noPrecisionField, sarnField;
+    private JTextField precisionField, noPrecisionField;
+
+    private JTextField sarnField;
 
     private JTextField monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField;
 
@@ -95,6 +99,10 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
             noPrecisionTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             noPrecisionDataPanel = new JPanel(new FlowLayout());
 
+        cuartoEjePanel = new JPanel(new BorderLayout());
+        cuartoEjeTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        cuartoEjeDetailPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
             sarnPanel = new JPanel(new BorderLayout());
             sarnTituloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             sarnDataPanel = new JPanel(new FlowLayout());
@@ -129,18 +137,19 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         dayHourField = View.createTextField("D");
         nightHourField = View.createTextField("N");
         gvnHourField = View.createTextField("G");
-        realIftHourField = View.createTextField("R");
-        simIftHourField = View.createTextField("S");
+        iftHourField = View.createTextField("I");
         hdmsHourField = View.createTextField("H");
         instructorHourField = View.createTextField("I");
 
         aproximacionesLabel = new JLabel("Aproximaciones");
         precisionLabel = new JLabel("Precisión");
         noPrecisionLabel = new JLabel("No Precisión");
-        sarnLabel = new JLabel("SAR-N");
         precisionField = View.createTextField("P");
         noPrecisionField = View.createTextField("N");
         sarnField = View.createTextField("S");
+
+        cuartoEjeLabel = new JLabel("Cuarto eje");
+        sarnLabel = new JLabel("SAR-N");
 
         tomasLabel = new JLabel("Tomas");
         monospotLabel = new JLabel("Monospot");
@@ -161,10 +170,12 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
     public void configurePanels() {
         hoursTituloPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         appsTituloPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        cuartoEjeTituloPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         landingsTituloPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
 
         hoursPanel.setBorder(new EmptyBorder(0, 20, 0, 0));
         appsPanel.setBorder(new EmptyBorder(0, 20, 0, 0));
+        cuartoEjePanel.setBorder(new EmptyBorder(0, 20, 0, 0));
         landingsPanel.setBorder(new EmptyBorder(0, 20, 0, 0));
     }
 
@@ -172,11 +183,11 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
     public void configureComponents() {
         View.setInitialComboBoxLook(pilotBox);
         View.setPreferredSizeForComponents(CardPanel.PERSON_BOX_DIMENSION, pilotBox);
-        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
+        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField,
                                                                             precisionField, noPrecisionField, sarnField,
                                                                             monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField);
 
-        View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, realIftHourField, simIftHourField, hdmsHourField, instructorHourField,
+        View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField,
                                             precisionField, noPrecisionField, sarnField,
                                             monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField,  tierraDayField, tierraNightField, tierraGvnField);
         sarnField.setToolTipText("Caladas nocturnas");
@@ -190,6 +201,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
         pilotPanel.add(hoursPanel);
         pilotPanel.add(appsPanel);
+        pilotPanel.add(cuartoEjePanel);
         pilotPanel.add(landingsPanel);
 
         hoursPanel.add(hoursTituloPanel,BorderLayout.NORTH);
@@ -206,11 +218,15 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
         appsPanel.add(appsTituloPanel, BorderLayout.NORTH);
         appsPanel.add(appsDetailPanel,BorderLayout.CENTER);
-        View.addComponentsToPanel(appsDetailPanel, precisionPanel, noPrecisionPanel, sarnPanel);
+        View.addComponentsToPanel(appsDetailPanel, precisionPanel, noPrecisionPanel);
         precisionPanel.add(precisionTituloPanel, BorderLayout.NORTH);
         precisionPanel.add(precisionDataPanel, BorderLayout.CENTER);
         noPrecisionPanel.add(noPrecisionTituloPanel, BorderLayout.NORTH);
         noPrecisionPanel.add(noPrecisionDataPanel, BorderLayout.CENTER);
+
+        cuartoEjePanel.add(cuartoEjeTituloPanel, BorderLayout.NORTH);
+        cuartoEjePanel.add(cuartoEjeDetailPanel, BorderLayout.CENTER);
+        cuartoEjeDetailPanel.add(sarnPanel);
         sarnPanel.add(sarnTituloPanel, BorderLayout.NORTH);
         sarnPanel.add(sarnDataPanel, BorderLayout.CENTER);
 
@@ -239,7 +255,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         vueloTituloPanel.add(vueloLabel);
         View.addComponentsToPanel(vueloDataPanel, dayHourField, nightHourField, gvnHourField);
         instrumentosTituloPanel.add(instrumentosLabel);
-        View.addComponentsToPanel(instrumentosDataPanel, realIftHourField, simIftHourField);
+        View.addComponentsToPanel(instrumentosDataPanel, iftHourField);
         hdmsTituloPanel.add(hdmsLabel);
         hdmsDataPanel.add(hdmsHourField);
         instructorTituloPanel.add(instructorLabel);
@@ -250,6 +266,8 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         precisionDataPanel.add(precisionField);
         noPrecisionTituloPanel.add(noPrecisionLabel);
         noPrecisionDataPanel.add(noPrecisionField);
+
+        cuartoEjeTituloPanel.add(cuartoEjeLabel);
         sarnTituloPanel.add(sarnLabel);
         sarnDataPanel.add(sarnField);
 
@@ -281,12 +299,8 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         return gvnHourField;
     }
 
-    public JTextField getRealIftHourField() {
-        return realIftHourField;
-    }
-
-    public JTextField getSimIftHourField() {
-        return simIftHourField;
+    public JTextField getIftHourField() {
+        return iftHourField;
     }
 
     public JTextField getHdmsHourField() {

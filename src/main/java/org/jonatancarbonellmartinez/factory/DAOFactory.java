@@ -11,6 +11,7 @@ public interface DAOFactory {
     GenericDAO<Helo,Integer> createHeloDAO() throws DatabaseException;
     GenericDAO<Flight,Integer> createFlightDAO() throws DatabaseException;
     GenericDAO<PersonHour, Integer> createPersonHourDAO() throws DatabaseException;
+    GenericDAO<MixHour, Integer> createMixHourDAO() throws DatabaseException;
 
     // You can add methods to create other DAOs for different entities
     // For example:

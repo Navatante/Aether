@@ -13,6 +13,7 @@ import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
 
 import javax.swing.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,10 +26,15 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final PersonDAOSQLite personDAO;
     private final FlightDAOSQLite flightDAO;
     private final PersonHourDAOSQLite personHourDAO;
+    private final MixHourDAOSqlite mixHourDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
     private int lastFlightSk;
+
+    ArrayList<CardPanel> allCrewCardPanels;
+    ArrayList<PilotCardPanel> allPilotCardPanels;
+    ArrayList<DvCardPanel> allDvCardPanels;
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -37,13 +43,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.personDAO = DAOFactorySQLite.getInstance().createPersonDAO();
         this.flightDAO = DAOFactorySQLite.getInstance().createFlightDAO();
         this.personHourDAO = DAOFactorySQLite.getInstance().createPersonHourDAO();
+        this.mixHourDAO = DAOFactorySQLite.getInstance().createMixHourDAO();
         this.observer = observer;
     }
 
     @Override
     public boolean isFormValid() {
         boolean isValid = isVueloCardValid() &&
-                            arePilotCardsValid();
+                            areCrewCardsValid();
         return isValid;
     }
 
@@ -51,7 +58,11 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     public void insertEntity() { // TODO quiza este llame a todos los metodos de insertX
         try {
             insertFlight();
+            collectCrewCardPanels();
+            collectPilotCardPanels();
+            collectDvCardPanels();
             insertPersonHour();
+            insertMixHour();
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
@@ -70,13 +81,9 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
 
-
-    public void insertPersonHour() {
-        // Get the last flight foreign key once
-
-
+    private void collectCrewCardPanels() {
         // Create a list of all pilot card panels to iterate through, including extra dynamically added ones
-        ArrayList<CardPanel> allCrewCardPanels = new ArrayList<>();
+        allCrewCardPanels = new ArrayList<>();
 
         // Add the predefined panels
         allCrewCardPanels.add(view.getPilotCardPanel1());
@@ -86,7 +93,24 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // Add dynamically added panels from the deque
         allCrewCardPanels.addAll(view.getExtraPilotCardPanelDeque());
         allCrewCardPanels.addAll(view.getExtraDvCardPanelDeque());
+    }
 
+    private void collectPilotCardPanels() {
+        allPilotCardPanels = new ArrayList<>();
+
+        allPilotCardPanels.add(view.getPilotCardPanel1());
+        allPilotCardPanels.add(view.getPilotCardPanel2());
+        allPilotCardPanels.addAll(view.getExtraPilotCardPanelDeque());
+    }
+
+    private void collectDvCardPanels() {
+        allDvCardPanels = new ArrayList<>();
+
+        allDvCardPanels.add(view.getDvCardPanel1());
+        allDvCardPanels.addAll(view.getExtraDvCardPanelDeque());
+    }
+
+    public void insertPersonHour() {
         // Iterate over all the pilot card panels
         for (CardPanel crewCardPanel : allCrewCardPanels) {
             // Iterate over all periods (Day, Night, Gvn) and corresponding hour fields
@@ -109,7 +133,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         }
     } // TODO Study this method
 
-    // Helper method to get the hour field text based on the period
+    // Helper method of insertPersonHour() to get the hour field text based on the period
     private String getPeriodHourFieldText(CardPanel CardPanel, int periodFk) {
         switch (periodFk) {
             case 1: // Day
@@ -123,7 +147,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         }
     }
 
-    // Helper method to get the default period value
+    // Helper method of insertPersonHour() to get the default period value
     private String getDefaultPeriodValue(int periodFk) {
         switch (periodFk) {
             case 1: return "D"; // Day
@@ -135,8 +159,37 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
 
 
+    public void insertMixHour() {
+        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+            String iftHour = pilotCardPanel.getIftHourField().getText();
+            String instructorHour = pilotCardPanel.getInstructorHourField().getText();
+            String hdmsHour = pilotCardPanel.getHdmsHourField().getText();
 
-    public void insertMixHour() {}
+            // Skip the loop if all conditions match the default values
+            if ("I".equals(iftHour) && "I".equals(instructorHour) && "H".equals(hdmsHour)) {
+                continue;
+            }
+
+            MixHour mixHour = new MixHour();
+            mixHour.setFlightFk(lastFlightSk);
+            mixHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
+
+            // Set specific quantities based on conditions
+            if (!"I".equals(iftHour)) {
+                mixHour.setIftQty(Double.parseDouble(iftHour));
+            }
+
+            if (!"I".equals(instructorHour)) {
+                mixHour.setInstructorQty(Double.parseDouble(instructorHour));
+            }
+            if (!"H".equals(hdmsHour)) {
+                mixHour.setHdmsQty(Double.parseDouble(hdmsHour));
+            }
+
+            mixHourDAO.insert(mixHour);
+        }
+    }
+
 
     @Override
     public void editEntity() {
@@ -183,8 +236,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         flight.setDateTime(view.getDateTimeSpinner());
         flight.setHelo(getForeignKey(view.getHeloBox().getSelectedItem()));
         flight.setEvent(getForeignKey(view.getEventBox().getSelectedItem()));
-        //flight.setPersonCta(getForeignKey(view.getPersonBox().getSelectedItem()));
-        flight.setPersonCta(getForeignKey(view.getPilotCardPanel1().getCrewBox().getSelectedItem())); // TODO Si esta linea funciona, puedo quitar la seleccion de cte aeronave de la card vuelo.
+        flight.setPersonCta(getForeignKey(view.getPilotCardPanel1().getCrewBox().getSelectedItem()));
         flight.setTotalHours(Double.parseDouble(view.getTotalHoursField().getText()));
 
         return flight;
@@ -250,14 +302,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return isValid;
     }
 
-    private boolean arePilotCardsValid() {
+    private boolean areCrewCardsValid() {
         boolean isValid = arePilotsSelected() &&
                             selectedPilotsAreNotRepeated() &&
                             isAnyFlightHourInsertedPerPilotCard() &&
                             arePilotCardsHoursValid() &&
                             doesTotalHoursEqualsSumOfPilotHours() &&
 
-                            areDvsSelected() && // demomento fuerzo que siempre vuelan dos dotaciones, si hay posibilidad de que solo vuele 1, entonces la mehor solucion sera eliminar el panel fijo DvCardPanel2
+                            areDvsSelected() &&
                             selectedDvsAreNotRepeated() &&
                             isAnyFlightHourInsertedPerDvCard() &&
                             areDvCardsHoursValid();
@@ -341,10 +393,12 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private boolean doesTotalHoursEqualsSumOfPilotHours() {
         BigDecimal totalHours = parseBigDecimalOrZero(view.getTotalHoursField().getText());
 
+        // Sum hours for the aircraft commander
         BigDecimal sumOfAircraftCommanderHours = parseBigDecimalOrZero(view.getPilotCardPanel1().getDayHourField().getText())
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel1().getNightHourField().getText()))
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel1().getGvnHourField().getText()));
 
+        // Sum hours for the other pilots
         BigDecimal sumOfOtherPilotsHours = parseBigDecimalOrZero(view.getPilotCardPanel2().getDayHourField().getText())
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getNightHourField().getText()))
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getGvnHourField().getText()));
@@ -355,8 +409,16 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                     .add(parseBigDecimalOrZero(extraPanel.getGvnHourField().getText()));
         }
 
-        if (!totalHours.equals(sumOfAircraftCommanderHours) || !totalHours.equals(sumOfOtherPilotsHours)) {
-            JOptionPane.showMessageDialog(view, "Las horas totales del vuelo no coinciden con las horas de los pilotos.", "Error", JOptionPane.ERROR_MESSAGE);
+        // Validate `totalHours` matches each sum separately
+        boolean matchesAircraftCommander = totalHours.equals(sumOfAircraftCommanderHours);
+        boolean matchesOtherPilots = totalHours.equals(sumOfOtherPilotsHours);
+
+        if (!matchesAircraftCommander || !matchesOtherPilots) {
+            JOptionPane.showMessageDialog(view,
+                    "Las horas totales del vuelo no coinciden con las horas de los pilotos:\n"
+                            + (matchesAircraftCommander ? "" : " - Horas del Comandante de Aeronave no coinciden.\n")
+                            + (matchesOtherPilots ? "" : " - Horas de los copilotos no coinciden.\n"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -366,11 +428,13 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     // Helper method to safely parse a double, treating non-numeric values as 0
     private BigDecimal parseBigDecimalOrZero(String text) {
         try {
-            return new BigDecimal(text);
+            return new BigDecimal(text).setScale(1, RoundingMode.HALF_UP);
         } catch (NumberFormatException e) {
-            return BigDecimal.ZERO;
+            return BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
         }
     }
+
+
 
     private boolean arePilotCardsHoursValid() {
         // Gather all PilotCardPanels
@@ -396,8 +460,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         if (!DialogPresenter.isAValidOptionalHour(view, panel.getDayHourField(), crewName + " Horas Vuelo Dia", "D") ||
                 !DialogPresenter.isAValidOptionalHour(view, panel.getNightHourField(), crewName + " Horas Vuelo Noche", "N") ||
                 !DialogPresenter.isAValidOptionalHour(view, panel.getGvnHourField(), crewName + " Horas Vuelo GVN", "G") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getRealIftHourField(), crewName + " Horas Instrumentos Real", "R") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getSimIftHourField(), crewName + " Horas Instrumentos Simulado", "S") ||
+                !DialogPresenter.isAValidOptionalHour(view, panel.getIftHourField(), crewName + " Horas Instrumentos", "I") ||
                 !DialogPresenter.isAValidOptionalHour(view, panel.getHdmsHourField(), crewName + " Horas HDMS", "H") ||
                 !DialogPresenter.isAValidOptionalHour(view, panel.getInstructorHourField(), crewName + " Horas Instructor", "I")) {
             return false;

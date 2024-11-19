@@ -18,14 +18,6 @@ public class PersonHour implements Entity{
         return String.valueOf(personHourSk);
     }
 
-    public int getPersonHourSk() {
-        return personHourSk;
-    }
-
-    public void setPersonHourSk(int personHourSk) {
-        this.personHourSk = personHourSk;
-    }
-
     public int getFlightFk() {
         return flightFk;
     }
