@@ -148,7 +148,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
         noPrecisionField = View.createTextField("N");
         sarnField = View.createTextField("S");
 
-        cuartoEjeLabel = new JLabel("Cuarto eje");
+        cuartoEjeLabel = new JLabel("Aprox. auto");
         sarnLabel = new JLabel("SAR-N");
 
         tomasLabel = new JLabel("Tomas");
