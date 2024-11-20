@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.MixHour;
+import org.jonatancarbonellmartinez.model.entities.HdmsHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
 import java.sql.Connection;
@@ -12,26 +12,23 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class MixHourDAOSqlite implements GenericDAO<MixHour, Integer>{
+public class HdmsHourDAOSqlite implements GenericDAO<HdmsHour, Integer> {
     @Override
-    public void insert(MixHour entity) throws DatabaseException {
-        String sql = "INSERT INTO main.junction_mix_hour (mix_hour_flight_fk, mix_hour_person_fk, mix_hour_ift_qty, mix_hour_instructor_qty, mix_hour_hmds_qty) VALUES (?, ?, ?, ?, ?)";
+    public void insert(HdmsHour entity) throws DatabaseException {
+        String sql = "INSERT INTO main.junction_hdms_hour (hdms_hour_flight_fk, hdms_hour_person_fk, hdms_hour_qty) VALUES (?, ?, ?)";
 
         try(Connection connection = Database.getInstance().getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setInt(1,     entity.getFlightFk());
             pstmt.setInt(2,     entity.getPersonFk());
-            pstmt.setDouble(3,  entity.getIftQty());
-            pstmt.setDouble(4,  entity.getInstructorQty());
-            pstmt.setDouble(5,  entity.getHdmsQty());
+            pstmt.setDouble(3,  entity.getHdmsHourQty());
 
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando mix de horas en la base de datos", e);
+            throw new DatabaseException("Error insertando horas HDMS en la base de datos", e);
         }
-
     }
 
     @Override
@@ -40,7 +37,7 @@ public class MixHourDAOSqlite implements GenericDAO<MixHour, Integer>{
     }
 
     @Override
-    public void update(MixHour entity, int skToUpdate) throws DatabaseException {
+    public void update(HdmsHour entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -50,12 +47,12 @@ public class MixHourDAOSqlite implements GenericDAO<MixHour, Integer>{
     }
 
     @Override
-    public List<MixHour> getAll() throws DatabaseException {
+    public List<HdmsHour> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 
     @Override
     public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {
         return null;
-   }
+    }
 }

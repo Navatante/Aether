@@ -2,10 +2,6 @@ package org.jonatancarbonellmartinez.factory;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.dao.*;
-import org.jonatancarbonellmartinez.model.entities.Event;
-import org.jonatancarbonellmartinez.model.entities.Flight;
-import org.jonatancarbonellmartinez.model.entities.Helo;
-import org.jonatancarbonellmartinez.model.entities.Person;
 
 // Esta clase la utilizo para crear los distintos DAOs a traves de ella, por cada dao, tendre que crear un metodo 'createDimNameDAO' or createFactNameDAO.
 public class DAOFactorySQLite implements DAOFactory {
@@ -50,8 +46,28 @@ public class DAOFactorySQLite implements DAOFactory {
     }
 
     @Override
-    public MixHourDAOSqlite createMixHourDAO() throws DatabaseException {
-        return new MixHourDAOSqlite();
+    public IftHourDAOSqlite createIftHourDAO() throws DatabaseException {
+        return new IftHourDAOSqlite();
+    }
+
+    @Override
+    public InstructorHourDAOSqlite createInstructorHourDAO() throws DatabaseException {
+        return new InstructorHourDAOSqlite();
+    }
+
+    @Override
+    public HdmsHourDAOSqlite createHdmsHourDAO() throws DatabaseException {
+        return new HdmsHourDAOSqlite();
+    }
+
+    @Override
+    public AppDAOSqlite createAppDAO() throws DatabaseException {
+        return new AppDAOSqlite();
+    }
+
+    @Override
+    public LandingDAOSqlite createLandingDAO() throws DatabaseException {
+        return new LandingDAOSqlite();
     }
 
 
