@@ -93,7 +93,7 @@ public interface DialogPresenter {
         String text = field.getText();
         if (text.isEmpty() || text.equals(placeHolder)) {
             return true; // Field is empty or contains the placeholder, considered valid
-        } else if (text.matches("([1-9]|[1-4][0-9]|50)")) {
+        } else if (text.matches("[1-9][0-9]*")) {
             return true; // Matches valid hour format
         } else {
             DialogView.showError(parentView, "El formato de número no es correcto para: " + fieldName);
