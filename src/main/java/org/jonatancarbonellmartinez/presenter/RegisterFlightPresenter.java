@@ -31,6 +31,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final HdmsHourDAOSqlite hdmsHourDAO;
     private final AppDAOSqlite appDAO;
     private final LandingDAOSqlite landingDAO;
+    private final WtHourDAOSqlite wtHourDAO;
+    private final ProjectileDAOSqlite projectileDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
@@ -52,6 +54,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.hdmsHourDAO = DAOFactorySQLite.getInstance().createHdmsHourDAO();
         this.appDAO = DAOFactorySQLite.getInstance().createAppDAO();
         this.landingDAO = DAOFactorySQLite.getInstance().createLandingDAO();
+        this.wtHourDAO = DAOFactorySQLite.getInstance().createWtHourDAO();
+        this.projectileDAO = DAOFactorySQLite.getInstance().createProjectileDAO();
         this.observer = observer;
     }
 
@@ -75,6 +79,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             insertInstructorHour();
             insertApp();
             insertLanding();
+            insertWtHour();
+            insertProjectile();
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
@@ -122,6 +128,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     public void insertPersonHour() {
+        PersonHour personHour = new PersonHour();
+        personHour.setFlightFk(lastFlightSk);
         // Iterate over all the pilot card panels
         for (CardPanel crewCardPanel : allCrewCardPanels) {
             // Iterate over all periods (Day, Night, Gvn) and corresponding hour fields
@@ -131,8 +139,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
                 // Only insert if the field is not equal to the default value
                 if (!hourFieldText.equals(defaultValue)) {
-                    PersonHour personHour = new PersonHour();
-                    personHour.setFlightFk(lastFlightSk);
                     personHour.setPersonFk(getForeignKey(crewCardPanel.getCrewBox().getSelectedItem()));
                     personHour.setPeriodFk(periodFk);
                     personHour.setHourQty(Double.parseDouble(hourFieldText));
@@ -235,6 +241,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private void insertIftHour() {
+        IftHour iftHour = new IftHour();
+        iftHour.setFlightFk(lastFlightSk);
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String iftHourField = pilotCardPanel.getIftHourField().getText();
 
@@ -244,8 +252,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
 
             // Process the valid IftHourField values
-            IftHour iftHour = new IftHour();
-            iftHour.setFlightFk(lastFlightSk);
             iftHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             iftHour.setIftHourQty(Double.parseDouble(iftHourField));
 
@@ -254,6 +260,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private void insertHdmsHour() {
+        HdmsHour hdmsHour = new HdmsHour();
+        hdmsHour.setFlightFk(lastFlightSk);
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String hdmsHourField = pilotCardPanel.getHdmsHourField().getText();
 
@@ -263,8 +271,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
 
             // Process the valid IftHourField values
-            HdmsHour hdmsHour = new HdmsHour();
-            hdmsHour.setFlightFk(lastFlightSk);
             hdmsHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             hdmsHour.setHdmsHourQty(Double.parseDouble(hdmsHourField));
 
@@ -273,6 +279,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private void insertInstructorHour() {
+        InstructorHour instructorHour = new InstructorHour();
+        instructorHour.setFlightFk(lastFlightSk);
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String instructorHourField = pilotCardPanel.getInstructorHourField().getText();
 
@@ -282,8 +290,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
 
             // Process the valid IftHourField values
-            InstructorHour instructorHour = new InstructorHour();
-            instructorHour.setFlightFk(lastFlightSk);
             instructorHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             instructorHour.setInstructorHourQty(Double.parseDouble(instructorHourField));
 
@@ -292,6 +298,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private void insertApp() {
+        App app = new App();
+        app.setFlightFk(lastFlightSk);
         // Iterate over all the pilot card panels
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             // Iterate over all app types (Precision, No precision, SAR-N) and corresponding hour fields
@@ -301,8 +309,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
                 // Only insert if the field is not equal to the default value
                 if (!appTypeFieldText.equals(defaultValue)) {
-                    App app = new App();
-                    app.setFlightFk(lastFlightSk);
                     app.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
                     app.setAppTypeFk(appTypeFk);
                     app.setAppQty(Integer.parseInt(appTypeFieldText));
@@ -350,6 +356,50 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         }
     }
 
+    private void insertWtHour() {
+        WtHour wtHour = new WtHour();
+        wtHour.setFlightFk(lastFlightSk);
+
+        for (DvCardPanel dvCardPanel : allDvCardPanels) {
+            String wtHourField = dvCardPanel.getWinchTrimHourField().getText();
+
+            // Skip processing if the iftHourField is "I"
+            if ("W".equals(wtHourField)) {
+                continue;
+            }
+            wtHour.setPersonFk(getForeignKey(dvCardPanel.getCrewBox().getSelectedItem()));
+            wtHour.setWtHourQty(Double.parseDouble(wtHourField));
+            wtHourDAO.insert(wtHour);
+        }
+    }
+
+    private void insertProjectile() {
+        Projectile projectile = new Projectile();
+        projectile.setFlightFk(lastFlightSk);
+
+        for (DvCardPanel dvCardPanel : allDvCardPanels) {
+            String projectileM3MField = dvCardPanel.getM3mField().getText();
+            String projectileMAGField = dvCardPanel.getMagField().getText();
+
+            projectile.setPersonFk(getForeignKey(dvCardPanel.getCrewBox().getSelectedItem()));
+
+            // Process M3M field
+            if (!"P".equals(projectileM3MField)) {
+                projectile.setProjectileTypeFk(1); // 1 points to 7.62 M3M
+                projectile.setProjectileQty(Integer.parseInt(projectileM3MField));
+                projectileDAO.insert(projectile);
+            }
+
+            // Process MAG field
+            if (!"P".equals(projectileMAGField)) {
+                projectile.setProjectileTypeFk(2); // 2 points to 12.7 MAG58
+                projectile.setProjectileQty(Integer.parseInt(projectileMAGField));
+                projectileDAO.insert(projectile);
+            }
+        }
+    }
+
+
     @Override
     public void editEntity() {
         // de momento nada aqui
@@ -369,6 +419,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public void onAddPilotCardViewClicked() {
         view.addExtraPilotCardView();
+    }
+
+    public void onAddExtraPersonBoxClicked() {
+        //view.getSessionCardPanel.addExtraPersonBox();
     }
 
     public void onDeletePilotCardViewClicked() {
@@ -427,6 +481,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getDeletePilotButton().addActionListener(e -> onDeletePilotCardViewClicked());
         view.getCreateDvButton().addActionListener(e -> onAddDvCardViewClicked());
         view.getDeleteDvButton().addActionListener(e -> onDeleteDvCardViewClicked());
+        //view.getSessionCardPanel().getAddExtraPersonButton().addActionListener( e -> onAddExtraPersonBoxClicked()); // TODO
     }
 
     public List<Helo> getHeloList() {
@@ -435,6 +490,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public List<Event> getEventList() {
         return eventDAO.getAll();
+    }
+
+    public List<Person> getAllPersons() {
+        return personDAO.getAll();
     }
 
     public List<Person> getOnlyActualPilots() {

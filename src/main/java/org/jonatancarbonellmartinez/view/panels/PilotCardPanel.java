@@ -47,7 +47,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
     JComboBox pilotBox;
 
-    public PilotCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) { // TODO I have to do another class for DvCardView
+    public PilotCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView; // this way i have access to data like pilotList or dvList, si mas adelante doy con una mejor solucion pues cambialo.
         this.initializeUI();

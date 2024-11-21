@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
 import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
+import org.jonatancarbonellmartinez.view.panels.SessionCardPanel;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -20,6 +21,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private PilotCardPanel pilotCardPanel1, pilotCardPanel2;
     private DvCardPanel dvCardPanel1;
+    private SessionCardPanel sessionCardPanel;
 
     private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
     private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
@@ -39,10 +41,10 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     JButton deletePilotButton;
     JButton deleteDvButton;
 
-    JScrollPane tripulantesScrollPane;
+    JScrollPane tripulantesScrollPane, sessionScrollPanel;
 
     JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel, createTripulantePanel, crewLabelsPanel, crewButtonsPanel;
-
+    JPanel sessionPanel;
     public RegisterFlightDialogView(MainView mainView) {
         super(mainView, "Registrar vuelo");
         this.mainView = mainView;
@@ -69,10 +71,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void createPanels() {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         vueloPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,30,10));
+
         centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         tripulantesPanel = new JPanel();
         tripulantesPanel.setLayout(new BoxLayout(tripulantesPanel, BoxLayout.Y_AXIS));
         tripulantesScrollPane = new JScrollPane(tripulantesPanel);
+        sessionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        sessionPanel.setLayout(new BoxLayout(sessionPanel, BoxLayout.Y_AXIS));
+        sessionScrollPanel = new JScrollPane(sessionPanel);
+
         bottomPanel = new JPanel();
         createTripulantePanel = new JPanel(new FlowLayout(FlowLayout.LEFT,20,20));
         crewLabelsPanel = new JPanel();
@@ -81,6 +88,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         pilotCardPanel1 = new PilotCardPanel(this, presenter);
         pilotCardPanel2 = new PilotCardPanel(this, presenter);
         dvCardPanel1 = new DvCardPanel(this, presenter);
+        sessionCardPanel = new SessionCardPanel(this, presenter);
     }
 
     @Override
@@ -119,14 +127,27 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder2
         ));
 
+        TitledBorder titleBorder3 = new TitledBorder("Sesiones");
+        titleBorder3.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
+
+        sessionScrollPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10, 5, 10, 45),
+                titleBorder3
+        ));
+
         pilotCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         pilotCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         dvCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        sessionCardPanel.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
         tripulantesScrollPane.setPreferredSize(new Dimension(1375, 175));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
+        //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
+
+        sessionScrollPanel.setPreferredSize(new Dimension(1375, 175));
+        sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         createTripulantePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         crewButtonsPanel.setPreferredSize(new Dimension(55, 55));
@@ -161,10 +182,13 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         createTripulantePanel.add(crewButtonsPanel);
 
         centerPanel.add(tripulantesScrollPane);
+        centerPanel.add(sessionScrollPanel);
 
         tripulantesPanel.add(pilotCardPanel1);
         tripulantesPanel.add(pilotCardPanel2);
         tripulantesPanel.add(dvCardPanel1);
+
+        sessionPanel.add(sessionCardPanel);
     }
 
     @Override
@@ -181,6 +205,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void addActionListeners() {
         presenter.setActionListeners();
     }
+
     @Override
     public void createEditModeComponents() {
 
