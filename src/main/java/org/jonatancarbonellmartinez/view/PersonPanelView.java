@@ -89,6 +89,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
         personTable.setToolTipText("Ctrl+C para copiar");
         togglePersonState.setSelected(true); // Initially selected (Active state)
         togglePersonState.setBorder(new EmptyBorder(0, 25, 0, 0));
+
     }
 
     @Override

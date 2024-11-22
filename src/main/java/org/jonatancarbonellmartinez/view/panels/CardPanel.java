@@ -7,6 +7,9 @@ public interface CardPanel {
     Dimension HOUR_FIELD_DIMENSION = new Dimension(40,25);
     Dimension PERSON_BOX_DIMENSION = new Dimension(80,25);
     Dimension SESSION_BOX_DIMENSION = new Dimension(100,25);
+    Dimension SPACE_MIN_SIZE = new Dimension(5,5);
+    Dimension SPACE_PREF_SIZE = new Dimension(5,5);
+    Dimension SPACE_MAX_SIZE = new Dimension(5,5);
 
     JTextField getDayHourField();
     JTextField getNightHourField();

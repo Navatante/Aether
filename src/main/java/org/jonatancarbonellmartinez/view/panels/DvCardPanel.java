@@ -77,7 +77,7 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
 
     @Override
     public void createComponents() {
-        dvBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualDvs()), "DV");
+        dvBox = View.createDynamicComboBox(new Vector<>(presenter.getAllDvsVector()), "DV");
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");

@@ -126,7 +126,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
     @Override
     public void createComponents() {
-        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getOnlyActualPilots()),"PIL");
+        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPilotsVector()),"PIL");
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");

@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
+
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
 import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
@@ -9,6 +10,9 @@ import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Date;
@@ -21,30 +25,29 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private PilotCardPanel pilotCardPanel1, pilotCardPanel2;
     private DvCardPanel dvCardPanel1;
+
     private SessionCardPanel sessionCardPanel;
 
     private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
     private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
 
-    JSpinner dateTimeSpinner;
+    private JSpinner dateTimeSpinner;
 
-    JComboBox heloBox, eventBox;
+    private JComboBox heloBox, eventBox;
 
-    JTextField totalHoursField;
+    private JTextField totalHoursField;
 
-    JLabel pilotoLabel, dotacionLaebl;
+    private JButton saveButton;
 
-    JButton saveButton;
-    JButton createPilotButton;
+    private JScrollPane tripulantesScrollPane, sessionScrollPanel;
 
-    JButton createDvButton;
-    JButton deletePilotButton;
-    JButton deleteDvButton;
+    private JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel;
+    private JPanel sessionPanel;
 
-    JScrollPane tripulantesScrollPane, sessionScrollPanel;
+    JPopupMenu personPopupMenu;
 
-    JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel, createTripulantePanel, crewLabelsPanel, crewButtonsPanel;
-    JPanel sessionPanel;
+    JMenuItem addPilotItem, deletePilotItem, addDvItem, deleteDvItem;
+
     public RegisterFlightDialogView(MainView mainView) {
         super(mainView, "Registrar vuelo");
         this.mainView = mainView;
@@ -81,10 +84,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         sessionScrollPanel = new JScrollPane(sessionPanel);
 
         bottomPanel = new JPanel();
-        createTripulantePanel = new JPanel(new FlowLayout(FlowLayout.LEFT,20,20));
-        crewLabelsPanel = new JPanel();
-        crewLabelsPanel.setLayout(new BoxLayout(crewLabelsPanel, BoxLayout.Y_AXIS));
-        crewButtonsPanel = new JPanel(new GridLayout(2, 3,15,15));
         pilotCardPanel1 = new PilotCardPanel(this, presenter);
         pilotCardPanel2 = new PilotCardPanel(this, presenter);
         dvCardPanel1 = new DvCardPanel(this, presenter);
@@ -94,18 +93,21 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     @Override
     public void createComponents() {
         dateTimeSpinner = new JSpinner(new SpinnerDateModel(new Date(), null, null, java.util.Calendar.MINUTE));
+
         heloBox = View.createDynamicComboBox(new Vector<>(presenter.getHeloList()),"Helicóptero");
         eventBox = View.createDynamicComboBox(new Vector<>(presenter.getEventList()),"Evento");
         totalHoursField = View.createTextField("Horas totales",4,13);
         saveButton = new JButton("Guardar");
-        pilotoLabel = new JLabel("Piloto");
-        createPilotButton = new JButton("+");
-        deletePilotButton = new JButton("-");
-        dotacionLaebl = new JLabel("Dotación");
-        createDvButton = new JButton("+");
-        deleteDvButton = new JButton("-");
+
         extraPilotCardPanelDeque = new ArrayDeque<>();
         extraDvCardPanelDeque = new ArrayDeque<>();
+
+        personPopupMenu = new JPopupMenu();
+
+        addPilotItem = new JMenuItem("Añadir piloto");
+        deletePilotItem = new JMenuItem("Eliminar piloto");
+        addDvItem = new JMenuItem("Añadir dotación");
+        deleteDvItem = new JMenuItem("Eliminar dotación");
     }
 
     @Override
@@ -140,19 +142,35 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         dvCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         sessionCardPanel.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
-        tripulantesScrollPane.setPreferredSize(new Dimension(1375, 175));
+        tripulantesScrollPane.setPreferredSize(new Dimension(1305, 175));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
 
-        sessionScrollPanel.setPreferredSize(new Dimension(1375, 175));
+        sessionScrollPanel.setPreferredSize(new Dimension(1305, 175));
         sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        createTripulantePanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        crewButtonsPanel.setPreferredSize(new Dimension(55, 55));
-
         pilotCardPanel1.getCrewBox().setToolTipText("Comandante de Aeronave");
+
+        vueloPanel.setPreferredSize(new Dimension(1360,100));
+
+        // Añadir un MouseListener al panel para detectar clic derecho
+        tripulantesScrollPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    personPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    personPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     @Override
@@ -177,9 +195,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 
         topPanel.add(vueloPanel);
-        topPanel.add(createTripulantePanel);
-        createTripulantePanel.add(crewLabelsPanel);
-        createTripulantePanel.add(crewButtonsPanel);
 
         centerPanel.add(tripulantesScrollPane);
         centerPanel.add(sessionScrollPanel);
@@ -189,16 +204,17 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         tripulantesPanel.add(dvCardPanel1);
 
         sessionPanel.add(sessionCardPanel);
+
+        personPopupMenu.add(addPilotItem);
+        personPopupMenu.add(deletePilotItem);
+        personPopupMenu.add(addDvItem);
+        personPopupMenu.add(deleteDvItem);
     }
 
     @Override
     public void assembleComponents() {
         View.addComponentsToPanel(vueloPanel,dateTimeSpinner, heloBox, eventBox, totalHoursField);
-        View.addComponentsToPanel(crewButtonsPanel,createPilotButton,deletePilotButton, createDvButton, deleteDvButton);
         View.addComponentsToPanel(bottomPanel,saveButton);
-        crewLabelsPanel.add(pilotoLabel);
-        crewLabelsPanel.add(Box.createVerticalStrut(10));
-        crewLabelsPanel.add(dotacionLaebl);
     }
 
     @Override
@@ -309,22 +325,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         return saveButton;
     }
 
-    public JButton getCreatePilotButton() {
-        return createPilotButton;
-    }
-
-    public JButton getDeletePilotButton() {
-        return deletePilotButton;
-    }
-
-    public JButton getCreateDvButton() {
-        return createDvButton;
-    }
-
-    public JButton getDeleteDvButton() {
-        return deleteDvButton;
-    }
-
     public PilotCardPanel getPilotCardPanel1() {
         return pilotCardPanel1;
     }
@@ -343,5 +343,33 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     public ArrayDeque<DvCardPanel> getExtraDvCardPanelDeque() {
         return extraDvCardPanelDeque;
+    }
+
+    public SessionCardPanel getSessionCardPanel() {
+        return sessionCardPanel;
+    }
+
+    public JMenuItem getAddPilotItem() {
+        return addPilotItem;
+    }
+
+    public JMenuItem getDeletePilotItem() {
+        return deletePilotItem;
+    }
+
+    public JMenuItem getAddDvItem() {
+        return addDvItem;
+    }
+
+    public JMenuItem getDeleteDvItem() {
+        return deleteDvItem;
+    }
+
+    public JScrollPane getTripulantesScrollPane() {
+        return tripulantesScrollPane;
+    }
+
+    public JPopupMenu getPersonPopupMenu() {
+        return personPopupMenu;
     }
 }

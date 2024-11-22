@@ -12,12 +12,11 @@ import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
@@ -38,9 +37,11 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private int lastFlightSk;
 
-    ArrayList<CardPanel> allCrewCardPanels;
-    ArrayList<PilotCardPanel> allPilotCardPanels;
-    ArrayList<DvCardPanel> allDvCardPanels;
+    private ArrayList<CardPanel> allCrewCardPanels;
+    private ArrayList<PilotCardPanel> allPilotCardPanels;
+    private ArrayList<DvCardPanel> allDvCardPanels;
+
+    private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector;
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -56,6 +57,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.landingDAO = DAOFactorySQLite.getInstance().createLandingDAO();
         this.wtHourDAO = DAOFactorySQLite.getInstance().createWtHourDAO();
         this.projectileDAO = DAOFactorySQLite.getInstance().createProjectileDAO();
+        createVectorsOfPersons();
         this.observer = observer;
     }
 
@@ -417,23 +419,27 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         }
     }
 
-    public void onAddPilotCardViewClicked() {
+    public void onAddExtraPersonBoxClicked() {
+        view.getSessionCardPanel().addExtraPersonBox();
+    }
+
+    public void onDeleteExtraPersonBoxClicked() {
+        view.getSessionCardPanel().deleteExtraPersonBox();
+    }
+
+    public void onAddPilotoItemClicked() {
         view.addExtraPilotCardView();
     }
 
-    public void onAddExtraPersonBoxClicked() {
-        //view.getSessionCardPanel.addExtraPersonBox();
-    }
-
-    public void onDeletePilotCardViewClicked() {
+    public void onDeletePilotoItemClicked() {
         view.deleteExtraPilotCardView();
     }
 
-    public void onAddDvCardViewClicked() {
-        view.addExtraDvCardView();
+    public void onAddDvItemClicked() {
+       view.addExtraDvCardView();
     }
 
-    public void onDeleteDvCardViewClicked() {
+    public void onDeleteDvItemClicked() {
         view.deleteExtraDvCardView();
     }
 
@@ -477,11 +483,13 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     @Override
     public void setActionListeners() {
         view.getSaveButton().addActionListener(e -> onSaveButtonClicked());
-        view.getCreatePilotButton().addActionListener(e -> onAddPilotCardViewClicked());
-        view.getDeletePilotButton().addActionListener(e -> onDeletePilotCardViewClicked());
-        view.getCreateDvButton().addActionListener(e -> onAddDvCardViewClicked());
-        view.getDeleteDvButton().addActionListener(e -> onDeleteDvCardViewClicked());
-        //view.getSessionCardPanel().getAddExtraPersonButton().addActionListener( e -> onAddExtraPersonBoxClicked()); // TODO
+        view.getSessionCardPanel().getAddPersonButton().addActionListener( e -> onAddExtraPersonBoxClicked());
+        view.getSessionCardPanel().getDeletePersonButton().addActionListener( e -> onDeleteExtraPersonBoxClicked());
+        view.getAddPilotItem().addActionListener( e -> onAddPilotoItemClicked());
+        view.getDeletePilotItem().addActionListener( e -> onDeletePilotoItemClicked());
+        view.getAddDvItem().addActionListener( e -> onAddDvItemClicked());
+        view.getDeleteDvItem().addActionListener( e -> onDeleteDvItemClicked());
+
     }
 
     public List<Helo> getHeloList() {
@@ -798,5 +806,22 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
+    public void createVectorsOfPersons() {
+        allPersonsVector = new Vector<>(getAllPersons());
+        allPilotsVector = new Vector<>(getOnlyActualPilots());
+        allDvsVector = new Vector<>(getOnlyActualDvs());
 
+    }
+
+    public Vector<Entity> getAllPilotsVector() {
+        return allPilotsVector;
+    }
+
+    public Vector<Entity> getAllDvsVector() {
+        return allDvsVector;
+    }
+
+    public Vector<Entity> getAllPersonsVector() {
+        return allPersonsVector;
+    }
 }
