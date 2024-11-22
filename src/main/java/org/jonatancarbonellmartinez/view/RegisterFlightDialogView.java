@@ -65,7 +65,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(1350,900);
+        setSize(1280,900);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -73,7 +73,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     @Override
     public void createPanels() {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        vueloPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,30,10));
+        vueloPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,30,10)); // TODO Centrar titulo y contenido maybe.
 
         centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         tripulantesPanel = new JPanel();
