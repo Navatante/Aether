@@ -77,6 +77,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             collectCrewCardPanels();
             collectPilotCardPanels();
             collectDvCardPanels();
+            collectSessionCardPanels();
             insertPersonHour();
             insertIftHour();
             insertHdmsHour();
@@ -131,7 +132,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         allDvCardPanels.addAll(view.getExtraDvCardPanelDeque());
     }
 
-    private void collectSessionCardPaensl() {
+    private void collectSessionCardPanels() {
         allSessionCardPanels = new ArrayList<>();
 
         allSessionCardPanels.add(view.getSessionCardPanel());
@@ -426,14 +427,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         if (isFormValid()) {
             insertEntity();
         }
-    }
-
-    public void onAddExtraPersonBoxClicked() {
-        view.getSessionCardPanel().addExtraPersonBox();
-    }
-
-    public void onDeleteExtraPersonBoxClicked() {
-        view.getSessionCardPanel().deleteExtraPersonBox();
     }
 
     public void onAddPilotoItemClicked() {
