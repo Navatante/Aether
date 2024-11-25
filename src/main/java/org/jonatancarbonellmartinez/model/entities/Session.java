@@ -18,10 +18,14 @@ public class Session implements Entity {
 
     @Override
     public String toString() {
-        return String.valueOf(sessionSk);
+        return sessionNk;
     }
 
     // Getters and Setters
+    public void setSessionSk(int sessionSk) {
+        this.sessionSk = sessionSk;
+    }
+
     public String getSessionNk() {
         return sessionNk;
     }

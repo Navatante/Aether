@@ -12,8 +12,6 @@ import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
 
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -32,6 +30,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final LandingDAOSqlite landingDAO;
     private final WtHourDAOSqlite wtHourDAO;
     private final ProjectileDAOSqlite projectileDAO;
+    private final SessionDAOSqlite sessionDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
@@ -41,7 +40,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private ArrayList<PilotCardPanel> allPilotCardPanels;
     private ArrayList<DvCardPanel> allDvCardPanels;
 
-    private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector;
+    private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector;
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -57,7 +56,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.landingDAO = DAOFactorySQLite.getInstance().createLandingDAO();
         this.wtHourDAO = DAOFactorySQLite.getInstance().createWtHourDAO();
         this.projectileDAO = DAOFactorySQLite.getInstance().createProjectileDAO();
-        createVectorsOfPersons();
+        this.sessionDAO = DAOFactorySQLite.getInstance().createSessionDAO();
+        createVectors();
         this.observer = observer;
     }
 
@@ -443,6 +443,22 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.deleteExtraDvCardView();
     }
 
+    public void onAddPersonItemClicked() {
+        view.getSessionCardPanel().addExtraPersonBox();
+    }
+
+    public void onDeletePersonItemClicked() {
+        view.getSessionCardPanel().deleteExtraPersonBox();
+    }
+
+    public void onAddSessionItemClicked() {
+        view.getSessionCardPanel().addExtraSessionBox();
+    }
+
+    public void onDeleteSessionItemClicked() {
+        view.getSessionCardPanel().deleteExtraSessionBox();
+    }
+
     @Override
     public Entity collectEntityData() { // TODO this will be the method who will manage all CollectXData method created in the methods below.
         // Maybe simply i just dont need it.
@@ -483,13 +499,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     @Override
     public void setActionListeners() {
         view.getSaveButton().addActionListener(e -> onSaveButtonClicked());
-        view.getSessionCardPanel().getAddPersonButton().addActionListener( e -> onAddExtraPersonBoxClicked());
-        view.getSessionCardPanel().getDeletePersonButton().addActionListener( e -> onDeleteExtraPersonBoxClicked());
         view.getAddPilotItem().addActionListener( e -> onAddPilotoItemClicked());
         view.getDeletePilotItem().addActionListener( e -> onDeletePilotoItemClicked());
         view.getAddDvItem().addActionListener( e -> onAddDvItemClicked());
         view.getDeleteDvItem().addActionListener( e -> onDeleteDvItemClicked());
-
+        view.getSessionCardPanel().getAddPersonItem().addActionListener(e -> onAddPersonItemClicked());
+        view.getSessionCardPanel().getDeletePersonItem().addActionListener(e -> onDeletePersonItemClicked());
+        view.getSessionCardPanel().getAddSessionItem().addActionListener(e -> onAddSessionItemClicked());
+        view.getSessionCardPanel().getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
     }
 
     public List<Helo> getHeloList() {
@@ -510,6 +527,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public List<Person> getOnlyActualDvs() {
         return  personDAO.getOnlyActualDvs();
+    }
+
+    public List<Session> getAllSessions() {
+        return sessionDAO.getAll();
     }
 
     private boolean isVueloCardValid() {
@@ -806,10 +827,11 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    public void createVectorsOfPersons() {
+    public void createVectors() {
         allPersonsVector = new Vector<>(getAllPersons());
         allPilotsVector = new Vector<>(getOnlyActualPilots());
         allDvsVector = new Vector<>(getOnlyActualDvs());
+        allSessionsVector =  new Vector<>(getAllSessions());
 
     }
 
@@ -823,5 +845,9 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public Vector<Entity> getAllPersonsVector() {
         return allPersonsVector;
+    }
+
+    public Vector<Entity> getAllSessionsVector() {
+        return allSessionsVector;
     }
 }

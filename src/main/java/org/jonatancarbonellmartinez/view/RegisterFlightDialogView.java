@@ -147,7 +147,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
 
-        sessionScrollPanel.setPreferredSize(new Dimension(1305, 175));
+        sessionScrollPanel.setPreferredSize(new Dimension(395, 175));
         sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -207,6 +207,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         personPopupMenu.add(addPilotItem);
         personPopupMenu.add(deletePilotItem);
+        personPopupMenu.addSeparator();
         personPopupMenu.add(addDvItem);
         personPopupMenu.add(deleteDvItem);
     }

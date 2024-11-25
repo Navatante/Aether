@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,11 +53,35 @@ public class SessionDAOSqlite implements GenericDAO<Session, Integer> { // TODO 
 
     @Override
     public List<Session> getAll() throws DatabaseException {
-        return Collections.emptyList();
+        String sql = "SELECT * FROM dim_session ORDER BY session_nk";
+        List<Session> sessionList = new ArrayList<>();
+
+        // Obtain a new connection each time the method is called
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                sessionList.add( (Session)mapResultSetToEntity(rs) );
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a las sesiones", e);
+        }
+
+        return sessionList;
     }
 
     @Override
     public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {
-        return null;
+        Session session = new Session();
+        session.setSessionSk(rs.getInt("session_sk"));
+        session.setSessionNk(rs.getString("session_nk"));
+        session.setSessionDv(rs.getString("session_dv"));
+        session.setSessionName(rs.getString("session_name"));
+        session.setSessionType(rs.getString("session_type"));
+        session.setSessionSubType(rs.getString("session_subtype"));
+        session.setCapba(rs.getString("session_CAPBA"));
+        session.setCrpValue(rs.getDouble("session_crp_value"));
+        session.setExpiration(rs.getInt("session_expiration"));
+        return session;
     }
 }

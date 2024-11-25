@@ -5,8 +5,9 @@ import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayDeque;
 import java.util.Vector;
 
@@ -15,24 +16,19 @@ public class SessionCardPanel extends JPanel implements View {
     private RegisterFlightPresenter presenter;
     private RegisterFlightDialogView registerFlightDialogView;
 
-    private JPanel mainPanel, personMainPanel, personBoxesPanel, personAddDeletePanel, sessionMainPanel, sessionBoxesPanel, sessionAddDeletePanel;
-    private JScrollPane personScrollPane;
+    private JPanel mainPanel, personMainPanel, personBoxesPanel, sessionMainPanel, sessionBoxesPanel;
+    private JScrollPane personScrollPanel, sessionScrollPanel;
 
     private JComboBox personBox, sessionBox;
 
-    private JButton addPersonButton;
+    JPopupMenu sessionPopupMenu;
 
-    private JButton deletePersonButton;
-    private JButton addSessionButton;
-    private JButton deleteSessionButton;
+    JMenuItem addGroupItem, deleteGroupItem, addPersonItem, deletePersonItem, addSessionItem, deleteSessionItem;
 
-    JPopupMenu personPopupMenu; // TODO quitar los botones de + y - y meter el menu contextual.
-
-    JMenuItem addPersonItem, deletePersonItem; // TODO quitar los botones de + y - y meter el menu contextual.
-
-    private ArrayDeque<JComboBox> extraPersonBoxesDeque; // TODO the method that delete boxes from the deque, should left inside the first one. (ir borrando todas menos la primera.)
+    private ArrayDeque<JComboBox> extraPersonBoxesDeque;
     private ArrayDeque<JComboBox> extraSessionBoxesDeque;
     private ArrayDeque<Box.Filler> extraPersonBoxFillersDeque;
+    private ArrayDeque<Box.Filler> extraSessionBoxFillersDeque;
 
     public SessionCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
@@ -57,13 +53,18 @@ public class SessionCardPanel extends JPanel implements View {
         personBoxesPanel = new JPanel();
         personBoxesPanel.setLayout(new BoxLayout(personBoxesPanel, BoxLayout.Y_AXIS));
 
-        personScrollPane = new JScrollPane(personBoxesPanel,
+        personScrollPanel = new JScrollPane(personBoxesPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        personAddDeletePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        sessionBoxesPanel = new JPanel(new GridLayout(3,4,10,10));
-        sessionAddDeletePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        sessionBoxesPanel = new JPanel();
+        sessionBoxesPanel.setLayout(new BoxLayout(sessionBoxesPanel, BoxLayout.Y_AXIS));
+
+        sessionScrollPanel = new JScrollPane(sessionBoxesPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
     }
 
     @Override
@@ -71,38 +72,60 @@ public class SessionCardPanel extends JPanel implements View {
         extraPersonBoxesDeque = new ArrayDeque<>();
         extraSessionBoxesDeque = new ArrayDeque<>();
         extraPersonBoxFillersDeque = new ArrayDeque<>();
+        extraSessionBoxFillersDeque = new ArrayDeque<>();
 
         personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"PER");
         extraPersonBoxesDeque.add(personBox);
 
-        addPersonButton = new JButton("+");
-        deletePersonButton = new JButton("-");
-        addSessionButton = new JButton("+");
-        deleteSessionButton = new JButton("-");
+        sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()), "Sesión");
+        extraSessionBoxesDeque.add(sessionBox);
 
-        // TODO uncomment the line below when session entity and corresponding methods are created.
-        //sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessions()), "Sesión");
+        sessionPopupMenu = new JPopupMenu();
+
+        addGroupItem = new JMenuItem("Añadir grupo");
+        deleteGroupItem = new JMenuItem("Eliminar grupo");
+        addPersonItem = new JMenuItem("Añadir persona");
+        deletePersonItem = new JMenuItem("Eliminar persona");
+        addSessionItem = new JMenuItem("Añadir sesión");
+        deleteSessionItem = new JMenuItem("Eliminar sesión");
     }
 
     @Override
     public void configurePanels() {
-        personAddDeletePanel.setPreferredSize(new Dimension(40,100));
-        sessionAddDeletePanel.setPreferredSize(new Dimension(30,100));
-
         personMainPanel.setPreferredSize(new Dimension(130, 100));
-        sessionMainPanel.setPreferredSize(new Dimension(200, 100));
-        personScrollPane.setPreferredSize(new Dimension(100, 100));
+        personScrollPanel.setPreferredSize(new Dimension(100, 100));
+        sessionMainPanel.setPreferredSize(new Dimension(200, 100)); // TODO adapt sizes
+        sessionScrollPanel.setPreferredSize(new Dimension(170, 100)); // TODO adapt sizes
 
-        personAddDeletePanel.setBorder(new EmptyBorder(0,15,0,0));
+        // Añadir un MouseListener al panel para detectar clic derecho
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(personBox);
+        View.setInitialComboBoxLook(sessionBox);
 
         personBox.setMaximumSize(CardPanel.PERSON_BOX_DIMENSION);
         personBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //View.setPreferredSizeForComponents(CardPanel.SESSION_BOX_DIMENSION, sessionBox);
+
+        sessionBox.setMaximumSize(CardPanel.SESSION_BOX_DIMENSION);
+        sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     }
 
     @Override
@@ -111,30 +134,31 @@ public class SessionCardPanel extends JPanel implements View {
         mainPanel.add(personMainPanel, BorderLayout.WEST);
         mainPanel.add(sessionMainPanel,BorderLayout.EAST);
 
-        personScrollPane.setViewportView(personBoxesPanel);
-        personMainPanel.add(personScrollPane, BorderLayout.WEST);
-        personMainPanel.add(personAddDeletePanel, BorderLayout.EAST);
+        personScrollPanel.setViewportView(personBoxesPanel);
+        personMainPanel.add(personScrollPanel, BorderLayout.WEST); // TODO maybe a borderlayour is not necessary
 
+        sessionScrollPanel.setViewportView(sessionBoxesPanel);
+        sessionMainPanel.add(sessionScrollPanel, BorderLayout.WEST); // TODO maybe a borderlayour is not necessary
 
-        sessionMainPanel.add(sessionBoxesPanel, BorderLayout.WEST);
-        sessionMainPanel.add(sessionAddDeletePanel, BorderLayout.EAST);
-
-
+        sessionPopupMenu.add(addGroupItem);
+        sessionPopupMenu.add(deleteGroupItem);
+        sessionPopupMenu.addSeparator();
+        sessionPopupMenu.add(addPersonItem);
+        sessionPopupMenu.add(deletePersonItem);
+        sessionPopupMenu.addSeparator();
+        sessionPopupMenu.add(addSessionItem);
+        sessionPopupMenu.add(deleteSessionItem);
     }
 
     @Override
     public void assembleComponents() {
-        personAddDeletePanel.add(addPersonButton);
-        personAddDeletePanel.add(deletePersonButton);
-
-        sessionAddDeletePanel.add(addSessionButton);
-        sessionAddDeletePanel.add(deleteSessionButton);
-
         personBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
         personBoxesPanel.add(personBox);
         personBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
 
-        //sessionBoxesPanel.add(sessionBox);
+        sessionBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
+        sessionBoxesPanel.add(sessionBox);
+        sessionBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
     }
 
     public void addExtraPersonBox() {
@@ -175,6 +199,44 @@ public class SessionCardPanel extends JPanel implements View {
         }
     }
 
+    public void addExtraSessionBox() {
+        if(extraSessionBoxesDeque.size()<6) { // I limit the addition of personBoxes to 6
+            JComboBox sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()),"Sesión");
+            View.setInitialComboBoxLook(sessionBox);
+            sessionBox.setMaximumSize(CardPanel.SESSION_BOX_DIMENSION);
+            sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+            sessionBoxesPanel.add(sessionBox);
+            extraSessionBoxesDeque.add(sessionBox);
+            Box.Filler boxFiller = new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE);
+            sessionBoxesPanel.add(boxFiller);
+            extraSessionBoxFillersDeque.add(boxFiller);
+            // Ensure the UI updates to reflect the added component
+            sessionBoxesPanel.revalidate();
+            sessionBoxesPanel.repaint();
+        }
+    }
+
+    public void deleteExtraSessionBox() {
+        // Ensure there are more than one item in the deque
+        if (extraSessionBoxesDeque.size() > 1) {
+            // Get and remove the last JComboBox added (but not the first one)
+            JComboBox lastSessionBox = extraSessionBoxesDeque.removeLast();
+
+            // Remove the JComboBox from the panel
+            sessionBoxesPanel.remove(lastSessionBox);
+
+            // If there are fillers associated, remove the last filler
+            if (!extraSessionBoxFillersDeque.isEmpty()) {
+                Box.Filler lastFiller = extraSessionBoxFillersDeque.removeLast();
+                sessionBoxesPanel.remove(lastFiller);
+            }
+
+            // Revalidate and repaint to reflect the changes
+            sessionBoxesPanel.revalidate();
+            sessionBoxesPanel.repaint();
+        }
+    }
+
 
     @Override
     public void addActionListeners() {
@@ -182,11 +244,19 @@ public class SessionCardPanel extends JPanel implements View {
     }
 
     // Getters
-    public JButton getAddPersonButton() {
-        return addPersonButton;
+    public JMenuItem getAddPersonItem() {
+        return addPersonItem;
     }
 
-    public JButton getDeletePersonButton() {
-        return deletePersonButton;
+    public JMenuItem getDeletePersonItem() {
+        return deletePersonItem;
+    }
+
+    public JMenuItem getAddSessionItem() {
+        return addSessionItem;
+    }
+
+    public JMenuItem getDeleteSessionItem() {
+        return deleteSessionItem;
     }
 }
