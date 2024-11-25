@@ -10,6 +10,7 @@ import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.panels.CardPanel;
 import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
 import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
+import org.jonatancarbonellmartinez.view.panels.SessionCardPanel;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -39,6 +40,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private ArrayList<CardPanel> allCrewCardPanels;
     private ArrayList<PilotCardPanel> allPilotCardPanels;
     private ArrayList<DvCardPanel> allDvCardPanels;
+    private ArrayList<SessionCardPanel> allSessionCardPanels;
 
     private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector;
 
@@ -127,6 +129,13 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
         allDvCardPanels.add(view.getDvCardPanel1());
         allDvCardPanels.addAll(view.getExtraDvCardPanelDeque());
+    }
+
+    private void collectSessionCardPaensl() {
+        allSessionCardPanels = new ArrayList<>();
+
+        allSessionCardPanels.add(view.getSessionCardPanel());
+        allSessionCardPanels.addAll(view.getExtraSessionCardPanelDeque());
     }
 
     public void insertPersonHour() {
@@ -459,6 +468,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getSessionCardPanel().deleteExtraSessionBox();
     }
 
+    public void onAddGroupItemClicked() {
+        view.addExtraSessionCardView();
+    }
+
+    public void onDeleteGroupItemClicked() {
+        view.deleteExtraSessionCardView();
+    }
+
     @Override
     public Entity collectEntityData() { // TODO this will be the method who will manage all CollectXData method created in the methods below.
         // Maybe simply i just dont need it.
@@ -503,10 +520,12 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getDeletePilotItem().addActionListener( e -> onDeletePilotoItemClicked());
         view.getAddDvItem().addActionListener( e -> onAddDvItemClicked());
         view.getDeleteDvItem().addActionListener( e -> onDeleteDvItemClicked());
-        view.getSessionCardPanel().getAddPersonItem().addActionListener(e -> onAddPersonItemClicked());
-        view.getSessionCardPanel().getDeletePersonItem().addActionListener(e -> onDeletePersonItemClicked());
-        view.getSessionCardPanel().getAddSessionItem().addActionListener(e -> onAddSessionItemClicked());
-        view.getSessionCardPanel().getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
+        view.getAddPersonItem().addActionListener(e -> onAddPersonItemClicked());
+        view.getDeletePersonItem().addActionListener(e -> onDeletePersonItemClicked());
+        view.getAddSessionItem().addActionListener(e -> onAddSessionItemClicked());
+        view.getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
+        view.getAddGroupItem().addActionListener(e -> onAddGroupItemClicked());
+        view.getDeleteGroupItem().addActionListener(e -> onDeleteGroupItemClicked());
     }
 
     public List<Helo> getHeloList() {

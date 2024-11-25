@@ -21,10 +21,6 @@ public class SessionCardPanel extends JPanel implements View {
 
     private JComboBox personBox, sessionBox;
 
-    JPopupMenu sessionPopupMenu;
-
-    JMenuItem addGroupItem, deleteGroupItem, addPersonItem, deletePersonItem, addSessionItem, deleteSessionItem;
-
     private ArrayDeque<JComboBox> extraPersonBoxesDeque;
     private ArrayDeque<JComboBox> extraSessionBoxesDeque;
     private ArrayDeque<Box.Filler> extraPersonBoxFillersDeque;
@@ -79,15 +75,6 @@ public class SessionCardPanel extends JPanel implements View {
 
         sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()), "Sesión");
         extraSessionBoxesDeque.add(sessionBox);
-
-        sessionPopupMenu = new JPopupMenu();
-
-        addGroupItem = new JMenuItem("Añadir grupo");
-        deleteGroupItem = new JMenuItem("Eliminar grupo");
-        addPersonItem = new JMenuItem("Añadir persona");
-        deletePersonItem = new JMenuItem("Eliminar persona");
-        addSessionItem = new JMenuItem("Añadir sesión");
-        deleteSessionItem = new JMenuItem("Eliminar sesión");
     }
 
     @Override
@@ -96,23 +83,6 @@ public class SessionCardPanel extends JPanel implements View {
         personScrollPanel.setPreferredSize(new Dimension(100, 100));
         sessionMainPanel.setPreferredSize(new Dimension(200, 100)); // TODO adapt sizes
         sessionScrollPanel.setPreferredSize(new Dimension(170, 100)); // TODO adapt sizes
-
-        // Añadir un MouseListener al panel para detectar clic derecho
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
-                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
-                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
     }
 
     @Override
@@ -140,14 +110,6 @@ public class SessionCardPanel extends JPanel implements View {
         sessionScrollPanel.setViewportView(sessionBoxesPanel);
         sessionMainPanel.add(sessionScrollPanel, BorderLayout.WEST); // TODO maybe a borderlayour is not necessary
 
-        sessionPopupMenu.add(addGroupItem);
-        sessionPopupMenu.add(deleteGroupItem);
-        sessionPopupMenu.addSeparator();
-        sessionPopupMenu.add(addPersonItem);
-        sessionPopupMenu.add(deletePersonItem);
-        sessionPopupMenu.addSeparator();
-        sessionPopupMenu.add(addSessionItem);
-        sessionPopupMenu.add(deleteSessionItem);
     }
 
     @Override
@@ -241,22 +203,5 @@ public class SessionCardPanel extends JPanel implements View {
     @Override
     public void addActionListeners() {
 
-    }
-
-    // Getters
-    public JMenuItem getAddPersonItem() {
-        return addPersonItem;
-    }
-
-    public JMenuItem getDeletePersonItem() {
-        return deletePersonItem;
-    }
-
-    public JMenuItem getAddSessionItem() {
-        return addSessionItem;
-    }
-
-    public JMenuItem getDeleteSessionItem() {
-        return deleteSessionItem;
     }
 }

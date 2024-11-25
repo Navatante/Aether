@@ -31,6 +31,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
     private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
 
+    private ArrayDeque<SessionCardPanel> extraSessionCardPanelDeque;
+
     private JSpinner dateTimeSpinner;
 
     private JComboBox heloBox, eventBox;
@@ -44,9 +46,9 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel;
     private JPanel sessionPanel;
 
-    JPopupMenu personPopupMenu;
+    JPopupMenu personPopupMenu, sessionPopupMenu;
 
-    JMenuItem addPilotItem, deletePilotItem, addDvItem, deleteDvItem;
+    JMenuItem addPilotItem, deletePilotItem, addDvItem, deleteDvItem, addGroupItem, deleteGroupItem, addPersonItem, deletePersonItem, addSessionItem, deleteSessionItem;
 
     public RegisterFlightDialogView(MainView mainView) {
         super(mainView, "Registrar vuelo");
@@ -101,6 +103,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         extraPilotCardPanelDeque = new ArrayDeque<>();
         extraDvCardPanelDeque = new ArrayDeque<>();
+        extraSessionCardPanelDeque = new ArrayDeque<>();
 
         personPopupMenu = new JPopupMenu();
 
@@ -108,6 +111,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         deletePilotItem = new JMenuItem("Eliminar piloto");
         addDvItem = new JMenuItem("Añadir dotación");
         deleteDvItem = new JMenuItem("Eliminar dotación");
+
+        sessionPopupMenu = new JPopupMenu();
+
+        addGroupItem = new JMenuItem("Añadir grupo");
+        deleteGroupItem = new JMenuItem("Eliminar grupo");
+        addPersonItem = new JMenuItem("Añadir persona");
+        deletePersonItem = new JMenuItem("Eliminar persona");
+        addSessionItem = new JMenuItem("Añadir sesión");
+        deleteSessionItem = new JMenuItem("Eliminar sesión");
     }
 
     @Override
@@ -147,7 +159,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
 
-        sessionScrollPanel.setPreferredSize(new Dimension(395, 175));
+        sessionScrollPanel.setPreferredSize(new Dimension(395, 168));
         sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -168,6 +180,23 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) { // Verificar si es un clic derecho
                     personPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+
+        // Añadir un MouseListener al panel para detectar clic derecho
+        sessionScrollPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    sessionPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -210,6 +239,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         personPopupMenu.addSeparator();
         personPopupMenu.add(addDvItem);
         personPopupMenu.add(deleteDvItem);
+
+        sessionPopupMenu.add(addGroupItem);
+        sessionPopupMenu.add(deleteGroupItem);
+        sessionPopupMenu.addSeparator();
+        sessionPopupMenu.add(addPersonItem);
+        sessionPopupMenu.add(deletePersonItem);
+        sessionPopupMenu.addSeparator();
+        sessionPopupMenu.add(addSessionItem);
+        sessionPopupMenu.add(deleteSessionItem);
     }
 
     @Override
@@ -270,6 +308,16 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         tripulantesPanel.repaint();
     }
 
+    public void addExtraSessionCardView() {
+        SessionCardPanel sessionCardPanel = new SessionCardPanel(this, presenter);
+        sessionCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        sessionPanel.add(sessionCardPanel);
+        extraSessionCardPanelDeque.add(sessionCardPanel);
+        // Ensure the UI updates to reflect the added component
+        sessionPanel.revalidate();
+        sessionPanel.repaint();
+    }
+
     public void deleteExtraPilotCardView() {
         if (!extraPilotCardPanelDeque.isEmpty()) {
             // Get and remove the last added PilotCardView from the Deque
@@ -296,6 +344,20 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 tripulantesPanel.revalidate();
                 tripulantesPanel.repaint();
             }
+    }
+
+    public void deleteExtraSessionCardView() {
+        if (!extraSessionCardPanelDeque.isEmpty()) {
+            // Get and remove the last added PilotCardView from the Deque
+            SessionCardPanel lastSessionCardPanel = extraSessionCardPanelDeque.removeLast();
+
+            // Remove it from the panel
+            sessionPanel.remove(lastSessionCardPanel);
+
+            // Revalidate and repaint the panel to reflect the changes
+            sessionPanel.revalidate();
+            sessionPanel.repaint();
+        }
     }
 
     // GETTERS
@@ -372,5 +434,33 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     public JPopupMenu getPersonPopupMenu() {
         return personPopupMenu;
+    }
+
+    public ArrayDeque<SessionCardPanel> getExtraSessionCardPanelDeque() {
+        return extraSessionCardPanelDeque;
+    }
+
+    public JMenuItem getAddGroupItem() {
+        return addGroupItem;
+    }
+
+    public JMenuItem getDeleteGroupItem() {
+        return deleteGroupItem;
+    }
+
+    public JMenuItem getAddPersonItem() {
+        return addPersonItem;
+    }
+
+    public JMenuItem getDeletePersonItem() {
+        return deletePersonItem;
+    }
+
+    public JMenuItem getAddSessionItem() {
+        return addSessionItem;
+    }
+
+    public JMenuItem getDeleteSessionItem() {
+        return deleteSessionItem;
     }
 }
