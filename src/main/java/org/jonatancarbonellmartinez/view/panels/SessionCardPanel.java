@@ -70,7 +70,7 @@ public class SessionCardPanel extends JPanel implements View {
         extraPersonBoxFillersDeque = new ArrayDeque<>();
         extraSessionBoxFillersDeque = new ArrayDeque<>();
 
-        personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"PER");
+        personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"CREW");
         extraPersonBoxesDeque.add(personBox);
 
         sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()), "Sesión");
@@ -125,7 +125,7 @@ public class SessionCardPanel extends JPanel implements View {
 
     public void addExtraPersonBox() {
         if(extraPersonBoxesDeque.size()<10) { // I limit the addition of personBoxes to 10
-            JComboBox personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"PER");
+            JComboBox personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"CREW");
             View.setInitialComboBoxLook(personBox);
             personBox.setMaximumSize(CardPanel.PERSON_BOX_DIMENSION);
             personBox.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -203,5 +203,14 @@ public class SessionCardPanel extends JPanel implements View {
     @Override
     public void addActionListeners() {
 
+    }
+
+    // Getters
+    public ArrayDeque<JComboBox> getExtraPersonBoxesDeque() {
+        return extraPersonBoxesDeque;
+    }
+
+    public ArrayDeque<JComboBox> getExtraSessionBoxesDeque() {
+        return extraSessionBoxesDeque;
     }
 }

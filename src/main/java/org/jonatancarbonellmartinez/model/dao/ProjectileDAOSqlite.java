@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.model.dao;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Projectile;
+import org.jonatancarbonellmartinez.model.entities.SessionCrewCount;
 import org.jonatancarbonellmartinez.utilities.Database;
 
 import java.sql.Connection;
@@ -15,20 +16,36 @@ import java.util.List;
 public class ProjectileDAOSqlite implements GenericDAO<Projectile, Integer> {
     @Override
     public void insert(Projectile entity) throws DatabaseException {
+        // Projectiles are inserted in batch
+    }
+
+    public void insertBatch(List<Projectile> entities) throws DatabaseException {
+        if (entities == null || entities.isEmpty()) {
+            return; // No operation needed for empty lists
+        }
+
         String sql = "INSERT INTO main.junction_projectile (projectile_flight_fk, projectile_person_fk, projectile_type_fk, projectile_qty) VALUES (?, ?, ?, ?)";
 
-        try(Connection connection = Database.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = Database.getInstance().getConnection()) {
+            connection.setAutoCommit(false);
 
-            pstmt.setInt(1,     entity.getFlightFk());
-            pstmt.setInt(2,     entity.getPersonFk());
-            pstmt.setInt(3,     entity.getProjectileTypeFk());
-            pstmt.setDouble(4,  entity.getProjectileQty());
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                for (Projectile entity : entities) {
+                    pstmt.setInt(1, entity.getFlightFk());
+                    pstmt.setInt(2, entity.getPersonFk());
+                    pstmt.setInt(3, entity.getProjectileTypeFk());
+                    pstmt.setInt(4, entity.getProjectileQty());
+                    pstmt.addBatch();
+                }
 
-            pstmt.executeUpdate();
-
+                pstmt.executeBatch();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback(); // Undo all changes in case of an error
+                throw new DatabaseException("Error inserting projectile data in batch", e);
+            }
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando horas Proyectiles en la base de datos", e);
+            throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
 

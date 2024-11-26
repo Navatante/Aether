@@ -15,21 +15,39 @@ import java.util.List;
 public class SessionCrewCountDAOSqlite implements GenericDAO<SessionCrewCount, Integer> {
     @Override
     public void insert(SessionCrewCount entity) throws DatabaseException {
+        // Sessions are inserted in batch.
+    }
+
+    public void insertBatch(List<SessionCrewCount> entities) throws DatabaseException {
+        if (entities == null || entities.isEmpty()) {
+            return; // No operation needed for empty lists
+        }
+
         String sql = "INSERT INTO main.junction_session_crew_count (session_crew_count_flight_fk, session_crew_count_person_fk, session_crew_count_session_fk) VALUES (?, ?, ?)";
 
-        try(Connection connection = Database.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = Database.getInstance().getConnection()) {
+            connection.setAutoCommit(false);
 
-            pstmt.setInt(1,     entity.getFlightFk());
-            pstmt.setInt(2,     entity.getPersonFk());
-            pstmt.setDouble(3,  entity.getSessionFk());
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                for (SessionCrewCount entity : entities) {
+                    pstmt.setInt(1, entity.getFlightFk());
+                    pstmt.setInt(2, entity.getPersonFk());
+                    pstmt.setInt(3, entity.getSessionFk());
+                    pstmt.addBatch();
+                }
 
-            pstmt.executeUpdate();
-
+                pstmt.executeBatch();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback(); // Undo all changes in case of an error
+                throw new DatabaseException("Error inserting session crew count data in batch", e);
+            }
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando sesiones realizadas en la base de datos", e);
+            throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
+
+
 
     @Override
     public Entity read(Integer entitySk) throws DatabaseException {

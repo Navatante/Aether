@@ -32,6 +32,8 @@ public class AppDAOSqlite implements GenericDAO<App, Integer>{
         }
     }
 
+    // TODO 2. create insertBatch method.
+
     @Override
     public Entity read(Integer entitySk) throws DatabaseException {
         return null;

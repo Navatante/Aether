@@ -33,6 +33,8 @@ public class FlightDAOSQLite implements GenericDAO<Flight, Integer>{
         }
     }
 
+
+
     @Override
     public Entity read(Integer entitySk) throws DatabaseException { // TODO
         return null;

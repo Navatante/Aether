@@ -32,6 +32,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final WtHourDAOSqlite wtHourDAO;
     private final ProjectileDAOSqlite projectileDAO;
     private final SessionDAOSqlite sessionDAO;
+    private final SessionCrewCountDAOSqlite sessionCrewCountDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
@@ -59,6 +60,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.wtHourDAO = DAOFactorySQLite.getInstance().createWtHourDAO();
         this.projectileDAO = DAOFactorySQLite.getInstance().createProjectileDAO();
         this.sessionDAO = DAOFactorySQLite.getInstance().createSessionDAO();
+        this.sessionCrewCountDAO = DAOFactorySQLite.getInstance().createSessionCrewCountDAO();
         createVectors();
         this.observer = observer;
     }
@@ -86,6 +88,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             insertLanding();
             insertWtHour();
             insertProjectile();
+            insertSessionCrewCount();
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
@@ -330,11 +333,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 }
             }
         }
-    }
+    } // TODO 1. modify this method to match methods below.
 
     private void insertLanding() {
-        Landing landing = new Landing();
-        landing.setFlightFk(lastFlightSk);
+        List<Landing> landings = new ArrayList<>();
 
         // Iterate over all the pilot card panels
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
@@ -345,72 +347,122 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 String tierraLandingFieldText = getPeriodTierraLandingFieldText(pilotCardPanel, periodFk);
                 String defaultValue = getDefaultPeriodValue(periodFk);
 
-                landing.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
-                landing.setPeriodFk(periodFk);
-
                 // Only insert if the field is not equal to the default value
                 if (!monoLandingFieldText.equals(defaultValue)) {
+                    Landing landing = new Landing();
+                    landing.setFlightFk(lastFlightSk);
+                    landing.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
+                    landing.setPeriodFk(periodFk);
                     landing.setPlaceFk(1);
                     landing.setLandingQty(Integer.parseInt(monoLandingFieldText));
-                    landingDAO.insert(landing);
+                    landings.add(landing);
                 }
                 if (!multiLandingFieldText.equals(defaultValue)) {
+                    Landing landing = new Landing();
+                    landing.setFlightFk(lastFlightSk);
+                    landing.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
+                    landing.setPeriodFk(periodFk);
                     landing.setPlaceFk(2);
                     landing.setLandingQty(Integer.parseInt(multiLandingFieldText));
-                    landingDAO.insert(landing);
+                    landings.add(landing);
                 }
                 if (!tierraLandingFieldText.equals(defaultValue)) {
+                    Landing landing = new Landing();
+                    landing.setFlightFk(lastFlightSk);
+                    landing.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
+                    landing.setPeriodFk(periodFk);
                     landing.setPlaceFk(3);
                     landing.setLandingQty(Integer.parseInt(tierraLandingFieldText));
-                    landingDAO.insert(landing);
+                    landings.add(landing);
                 }
             }
         }
+        landingDAO.insertBatch(landings);
     }
 
     private void insertWtHour() {
-        WtHour wtHour = new WtHour();
-        wtHour.setFlightFk(lastFlightSk);
+        List<WtHour> wtHours = new ArrayList<>();
 
         for (DvCardPanel dvCardPanel : allDvCardPanels) {
             String wtHourField = dvCardPanel.getWinchTrimHourField().getText();
 
-            // Skip processing if the iftHourField is "I"
+            // Skip processing if the iftHourField is "W"
             if ("W".equals(wtHourField)) {
                 continue;
             }
+
+            WtHour wtHour = new WtHour();
+            wtHour.setFlightFk(lastFlightSk);
             wtHour.setPersonFk(getForeignKey(dvCardPanel.getCrewBox().getSelectedItem()));
             wtHour.setWtHourQty(Double.parseDouble(wtHourField));
-            wtHourDAO.insert(wtHour);
+            wtHours.add(wtHour);
         }
+        wtHourDAO.insertBatch(wtHours);
     }
 
     private void insertProjectile() {
-        Projectile projectile = new Projectile();
-        projectile.setFlightFk(lastFlightSk);
+        List<Projectile> projectiles = new ArrayList<>(); // Collect all projectiles for batch insert
 
         for (DvCardPanel dvCardPanel : allDvCardPanels) {
             String projectileM3MField = dvCardPanel.getM3mField().getText();
             String projectileMAGField = dvCardPanel.getMagField().getText();
 
-            projectile.setPersonFk(getForeignKey(dvCardPanel.getCrewBox().getSelectedItem()));
+            int personFk = getForeignKey(dvCardPanel.getCrewBox().getSelectedItem());
 
             // Process M3M field
             if (!"P".equals(projectileM3MField)) {
+                Projectile projectile = new Projectile();
+                projectile.setFlightFk(lastFlightSk);
+                projectile.setPersonFk(personFk);
                 projectile.setProjectileTypeFk(1); // 1 points to 7.62 M3M
                 projectile.setProjectileQty(Integer.parseInt(projectileM3MField));
-                projectileDAO.insert(projectile);
+                projectiles.add(projectile);
             }
 
             // Process MAG field
             if (!"P".equals(projectileMAGField)) {
+                Projectile projectile = new Projectile();
+                projectile.setFlightFk(lastFlightSk);
+                projectile.setPersonFk(personFk);
                 projectile.setProjectileTypeFk(2); // 2 points to 12.7 MAG58
                 projectile.setProjectileQty(Integer.parseInt(projectileMAGField));
-                projectileDAO.insert(projectile);
+                projectiles.add(projectile);
             }
         }
+
+        // Perform batch insert
+        projectileDAO.insertBatch(projectiles);
     }
 
+    private void insertSessionCrewCount() { // TODO study this method for batch inserting
+        List<SessionCrewCount> sessionCrewCounts = new ArrayList<>();
+
+        for (SessionCardPanel sessionCardPanel : allSessionCardPanels) {
+            for(JComboBox personBox : sessionCardPanel.getExtraPersonBoxesDeque()) {
+                Integer personFk = getForeignKey(personBox.getSelectedItem());
+
+                if (personFk == null) {
+                    continue;
+                }
+
+                for(JComboBox sessionBox : sessionCardPanel.getExtraSessionBoxesDeque()) {
+                    Integer sessionFk = getForeignKey(sessionBox.getSelectedItem());
+
+                    if (sessionFk == null) {
+                        continue;
+                    }
+
+                    SessionCrewCount sessionCrewCount = new SessionCrewCount();
+                    sessionCrewCount.setFlightFk(lastFlightSk);
+                    sessionCrewCount.setPersonFk(personFk);
+                    sessionCrewCount.setSessionFk(sessionFk);
+
+                    sessionCrewCounts.add(sessionCrewCount);
+                }
+            }
+        }
+        sessionCrewCountDAO.insertBatch(sessionCrewCounts);
+    }
 
     @Override
     public void editEntity() {
@@ -844,7 +896,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         allPilotsVector = new Vector<>(getOnlyActualPilots());
         allDvsVector = new Vector<>(getOnlyActualDvs());
         allSessionsVector =  new Vector<>(getAllSessions());
-
     }
 
     public Vector<Entity> getAllPilotsVector() {

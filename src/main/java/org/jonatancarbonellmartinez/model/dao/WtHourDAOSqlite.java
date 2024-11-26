@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
+import org.jonatancarbonellmartinez.model.entities.SessionCrewCount;
 import org.jonatancarbonellmartinez.model.entities.WtHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
@@ -15,19 +16,35 @@ import java.util.List;
 public class WtHourDAOSqlite implements GenericDAO<WtHour, Integer> {
     @Override
     public void insert(WtHour entity) throws DatabaseException {
+        // Wt hours are inserted in batch.
+    }
+
+    public void insertBatch(List<WtHour> entities) throws DatabaseException {
+        if (entities == null || entities.isEmpty()) {
+            return; // No operation needed for empty lists
+        }
+
         String sql = "INSERT INTO main.junction_wt_hour (wt_hour_flight_fk, wt_hour_person_fk, wt_hour_qty) VALUES (?, ?, ?)";
 
-        try(Connection connection = Database.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = Database.getInstance().getConnection()) {
+            connection.setAutoCommit(false);
 
-            pstmt.setInt(1,     entity.getFlightFk());
-            pstmt.setInt(2,     entity.getPersonFk());
-            pstmt.setDouble(3,  entity.getWtHourQty());
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                for (WtHour entity : entities) {
+                    pstmt.setInt(1, entity.getFlightFk());
+                    pstmt.setInt(2, entity.getPersonFk());
+                    pstmt.setDouble(3, entity.getWtHourQty());
+                    pstmt.addBatch();
+                }
 
-            pstmt.executeUpdate();
-
+                pstmt.executeBatch();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback(); // Undo all changes in case of an error
+                throw new DatabaseException("Error inserting WtHour data in batch", e);
+            }
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando horas Winch Trim en la base de datos", e);
+            throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
 
