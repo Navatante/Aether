@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.model.dao;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.InstructorHour;
+import org.jonatancarbonellmartinez.model.entities.WtHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
 import java.sql.Connection;
@@ -15,19 +16,35 @@ import java.util.List;
 public class InstructorHourDAOSqlite implements GenericDAO<InstructorHour, Integer>{
     @Override
     public void insert(InstructorHour entity) throws DatabaseException {
+        // Instructor hours are inserted in batch.
+    }
+
+    public void insertBatch(List<InstructorHour> entities) throws DatabaseException {
+        if (entities == null || entities.isEmpty()) {
+            return; // No operation needed for empty lists
+        }
+
         String sql = "INSERT INTO main.junction_instructor_hour (instructor_hour_flight_fk, instructor_hour_person_fk, instructor_hour_qty) VALUES (?, ?, ?)";
 
-        try(Connection connection = Database.getInstance().getConnection();
-            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = Database.getInstance().getConnection()) {
+            connection.setAutoCommit(false);
 
-            pstmt.setInt(1,     entity.getFlightFk());
-            pstmt.setInt(2,     entity.getPersonFk());
-            pstmt.setDouble(3,  entity.getInstructorHourQty());
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                for (InstructorHour entity : entities) {
+                    pstmt.setInt(1,     entity.getFlightFk());
+                    pstmt.setInt(2,     entity.getPersonFk());
+                    pstmt.setDouble(3,  entity.getInstructorHourQty());
+                    pstmt.addBatch();
+                }
 
-            pstmt.executeUpdate();
-
+                pstmt.executeBatch();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback(); // Undo all changes in case of an error
+                throw new DatabaseException("Error inserting Instructor hours data in batch", e);
+            }
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando horas como instructor en la base de datos", e);
+            throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
 

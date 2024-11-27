@@ -68,7 +68,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     @Override
     public boolean isFormValid() {
         boolean isValid = isVueloCardValid() &&
-                            areCrewCardsValid();
+                            areCrewCardsValid() &&
+                            areSessionCardsValid();
         return isValid;
     }
 
@@ -76,10 +77,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     public void insertEntity() { // TODO quiza este llame a todos los metodos de insertX
         try {
             insertFlight();
-            collectCrewCardPanels();
-            collectPilotCardPanels();
-            collectDvCardPanels();
-            collectSessionCardPanels();
             insertPersonHour();
             insertIftHour();
             insertHdmsHour();
@@ -256,8 +253,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private void insertIftHour() {
-        IftHour iftHour = new IftHour();
-        iftHour.setFlightFk(lastFlightSk);
+        List<IftHour> iftHours = new ArrayList<>();
+
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String iftHourField = pilotCardPanel.getIftHourField().getText();
 
@@ -267,35 +264,41 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
 
             // Process the valid IftHourField values
+            IftHour iftHour = new IftHour();
+            iftHour.setFlightFk(lastFlightSk);
             iftHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             iftHour.setIftHourQty(Double.parseDouble(iftHourField));
 
-            iftHourDAO.insert(iftHour);
+            iftHours.add(iftHour);
         }
+        iftHourDAO.insertBatch(iftHours);
     }
 
     private void insertHdmsHour() {
-        HdmsHour hdmsHour = new HdmsHour();
-        hdmsHour.setFlightFk(lastFlightSk);
+        List<HdmsHour> hdmsHours = new ArrayList<>();
+
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String hdmsHourField = pilotCardPanel.getHdmsHourField().getText();
 
-            // Skip processing if the iftHourField is "I"
+            // Skip processing if the iftHourField is "H"
             if ("H".equals(hdmsHourField)) {
                 continue;
             }
 
             // Process the valid IftHourField values
+            HdmsHour hdmsHour = new HdmsHour();
+            hdmsHour.setFlightFk(lastFlightSk);
             hdmsHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             hdmsHour.setHdmsHourQty(Double.parseDouble(hdmsHourField));
 
-            hdmsHourDAO.insert(hdmsHour);
+            hdmsHours.add(hdmsHour);
         }
+        hdmsHourDAO.insertBatch(hdmsHours);
     }
 
     private void insertInstructorHour() {
-        InstructorHour instructorHour = new InstructorHour();
-        instructorHour.setFlightFk(lastFlightSk);
+        List<InstructorHour> instructorHours = new ArrayList<>();
+
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             String instructorHourField = pilotCardPanel.getInstructorHourField().getText();
 
@@ -305,16 +308,19 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             }
 
             // Process the valid IftHourField values
+            InstructorHour instructorHour = new InstructorHour();
+            instructorHour.setFlightFk(lastFlightSk);
             instructorHour.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
             instructorHour.setInstructorHourQty(Double.parseDouble(instructorHourField));
 
-            instructorHourDAO.insert(instructorHour);
+            instructorHours.add(instructorHour);
         }
+        instructorHourDAO.insertBatch(instructorHours);
     }
 
     private void insertApp() {
-        App app = new App();
-        app.setFlightFk(lastFlightSk);
+        List<App> apps = new ArrayList<>();
+
         // Iterate over all the pilot card panels
         for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
             // Iterate over all app types (Precision, No precision, SAR-N) and corresponding hour fields
@@ -324,16 +330,19 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
                 // Only insert if the field is not equal to the default value
                 if (!appTypeFieldText.equals(defaultValue)) {
+                    App app = new App();
+                    app.setFlightFk(lastFlightSk);
                     app.setPersonFk(getForeignKey(pilotCardPanel.getCrewBox().getSelectedItem()));
                     app.setAppTypeFk(appTypeFk);
                     app.setAppQty(Integer.parseInt(appTypeFieldText));
 
                     // Insert the person hour into the database
-                    appDAO.insert(app);
+                    apps.add(app);
                 }
             }
         }
-    } // TODO 1. modify this method to match methods below.
+        appDAO.insertBatch(apps);
+    }
 
     private void insertLanding() {
         List<Landing> landings = new ArrayList<>();
@@ -476,6 +485,12 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     @Override
     public void onSaveButtonClicked() {
+
+        collectCrewCardPanels();
+        collectPilotCardPanels();
+        collectDvCardPanels();
+        collectSessionCardPanels();
+
         if (isFormValid()) {
             insertEntity();
         }
@@ -565,12 +580,23 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getDeletePilotItem().addActionListener( e -> onDeletePilotoItemClicked());
         view.getAddDvItem().addActionListener( e -> onAddDvItemClicked());
         view.getDeleteDvItem().addActionListener( e -> onDeleteDvItemClicked());
-        view.getAddPersonItem().addActionListener(e -> onAddPersonItemClicked());
-        view.getDeletePersonItem().addActionListener(e -> onDeletePersonItemClicked());
-        view.getAddSessionItem().addActionListener(e -> onAddSessionItemClicked());
-        view.getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
-        view.getAddGroupItem().addActionListener(e -> onAddGroupItemClicked());
-        view.getDeleteGroupItem().addActionListener(e -> onDeleteGroupItemClicked());
+        view.getSessionCardPanel().getAddPersonItem().addActionListener(e -> onAddPersonItemClicked());
+        view.getSessionCardPanel().getDeletePersonItem().addActionListener(e -> onDeletePersonItemClicked());
+        view.getSessionCardPanel().getAddSessionItem().addActionListener(e -> onAddSessionItemClicked());
+        view.getSessionCardPanel().getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
+        view.getSessionCardPanel().getAddGroupItem().addActionListener(e -> onAddGroupItemClicked());
+        view.getSessionCardPanel().getDeleteGroupItem().addActionListener(e -> onDeleteGroupItemClicked());
+
+
+    }
+
+    public void setCardSessionActionListener(SessionCardPanel sessionCardPanel) {
+        sessionCardPanel.getAddPersonItem().addActionListener( e -> sessionCardPanel.addExtraPersonBox());
+        sessionCardPanel.getDeletePersonItem().addActionListener(e -> sessionCardPanel.deleteExtraPersonBox());
+        sessionCardPanel.getAddSessionItem().addActionListener(e -> sessionCardPanel.addExtraSessionBox());
+        sessionCardPanel.getDeleteSessionItem().addActionListener(e -> sessionCardPanel.deleteExtraSessionBox());
+        sessionCardPanel.getAddGroupItem().addActionListener(e -> view.addExtraSessionCardView());
+        sessionCardPanel.getDeleteGroupItem().addActionListener(e -> view.deleteExtraSessionCardView());
     }
 
     public List<Helo> getHeloList() {
@@ -617,6 +643,103 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                             //doesTotalHoursEqualsSumOfDvHours(), i think i dont need this method, but we will see.
         return isValid;
     }
+
+    private boolean areSessionCardsValid() {
+        boolean isValid = hasNoDuplicatePersonsInSessionCardPanel() &&
+                          personInSessionCardHasFlight() &&
+                          hasNoDuplicateSessionsInSessionCardPanel() &&
+                          hasNoDuplicatePanels()  ;
+
+        return isValid;
+    }
+
+    private boolean hasNoDuplicatePersonsInSessionCardPanel() {
+
+        for (SessionCardPanel sessionCardPanel : allSessionCardPanels) {
+
+            Set<String> persons = new HashSet<>();
+
+            for (JComboBox box : sessionCardPanel.getExtraPersonBoxesDeque()) {
+                // Get selected person or skip if null
+                Object selectedItem = box.getSelectedItem();
+                if (selectedItem == null) {
+                    continue; // Skip if no item is selected
+                }
+
+                String personName = selectedItem.toString(); // Convert to String
+
+                // Check for duplicates during addition
+                if (!persons.add(personName)) {
+                    JOptionPane.showMessageDialog(view, "Hay tripulantes repetidos en sesiones.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean hasNoDuplicateSessionsInSessionCardPanel() {
+
+
+        for (SessionCardPanel sessionCardPanel : allSessionCardPanels) {
+
+            Set<String> sessions = new HashSet<>();
+
+            for (JComboBox box : sessionCardPanel.getExtraSessionBoxesDeque()) {
+                // Get selected person or skip if null
+                Object selectedItem = box.getSelectedItem();
+                if (selectedItem == null) {
+                    continue; // Skip if no item is selected
+                }
+
+                String sessionName = selectedItem.toString(); // Convert to String
+
+                // Check for duplicates during addition
+                if (!sessions.add(sessionName)) {
+                    JOptionPane.showMessageDialog(view, "Hay sesiones repetidas.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+    private boolean personInSessionCardHasFlight() { // This method will check that the person selected appears in any pilot or dv card panel(para no asignar sesiones a alguien que no ha estado en ese vuelo)
+        List<String> personsOfFlight = new ArrayList<>();
+        List<String> personsOfSession = new ArrayList<>();
+
+        // Populate personsOfFlight
+        for (CardPanel cardPanel : allCrewCardPanels) {
+            personsOfFlight.add(cardPanel.getCrewBox().getSelectedItem().toString());
+        }
+
+        // Populate personsOfSession
+        for (SessionCardPanel sessionCardPanel : allSessionCardPanels) {
+            for (JComboBox personBox : sessionCardPanel.getExtraPersonBoxesDeque()) {
+                Object selectedItem = personBox.getSelectedItem();
+                if (selectedItem == null) {
+                    continue; // Skip if no item is selected
+                }
+
+                personsOfSession.add(personBox.getSelectedItem().toString());
+            }
+        }
+
+        // Check for persons in personsOfSession not in personsOfFlight
+        for (String person : personsOfSession) {
+            if (!personsOfFlight.contains(person)) {
+                JOptionPane.showMessageDialog(view, "Hay tripulantes en sesiones que no han volado.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false; // Found a person in session not in flight
+            }
+        }
+        return true;
+    }
+
+    public boolean hasNoDuplicatePanels() { // TODO
+    }
+
+
 
     private boolean arePilotsSelected() {
         // Validate pilot boxes for primary and secondary pilots
