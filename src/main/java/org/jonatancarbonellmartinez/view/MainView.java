@@ -3,7 +3,6 @@ package org.jonatancarbonellmartinez.view;
 import org.jonatancarbonellmartinez.presenter.MainPresenter;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -59,7 +58,7 @@ public class MainView extends JFrame implements View {
     private JButton botonSesiones;
     private JButton botonHelos;
     private JButton botonCapbas;
-    private JButton botonGenerator;
+    private JButton unitsButton;
 
     private ImageIcon iconPersonal, iconEvent, iconPending;
 
@@ -124,7 +123,7 @@ public class MainView extends JFrame implements View {
         botonSesiones = createRoundedButton(iconPending);
         botonHelos = createRoundedButton(iconPending);
         botonCapbas = createRoundedButton(iconPending);
-        botonGenerator = createRoundedButton(iconPending);
+        unitsButton = createRoundedButton(iconPending);
 
     }
 
@@ -151,7 +150,7 @@ public class MainView extends JFrame implements View {
         botonSesiones.setEnabled(false);
         botonHelos.setEnabled(false);
         botonCapbas.setEnabled(false);
-        botonGenerator.setEnabled(false);
+        unitsButton.setEnabled(false);
         registrarCombustibleMenuItem.setEnabled(false);
         registrarCalificacionMenuItem.setEnabled(false);
         docSemanalMenuItem.setEnabled(false);
@@ -168,9 +167,9 @@ public class MainView extends JFrame implements View {
         botonPersonal.setToolTipText("Personal");
         botonEventos.setToolTipText("Eventos");
         botonSesiones.setToolTipText("Sesiones");
-        botonHelos.setToolTipText("Helicópteros");
-        botonCapbas.setToolTipText("CAPBAS");
-        botonGenerator.setToolTipText("Generadores");
+        botonHelos.setToolTipText("Helicópteros"); // TODO DELETE HELICOPTEROS BUTTON
+        botonCapbas.setToolTipText("CAPBAS"); // TODO DELETE CAPBAS BUTTON
+        unitsButton.setToolTipText("Unidades");
 
         this.setJMenuBar(menuBar);
     }
@@ -193,7 +192,7 @@ public class MainView extends JFrame implements View {
         View.addMenusToMenu(editarMenu, editarPersonalMenuItem, editarEventoMenuItem);
         View.addMenusToMenu(generarMenu, docSemanalMenuItem, docMensualMenuItem);
 
-        View.addComponentsToPanel(bottomLeftPanel, botonPersonal, botonEventos, botonSesiones, botonHelos, botonCapbas, botonGenerator);
+        View.addComponentsToPanel(bottomLeftPanel, botonPersonal, botonEventos, botonSesiones, botonHelos, botonCapbas, unitsButton);
         View.addComponentsToPanel(topLeftPanel, botonPrincipal, botonPilotos, botonDotaciones);
     }
 
