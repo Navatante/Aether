@@ -41,7 +41,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
             pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando persona en la base de datos", e);
+            throw new DatabaseException("Error insertando persona en la base de datos.", e);
         }
     }
 
@@ -61,7 +61,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error buscando persona por ID", e);
+            throw new DatabaseException("Error buscando persona por ID.", e);
         }
         return null; // Return null if no person was found with the given ID
     }
@@ -123,7 +123,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
                 personList.add( (Person)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder al personal", e);
+            throw new DatabaseException("Error al acceder al personal.", e);
         }
 
         return personList;
@@ -141,7 +141,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
                 pilotList.add( (Person)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder a los pilotos", e);
+            throw new DatabaseException("Error al acceder a los pilotos.", e);
         }
 
         return pilotList;
@@ -159,7 +159,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
                 dvList.add( (Person)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder a los pilotos", e);
+            throw new DatabaseException("Error al acceder a los pilotos.", e);
         }
 
         return dvList;

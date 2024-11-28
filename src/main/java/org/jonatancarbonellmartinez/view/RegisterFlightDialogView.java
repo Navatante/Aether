@@ -2,8 +2,9 @@ package org.jonatancarbonellmartinez.view;
 
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
-import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
+import org.jonatancarbonellmartinez.view.panels.CupoHourCardPanel;
+import org.jonatancarbonellmartinez.view.panels.DvCrewCardPanel;
+import org.jonatancarbonellmartinez.view.panels.PilotCrewCardPanel;
 import org.jonatancarbonellmartinez.view.panels.SessionCardPanel;
 
 import javax.swing.*;
@@ -23,15 +24,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private MainView mainView;
     private RegisterFlightPresenter presenter;
 
-    private PilotCardPanel pilotCardPanel1, pilotCardPanel2;
-    private DvCardPanel dvCardPanel1;
-
+    private PilotCrewCardPanel pilotCardPanel1, pilotCardPanel2;
+    private DvCrewCardPanel dvCardPanel1;
     private SessionCardPanel sessionCardPanel;
+    private CupoHourCardPanel cupoHourCardPanel1, cupoHourCardPanel2;
 
-    private ArrayDeque<PilotCardPanel> extraPilotCardPanelDeque;
-    private ArrayDeque<DvCardPanel> extraDvCardPanelDeque;
-
+    private ArrayDeque<PilotCrewCardPanel> extraPilotCardPanelDeque;
+    private ArrayDeque<DvCrewCardPanel> extraDvCardPanelDeque;
     private ArrayDeque<SessionCardPanel> extraSessionCardPanelDeque;
+    private ArrayDeque<CupoHourCardPanel> extraCupoHourCardPanelDeque;
 
     private JSpinner dateTimeSpinner;
 
@@ -41,12 +42,13 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private JButton saveButton;
 
-    private JScrollPane tripulantesScrollPane, sessionScrollPanel;
+    private JScrollPane tripulantesScrollPane, sessionScrollPanel, cupoHourScrollPanel;
 
     private JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel;
     private JPanel sessionPanel;
+    private JPanel cupoHourPanel;
 
-    JPopupMenu horasAppsTomasProjectilesPopupMenu;
+    JPopupMenu horasAppsTomasProjectilesPopupMenu, horasCupoPopupMenu; // TODO
     JMenuItem addPilotItem, deletePilotItem, addDvItem, deleteDvItem;
 
     public RegisterFlightDialogView(MainView mainView) {
@@ -66,7 +68,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(1280,900);
+        setSize(1280,550);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -84,11 +86,17 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         sessionPanel.setLayout(new BoxLayout(sessionPanel, BoxLayout.Y_AXIS));
         sessionScrollPanel = new JScrollPane(sessionPanel);
 
+        cupoHourPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        cupoHourPanel.setLayout(new BoxLayout(cupoHourPanel, BoxLayout.Y_AXIS));
+        cupoHourScrollPanel = new JScrollPane(cupoHourPanel);
+
         bottomPanel = new JPanel();
-        pilotCardPanel1 = new PilotCardPanel(this, presenter);
-        pilotCardPanel2 = new PilotCardPanel(this, presenter);
-        dvCardPanel1 = new DvCardPanel(this, presenter);
+        pilotCardPanel1 = new PilotCrewCardPanel(this, presenter);
+        pilotCardPanel2 = new PilotCrewCardPanel(this, presenter);
+        dvCardPanel1 = new DvCrewCardPanel(this, presenter);
         sessionCardPanel = new SessionCardPanel(this, presenter);
+        cupoHourCardPanel1 = new CupoHourCardPanel(this, presenter);
+        cupoHourCardPanel2 = new CupoHourCardPanel(this, presenter);
     }
 
     @Override
@@ -103,6 +111,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         extraPilotCardPanelDeque = new ArrayDeque<>();
         extraDvCardPanelDeque = new ArrayDeque<>();
         extraSessionCardPanelDeque = new ArrayDeque<>();
+        extraCupoHourCardPanelDeque = new ArrayDeque<>();
 
         horasAppsTomasProjectilesPopupMenu = new JPopupMenu();
 
@@ -123,6 +132,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder
         ));
 
+        // Horas, tomas, aproximacions y proyectiles
         TitledBorder titleBorder2 = new TitledBorder("Horas, Aproximaciones, Tomas y Proyectiles");
         titleBorder2.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
@@ -131,6 +141,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder2
         ));
 
+        // Sesion
         TitledBorder titleBorder3 = new TitledBorder("Sesiones");
         titleBorder3.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
@@ -139,10 +150,21 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
                 titleBorder3
         ));
 
+        // Cupo Hour
+        TitledBorder titleBorder4 = new TitledBorder("Cupo");
+        titleBorder4.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
+
+        cupoHourScrollPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10, 5, 10, 45),
+                titleBorder4
+        ));
+
         pilotCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         pilotCardPanel2.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         dvCardPanel1.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         sessionCardPanel.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
+        cupoHourCardPanel1.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
+        cupoHourCardPanel2.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
         tripulantesScrollPane.setPreferredSize(new Dimension(1305, 175));
         tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -153,9 +175,17 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
+        cupoHourScrollPanel.setPreferredSize(new Dimension(395, 168));
+        cupoHourScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        cupoHourScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+
+
         pilotCardPanel1.getCrewBox().setToolTipText("Comandante de Aeronave");
 
         vueloPanel.setPreferredSize(new Dimension(1360,100));
+
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         // Añadir un MouseListener al panel para detectar clic derecho
         tripulantesScrollPane.addMouseListener(new MouseAdapter() {
@@ -200,12 +230,16 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         centerPanel.add(tripulantesScrollPane);
         centerPanel.add(sessionScrollPanel);
+        centerPanel.add(cupoHourScrollPanel);
 
         tripulantesPanel.add(pilotCardPanel1);
         tripulantesPanel.add(pilotCardPanel2);
         tripulantesPanel.add(dvCardPanel1);
 
         sessionPanel.add(sessionCardPanel);
+
+        cupoHourPanel.add(cupoHourCardPanel1);
+        cupoHourPanel.add(cupoHourCardPanel2);
 
         horasAppsTomasProjectilesPopupMenu.add(addPilotItem);
         horasAppsTomasProjectilesPopupMenu.add(deletePilotItem);
@@ -236,10 +270,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     @Override
     public void clearFields() {
-        View.setDocumentFilter(totalHoursField,13); // This is set because placeholder is larger than value permitted limit.
-        heloBox.setSelectedIndex(0);
-        eventBox.setSelectedIndex(0);
-        View.setPlaceholder(totalHoursField,"Horas totales");
     }
 
     @Override
@@ -253,7 +283,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     }
 
     public void addExtraPilotCardView() {
-        PilotCardPanel pilotCardPanel = new PilotCardPanel(this, presenter);
+        PilotCrewCardPanel pilotCardPanel = new PilotCrewCardPanel(this, presenter);
         pilotCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         tripulantesPanel.add(pilotCardPanel);
         extraPilotCardPanelDeque.add(pilotCardPanel);
@@ -263,7 +293,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     }
 
     public void addExtraDvCardView() {
-        DvCardPanel dvCardPanel = new DvCardPanel(this, presenter);
+        DvCrewCardPanel dvCardPanel = new DvCrewCardPanel(this, presenter);
         dvCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         tripulantesPanel.add(dvCardPanel);
         extraDvCardPanelDeque.add(dvCardPanel);
@@ -283,10 +313,21 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         sessionPanel.repaint();
     }
 
+    public void addExtraCupoHourCardView() {
+        CupoHourCardPanel cupoHourCardPanel = new CupoHourCardPanel(this, presenter);
+        cupoHourCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        cupoHourPanel.add(cupoHourCardPanel);
+        extraCupoHourCardPanelDeque.add(cupoHourCardPanel);
+        // presenter.setCardSessionActionListener(cupoHourCardPanel); // TODO i think thise line is not needed here
+        // Ensure the UI updates to reflect the added component
+        cupoHourPanel.revalidate();
+        cupoHourPanel.repaint();
+    }
+
     public void deleteExtraPilotCardView() {
         if (!extraPilotCardPanelDeque.isEmpty()) {
             // Get and remove the last added PilotCardView from the Deque
-            PilotCardPanel lastPilotCardPanel = extraPilotCardPanelDeque.removeLast();
+            PilotCrewCardPanel lastPilotCardPanel = extraPilotCardPanelDeque.removeLast();
 
             // Remove it from the panel
             tripulantesPanel.remove(lastPilotCardPanel);
@@ -300,7 +341,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void deleteExtraDvCardView() {
             if (!extraDvCardPanelDeque.isEmpty()) {
                 // Get and remove the last added PilotCardView from the Deque
-                DvCardPanel lastDvCardPanel = extraDvCardPanelDeque.removeLast();
+                DvCrewCardPanel lastDvCardPanel = extraDvCardPanelDeque.removeLast();
 
                 // Remove it from the panel
                 tripulantesPanel.remove(lastDvCardPanel);
@@ -318,6 +359,20 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
             // Remove it from the panel
             sessionPanel.remove(lastSessionCardPanel);
+
+            // Revalidate and repaint the panel to reflect the changes
+            sessionPanel.revalidate();
+            sessionPanel.repaint();
+        }
+    }
+
+    public void deleteExtraCupoHourCardView() {
+        if (!extraCupoHourCardPanelDeque.isEmpty()) {
+            // Get and remove the last added PilotCardView from the Deque
+            CupoHourCardPanel lastCupoHourCardPanel = extraCupoHourCardPanelDeque.removeLast();
+
+            // Remove it from the panel
+            sessionPanel.remove(lastCupoHourCardPanel);
 
             // Revalidate and repaint the panel to reflect the changes
             sessionPanel.revalidate();
@@ -353,23 +408,23 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         return saveButton;
     }
 
-    public PilotCardPanel getPilotCardPanel1() {
+    public PilotCrewCardPanel getPilotCardPanel1() {
         return pilotCardPanel1;
     }
 
-    public PilotCardPanel getPilotCardPanel2() {
+    public PilotCrewCardPanel getPilotCardPanel2() {
         return pilotCardPanel2;
     }
 
-    public DvCardPanel getDvCardPanel1() {
+    public DvCrewCardPanel getDvCardPanel1() {
         return dvCardPanel1;
     }
 
-    public ArrayDeque<PilotCardPanel> getExtraPilotCardPanelDeque() {
+    public ArrayDeque<PilotCrewCardPanel> getExtraPilotCardPanelDeque() {
         return extraPilotCardPanelDeque;
     }
 
-    public ArrayDeque<DvCardPanel> getExtraDvCardPanelDeque() {
+    public ArrayDeque<DvCrewCardPanel> getExtraDvCardPanelDeque() {
         return extraDvCardPanelDeque;
     }
 
@@ -403,5 +458,21 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     public ArrayDeque<SessionCardPanel> getExtraSessionCardPanelDeque() {
         return extraSessionCardPanelDeque;
+    }
+
+    public ArrayDeque<CupoHourCardPanel> getExtraCupoHourCardPanelDeque() {
+        return extraCupoHourCardPanelDeque;
+    }
+
+    public MainView getMainView() {
+        return mainView;
+    }
+
+    public CupoHourCardPanel getCupoHourCardPanel1() {
+        return cupoHourCardPanel1;
+    }
+
+    public CupoHourCardPanel getCupoHourCardPanel3() {
+        return cupoHourCardPanel2;
     }
 }

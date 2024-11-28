@@ -10,9 +10,9 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.Vector;
 
-public class DvCardPanel extends JPanel implements View, CardPanel {
+public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
     private RegisterFlightPresenter presenter;
-    RegisterFlightDialogView registerFlightDialogView;
+    private RegisterFlightDialogView registerFlightDialogView;
 
     private JPanel mainPanel, personPanel, dvPanel;
 
@@ -30,7 +30,7 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
 
     private JComboBox dvBox;
 
-    public DvCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
+    public DvCrewCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView;
         this.initializeUI();
@@ -106,8 +106,8 @@ public class DvCardPanel extends JPanel implements View, CardPanel {
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(dvBox);
-        View.setPreferredSizeForComponents(CardPanel.PERSON_BOX_DIMENSION,dvBox);
-        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
+        View.setPreferredSizeForComponents(CrewCardPanel.PERSON_BOX_DIMENSION,dvBox);
+        View.setPreferredSizeForComponents(CrewCardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
         View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
     }
 

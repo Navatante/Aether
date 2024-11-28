@@ -119,10 +119,10 @@ public class SessionCardPanel extends JPanel implements View {
         View.setInitialComboBoxLook(personBox);
         View.setInitialComboBoxLook(sessionBox);
 
-        personBox.setMaximumSize(CardPanel.PERSON_BOX_DIMENSION);
+        personBox.setMaximumSize(CrewCardPanel.PERSON_BOX_DIMENSION);
         personBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        sessionBox.setMaximumSize(CardPanel.SESSION_BOX_DIMENSION);
+        sessionBox.setMaximumSize(CrewCardPanel.SESSION_BOX_DIMENSION);
         sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     }
@@ -151,24 +151,24 @@ public class SessionCardPanel extends JPanel implements View {
 
     @Override
     public void assembleComponents() {
-        personBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
+        personBoxesPanel.add(new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE));
         personBoxesPanel.add(personBox);
-        personBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
+        personBoxesPanel.add(new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE));
 
-        sessionBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
+        sessionBoxesPanel.add(new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE));
         sessionBoxesPanel.add(sessionBox);
-        sessionBoxesPanel.add(new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE));
+        sessionBoxesPanel.add(new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE));
     }
 
     public void addExtraPersonBox() {
         if(extraPersonBoxesDeque.size()<10) { // I limit the addition of personBoxes to 10
             JComboBox personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"CREW");
             View.setInitialComboBoxLook(personBox);
-            personBox.setMaximumSize(CardPanel.PERSON_BOX_DIMENSION);
+            personBox.setMaximumSize(CrewCardPanel.PERSON_BOX_DIMENSION);
             personBox.setAlignmentX(Component.CENTER_ALIGNMENT);
             personBoxesPanel.add(personBox);
             extraPersonBoxesDeque.add(personBox);
-            Box.Filler boxFiller = new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE);
+            Box.Filler boxFiller = new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE);
             personBoxesPanel.add(boxFiller);
             extraPersonBoxFillersDeque.add(boxFiller);
             // Ensure the UI updates to reflect the added component
@@ -202,11 +202,11 @@ public class SessionCardPanel extends JPanel implements View {
         if(extraSessionBoxesDeque.size()<6) { // I limit the addition of personBoxes to 6
             JComboBox sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()),"Sesión");
             View.setInitialComboBoxLook(sessionBox);
-            sessionBox.setMaximumSize(CardPanel.SESSION_BOX_DIMENSION);
+            sessionBox.setMaximumSize(CrewCardPanel.SESSION_BOX_DIMENSION);
             sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
             sessionBoxesPanel.add(sessionBox);
             extraSessionBoxesDeque.add(sessionBox);
-            Box.Filler boxFiller = new Box.Filler(CardPanel.SPACE_MIN_SIZE, CardPanel.SPACE_PREF_SIZE,CardPanel.SPACE_MAX_SIZE);
+            Box.Filler boxFiller = new Box.Filler(CrewCardPanel.SPACE_MIN_SIZE, CrewCardPanel.SPACE_PREF_SIZE, CrewCardPanel.SPACE_MAX_SIZE);
             sessionBoxesPanel.add(boxFiller);
             extraSessionBoxFillersDeque.add(boxFiller);
             // Ensure the UI updates to reflect the added component
@@ -234,6 +234,10 @@ public class SessionCardPanel extends JPanel implements View {
             sessionBoxesPanel.revalidate();
             sessionBoxesPanel.repaint();
         }
+    }
+
+    public void clearFields() {
+
     }
 
 

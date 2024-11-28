@@ -10,7 +10,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.Vector;
 
-public class PilotCardPanel extends JPanel implements View, CardPanel {
+public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private RegisterFlightPresenter presenter;
     RegisterFlightDialogView registerFlightDialogView;
@@ -47,7 +47,7 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
 
     JComboBox pilotBox;
 
-    public PilotCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
+    public PilotCrewCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView; // this way i have access to data like pilotList or dvList, si mas adelante doy con una mejor solucion pues cambialo.
         this.initializeUI();
@@ -182,8 +182,8 @@ public class PilotCardPanel extends JPanel implements View, CardPanel {
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(pilotBox);
-        View.setPreferredSizeForComponents(CardPanel.PERSON_BOX_DIMENSION, pilotBox);
-        View.setPreferredSizeForComponents(CardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField,
+        View.setPreferredSizeForComponents(CrewCardPanel.PERSON_BOX_DIMENSION, pilotBox);
+        View.setPreferredSizeForComponents(CrewCardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField,
                                                                             precisionField, noPrecisionField, sarnField,
                                                                             monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField);
 

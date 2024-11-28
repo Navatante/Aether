@@ -90,6 +90,16 @@ public class DAOFactorySQLite implements DAOFactory {
         return new SessionDAOSqlite();
     }
 
+    @Override
+    public CupoHourDAOSQlite createCupoHourDAO() throws DatabaseException {
+        return new CupoHourDAOSQlite();
+    }
+
+    @Override
+    public UnitDAOSQlite createUnitDAO() throws DatabaseException {
+        return new UnitDAOSQlite();
+    }
+
 
     // Add methods for creating other DAOs
     // public OtherDAO createOtherDAO() throws SQLException {

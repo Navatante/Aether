@@ -273,7 +273,6 @@ public class MainView extends JFrame implements View {
         return button;
     }
 
-
     // Getters
     public JMenuItem getAnadirPersonalMenuItem() {
         return anadirPersonalMenuItem;

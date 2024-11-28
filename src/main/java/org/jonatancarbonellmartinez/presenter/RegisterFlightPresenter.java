@@ -7,9 +7,9 @@ import org.jonatancarbonellmartinez.model.entities.*;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
-import org.jonatancarbonellmartinez.view.panels.CardPanel;
-import org.jonatancarbonellmartinez.view.panels.DvCardPanel;
-import org.jonatancarbonellmartinez.view.panels.PilotCardPanel;
+import org.jonatancarbonellmartinez.view.panels.CrewCardPanel;
+import org.jonatancarbonellmartinez.view.panels.DvCrewCardPanel;
+import org.jonatancarbonellmartinez.view.panels.PilotCrewCardPanel;
 import org.jonatancarbonellmartinez.view.panels.SessionCardPanel;
 
 import javax.swing.*;
@@ -33,17 +33,19 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final ProjectileDAOSqlite projectileDAO;
     private final SessionDAOSqlite sessionDAO;
     private final SessionCrewCountDAOSqlite sessionCrewCountDAO;
+    private final UnitDAOSQlite unitDAO;
+    private final CupoHourDAOSQlite cupoHourDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
     private int lastFlightSk;
 
-    private ArrayList<CardPanel> allCrewCardPanels;
-    private ArrayList<PilotCardPanel> allPilotCardPanels;
-    private ArrayList<DvCardPanel> allDvCardPanels;
+    private ArrayList<CrewCardPanel> allCrewCrewCardPanels;
+    private ArrayList<PilotCrewCardPanel> allPilotCardPanels;
+    private ArrayList<DvCrewCardPanel> allDvCardPanels;
     private ArrayList<SessionCardPanel> allSessionCardPanels;
 
-    private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector;
+    private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector, allUnitsVector;
 
     public RegisterFlightPresenter(RegisterFlightDialogView registerFlightDialogView, Observer observer) {
         this.view = registerFlightDialogView;
@@ -61,6 +63,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.projectileDAO = DAOFactorySQLite.getInstance().createProjectileDAO();
         this.sessionDAO = DAOFactorySQLite.getInstance().createSessionDAO();
         this.sessionCrewCountDAO = DAOFactorySQLite.getInstance().createSessionCrewCountDAO();
+        this.unitDAO = DAOFactorySQLite.getInstance().createUnitDAO();
+        this.cupoHourDAO = DAOFactorySQLite.getInstance().createCupoHourDAO();
         createVectors();
         this.observer = observer;
     }
@@ -89,8 +93,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
-            view.clearFields();
-
         } catch (DatabaseException ex) {
             DialogView.showError(view,"Error al añadir vuelo: ");
         } catch (Exception ex) {
@@ -105,16 +107,16 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private void collectCrewCardPanels() {
         // Create a list of all pilot card panels to iterate through, including extra dynamically added ones
-        allCrewCardPanels = new ArrayList<>();
+        allCrewCrewCardPanels = new ArrayList<>();
 
         // Add the predefined panels
-        allCrewCardPanels.add(view.getPilotCardPanel1());
-        allCrewCardPanels.add(view.getPilotCardPanel2());
-        allCrewCardPanels.add(view.getDvCardPanel1());
+        allCrewCrewCardPanels.add(view.getPilotCardPanel1());
+        allCrewCrewCardPanels.add(view.getPilotCardPanel2());
+        allCrewCrewCardPanels.add(view.getDvCardPanel1());
 
         // Add dynamically added panels from the deque
-        allCrewCardPanels.addAll(view.getExtraPilotCardPanelDeque());
-        allCrewCardPanels.addAll(view.getExtraDvCardPanelDeque());
+        allCrewCrewCardPanels.addAll(view.getExtraPilotCardPanelDeque());
+        allCrewCrewCardPanels.addAll(view.getExtraDvCardPanelDeque());
     }
 
     private void collectPilotCardPanels() {
@@ -143,7 +145,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         PersonHour personHour = new PersonHour();
         personHour.setFlightFk(lastFlightSk);
         // Iterate over all the pilot card panels
-        for (CardPanel crewCardPanel : allCrewCardPanels) {
+        for (CrewCardPanel crewCardPanel : allCrewCrewCardPanels) {
             // Iterate over all periods (Day, Night, Gvn) and corresponding hour fields
             for (int periodFk = 1; periodFk <= 3; periodFk++) {
                 String hourFieldText = getPeriodHourFieldText(crewCardPanel, periodFk);
@@ -163,14 +165,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     } // TODO Study this method
 
     // Helper method of insertPersonHour() to get the hour field text based on the period
-    private String getPeriodHourFieldText(CardPanel CardPanel, int periodFk) {
+    private String getPeriodHourFieldText(CrewCardPanel CrewCardPanel, int periodFk) {
         switch (periodFk) {
             case 1: // Day
-                return CardPanel.getDayHourField().getText();
+                return CrewCardPanel.getDayHourField().getText();
             case 2: // Night
-                return CardPanel.getNightHourField().getText();
+                return CrewCardPanel.getNightHourField().getText();
             case 3: // Gvn
-                return CardPanel.getGvnHourField().getText();
+                return CrewCardPanel.getGvnHourField().getText();
             default:
                 return "";
         }
@@ -187,7 +189,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method of insertApp() to get the app field text based on the type
-    private String getAppTypeFieldText(PilotCardPanel pilotCardPanel, int appTypeFk) {
+    private String getAppTypeFieldText(PilotCrewCardPanel pilotCardPanel, int appTypeFk) {
         switch (appTypeFk) {
             case 1: // Precision
                 return pilotCardPanel.getPrecisionField().getText();
@@ -211,7 +213,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method of insertPersonHour() to get the hour field text based on the period
-    private String getPeriodMonoLandingFieldText(PilotCardPanel pilotCardPanel, int periodFk) {
+    private String getPeriodMonoLandingFieldText(PilotCrewCardPanel pilotCardPanel, int periodFk) {
         switch (periodFk) {
             case 1: // Day
                 return pilotCardPanel.getMonoDayField().getText();
@@ -225,7 +227,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method of insertPersonHour() to get the hour field text based on the period
-    private String getPeriodMultiLandingFieldText(PilotCardPanel pilotCardPanel, int periodFk) {
+    private String getPeriodMultiLandingFieldText(PilotCrewCardPanel pilotCardPanel, int periodFk) {
         switch (periodFk) {
             case 1: // Day
                 return pilotCardPanel.getMultiDayField().getText();
@@ -239,7 +241,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method of insertPersonHour() to get the hour field text based on the period
-    private String getPeriodTierraLandingFieldText(PilotCardPanel pilotCardPanel, int periodFk) {
+    private String getPeriodTierraLandingFieldText(PilotCrewCardPanel pilotCardPanel, int periodFk) {
         switch (periodFk) {
             case 1: // Day
                 return pilotCardPanel.getTierraDayField().getText();
@@ -255,7 +257,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private void insertIftHour() {
         List<IftHour> iftHours = new ArrayList<>();
 
-        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+        for (PilotCrewCardPanel pilotCardPanel : allPilotCardPanels) {
             String iftHourField = pilotCardPanel.getIftHourField().getText();
 
             // Skip processing if the iftHourField is "I"
@@ -277,7 +279,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private void insertHdmsHour() {
         List<HdmsHour> hdmsHours = new ArrayList<>();
 
-        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+        for (PilotCrewCardPanel pilotCardPanel : allPilotCardPanels) {
             String hdmsHourField = pilotCardPanel.getHdmsHourField().getText();
 
             // Skip processing if the iftHourField is "H"
@@ -299,7 +301,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private void insertInstructorHour() {
         List<InstructorHour> instructorHours = new ArrayList<>();
 
-        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+        for (PilotCrewCardPanel pilotCardPanel : allPilotCardPanels) {
             String instructorHourField = pilotCardPanel.getInstructorHourField().getText();
 
             // Skip processing if the iftHourField is "I"
@@ -322,7 +324,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         List<App> apps = new ArrayList<>();
 
         // Iterate over all the pilot card panels
-        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+        for (PilotCrewCardPanel pilotCardPanel : allPilotCardPanels) {
             // Iterate over all app types (Precision, No precision, SAR-N) and corresponding hour fields
             for (int appTypeFk = 1; appTypeFk <= 3; appTypeFk++) {
                 String appTypeFieldText = getAppTypeFieldText(pilotCardPanel, appTypeFk);
@@ -348,7 +350,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         List<Landing> landings = new ArrayList<>();
 
         // Iterate over all the pilot card panels
-        for (PilotCardPanel pilotCardPanel : allPilotCardPanels) {
+        for (PilotCrewCardPanel pilotCardPanel : allPilotCardPanels) {
             // Iterate over all periods (Day, Night, Gvn) and corresponding hour fields
             for (int periodFk = 1; periodFk <= 3; periodFk++) {
                 String monoLandingFieldText = getPeriodMonoLandingFieldText(pilotCardPanel, periodFk);
@@ -392,7 +394,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private void insertWtHour() {
         List<WtHour> wtHours = new ArrayList<>();
 
-        for (DvCardPanel dvCardPanel : allDvCardPanels) {
+        for (DvCrewCardPanel dvCardPanel : allDvCardPanels) {
             String wtHourField = dvCardPanel.getWinchTrimHourField().getText();
 
             // Skip processing if the iftHourField is "W"
@@ -412,7 +414,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private void insertProjectile() {
         List<Projectile> projectiles = new ArrayList<>(); // Collect all projectiles for batch insert
 
-        for (DvCardPanel dvCardPanel : allDvCardPanels) {
+        for (DvCrewCardPanel dvCardPanel : allDvCardPanels) {
             String projectileM3MField = dvCardPanel.getM3mField().getText();
             String projectileMAGField = dvCardPanel.getMagField().getText();
 
@@ -493,6 +495,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
         if (isFormValid()) {
             insertEntity();
+            view.dispose(); // close dialog
+            new RegisterFlightDialogView(view.getMainView()); // reopen it
         }
     }
 
@@ -623,6 +627,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return sessionDAO.getAll();
     }
 
+    public List<Unit> getAllUnits() {
+        return unitDAO.getAll();
+    }
+
     private boolean isVueloCardValid() {
         boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
                             DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
@@ -710,8 +718,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         List<String> personsOfSession = new ArrayList<>();
 
         // Populate personsOfFlight
-        for (CardPanel cardPanel : allCrewCardPanels) {
-            personsOfFlight.add(cardPanel.getCrewBox().getSelectedItem().toString());
+        for (CrewCardPanel crewCardPanel : allCrewCrewCardPanels) {
+            personsOfFlight.add(crewCardPanel.getCrewBox().getSelectedItem().toString());
         }
 
         // Populate personsOfSession
@@ -736,8 +744,44 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    public boolean hasNoDuplicatePanels() { // TODO
+    public boolean hasNoDuplicatePanels() {
+        // Use a set to store unique combinations of person and session selections
+        Set<String> uniqueCombinations = new HashSet<>();
+
+        for (SessionCardPanel sessionCardPanel : allSessionCardPanels) {
+            // Collect selected items for persons and sessions
+            List<String> persons = new ArrayList<>();
+            List<String> sessions = new ArrayList<>();
+
+            for (JComboBox box : sessionCardPanel.getExtraPersonBoxesDeque()) {
+                Object selectedItem = box.getSelectedItem();
+                if (selectedItem != null) {
+                    persons.add(selectedItem.toString());
+                }
+            }
+
+            for (JComboBox box : sessionCardPanel.getExtraSessionBoxesDeque()) {
+                Object selectedItem = box.getSelectedItem();
+                if (selectedItem != null) {
+                    sessions.add(selectedItem.toString());
+                }
+            }
+
+            // Create a unique key for the current panel's combination of selections
+            String combinationKey = String.join(",", persons) + "|" + String.join(",", sessions);
+
+            // Check if this combination already exists
+            if (!uniqueCombinations.add(combinationKey)) {
+                // Duplicate found
+                JOptionPane.showMessageDialog(view, "Hay grupos de sesiones repetidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        // No duplicates detected
+        return true;
     }
+
 
 
 
@@ -808,7 +852,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    private boolean isAtLeastOneHourFieldInserted(CardPanel panel) {
+    private boolean isAtLeastOneHourFieldInserted(CrewCardPanel panel) {
         return !panel.getDayHourField().getText().equals("D") ||
                 !panel.getNightHourField().getText().equals("N") ||
                 !panel.getGvnHourField().getText().equals("G");
@@ -827,7 +871,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getNightHourField().getText()))
                 .add(parseBigDecimalOrZero(view.getPilotCardPanel2().getGvnHourField().getText()));
 
-        for (PilotCardPanel extraPanel : view.getExtraPilotCardPanelDeque()) {
+        for (PilotCrewCardPanel extraPanel : view.getExtraPilotCardPanelDeque()) {
             sumOfOtherPilotsHours = sumOfOtherPilotsHours.add(parseBigDecimalOrZero(extraPanel.getDayHourField().getText()))
                     .add(parseBigDecimalOrZero(extraPanel.getNightHourField().getText()))
                     .add(parseBigDecimalOrZero(extraPanel.getGvnHourField().getText()));
@@ -860,13 +904,13 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean arePilotCardsHoursValid() {
         // Gather all PilotCardPanels
-        ArrayList<PilotCardPanel> pilotCardPanelList = new ArrayList<>();
+        ArrayList<PilotCrewCardPanel> pilotCardPanelList = new ArrayList<>();
         pilotCardPanelList.add(view.getPilotCardPanel1());
         pilotCardPanelList.add(view.getPilotCardPanel2());
         pilotCardPanelList.addAll(view.getExtraPilotCardPanelDeque());
 
         // Validate each PilotCardPanel
-        for (PilotCardPanel panel : pilotCardPanelList) {
+        for (PilotCrewCardPanel panel : pilotCardPanelList) {
             if (!validatePilotCardPanel(panel)) {
                 return false; // Return false immediately if any panel is invalid
             }
@@ -875,7 +919,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Validates a single PilotCardPanel
-    private boolean validatePilotCardPanel(PilotCardPanel panel) {
+    private boolean validatePilotCardPanel(PilotCrewCardPanel panel) {
         String crewName = panel.getCrewBox().getSelectedItem().toString();
 
         // Validate "Horas" fields
@@ -904,7 +948,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Helper method for validating "Tomas" fields
-    private boolean validateTomasFields(PilotCardPanel panel, String crewName) {
+    private boolean validateTomasFields(PilotCrewCardPanel panel, String crewName) {
         return
                 DialogPresenter.isAValidOptionalNumber(view, panel.getMonoDayField(), crewName + " Toma Monospot Día", "D") &&
                         DialogPresenter.isAValidOptionalNumber(view, panel.getMonoNightField(), crewName + " Toma Monospot Noche", "N") &&
@@ -980,12 +1024,12 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean areDvCardsHoursValid() {
         // Gather all DvCardPanels
-        ArrayList<DvCardPanel> dvCardPanelList = new ArrayList<>();
+        ArrayList<DvCrewCardPanel> dvCardPanelList = new ArrayList<>();
         dvCardPanelList.add(view.getDvCardPanel1());
         dvCardPanelList.addAll(view.getExtraDvCardPanelDeque());
 
         // Validate each DvCardPanel
-        for (DvCardPanel panel : dvCardPanelList) {
+        for (DvCrewCardPanel panel : dvCardPanelList) {
             if (!validateDvCardPanel(panel)) {
                 return false; // Return false immediately if any panel is invalid
             }
@@ -994,7 +1038,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     // Validates a single DvCardPanel
-    private boolean validateDvCardPanel(DvCardPanel panel) {
+    private boolean validateDvCardPanel(DvCrewCardPanel panel) {
         String crewName = panel.getCrewBox().getSelectedItem().toString();
 
         // Validate "Horas" fields
@@ -1019,6 +1063,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         allPilotsVector = new Vector<>(getOnlyActualPilots());
         allDvsVector = new Vector<>(getOnlyActualDvs());
         allSessionsVector =  new Vector<>(getAllSessions());
+        allUnitsVector = new Vector<>(getAllUnits());
     }
 
     public Vector<Entity> getAllPilotsVector() {
@@ -1035,5 +1080,9 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public Vector<Entity> getAllSessionsVector() {
         return allSessionsVector;
+    }
+
+    public Vector<Entity> getAllUnitsVector() {
+        return allUnitsVector;
     }
 }

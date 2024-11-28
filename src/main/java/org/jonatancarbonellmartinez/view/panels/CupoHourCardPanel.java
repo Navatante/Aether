@@ -1,0 +1,79 @@
+package org.jonatancarbonellmartinez.view.panels;
+
+import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
+import org.jonatancarbonellmartinez.view.View;
+
+import javax.swing.*;
+import javax.swing.border.MatteBorder;
+import java.awt.*;
+import java.util.Vector;
+
+public class CupoHourCardPanel extends JPanel implements View {
+    private RegisterFlightPresenter presenter;
+    private RegisterFlightDialogView registerFlightDialogView;
+
+    private JPanel mainPanel, unitPanel, hourPanel; // TODO
+
+    private JComboBox unitBox;
+    private JTextField hourQtyField;
+
+    public CupoHourCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
+        this.presenter = registerFlightPresenter;
+        this.registerFlightDialogView = registerFlightDialogView;
+        this.initializeUI();
+        setVisible(true);
+    }
+
+
+
+    @Override
+    public void setupUIProperties() {
+        setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
+        setSize(200,100);
+    }
+
+    @Override
+    public void createPanels() {
+        mainPanel = new JPanel(new BorderLayout());
+        unitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,8));
+        hourPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,8));
+    }
+
+    @Override
+    public void createComponents() {
+        unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Unidad");
+        hourQtyField = View.createTextField("Horas");
+    }
+
+    @Override
+    public void configurePanels() {
+        this.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+    }
+
+    @Override
+    public void configureComponents() {
+        View.setInitialComboBoxLook(unitBox);
+        View.setPreferredSizeForComponents(CrewCardPanel.SESSION_BOX_DIMENSION, unitBox);
+        View.setPreferredSizeForComponents(CrewCardPanel.PERSON_BOX_DIMENSION, hourQtyField);
+        hourQtyField.setHorizontalAlignment(JTextField.CENTER);
+    }
+
+    @Override
+    public void assemblePanels() {
+        this.add(mainPanel);
+        mainPanel.add(unitPanel, BorderLayout.WEST);
+        mainPanel.add(hourPanel, BorderLayout.EAST);
+    }
+
+    @Override
+    public void assembleComponents() {
+        unitPanel.add(unitBox);
+        hourPanel.add(hourQtyField);
+    }
+
+    @Override
+    public void addActionListeners() {
+
+    }
+}
