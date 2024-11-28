@@ -70,7 +70,7 @@ public class MainView extends JFrame implements View {
 
     @Override
     public void setupUIProperties() {
-        setTitle("Haverkat - Decimocuarta Escuadrilla");
+        setTitle("Aether - Decimocuarta Escuadrilla");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1280, 720);
         setLocationRelativeTo(null);
