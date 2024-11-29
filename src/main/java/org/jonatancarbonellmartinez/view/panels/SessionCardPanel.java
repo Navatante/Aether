@@ -38,7 +38,7 @@ public class SessionCardPanel extends JPanel implements View {
 
     @Override
     public void setupUIProperties() {
-        setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
+        setLayout(new FlowLayout(FlowLayout.LEFT,10,12));
         setSize(400,400);
     }
 

@@ -76,4 +76,12 @@ public class CupoHourCardPanel extends JPanel implements View {
     public void addActionListeners() {
 
     }
+
+    public JComboBox getUnitBox() {
+        return unitBox;
+    }
+
+    public JTextField getHourQtyField() {
+        return hourQtyField;
+    }
 }

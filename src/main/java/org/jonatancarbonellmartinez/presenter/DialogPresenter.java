@@ -23,7 +23,7 @@ public interface DialogPresenter {
 
     static boolean validateSimpleComboBox(JDialog parentView, JComboBox<String> comboBox, String fieldName) {
         if (comboBox.getSelectedIndex() == 0) {
-            DialogView.showError(parentView,"Por favor, selecciona un valor para " + fieldName);
+            DialogView.showError(parentView,"Seleccione un valor para " + fieldName + ".");
             return false;
         }
         return true;
@@ -31,7 +31,7 @@ public interface DialogPresenter {
 
     static boolean validateDynamicComboBox(JDialog parentView, JComboBox<Entity> comboBox, String fieldName) {
         if (comboBox.getSelectedItem() == null) {
-            DialogView.showError(parentView,"Por favor, selecciona un valor para " + fieldName);
+            DialogView.showError(parentView,"Seleccione un valor para " + fieldName + ".");
             return false;
         }
         return true;
@@ -39,7 +39,7 @@ public interface DialogPresenter {
 
     static boolean validateField(JDialog parentView, JTextField field, String placeHolderName) {
         if (field.getText().isEmpty() || field.getText().equals(placeHolderName)) {
-            DialogView.showError(parentView,"Por favor, completa el campo " + placeHolderName);
+            DialogView.showError(parentView,"Complete el campo " + placeHolderName);
             return false;
         }
         return true;
@@ -72,7 +72,7 @@ public interface DialogPresenter {
         if (field.getText().matches("\\d{1,2}\\.\\d{1,1}")) {
             return true;
         } else {
-            DialogView.showError(parentView,"El formato de hora no es correcto para " + fieldName);
+            DialogView.showError(parentView,"El formato de " + fieldName+ " no es correcto.");
             return false;
         }
     }
@@ -84,7 +84,7 @@ public interface DialogPresenter {
         } else if (text.matches("\\d{1,2}\\.\\d{1}")) {
             return true; // Matches valid hour format
         } else {
-            DialogView.showError(parentView, "El formato de hora no es correcto para: " + fieldName);
+            DialogView.showError(parentView, "El formato de " + fieldName+ " no es correcto.");
             return false;
         }
     }
@@ -96,7 +96,7 @@ public interface DialogPresenter {
         } else if (text.matches("[1-9][0-9]*")) {
             return true; // Matches valid hour format
         } else {
-            DialogView.showError(parentView, "El formato de número no es correcto para: " + fieldName);
+            DialogView.showError(parentView, "El formato de " + fieldName+ " no es correcto.");
             return false;
         }
     }

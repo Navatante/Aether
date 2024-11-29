@@ -129,7 +129,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
                 int eventId = Integer.parseInt(idText);
                 presenter.getEntity(eventId);
             } catch (NumberFormatException ex) {
-                DialogView.showError(this, "Por favor, introduce un ID válido");
+                DialogView.showError(this, "Introduzca un ID válido");
             }
         }
     }

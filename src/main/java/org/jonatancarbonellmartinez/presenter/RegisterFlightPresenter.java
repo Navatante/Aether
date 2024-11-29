@@ -7,10 +7,7 @@ import org.jonatancarbonellmartinez.model.entities.*;
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.view.DialogView;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
-import org.jonatancarbonellmartinez.view.panels.CrewCardPanel;
-import org.jonatancarbonellmartinez.view.panels.DvCrewCardPanel;
-import org.jonatancarbonellmartinez.view.panels.PilotCrewCardPanel;
-import org.jonatancarbonellmartinez.view.panels.SessionCardPanel;
+import org.jonatancarbonellmartinez.view.panels.*;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -44,6 +41,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private ArrayList<PilotCrewCardPanel> allPilotCardPanels;
     private ArrayList<DvCrewCardPanel> allDvCardPanels;
     private ArrayList<SessionCardPanel> allSessionCardPanels;
+    private ArrayList<CupoHourCardPanel> allCupoHourCardPanels;
 
     private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector, allUnitsVector;
 
@@ -73,7 +71,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     public boolean isFormValid() {
         boolean isValid = isVueloCardValid() &&
                             areCrewCardsValid() &&
-                            areSessionCardsValid();
+                            areSessionCardsValid() &&
+                            areCupoHourCardsValid();
         return isValid;
     }
 
@@ -90,6 +89,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             insertWtHour();
             insertProjectile();
             insertSessionCrewCount();
+            insertCupoHour();
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
@@ -139,6 +139,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
         allSessionCardPanels.add(view.getSessionCardPanel());
         allSessionCardPanels.addAll(view.getExtraSessionCardPanelDeque());
+    }
+
+    private void collectCupoHourCardPanels() {
+        allCupoHourCardPanels = new ArrayList<>();
+
+        allCupoHourCardPanels.add(view.getCupoHourCardPanel1());
+        allCupoHourCardPanels.add(view.getCupoHourCardPanel2());
+        allCupoHourCardPanels.addAll(view.getExtraCupoHourCardPanelDeque());
     }
 
     public void insertPersonHour() {
@@ -475,6 +483,28 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         sessionCrewCountDAO.insertBatch(sessionCrewCounts);
     }
 
+    private void insertCupoHour() {
+        List<CupoHour> cupoHours = new ArrayList<>();
+
+        for(CupoHourCardPanel cupoHourCardPanel : allCupoHourCardPanels) {
+            Integer unitSk = getForeignKey(cupoHourCardPanel.getUnitBox().getSelectedItem());
+            String cupoHourQty = cupoHourCardPanel.getHourQtyField().getText();
+
+            if( unitSk == null || cupoHourQty.equals("Horas")) {
+                continue;
+            }
+
+            CupoHour cupoHour = new CupoHour();
+            cupoHour.setFlightFk(lastFlightSk);
+            cupoHour.setUnitFk(unitSk);
+            cupoHour.setCupoHourQty(Double.parseDouble(cupoHourQty));
+
+            cupoHours.add(cupoHour);
+        }
+
+        cupoHourDAO.insertBatch(cupoHours);
+    }
+
     @Override
     public void editEntity() {
         // de momento nada aqui
@@ -492,6 +522,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         collectPilotCardPanels();
         collectDvCardPanels();
         collectSessionCardPanels();
+        collectCupoHourCardPanels();
 
         if (isFormValid()) {
             insertEntity();
@@ -538,6 +569,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     public void onDeleteGroupItemClicked() {
         view.deleteExtraSessionCardView();
+    }
+
+    public void onAddCupoCardItemClicked() {
+        view.addExtraCupoHourCardView();
+    }
+
+    public void onDeleteCupoCardItemClicked() {
+        view.deleteExtraCupoHourCardView();
     }
 
     @Override
@@ -590,6 +629,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getSessionCardPanel().getDeleteSessionItem().addActionListener(e -> onDeleteSessionItemClicked());
         view.getSessionCardPanel().getAddGroupItem().addActionListener(e -> onAddGroupItemClicked());
         view.getSessionCardPanel().getDeleteGroupItem().addActionListener(e -> onDeleteGroupItemClicked());
+        view.getAddCupoCardItem().addActionListener( e -> onAddCupoCardItemClicked());
+        view.getDeleteCupoCardItem().addActionListener( e -> onDeleteCupoCardItemClicked());
 
 
     }
@@ -902,15 +943,31 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         }
     }
 
-    private boolean arePilotCardsHoursValid() {
-        // Gather all PilotCardPanels
-        ArrayList<PilotCrewCardPanel> pilotCardPanelList = new ArrayList<>();
-        pilotCardPanelList.add(view.getPilotCardPanel1());
-        pilotCardPanelList.add(view.getPilotCardPanel2());
-        pilotCardPanelList.addAll(view.getExtraPilotCardPanelDeque());
+    // Method to check if total hours equals the sum of cupo hours
+    private boolean doesTotalHoursEqualsSumOfCupoHours() {
+        // Parse the total hours from the view
+        BigDecimal totalHours = parseBigDecimalOrZero(view.getTotalHoursField().getText());
 
+        // Calculate the sum of cupo hours
+        BigDecimal sumOfCupoHours = BigDecimal.ZERO.setScale(1, RoundingMode.HALF_UP);
+        for (CupoHourCardPanel cupoHourCardPanel : allCupoHourCardPanels) {
+            sumOfCupoHours = sumOfCupoHours.add(parseBigDecimalOrZero(cupoHourCardPanel.getHourQtyField().getText()));
+        }
+
+        // Compare total hours with the sum of cupo hours
+        if (!totalHours.equals(sumOfCupoHours)) {
+            JOptionPane.showMessageDialog(view,
+                    "Las horas totales del vuelo no coinciden con las horas por cupo.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean arePilotCardsHoursValid() {
         // Validate each PilotCardPanel
-        for (PilotCrewCardPanel panel : pilotCardPanelList) {
+        for (PilotCrewCardPanel panel : allPilotCardPanels) {
             if (!validatePilotCardPanel(panel)) {
                 return false; // Return false immediately if any panel is invalid
             }
@@ -1023,18 +1080,17 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private boolean areDvCardsHoursValid() {
-        // Gather all DvCardPanels
-        ArrayList<DvCrewCardPanel> dvCardPanelList = new ArrayList<>();
-        dvCardPanelList.add(view.getDvCardPanel1());
-        dvCardPanelList.addAll(view.getExtraDvCardPanelDeque());
-
         // Validate each DvCardPanel
-        for (DvCrewCardPanel panel : dvCardPanelList) {
+        for (DvCrewCardPanel panel : allDvCardPanels) {
             if (!validateDvCardPanel(panel)) {
                 return false; // Return false immediately if any panel is invalid
             }
         }
         return true;
+    }
+
+    private boolean areCupoHourCardsValid() { // TODO por aqui
+        return doesTotalHoursEqualsSumOfCupoHours();
     }
 
     // Validates a single DvCardPanel

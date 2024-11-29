@@ -8,6 +8,8 @@ import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 public interface View {
@@ -212,5 +214,41 @@ public interface View {
                 return c;
             }
         };
+    }
+
+    static void setMouseListenerToPanel(JPanel panel, JPopupMenu popupMenu) {
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
+    static void setMouseListenerToPanel(JScrollPane jScrollPane, JPopupMenu popupMenu) {
+        jScrollPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 }

@@ -12,8 +12,6 @@ import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Date;
@@ -42,17 +40,20 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private JButton saveButton;
 
-    private JScrollPane tripulantesScrollPane, sessionScrollPanel, cupoHourScrollPanel;
+    private JScrollPane hoursAppsLandingsProjectilesScrollPanel, sessionScrollPanel, cupoHourScrollPanel;
 
     private JPanel topPanel, centerPanel, bottomPanel, vueloPanel, tripulantesPanel;
     private JPanel sessionPanel;
     private JPanel cupoHourPanel;
 
-    JPopupMenu horasAppsTomasProjectilesPopupMenu, horasCupoPopupMenu; // TODO
+    JPopupMenu horasAppsTomasProjectilesPopupMenu;
     JMenuItem addPilotItem, deletePilotItem, addDvItem, deleteDvItem;
 
+    JPopupMenu horasCupoPopupMenu;
+    JMenuItem addCupoCardItem, deleteCupoCardItem;
+
     public RegisterFlightDialogView(MainView mainView) {
-        super(mainView, "Registrar vuelo");
+        super(mainView, "Registrar vuelo",true);
         this.mainView = mainView;
         this.presenter = new RegisterFlightPresenter(this, mainView.getPresenter());
         this.initializeUI();
@@ -68,7 +69,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(1280,550);
+        setSize(1280,720);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -76,12 +77,12 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     @Override
     public void createPanels() {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        vueloPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,30,10)); // TODO Centrar titulo y contenido maybe.
+        vueloPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,100,20));
 
-        centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,0,60)); // TODO this vgap is the key
         tripulantesPanel = new JPanel();
         tripulantesPanel.setLayout(new BoxLayout(tripulantesPanel, BoxLayout.Y_AXIS));
-        tripulantesScrollPane = new JScrollPane(tripulantesPanel);
+        hoursAppsLandingsProjectilesScrollPanel = new JScrollPane(tripulantesPanel);
         sessionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         sessionPanel.setLayout(new BoxLayout(sessionPanel, BoxLayout.Y_AXIS));
         sessionScrollPanel = new JScrollPane(sessionPanel);
@@ -114,11 +115,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         extraCupoHourCardPanelDeque = new ArrayDeque<>();
 
         horasAppsTomasProjectilesPopupMenu = new JPopupMenu();
+        horasCupoPopupMenu = new JPopupMenu();
 
         addPilotItem = new JMenuItem("Añadir piloto");
         deletePilotItem = new JMenuItem("Eliminar piloto");
         addDvItem = new JMenuItem("Añadir dotación");
         deleteDvItem = new JMenuItem("Eliminar dotación");
+
+        addCupoCardItem = new JMenuItem("Añadir cupo");
+        deleteCupoCardItem = new JMenuItem("Eliminar cupo");
     }
 
     @Override
@@ -127,8 +132,10 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
         //titleBorder.setTitleJustification(TitledBorder.CENTER); // In case i want to center the Vuelo title.
 
+        topPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+
         vueloPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 5, 10, 100),
+                BorderFactory.createEmptyBorder(0, 5, 0, 100),
                 titleBorder
         ));
 
@@ -136,8 +143,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         TitledBorder titleBorder2 = new TitledBorder("Horas, Aproximaciones, Tomas y Proyectiles");
         titleBorder2.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
-        tripulantesScrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 5, 10, 45),
+        hoursAppsLandingsProjectilesScrollPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 5, 0, 45),
                 titleBorder2
         ));
 
@@ -146,7 +153,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder3.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         sessionScrollPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 5, 10, 45),
+                BorderFactory.createEmptyBorder(0, 5, 0, 45),
                 titleBorder3
         ));
 
@@ -155,7 +162,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder4.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         cupoHourScrollPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 5, 10, 45),
+                BorderFactory.createEmptyBorder(0, 5, 0, 45),
                 titleBorder4
         ));
 
@@ -166,16 +173,16 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         cupoHourCardPanel1.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
         cupoHourCardPanel2.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
-        tripulantesScrollPane.setPreferredSize(new Dimension(1305, 175));
-        tripulantesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        tripulantesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        hoursAppsLandingsProjectilesScrollPanel.setPreferredSize(new Dimension(1305, 150));
+        hoursAppsLandingsProjectilesScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        hoursAppsLandingsProjectilesScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
 
-        sessionScrollPanel.setPreferredSize(new Dimension(395, 168));
+        sessionScrollPanel.setPreferredSize(new Dimension(395, 150));
         sessionScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         sessionScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        cupoHourScrollPanel.setPreferredSize(new Dimension(395, 168));
+        cupoHourScrollPanel.setPreferredSize(new Dimension(395, 150));
         cupoHourScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         cupoHourScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -185,31 +192,18 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         vueloPanel.setPreferredSize(new Dimension(1360,100));
 
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,10,25,10));
 
         // Añadir un MouseListener al panel para detectar clic derecho
-        tripulantesScrollPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
-                    horasAppsTomasProjectilesPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) { // Verificar si es un clic derecho
-                    horasAppsTomasProjectilesPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
+        View.setMouseListenerToPanel(hoursAppsLandingsProjectilesScrollPanel, horasAppsTomasProjectilesPopupMenu);
+        View.setMouseListenerToPanel(cupoHourScrollPanel, horasCupoPopupMenu);
     }
 
     @Override
     public void configureComponents() {
         dateTimeSpinner.setEditor(new JSpinner.DateEditor(dateTimeSpinner, "dd/MM/yyyy HH:mm"));
         View.setInitialComboBoxLook(heloBox,eventBox);
-        View.setPreferredSizeForComponents(new Dimension(eventBox.getPreferredSize().width+10, 25), eventBox);
+        View.setPreferredSizeForComponents(new Dimension(eventBox.getPreferredSize().width+100, 25), eventBox);
         View.setPreferredSizeForComponents(new Dimension(155,24),dateTimeSpinner,heloBox, totalHoursField);
         totalHoursField.setHorizontalAlignment(JTextField.CENTER);
         setDocumentFilters();
@@ -218,6 +212,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         JSpinner.DateEditor editor = (JSpinner.DateEditor) dateTimeSpinner.getEditor();
         JFormattedTextField textField = editor.getTextField();
         textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+
+        saveButton.setPreferredSize(new Dimension(100,25));
     }
 
     @Override
@@ -228,7 +224,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         topPanel.add(vueloPanel);
 
-        centerPanel.add(tripulantesScrollPane);
+        centerPanel.add(hoursAppsLandingsProjectilesScrollPanel);
         centerPanel.add(sessionScrollPanel);
         centerPanel.add(cupoHourScrollPanel);
 
@@ -246,6 +242,9 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         horasAppsTomasProjectilesPopupMenu.addSeparator();
         horasAppsTomasProjectilesPopupMenu.add(addDvItem);
         horasAppsTomasProjectilesPopupMenu.add(deleteDvItem);
+
+        horasCupoPopupMenu.add(addCupoCardItem);
+        horasCupoPopupMenu.add(deleteCupoCardItem);
     }
 
     @Override
@@ -318,7 +317,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         cupoHourCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         cupoHourPanel.add(cupoHourCardPanel);
         extraCupoHourCardPanelDeque.add(cupoHourCardPanel);
-        // presenter.setCardSessionActionListener(cupoHourCardPanel); // TODO i think thise line is not needed here
         // Ensure the UI updates to reflect the added component
         cupoHourPanel.revalidate();
         cupoHourPanel.repaint();
@@ -372,11 +370,11 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
             CupoHourCardPanel lastCupoHourCardPanel = extraCupoHourCardPanelDeque.removeLast();
 
             // Remove it from the panel
-            sessionPanel.remove(lastCupoHourCardPanel);
+            cupoHourPanel.remove(lastCupoHourCardPanel);
 
             // Revalidate and repaint the panel to reflect the changes
-            sessionPanel.revalidate();
-            sessionPanel.repaint();
+            cupoHourPanel.revalidate();
+            cupoHourPanel.repaint();
         }
     }
 
@@ -448,8 +446,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         return deleteDvItem;
     }
 
-    public JScrollPane getTripulantesScrollPane() {
-        return tripulantesScrollPane;
+    public JScrollPane getHoursAppsLandingsProjectilesScrollPanel() {
+        return hoursAppsLandingsProjectilesScrollPanel;
     }
 
     public JPopupMenu getHorasAppsTomasProjectilesPopupMenu() {
@@ -472,7 +470,15 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         return cupoHourCardPanel1;
     }
 
-    public CupoHourCardPanel getCupoHourCardPanel3() {
+    public CupoHourCardPanel getCupoHourCardPanel2() {
         return cupoHourCardPanel2;
+    }
+
+    public JMenuItem getAddCupoCardItem() {
+        return addCupoCardItem;
+    }
+
+    public JMenuItem getDeleteCupoCardItem() {
+        return deleteCupoCardItem;
     }
 }
