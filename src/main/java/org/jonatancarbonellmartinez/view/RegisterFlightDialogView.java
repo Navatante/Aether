@@ -144,7 +144,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder2.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         hoursAppsLandingsProjectilesScrollPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0, 5, 0, 45),
+                BorderFactory.createEmptyBorder(0, 10, 0, 45),
                 titleBorder2
         ));
 
@@ -153,7 +153,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         titleBorder3.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         sessionScrollPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0, 5, 0, 45),
+                BorderFactory.createEmptyBorder(0, 10, 0, 45),
                 titleBorder3
         ));
 
@@ -173,7 +173,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         cupoHourCardPanel1.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
         cupoHourCardPanel2.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
-        hoursAppsLandingsProjectilesScrollPanel.setPreferredSize(new Dimension(1305, 150));
+        hoursAppsLandingsProjectilesScrollPanel.setPreferredSize(new Dimension(1310, 150));
         hoursAppsLandingsProjectilesScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         hoursAppsLandingsProjectilesScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();
@@ -197,6 +197,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         // Añadir un MouseListener al panel para detectar clic derecho
         View.setMouseListenerToPanel(hoursAppsLandingsProjectilesScrollPanel, horasAppsTomasProjectilesPopupMenu);
         View.setMouseListenerToPanel(cupoHourScrollPanel, horasCupoPopupMenu);
+
     }
 
     @Override
