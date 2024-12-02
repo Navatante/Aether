@@ -725,7 +725,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean arePassengerCardsValid() {
         boolean isValid = arePassengerQuantityValid() &&
-                          arePassengeRouteValid() &&
+                          arePassengerRouteValid() &&
                           hasNoDuplicatePassengerPanels();
         return isValid;
     }
@@ -754,11 +754,30 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
 
-    private boolean arePassengeRouteValid() { // TODO 2
+    private boolean arePassengerRouteValid() {
+        for (PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
+            // Si se ha seleccionado un tipo, comprobamos el RouteField.
+            if (passengerCardPanel.getTypeBox().getSelectedIndex() != 0) {
+                // Validar que el campo no esté vacío.
+                if (!DialogPresenter.validateField(view, passengerCardPanel.getRouteField(), "Ruta")) {
+                    return false; // Se asume que validateField ya muestra el mensaje de error.
+                }
+
+                // Validar el campo Ruta.
+                String qtyText = passengerCardPanel.getRouteField().getText();
+                if (!qtyText.matches("^[a-zA-Z]{1,20}-[a-zA-Z]{1,20}$")) {
+                    JOptionPane.showMessageDialog(view,
+                            "La Ruta ingresada no es válida.\nSolo se permite el formato: Abc...-Abc...",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
-    private boolean hasNoDuplicatePassengerPanels() { // TODO 3
+    private boolean hasNoDuplicatePassengerPanels() { // TODO 2
         return true;
     }
 
@@ -1146,7 +1165,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    private boolean areCupoHourCardsValid() {
+    private boolean areCupoHourCardsValid() { // TODO 1 falta un metodo que compruebe que al menos una card esta completa (box y field completos). y luego otro que compruebe que si se ha seleccionado field o box, el otro field o box debe completarse. un metodo para cada uno
         return doesTotalHoursEqualsSumOfCupoHours();
     }
 
