@@ -2,7 +2,6 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.model.entities.Unit;
 import org.jonatancarbonellmartinez.utilities.Database;
 
@@ -11,10 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class UnitDAOSQlite implements GenericDAO<Unit, Integer>{
+public class UnitDAOSQLite implements GenericDAO<Unit, Integer>{
     @Override
     public void insert(Unit entity) throws DatabaseException {
         String sql = "INSERT INTO dim_unit (unit_short, unit_name, unit_agency_short, unit_agency_name, unit_authority, unit_authority_abrv)" +

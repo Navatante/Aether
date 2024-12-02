@@ -1,9 +1,8 @@
 package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.model.entities.App;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.WtHour;
+import org.jonatancarbonellmartinez.model.entities.HdmsHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
 import java.sql.Connection;
@@ -13,28 +12,27 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class AppDAOSqlite implements GenericDAO<App, Integer>{
+public class HdmsHourDAOSQLite implements GenericDAO<HdmsHour, Integer> {
     @Override
-    public void insert(App entity) throws DatabaseException {
-        // Apps are inserted in batch.
+    public void insert(HdmsHour entity) throws DatabaseException {
+        // HDMS hours are inserted in batch.
     }
 
-    public void insertBatch(List<App> entities) throws DatabaseException {
+    public void insertBatch(List<HdmsHour> entities) throws DatabaseException {
         if (entities == null || entities.isEmpty()) {
             return; // No operation needed for empty lists
         }
 
-        String sql = "INSERT INTO main.junction_app (app_flight_fk, app_person_fk, app_type_fk, app_qty) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO main.junction_hdms_hour (hdms_hour_flight_fk, hdms_hour_person_fk, hdms_hour_qty) VALUES (?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                for (App entity : entities) {
+                for (HdmsHour entity : entities) {
                     pstmt.setInt(1,     entity.getFlightFk());
                     pstmt.setInt(2,     entity.getPersonFk());
-                    pstmt.setInt(3,  entity.getAppTypeFk());
-                    pstmt.setInt(4,  entity.getAppQty());
+                    pstmt.setDouble(3,  entity.getHdmsHourQty());
                     pstmt.addBatch();
                 }
 
@@ -42,7 +40,7 @@ public class AppDAOSqlite implements GenericDAO<App, Integer>{
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(); // Undo all changes in case of an error
-                throw new DatabaseException("Error inserting App data in batch", e);
+                throw new DatabaseException("Error inserting HDMS hours data in batch", e);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error with database connection or transaction", e);
@@ -55,7 +53,7 @@ public class AppDAOSqlite implements GenericDAO<App, Integer>{
     }
 
     @Override
-    public void update(App entity, int skToUpdate) throws DatabaseException {
+    public void update(HdmsHour entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -65,7 +63,7 @@ public class AppDAOSqlite implements GenericDAO<App, Integer>{
     }
 
     @Override
-    public List<App> getAll() throws DatabaseException {
+    public List<HdmsHour> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 

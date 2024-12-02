@@ -2,7 +2,6 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.SessionCrewCount;
 import org.jonatancarbonellmartinez.model.entities.WtHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class WtHourDAOSqlite implements GenericDAO<WtHour, Integer> {
+public class WtHourDAOSQLite implements GenericDAO<WtHour, Integer> {
     @Override
     public void insert(WtHour entity) throws DatabaseException {
         // Wt hours are inserted in batch.

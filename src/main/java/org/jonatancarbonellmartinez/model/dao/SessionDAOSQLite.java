@@ -10,10 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class SessionDAOSqlite implements GenericDAO<Session, Integer> { // TODO cuando los oficiales se aclaren y sepan como seran las Sesiones, entonces creare la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
+public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO cuando los oficiales se aclaren y sepan como seran las Sesiones, entonces creare la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
     @Override
     public void insert(Session entity) throws DatabaseException {
         String sql = "INSERT INTO dim_session (session_nk, session_dv, session_name, session_type, session_subtype, session_CAPBA, session_crp_value, session_expiration)" +

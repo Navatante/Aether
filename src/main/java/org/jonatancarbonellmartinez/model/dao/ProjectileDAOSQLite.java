@@ -2,8 +2,7 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.InstructorHour;
-import org.jonatancarbonellmartinez.model.entities.WtHour;
+import org.jonatancarbonellmartinez.model.entities.Projectile;
 import org.jonatancarbonellmartinez.utilities.Database;
 
 import java.sql.Connection;
@@ -13,27 +12,28 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class InstructorHourDAOSqlite implements GenericDAO<InstructorHour, Integer>{
+public class ProjectileDAOSQLite implements GenericDAO<Projectile, Integer> {
     @Override
-    public void insert(InstructorHour entity) throws DatabaseException {
-        // Instructor hours are inserted in batch.
+    public void insert(Projectile entity) throws DatabaseException {
+        // Projectiles are inserted in batch
     }
 
-    public void insertBatch(List<InstructorHour> entities) throws DatabaseException {
+    public void insertBatch(List<Projectile> entities) throws DatabaseException {
         if (entities == null || entities.isEmpty()) {
             return; // No operation needed for empty lists
         }
 
-        String sql = "INSERT INTO main.junction_instructor_hour (instructor_hour_flight_fk, instructor_hour_person_fk, instructor_hour_qty) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO main.junction_projectile (projectile_flight_fk, projectile_person_fk, projectile_type_fk, projectile_qty) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                for (InstructorHour entity : entities) {
-                    pstmt.setInt(1,     entity.getFlightFk());
-                    pstmt.setInt(2,     entity.getPersonFk());
-                    pstmt.setDouble(3,  entity.getInstructorHourQty());
+                for (Projectile entity : entities) {
+                    pstmt.setInt(1, entity.getFlightFk());
+                    pstmt.setInt(2, entity.getPersonFk());
+                    pstmt.setInt(3, entity.getProjectileTypeFk());
+                    pstmt.setInt(4, entity.getProjectileQty());
                     pstmt.addBatch();
                 }
 
@@ -41,7 +41,7 @@ public class InstructorHourDAOSqlite implements GenericDAO<InstructorHour, Integ
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(); // Undo all changes in case of an error
-                throw new DatabaseException("Error inserting Instructor hours data in batch", e);
+                throw new DatabaseException("Error inserting projectile data in batch", e);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error with database connection or transaction", e);
@@ -54,7 +54,7 @@ public class InstructorHourDAOSqlite implements GenericDAO<InstructorHour, Integ
     }
 
     @Override
-    public void update(InstructorHour entity, int skToUpdate) throws DatabaseException {
+    public void update(Projectile entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -64,7 +64,7 @@ public class InstructorHourDAOSqlite implements GenericDAO<InstructorHour, Integ
     }
 
     @Override
-    public List<InstructorHour> getAll() throws DatabaseException {
+    public List<Projectile> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 

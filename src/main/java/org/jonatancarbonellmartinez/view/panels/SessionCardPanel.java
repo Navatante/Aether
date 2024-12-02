@@ -5,6 +5,7 @@ import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -91,8 +92,8 @@ public class SessionCardPanel extends JPanel implements View {
 
     @Override
     public void configurePanels() {
-        personMainPanel.setPreferredSize(new Dimension(130, 100));
-        personScrollPanel.setPreferredSize(new Dimension(100, 100));
+        personMainPanel.setPreferredSize(new Dimension(170, 100));
+        personScrollPanel.setPreferredSize(new Dimension(120, 100));
         sessionMainPanel.setPreferredSize(new Dimension(200, 100)); // TODO adapt sizes
         sessionScrollPanel.setPreferredSize(new Dimension(170, 100)); // TODO adapt sizes
 
@@ -124,7 +125,6 @@ public class SessionCardPanel extends JPanel implements View {
 
         sessionBox.setMaximumSize(CrewCardPanel.SESSION_BOX_DIMENSION);
         sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-
     }
 
     @Override

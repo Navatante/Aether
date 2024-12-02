@@ -21,17 +21,18 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final PersonDAOSQLite personDAO;
     private final FlightDAOSQLite flightDAO;
     private final PersonHourDAOSQLite personHourDAO;
-    private final IftHourDAOSqlite iftHourDAO;
-    private final InstructorHourDAOSqlite instructorHourDAO;
-    private final HdmsHourDAOSqlite hdmsHourDAO;
-    private final AppDAOSqlite appDAO;
-    private final LandingDAOSqlite landingDAO;
-    private final WtHourDAOSqlite wtHourDAO;
-    private final ProjectileDAOSqlite projectileDAO;
-    private final SessionDAOSqlite sessionDAO;
-    private final SessionCrewCountDAOSqlite sessionCrewCountDAO;
-    private final UnitDAOSQlite unitDAO;
-    private final CupoHourDAOSQlite cupoHourDAO;
+    private final IftHourDAOSQLite iftHourDAO;
+    private final InstructorHourDAOSQLite instructorHourDAO;
+    private final HdmsHourDAOSQLite hdmsHourDAO;
+    private final AppDAOSQLite appDAO;
+    private final LandingDAOSQLite landingDAO;
+    private final WtHourDAOSQLite wtHourDAO;
+    private final ProjectileDAOSQLite projectileDAO;
+    private final SessionDAOSQLite sessionDAO;
+    private final SessionCrewCountDAOSQLite sessionCrewCountDAO;
+    private final UnitDAOSQLite unitDAO;
+    private final CupoHourDAOSQLite cupoHourDAO;
+    private final PassengerDAOSQLite passengerDAO;
     private final RegisterFlightDialogView view;
     private final Observer observer;
 
@@ -42,6 +43,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private ArrayList<DvCrewCardPanel> allDvCardPanels;
     private ArrayList<SessionCardPanel> allSessionCardPanels;
     private ArrayList<CupoHourCardPanel> allCupoHourCardPanels;
+    private ArrayList<PassengerCardPanel> allPassengerCardPanels;
 
     private Vector<Entity> allPilotsVector, allDvsVector, allPersonsVector, allSessionsVector, allUnitsVector;
 
@@ -63,6 +65,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         this.sessionCrewCountDAO = DAOFactorySQLite.getInstance().createSessionCrewCountDAO();
         this.unitDAO = DAOFactorySQLite.getInstance().createUnitDAO();
         this.cupoHourDAO = DAOFactorySQLite.getInstance().createCupoHourDAO();
+        this.passengerDAO = DAOFactorySQLite.getInstance().createPassengerDAO();
         createVectors();
         this.observer = observer;
     }
@@ -72,7 +75,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         boolean isValid = isVueloCardValid() &&
                             areCrewCardsValid() &&
                             areSessionCardsValid() &&
-                            areCupoHourCardsValid();
+                            areCupoHourCardsValid() &&
+                            arePassengerCardsValid();
         return isValid;
     }
 
@@ -147,6 +151,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         allCupoHourCardPanels.add(view.getCupoHourCardPanel1());
         allCupoHourCardPanels.add(view.getCupoHourCardPanel2());
         allCupoHourCardPanels.addAll(view.getExtraCupoHourCardPanelDeque());
+    }
+
+    private void collectPassengerCardPanels() {
+        allPassengerCardPanels = new ArrayList<>();
+
+        allPassengerCardPanels.add(view.getPassengerCardPanel1());
+        allPassengerCardPanels.add(view.getPassengerCardPanel2());
+        allPassengerCardPanels.addAll(view.getExtraPassengerCardPanelDeque());
     }
 
     public void insertPersonHour() {
@@ -523,6 +535,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         collectDvCardPanels();
         collectSessionCardPanels();
         collectCupoHourCardPanels();
+        collectPassengerCardPanels();
 
         if (isFormValid()) {
             insertEntity();
@@ -579,6 +592,14 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.deleteExtraCupoHourCardView();
     }
 
+    public void onAddPassengerCardItemClicked() {
+        view.addExtraPassengerCardView();
+    }
+
+    public void onDeletePassengerCardItemClicked() {
+        view.deleteExtraPassengerCardView();
+    }
+
     @Override
     public Entity collectEntityData() { // TODO this will be the method who will manage all CollectXData method created in the methods below.
         // Maybe simply i just dont need it.
@@ -631,8 +652,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         view.getSessionCardPanel().getDeleteGroupItem().addActionListener(e -> onDeleteGroupItemClicked());
         view.getAddCupoCardItem().addActionListener( e -> onAddCupoCardItemClicked());
         view.getDeleteCupoCardItem().addActionListener( e -> onDeleteCupoCardItemClicked());
-
-
+        view.getAddPassengerCardItem().addActionListener( e -> onAddPassengerCardItemClicked());
+        view.getDeletePassengerCardItem().addActionListener( e -> onDeletePassengerCardItemClicked());
     }
 
     public void setCardSessionActionListener(SessionCardPanel sessionCardPanel) {
@@ -697,9 +718,48 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         boolean isValid = hasNoDuplicatePersonsInSessionCardPanel() &&
                           personInSessionCardHasFlight() &&
                           hasNoDuplicateSessionsInSessionCardPanel() &&
-                          hasNoDuplicatePanels()  ;
+                          hasNoDuplicateSessionPanels()  ;
 
         return isValid;
+    }
+
+    private boolean arePassengerCardsValid() {
+        boolean isValid = arePassengerQuantityValid() &&
+                          arePassengeRouteValid() &&
+                          hasNoDuplicatePassengerPanels();
+        return isValid;
+    }
+
+    private boolean arePassengerQuantityValid() {
+        for (PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
+            // Si se ha seleccionado un tipo, comprobamos el qtyField.
+            if (passengerCardPanel.getTypeBox().getSelectedIndex() != 0) {
+                // Validar que el campo no esté vacío.
+                if (!DialogPresenter.validateField(view, passengerCardPanel.getQtyField(), "Cantidad")) {
+                    return false; // Se asume que validateField ya muestra el mensaje de error.
+                }
+
+                // Validar que el campo tenga un número entero positivo.
+                String qtyText = passengerCardPanel.getQtyField().getText();
+                if (!qtyText.matches("^[1-9][0-9]*$")) {
+                    JOptionPane.showMessageDialog(view,
+                            "La cantidad ingresada en el campo 'Cantidad' es inválida. Solo se permiten números enteros positivos.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    private boolean arePassengeRouteValid() { // TODO 2
+        return true;
+    }
+
+    private boolean hasNoDuplicatePassengerPanels() { // TODO 3
+        return true;
     }
 
     private boolean hasNoDuplicatePersonsInSessionCardPanel() {
@@ -785,7 +845,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    public boolean hasNoDuplicatePanels() {
+    public boolean hasNoDuplicateSessionPanels() {
         // Use a set to store unique combinations of person and session selections
         Set<String> uniqueCombinations = new HashSet<>();
 
@@ -822,9 +882,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // No duplicates detected
         return true;
     }
-
-
-
 
     private boolean arePilotsSelected() {
         // Validate pilot boxes for primary and secondary pilots
@@ -1089,7 +1146,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    private boolean areCupoHourCardsValid() { // TODO por aqui
+    private boolean areCupoHourCardsValid() {
         return doesTotalHoursEqualsSumOfCupoHours();
     }
 
