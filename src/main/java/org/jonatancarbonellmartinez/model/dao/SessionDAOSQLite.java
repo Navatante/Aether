@@ -15,8 +15,8 @@ import java.util.List;
 public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO cuando los oficiales se aclaren y sepan como seran las Sesiones, entonces creare la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
     @Override
     public void insert(Session entity) throws DatabaseException {
-        String sql = "INSERT INTO dim_session (session_nk, session_dv, session_name, session_type, session_subtype, session_CAPBA, session_crp_value, session_expiration)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO dim_session (session_nk, session_dv, session_name, session_type, session_subtype, session_crp_value, session_expiration)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -25,9 +25,8 @@ public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO 
             pstmt.setString(3, entity.getSessionName());
             pstmt.setString(4, entity.getSessionType());
             pstmt.setString(5, entity.getSessionSubType());
-            pstmt.setString(6, entity.getCapba());
-            pstmt.setDouble(7, entity.getCrpValue());
-            pstmt.setInt(8, entity.getExpiration());
+            pstmt.setDouble(6, entity.getCrpValue());
+            pstmt.setInt(7, entity.getExpiration());
 
             pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
         } catch (SQLException e) {
@@ -78,7 +77,6 @@ public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO 
         session.setSessionName(rs.getString("session_name"));
         session.setSessionType(rs.getString("session_type"));
         session.setSessionSubType(rs.getString("session_subtype"));
-        session.setCapba(rs.getString("session_CAPBA"));
         session.setCrpValue(rs.getDouble("session_crp_value"));
         session.setExpiration(rs.getInt("session_expiration"));
         return session;

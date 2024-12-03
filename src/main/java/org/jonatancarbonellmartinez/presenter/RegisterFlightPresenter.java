@@ -94,6 +94,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             insertProjectile();
             insertSessionCrewCount();
             insertCupoHour();
+            insertPassenger();
             // add more insert methods.
             DialogView.showMessage(view,"Vuelo añadido correctamente.");
 
@@ -517,6 +518,29 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         cupoHourDAO.insertBatch(cupoHours);
     }
 
+    private void insertPassenger() {
+        List<Passenger> passengers = new ArrayList<>();
+
+        for(PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
+            String passengerType = passengerCardPanel.getTypeBox().getSelectedItem().toString() == null ? "nulo" : passengerCardPanel.getTypeBox().getSelectedItem().toString();
+            String passengerQty = passengerCardPanel.getQtyField().getText();
+            String passengerRoute = passengerCardPanel.getRouteField().getText();
+
+            if( passengerType == null || Objects.equals(passengerQty, "Horas") || Objects.equals(passengerRoute, "Ruta")) {
+                continue;
+            }
+
+            Passenger passenger = new Passenger();
+            passenger.setFlightFk(lastFlightSk);
+            passenger.setPassengerTypeFk(passengerType.equals("Civiles") ? 1 : 2);
+            passenger.setPassengerQty(Integer.parseInt(passengerQty));
+            passenger.setRoute(passengerRoute);
+
+            passengers.add(passenger);
+        }
+        passengerDAO.insertBatch(passengers);
+    }
+
     @Override
     public void editEntity() {
         // de momento nada aqui
@@ -724,26 +748,34 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     }
 
     private boolean arePassengerCardsValid() {
-        boolean isValid = arePassengerQuantityValid() &&
-                          arePassengerRouteValid() &&
+        boolean isValid = isPassengerCardDataValid() &&
                           hasNoDuplicatePassengerPanels();
         return isValid;
     }
 
-    private boolean arePassengerQuantityValid() {
+    private boolean isPassengerCardDataValid() {
         for (PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
-            // Si se ha seleccionado un tipo, comprobamos el qtyField.
-            if (passengerCardPanel.getTypeBox().getSelectedIndex() != 0) {
-                // Validar que el campo no esté vacío.
-                if (!DialogPresenter.validateField(view, passengerCardPanel.getQtyField(), "Cantidad")) {
-                    return false; // Se asume que validateField ya muestra el mensaje de error.
+            int typeBoxSelection = passengerCardPanel.getTypeBox().getSelectedIndex();
+            String qtyFieldValue = passengerCardPanel.getQtyField().getText();
+            String routeFieldValue = passengerCardPanel.getRouteField().getText();
+
+            // Si hay intención de rellenar datos pero falta alguno o no es válido
+            if (typeBoxSelection != 0 || !qtyFieldValue.equals("Cantidad") || !routeFieldValue.equals("Ruta")) {
+                // Validar el campo 'Cantidad'
+                if (passengerCardPanel.getQtyField().getText().equals("Cantidad") ||
+                        !qtyFieldValue.matches("^[1-9][0-9]*$")) {
+                    JOptionPane.showMessageDialog(view,
+                            "La cantidad ingresada en el campo 'Cantidad' es inválida o está vacía.\nSolo se permiten números enteros positivos.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
                 }
 
-                // Validar que el campo tenga un número entero positivo.
-                String qtyText = passengerCardPanel.getQtyField().getText();
-                if (!qtyText.matches("^[1-9][0-9]*$")) {
+                // Validar el campo 'Ruta'
+                if (passengerCardPanel.getRouteField().getText().equals("Ruta") ||
+                        !routeFieldValue.matches("^[a-zA-Z]{1,20}-[a-zA-Z]{1,20}$")) {
                     JOptionPane.showMessageDialog(view,
-                            "La cantidad ingresada en el campo 'Cantidad' es inválida. Solo se permiten números enteros positivos.",
+                            "La Ruta ingresada no es válida.\nDebe seguir el formato: Abc...-Abc...",
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                     return false;
@@ -753,33 +785,38 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
+    private boolean hasNoDuplicatePassengerPanels() {
+        // Usamos un conjunto para almacenar las combinaciones únicas de los campos.
+        Set<String> uniquePanels = new HashSet<>();
 
-    private boolean arePassengerRouteValid() {
         for (PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
-            // Si se ha seleccionado un tipo, comprobamos el RouteField.
-            if (passengerCardPanel.getTypeBox().getSelectedIndex() != 0) {
-                // Validar que el campo no esté vacío.
-                if (!DialogPresenter.validateField(view, passengerCardPanel.getRouteField(), "Ruta")) {
-                    return false; // Se asume que validateField ya muestra el mensaje de error.
-                }
+            int typeBoxSelection = passengerCardPanel.getTypeBox().getSelectedIndex();
+            String qtyFieldValue = passengerCardPanel.getQtyField().getText();
+            String routeFieldValue = passengerCardPanel.getRouteField().getText();
 
-                // Validar el campo Ruta.
-                String qtyText = passengerCardPanel.getRouteField().getText();
-                if (!qtyText.matches("^[a-zA-Z]{1,20}-[a-zA-Z]{1,20}$")) {
-                    JOptionPane.showMessageDialog(view,
-                            "La Ruta ingresada no es válida.\nSolo se permite el formato: Abc...-Abc...",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
+            if (typeBoxSelection == 0 || qtyFieldValue.equals("Cantidad") || routeFieldValue.equals("Ruta")) {
+                continue;
             }
+
+            // Creamos una clave única basada en los valores de los campos.
+            String panelKey = typeBoxSelection + "|" + qtyFieldValue + "|" + routeFieldValue;
+
+            // Verificamos si la clave ya existe en el conjunto.
+            if (uniquePanels.contains(panelKey)) {
+                JOptionPane.showMessageDialog(view,
+                        "Existen paneles de pasajeros duplicados.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            // Si no es un duplicado, lo añadimos al conjunto.
+            uniquePanels.add(panelKey);
         }
-        return true;
+
+        return true; // No se encontraron duplicados.
     }
 
-    private boolean hasNoDuplicatePassengerPanels() { // TODO 2
-        return true;
-    }
 
     private boolean hasNoDuplicatePersonsInSessionCardPanel() {
 
@@ -1033,13 +1070,67 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // Compare total hours with the sum of cupo hours
         if (!totalHours.equals(sumOfCupoHours)) {
             JOptionPane.showMessageDialog(view,
-                    "Las horas totales del vuelo no coinciden con las horas por cupo.",
+                    "Las Horas Totales del vuelo no coinciden con las Horas por Cupo.",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         return true;
     }
+
+    private boolean isCupoHourCardValid() {
+        for (CupoHourCardPanel cupoHourCardPanel : allCupoHourCardPanels) {
+            String hourQtyText = cupoHourCardPanel.getHourQtyField().getText().trim(); // Trim for safety
+            int selectedIndex = cupoHourCardPanel.getUnitBox().getSelectedIndex();
+
+            if (!hourQtyText.equals("Horas") && selectedIndex == -1) {
+                JOptionPane.showMessageDialog(view,
+                        "Hay Horas por Cupo a las que no se le ha asignado una Unidad.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (hourQtyText.equals("Horas") && selectedIndex != -1) {
+                JOptionPane.showMessageDialog(view,
+                        "Hay una Unidad a la que no se le ha asignado un Cupo.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasNoDuplicateCupoPanels() {
+        // Usamos un conjunto para almacenar las combinaciones únicas de los campos.
+        Set<String> uniquePanels = new HashSet<>();
+
+        for (CupoHourCardPanel cupoHourCardPanel : allCupoHourCardPanels) {
+            int unitBoxSelection = cupoHourCardPanel.getUnitBox().getSelectedIndex();
+            String hourFieldValue = cupoHourCardPanel.getHourQtyField().getText();
+
+            if (unitBoxSelection == -1 || hourFieldValue.equals("Horas")) {
+                continue;
+            }
+
+            // Creamos una clave única basada en los valores de los campos.
+            String panelKey = unitBoxSelection + "|" + hourFieldValue;
+
+            // Verificamos si la clave ya existe en el conjunto.
+            if (uniquePanels.contains(panelKey)) {
+                JOptionPane.showMessageDialog(view,
+                        "Existen paneles de Cupo duplicados.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            // Si no es un duplicado, lo añadimos al conjunto.
+            uniquePanels.add(panelKey);
+        }
+
+        return true; // No se encontraron duplicados.
+    }
+
 
     private boolean arePilotCardsHoursValid() {
         // Validate each PilotCardPanel
@@ -1165,8 +1256,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    private boolean areCupoHourCardsValid() { // TODO 1 falta un metodo que compruebe que al menos una card esta completa (box y field completos). y luego otro que compruebe que si se ha seleccionado field o box, el otro field o box debe completarse. un metodo para cada uno
-        return doesTotalHoursEqualsSumOfCupoHours();
+    private boolean areCupoHourCardsValid() {
+        return isCupoHourCardValid() &&
+                doesTotalHoursEqualsSumOfCupoHours() &&
+                hasNoDuplicateCupoPanels();
     }
 
     // Validates a single DvCardPanel

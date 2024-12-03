@@ -7,7 +7,6 @@ public class Session implements Entity {
     private String sessionName;
     private String sessionType;
     private String sessionSubType;
-    private String capba;
     private double crpValue;
     private int expiration;
 
@@ -64,14 +63,6 @@ public class Session implements Entity {
 
     public void setSessionSubType(String sessionSubType) {
         this.sessionSubType = sessionSubType;
-    }
-
-    public String getCapba() {
-        return capba;
-    }
-
-    public void setCapba(String capba) {
-        this.capba = capba;
     }
 
     public double getCrpValue() {
