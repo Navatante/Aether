@@ -524,7 +524,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         for(PassengerCardPanel passengerCardPanel : allPassengerCardPanels) {
             String passengerType = passengerCardPanel.getTypeBox().getSelectedItem().toString() == null ? "nulo" : passengerCardPanel.getTypeBox().getSelectedItem().toString();
             String passengerQty = passengerCardPanel.getQtyField().getText();
-            String passengerRoute = passengerCardPanel.getRouteField().getText();
+            String passengerRoute = passengerCardPanel.getRouteField().getText().toUpperCase();
 
             if( passengerType == null || Objects.equals(passengerQty, "Horas") || Objects.equals(passengerRoute, "Ruta")) {
                 continue;

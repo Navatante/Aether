@@ -61,7 +61,6 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
         });
     }
 
-
     public void loadAllPersons() {
         try {
             List<Person> persons = personDAO.getAll();
