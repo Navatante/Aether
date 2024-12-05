@@ -72,7 +72,7 @@ public class UnitPanelView extends JPanel implements View, PanelView {
 
         searchField = View.createTextField("Buscar");
         sorter = new TableRowSorter<>(tableModel);
-        unitTitleLabel = new JLabel("Unidad");
+        unitTitleLabel = new JLabel("Unidades");
 
     }
 

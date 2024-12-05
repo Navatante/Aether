@@ -300,4 +300,8 @@ public class MainView extends JFrame implements View {
     public JMenuItem getRegistrarVueloMenuItem() {
         return registrarVueloMenuItem;
     }
+
+    public JButton getUnitsButton() {
+        return unitsButton;
+    }
 }

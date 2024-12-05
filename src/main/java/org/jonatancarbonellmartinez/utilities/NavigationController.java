@@ -25,6 +25,10 @@ public class NavigationController {
             case "EventPanelView":
                 createAndShowEventPanelView();
                 break;
+
+            case "UnitPanelView":
+                createAndShowUnitPanelView();
+                break;
             // Add more cases for other views as necessary
         }
     }
@@ -71,6 +75,18 @@ public class NavigationController {
         }
 
         mainView.getCardLayout().show(mainView.getCardPanel(), "EventPanelView");
+        mainView.getCardPanel().revalidate();
+        mainView.getCardPanel().repaint();
+    }
+
+    private void createAndShowUnitPanelView() {
+        // Check if "UnitPanelView" is already present in the CardPanel
+        if (!isPanelPresent(UnitPanelView.class)) {
+            UnitPanelView unitPanelView = new UnitPanelView();
+            mainView.getCardPanel().add(unitPanelView, "UnitPanelView");
+        }
+
+        mainView.getCardLayout().show(mainView.getCardPanel(), "UnitPanelView");
         mainView.getCardPanel().revalidate();
         mainView.getCardPanel().repaint();
     }

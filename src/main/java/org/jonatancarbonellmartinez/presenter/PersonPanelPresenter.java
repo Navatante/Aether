@@ -13,6 +13,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class PersonPanelPresenter implements Presenter, PanelPresenter {
     private final GenericDAO<Person,Integer> personDAO;
@@ -147,8 +148,6 @@ public class PersonPanelPresenter implements Presenter, PanelPresenter {
     // Method to escape special regex characters
     static String escapeSpecialCharacters(String text) {
         // This will escape the backslash and any other regex special characters
-        return text.replaceAll("([\\\\\\^\\.\\$\\|\\?\\*\\+\\(\\)\\[\\]\\{\\}])", "\\\\$1");
+        return Pattern.quote(text);
     }
-
-
 }
