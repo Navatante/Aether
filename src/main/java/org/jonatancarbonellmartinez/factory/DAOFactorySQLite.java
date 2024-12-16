@@ -96,8 +96,8 @@ public class DAOFactorySQLite implements DAOFactory {
     }
 
     @Override
-    public UnitDAOSQLite createUnitDAO() throws DatabaseException {
-        return new UnitDAOSQLite();
+    public AuthorityDAOSQLite createUnitDAO() throws DatabaseException {
+        return new AuthorityDAOSQLite();
     }
 
     @Override

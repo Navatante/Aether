@@ -30,7 +30,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
     private final ProjectileDAOSQLite projectileDAO;
     private final SessionDAOSQLite sessionDAO;
     private final SessionCrewCountDAOSQLite sessionCrewCountDAO;
-    private final UnitDAOSQLite unitDAO;
+    private final AuthorityDAOSQLite unitDAO;
     private final CupoHourDAOSQLite cupoHourDAO;
     private final PassengerDAOSQLite passengerDAO;
     private final RegisterFlightDialogView view;
@@ -713,7 +713,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return sessionDAO.getAll();
     }
 
-    public List<Unit> getAllUnits() {
+    public List<Authority> getAllUnits() {
         return unitDAO.getAll();
     }
 

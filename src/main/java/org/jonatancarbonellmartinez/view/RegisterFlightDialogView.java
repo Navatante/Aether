@@ -105,8 +105,8 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         passengerScrollPanel = new JScrollPane(passengerPanel);
 
         bottomPanel = new JPanel();
-        pilotCardPanel1 = new PilotCrewCardPanel(this, presenter);
-        pilotCardPanel2 = new PilotCrewCardPanel(this, presenter);
+        pilotCardPanel1 = new PilotCrewCardPanel(this, presenter, "HAC");
+        pilotCardPanel2 = new PilotCrewCardPanel(this, presenter, "H2P");
         dvCardPanel1 = new DvCrewCardPanel(this, presenter);
         sessionCardPanel = new SessionCardPanel(this, presenter);
         cupoHourCardPanel1 = new CupoHourCardPanel(this, presenter);
@@ -330,7 +330,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     }
 
     public void addExtraPilotCardView() {
-        PilotCrewCardPanel pilotCardPanel = new PilotCrewCardPanel(this, presenter);
+        PilotCrewCardPanel pilotCardPanel = new PilotCrewCardPanel(this, presenter, "H2P");
         pilotCardPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         tripulantesPanel.add(pilotCardPanel);
         extraPilotCardPanelDeque.add(pilotCardPanel);

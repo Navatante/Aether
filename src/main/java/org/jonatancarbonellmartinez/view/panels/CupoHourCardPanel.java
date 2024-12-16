@@ -42,7 +42,7 @@ public class CupoHourCardPanel extends JPanel implements View {
 
     @Override
     public void createComponents() {
-        unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Unidad");
+        unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Autoridad");
         hourQtyField = View.createTextField("Horas");
     }
 

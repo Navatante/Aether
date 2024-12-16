@@ -47,9 +47,12 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     JComboBox pilotBox;
 
-    public PilotCrewCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
+    private String pilotPlaceHolder;
+
+    public PilotCrewCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter, String pilotPlaceHolder) {
         this.presenter = registerFlightPresenter;
         this.registerFlightDialogView = registerFlightDialogView; // this way i have access to data like pilotList or dvList, si mas adelante doy con una mejor solucion pues cambialo.
+        this.pilotPlaceHolder = pilotPlaceHolder;
         this.initializeUI();
         setVisible(true);
     }
@@ -126,13 +129,13 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     @Override
     public void createComponents() {
-        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPilotsVector()),"PIL");
+        pilotBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPilotsVector()),pilotPlaceHolder);
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");
-        instrumentosLabel = new JLabel("Instrumentos");
-        hdmsLabel = new JLabel("HDMS");
-        instructorLabel = new JLabel("Instructor");
+        instrumentosLabel = new JLabel("Instr.");
+        hdmsLabel = new JLabel("HMDS");
+        instructorLabel = new JLabel("IP");
 
         dayHourField = View.createTextField("D");
         nightHourField = View.createTextField("N");
@@ -198,8 +201,9 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
         this.add(mainPanel);
         mainPanel.add(personPanel, BorderLayout.WEST);
         mainPanel.add(pilotPanel,BorderLayout.EAST);
+        // TODO crear ahora el panel pilotPanelTop y el PilotPanelBottom.
 
-        pilotPanel.add(hoursPanel);
+        pilotPanel.add(hoursPanel); // esto en lugar de pilotPanel seria pilotPanelTop
         pilotPanel.add(appsPanel);
         pilotPanel.add(cuartoEjePanel);
         pilotPanel.add(landingsPanel);
