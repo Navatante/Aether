@@ -74,7 +74,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     public void setupUIProperties() {
         setLayout(new BorderLayout());
         setResizable(false);
-        setSize(1280,720);
+        setSize(1280,810);
         setLocationRelativeTo(mainView);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -205,7 +205,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         passengerCardPanel1.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
         passengerCardPanel2.setBorder(new MatteBorder(0,0,1,0,Color.GRAY));
 
-        hoursAppsLandingsProjectilesScrollPanel.setPreferredSize(new Dimension(1310, 150));
+        hoursAppsLandingsProjectilesScrollPanel.setPreferredSize(new Dimension(1310, 240));
         hoursAppsLandingsProjectilesScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         hoursAppsLandingsProjectilesScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //JScrollBar verticalScrollBar = tripulantesScrollPane.getVerticalScrollBar();

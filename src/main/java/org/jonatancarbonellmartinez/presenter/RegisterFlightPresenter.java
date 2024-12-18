@@ -217,7 +217,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             case 2: // No precision
                 return pilotCardPanel.getNoPrecisionField().getText();
             case 3: // SAR-N
-                return pilotCardPanel.getSarnField().getText();
+                return pilotCardPanel.getTdField().getText();
             default:
                 return "";
         }
@@ -1159,7 +1159,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // Validate "Precision" fields
         if (!DialogPresenter.isAValidOptionalNumber(view, panel.getPrecisionField(), crewName + " Aproximación de Precisión", "P") ||
                 !DialogPresenter.isAValidOptionalNumber(view, panel.getNoPrecisionField(), crewName + " Aproximación de No precisión", "N") ||
-                !DialogPresenter.isAValidOptionalNumber(view, panel.getSarnField(), crewName + " Aproximación SAR-N", "S")) {
+                !DialogPresenter.isAValidOptionalNumber(view, panel.getTdField(), crewName + " Aproximación SAR-N", "S")) {
             return false;
         }
 
