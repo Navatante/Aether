@@ -407,6 +407,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                     landing.setLandingQty(Integer.parseInt(tierraLandingFieldText));
                     landings.add(landing);
                 }
+                // TODO (!carrierLandingFieldText.equals(defaultValue))
             }
         }
         landingDAO.insertBatch(landings);
@@ -941,13 +942,13 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean arePilotsSelected() {
         // Validate pilot boxes for primary and secondary pilots
-        boolean isPilot1Selected = DialogPresenter.validateDynamicComboBox(view, view.getPilotCardPanel1().getCrewBox(), "Primer PIL");
-        boolean isPilot2Selected = DialogPresenter.validateDynamicComboBox(view, view.getPilotCardPanel2().getCrewBox(), "Segundo PIL");
+        boolean isPilot1Selected = DialogPresenter.validateDynamicComboBox(view, view.getPilotCardPanel1().getCrewBox(), "HAC");
+        boolean isPilot2Selected = DialogPresenter.validateDynamicComboBox(view, view.getPilotCardPanel2().getCrewBox(), "H2P");
 
         // Validate all extra pilot boxes
         boolean areExtraPilotsSelected = view.getExtraPilotCardPanelDeque()
                 .stream()
-                .allMatch(panel -> DialogPresenter.validateDynamicComboBox(view, panel.getCrewBox(), "Extra PIL"));
+                .allMatch(panel -> DialogPresenter.validateDynamicComboBox(view, panel.getCrewBox(), "Extra H2P"));
 
         // Return true only if all validations pass
         return isPilot1Selected && isPilot2Selected && areExtraPilotsSelected;
