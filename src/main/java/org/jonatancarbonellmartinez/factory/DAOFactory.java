@@ -14,6 +14,7 @@ public interface DAOFactory {
     GenericDAO<IftHour, Integer> createIftHourDAO() throws DatabaseException;
     GenericDAO<InstructorHour, Integer> createInstructorHourDAO() throws DatabaseException;
     GenericDAO<HdmsHour, Integer> createHdmsHourDAO() throws DatabaseException;
+    GenericDAO<FormationHour, Integer> createFormationHourDAO() throws DatabaseException;
     GenericDAO<App, Integer> createAppDAO() throws DatabaseException;
     GenericDAO<Landing, Integer> createLandingDAO() throws DatabaseException;
     GenericDAO<WtHour, Integer> createWtHourDAO() throws DatabaseException;

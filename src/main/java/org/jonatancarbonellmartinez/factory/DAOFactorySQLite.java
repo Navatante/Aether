@@ -61,6 +61,11 @@ public class DAOFactorySQLite implements DAOFactory {
     }
 
     @Override
+    public FormationHourDAOSQLite createFormationHourDAO() throws DatabaseException {
+        return new FormationHourDAOSQLite();
+    }
+
+    @Override
     public AppDAOSQLite createAppDAO() throws DatabaseException {
         return new AppDAOSQLite();
     }

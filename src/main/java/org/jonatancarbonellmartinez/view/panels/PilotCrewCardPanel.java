@@ -41,13 +41,33 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, formacionesLabel, aproximacionesLabel, sarLabel, precisionLabel, noPrecisionLabel, tdLabel,srchPattLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel, carrierLabel;
 
-    private JTextField dayHourField, nightHourField, gvnHourField, iftHourField, hdmsHourField, instructorHourField, dayFormacionesHourField, gvnFormacionesHourField;
+    private JTextField dayHourField;
+    private JTextField nightHourField;
+    private JTextField gvnHourField;
+    private JTextField iftHourField;
+    private JTextField hdmsHourField;
+    private JTextField instructorHourField;
+    private JTextField dayFormacionesHourField;
+    private JTextField gvnFormacionesHourField;
 
     private JTextField precisionField, noPrecisionField;
 
-    private JTextField tdField, srchPattField;
+    private JTextField tdField;
 
-    private JTextField monoDayField, monoNightField, monoGvnField, multiDayField, multiNightField, multiGvnField, tierraDayField, tierraNightField, tierraGvnField, carrierDayField, carrierNightField, carrierGvnField;
+    private JTextField srchPattField;
+
+    private JTextField monoDayField;
+    private JTextField monoNightField;
+    private JTextField monoGvnField;
+    private JTextField multiDayField;
+    private JTextField multiNightField;
+    private JTextField multiGvnField;
+    private JTextField tierraDayField;
+    private JTextField tierraNightField;
+    private JTextField tierraGvnField;
+    private JTextField carrierDayField;
+    private JTextField carrierNightField;
+    private JTextField carrierGvnField;
 
     JComboBox pilotBox;
 
@@ -408,6 +428,30 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     public JTextField getTierraGvnField() {
         return tierraGvnField;
+    }
+
+    public JTextField getDayFormacionesHourField() {
+        return dayFormacionesHourField;
+    }
+
+    public JTextField getGvnFormacionesHourField() {
+        return gvnFormacionesHourField;
+    }
+
+    public JTextField getSrchPattField() {
+        return srchPattField;
+    }
+
+    public JTextField getCarrierDayField() {
+        return carrierDayField;
+    }
+
+    public JTextField getCarrierNightField() {
+        return carrierNightField;
+    }
+
+    public JTextField getCarrierGvnField() {
+        return carrierGvnField;
     }
 
     @Override
