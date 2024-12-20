@@ -53,12 +53,13 @@ public class MainView extends JFrame implements View {
     private JButton botonPrincipal;
     private JButton botonPilotos;
     private JButton botonDotaciones;
+    private JButton botonRecentFlights;
 
     private JButton botonEventos;
     private JButton botonSesiones;
     private JButton botonHelos;
 
-    private ImageIcon iconPersonal, iconEvent, iconPending;
+    private ImageIcon iconPersonal, iconEvent, iconPending, iconRecentFlights;
 
     public MainView() {
         presenter = new MainPresenter(this);
@@ -112,10 +113,12 @@ public class MainView extends JFrame implements View {
         iconPersonal = new ImageIcon(getClass().getResource("/Icon_Personal.png"));
         iconEvent = new ImageIcon(getClass().getResource("/Icon_Event.png"));
         iconPending = new ImageIcon(getClass().getResource("/Icon_Pending.png"));
+        iconRecentFlights = new ImageIcon(getClass().getResource("/Icon_RecentFlights.png"));
 
         botonPrincipal = createRoundedButton(iconPending);
         botonPilotos = createRoundedButton(iconPending);
         botonDotaciones = createRoundedButton(iconPending);
+        botonRecentFlights = createRoundedButton(iconRecentFlights);
         botonPersonal = createRoundedButton(iconPersonal);
         botonEventos = createRoundedButton(iconEvent);
         botonSesiones = createRoundedButton(iconPending);
@@ -128,7 +131,7 @@ public class MainView extends JFrame implements View {
         setContentPane(mainPanel);
         mainPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor));
         topLeftPanel.setLayout(new GridLayout(3,1,0,10));
-        topLeftPanel.setLayout(new GridLayout(3,1,0,10));
+        topLeftPanel.setLayout(new GridLayout(4,1,0,10)); // TODO i have to change rows (4) whenever i add or delete buttons from this panel
         bottomLeftPanel.setLayout(new GridLayout(4,1,0,10)); // TODO i have to change rows (4) whenever i add or delete buttons from this panel
         leftPanel.setPreferredSize(new Dimension(50, 0)); // Width slightly larger than button size
         leftPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5)); // Padding around panel
@@ -158,6 +161,7 @@ public class MainView extends JFrame implements View {
         botonPrincipal.setToolTipText("General");
         botonPilotos.setToolTipText("Pilotos");
         botonDotaciones.setToolTipText("Dotaciones");
+        botonRecentFlights.setToolTipText("Últimos vuelos");
         botonPersonal.setToolTipText("Personal");
         botonEventos.setToolTipText("Eventos");
         botonSesiones.setToolTipText("Sesiones");
@@ -184,8 +188,8 @@ public class MainView extends JFrame implements View {
         View.addMenusToMenu(editarMenu, editarPersonalMenuItem, editarEventoMenuItem);
         View.addMenusToMenu(generarMenu, docSemanalMenuItem, docMensualMenuItem);
 
+        View.addComponentsToPanel(topLeftPanel, botonPrincipal, botonPilotos, botonDotaciones, botonRecentFlights);
         View.addComponentsToPanel(bottomLeftPanel, botonPersonal, botonEventos, botonSesiones, botonHelos);
-        View.addComponentsToPanel(topLeftPanel, botonPrincipal, botonPilotos, botonDotaciones);
     }
 
     @Override
@@ -283,6 +287,10 @@ public class MainView extends JFrame implements View {
 
     public JButton getBotonEventos() {
         return botonEventos;
+    }
+
+    public JButton getBotonRecentFlights() {
+        return botonRecentFlights;
     }
 
     public JPanel getCardPanel() {

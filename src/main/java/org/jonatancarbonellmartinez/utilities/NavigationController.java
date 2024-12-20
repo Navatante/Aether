@@ -25,6 +25,9 @@ public class NavigationController {
             case "EventPanelView":
                 createAndShowEventPanelView();
                 break;
+            case "RecentFlightsPanelView":
+                createAndShowRecentFlightsPanelView();
+                break;
             // Add more cases for other views as necessary
         }
     }
@@ -71,6 +74,18 @@ public class NavigationController {
         }
 
         mainView.getCardLayout().show(mainView.getCardPanel(), "EventPanelView");
+        mainView.getCardPanel().revalidate();
+        mainView.getCardPanel().repaint();
+    }
+
+    private void createAndShowRecentFlightsPanelView() {
+        // Check if "RecentFlightsPanelView" is already present in the CardPanel
+        if (!isPanelPresent(RecentFlightsPanelView.class)) {
+            RecentFlightsPanelView recentFlightsPanelView = new RecentFlightsPanelView();
+            mainView.getCardPanel().add(recentFlightsPanelView, "RecentFlightsPanelView");
+        }
+
+        mainView.getCardLayout().show(mainView.getCardPanel(), "RecentFlightsPanelView");
         mainView.getCardPanel().revalidate();
         mainView.getCardPanel().repaint();
     }

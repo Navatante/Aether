@@ -628,6 +628,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         if (isFormValid()) {
             insertEntity();
             view.dispose(); // close dialog
+            notifyObserver();
             new RegisterFlightDialogView(view.getMainView()); // reopen it
         }
     }
@@ -722,7 +723,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     @Override
     public void notifyObserver() {
-
+        observer.update();
     }
 
     @Override
