@@ -57,7 +57,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     }
 
     public void loadPilotHoursDetails(DefaultTableModel tableModel) {
-        String sql = "SELECT * FROM view_pilot_hours_detail WHERE flight_sk = 30"; // TODO I have to achieve to put ? and do it dinamically
+        String sql = "SELECT * FROM view_pilot_hours_detail WHERE flight_sk = 91"; // TODO I have to achieve to put ? and do it dinamically
 
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql);

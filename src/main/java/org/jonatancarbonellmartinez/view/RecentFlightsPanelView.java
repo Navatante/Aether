@@ -58,7 +58,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     public void createComponents() {
         lastFlightsTitleLabel = new JLabel("Últimos vuelos");
         // Last Flights Table // TODO si se pincha en la cabecera Horas, salta un error interno porque intento ordenarlos pero los valores son String
-        lastFlightsTableModel = new DefaultTableModel(new String[] {"ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
+        lastFlightsTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
@@ -89,7 +89,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
         // Pilot Hours Details Table
         pilotHoursDetailTitleLabel = new JLabel("Horas Pilotos");
-        pilotHoursDetailTableModel = new DefaultTableModel(new String[] {"Vuelo", "Piloto", "Vuelo Dia", "Vuelo Noche", "Vuelo GVN", "Instr.", "HMDS", "IP", "Formación Dia", "Formación GVN"}, 0) {
+        pilotHoursDetailTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Piloto", "Vuelo Dia", "Vuelo Noche", "Vuelo GVN", "Instr.", "HMDS", "IP", "Formación Dia", "Formación GVN"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
