@@ -1,7 +1,6 @@
 package org.jonatancarbonellmartinez.presenter;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.model.entities.Event;
 import org.jonatancarbonellmartinez.utilities.Database;
 import org.jonatancarbonellmartinez.view.RecentFlightsPanelView;
 
@@ -12,12 +11,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     //private final GenericDAO<View,Integer> latestFlightDAO; creo que tengo que crear una entidad y su correspondiente DAO de la vista.
     private final RecentFlightsPanelView view;
+    private int selectedVueloId;
 
     public RecentFlightsPanelPresenter(RecentFlightsPanelView view) {
         this.view = view;
@@ -26,6 +24,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     @Override
     public void setActionListeners() {
         createSearchFieldListener();
+        idOfLastFlightListener();
         // aqui iria el listener de seleccionar el ID para actualizar las tablas de detalles
     }
 
@@ -56,12 +55,13 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         }
     }
 
-    public void loadPilotHoursDetails(DefaultTableModel tableModel) {
-        String sql = "SELECT * FROM view_pilot_hours_detail WHERE flight_sk = 91"; // TODO I have to achieve to put ? and do it dinamically
+    public void loadPilotHoursDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_pilot_hours_detail WHERE flight_sk = ?";
 
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
 
             // Clear existing rows in the table model
             tableModel.setRowCount(0);
@@ -82,11 +82,22 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
                 };
                 tableModel.addRow(row);
             }
+
+            rs.close();
+            pstmt.close();
         } catch (SQLException e) {
             throw new DatabaseException("Error al acceder a la vista", e);
         }
     }
 
+    // Metodo para obtener el ID del vuelo más alto
+    public int getHighestFlightId() {
+        // Obtén el valor del ID de la primera fila
+        int highestId = (int) view.getLastFlightsTableModel().getValueAt(0, 0);
+        return highestId;
+    }
+
+    // Listeners
     private void createSearchFieldListener() {
         // Placeholder text
         final String placeholder = "Buscar";
@@ -118,4 +129,20 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         });
     }
 
+    // Listener para manejar el dobleclick en la tabla de vuelos
+    private void idOfLastFlightListener() {
+        view.getLastFlightsTable().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedRow = view.getLastFlightsTable().getSelectedRow();
+                    if (selectedRow != -1) {
+                        int modelRow = view.getLastFlightsTable().convertRowIndexToModel(selectedRow);
+                        selectedVueloId = (int) view.getLastFlightsTableModel().getValueAt(modelRow, 0);
+                        loadPilotHoursDetails(view.getPilotHoursDetailTableModel(), selectedVueloId);
+                    }
+                }
+            }
+        });
+    }
 }

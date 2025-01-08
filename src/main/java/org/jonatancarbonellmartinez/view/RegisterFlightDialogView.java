@@ -76,7 +76,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         setResizable(false);
         setSize(1280,810);
         setLocationRelativeTo(mainView);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @Override

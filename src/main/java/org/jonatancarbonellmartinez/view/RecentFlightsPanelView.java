@@ -14,7 +14,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     private RecentFlightsPanelPresenter presenter;
     private JTable lastFlightsTable, pilotHoursDetailTable;
 
-    private DefaultTableModel lastFlightsTableModel, pilotHoursDetailTableModel;
+    private DefaultTableModel lastFlightsTableModel;
+
+    private DefaultTableModel pilotHoursDetailTableModel;
     private TableRowSorter<TableModel> sorter;
 
     JLabel lastFlightsTitleLabel, pilotHoursDetailTitleLabel;
@@ -35,7 +37,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     @Override
     public void updatePanel() {
         presenter.loadLatest50Flights(lastFlightsTableModel);
-        presenter.loadPilotHoursDetails(pilotHoursDetailTableModel);
+        presenter.loadPilotHoursDetails(pilotHoursDetailTableModel, presenter.getHighestFlightId());
         // TODO maybe load other detail queries.
     }
 
@@ -57,19 +59,20 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     @Override
     public void createComponents() {
         lastFlightsTitleLabel = new JLabel("Últimos vuelos");
-        // Last Flights Table // TODO si se pincha en la cabecera Horas, salta un error interno porque intento ordenarlos pero los valores son String
+        // Last Flights Table
         lastFlightsTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
             }
-            // Define "ID" as Integer; other columns default to String (in order to sort properly when headers are clicked)
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 if (columnIndex == 0) {
-                    return Integer.class;
+                    return Integer.class; // Vuelo ID as Integer
+                } else if (columnIndex == 5) {
+                    return Double.class; // Horas as Double
                 }
-                return String.class;
+                return String.class; // Other columns as String
             }
         };
 
@@ -113,32 +116,39 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
         pilotHoursDetailScrollPane = new JScrollPane(pilotHoursDetailTable);
         // TODO this is the render to gray the 0.0 numbers
-        // Apply custom renderer to numeric columns
-        PilotHoursCellRenderer cellRenderer = new PilotHoursCellRenderer();
-        for (int i = 2; i < pilotHoursDetailTable.getColumnCount(); i++) {
-            pilotHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        // Apply the custom renderer to the lastFlightsTable
+        for (int i = 0; i < pilotHoursDetailTable.getColumnCount(); i++) {
+            pilotHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
     }
 
-    // Render to gray 0.0 values
-    public class PilotHoursCellRenderer extends DefaultTableCellRenderer { // TODO is not working properly
+    // INNER CLASS Custom cell renderer to gray out 0.0 values
+    public class ZeroValueCellRenderer extends DefaultTableCellRenderer {
+        public ZeroValueCellRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER);
+        }
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             // If the cell is selected, keep the default color for selected cells
             if (isSelected) {
-                cell.setForeground(Color.WHITE); // Text color for selected cells (typically white)
+                cell.setForeground(Color.LIGHT_GRAY); // Text color for selected cells (typically white)
             } else {
                 // If the value is 0.0, set the text color to gray, otherwise set it to black
                 if (value instanceof Double && ((Double) value) == 0.0) {
-                    cell.setForeground(Color.GRAY); // Gray color for 0.0 values
+                    cell.setForeground(View.tableBackgroundColor); // Gray color for 0.0 values
+                } else {
+                    cell.setForeground(Color.LIGHT_GRAY); // Default color for other values
                 }
             }
 
             return cell;
         }
     }
+
+
 
     @Override
     public void configurePanels() {
@@ -184,11 +194,24 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         presenter.setActionListeners();
     }
 
+    // Getters and Setters
     public JTextField getSearchField() {
         return searchField;
     }
 
     public TableRowSorter<TableModel> getSorter() {
         return sorter;
+    }
+
+    public JTable getLastFlightsTable() {
+        return lastFlightsTable;
+    }
+
+    public DefaultTableModel getLastFlightsTableModel() {
+        return lastFlightsTableModel;
+    }
+
+    public DefaultTableModel getPilotHoursDetailTableModel() {
+        return pilotHoursDetailTableModel;
     }
 }

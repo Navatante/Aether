@@ -627,9 +627,18 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
         if (isFormValid()) {
             insertEntity();
-            view.dispose(); // close dialog
             notifyObserver();
-            new RegisterFlightDialogView(view.getMainView()); // reopen it
+
+            // Get the current position of the window
+            java.awt.Point location = view.getLocation();
+
+            // Dispose of the current window
+            view.dispose();
+
+            // Create a new instance of RegisterFlightDialogView at the same position
+            RegisterFlightDialogView newView = new RegisterFlightDialogView(view.getMainView());
+            newView.setLocation(location);
+            newView.setVisible(true); // TODO esto no esta funcionando bien, porque la vista primero aparece donde la mainView y despues en la lastLocation. arreglalo
         }
     }
 
