@@ -15,6 +15,7 @@ import java.sql.SQLException;
 public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     //private final GenericDAO<View,Integer> latestFlightDAO; creo que tengo que crear una entidad y su correspondiente DAO de la vista.
     private final RecentFlightsPanelView view;
+
     private int selectedVueloId;
 
     public RecentFlightsPanelPresenter(RecentFlightsPanelView view) {
@@ -53,8 +54,12 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         } catch (SQLException e) {
             throw new DatabaseException("Error al acceder a la vista", e);
         }
+
+        // After loading the table, select first row:
+        view.getLastFlightsTable().setRowSelectionInterval(0, 0);
     }
 
+    // Pilot Hours Details TableModel
     public void loadPilotHoursDetails(DefaultTableModel tableModel, int flightId) {
         String sql = "SELECT * FROM view_pilot_hours_detail WHERE flight_sk = ?";
 
@@ -69,16 +74,15 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
             // Populate the table model with new data
             while (rs.next()) {
                 Object[] row = {
-                        rs.getInt("flight_sk"),
                         rs.getString("Piloto"),
-                        rs.getDouble("Vuelo Dia"),
-                        rs.getDouble("Vuelo Noche"),
-                        rs.getDouble("Vuelo GVN"),
-                        rs.getDouble("Instr."),
+                        rs.getDouble("Vuelo_Dia"),
+                        rs.getDouble("Vuelo_Noche"),
+                        rs.getDouble("Vuelo_GVN"),
+                        rs.getDouble("Instr"),
                         rs.getDouble("HMDS"),
                         rs.getDouble("IP"),
-                        rs.getDouble("Formación Dia"),
-                        rs.getDouble("Formación GVN")
+                        rs.getDouble("Formacion_Dia"),
+                        rs.getDouble("Formacion_GVN")
                 };
                 tableModel.addRow(row);
             }
@@ -90,11 +94,35 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         }
     }
 
-    // Metodo para obtener el ID del vuelo más alto
-    public int getHighestFlightId() {
-        // Obtén el valor del ID de la primera fila
-        int highestId = (int) view.getLastFlightsTableModel().getValueAt(0, 0);
-        return highestId;
+    // DV Hours Details TableModel
+    public void loadDvHoursDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_dv_hours_detail WHERE flight_sk = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Dotación"),
+                        rs.getDouble("Vuelo_Dia"),
+                        rs.getDouble("Vuelo_Noche"),
+                        rs.getDouble("Vuelo_GVN"),
+                        rs.getDouble("Winch_Trim")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
     }
 
     // Listeners
@@ -134,15 +162,36 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         view.getLastFlightsTable().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    int selectedRow = view.getLastFlightsTable().getSelectedRow();
-                    if (selectedRow != -1) {
-                        int modelRow = view.getLastFlightsTable().convertRowIndexToModel(selectedRow);
-                        selectedVueloId = (int) view.getLastFlightsTableModel().getValueAt(modelRow, 0);
-                        loadPilotHoursDetails(view.getPilotHoursDetailTableModel(), selectedVueloId);
-                    }
+                if (evt.getClickCount() == 1) {
+                    handleFlightSelection();
                 }
             }
         });
     }
+
+    private void handleFlightSelection() {
+        int selectedRow = view.getLastFlightsTable().getSelectedRow();
+        if (selectedRow != -1) {
+            int modelRow = view.getLastFlightsTable().convertRowIndexToModel(selectedRow);
+            selectedVueloId = (int) view.getLastFlightsTableModel().getValueAt(modelRow, 0);
+            updateFlightDetails(selectedVueloId);
+        }
+    }
+
+    private void updateFlightDetails(int vueloId) {
+        view.getFlightDetailsTitleLabel().setText("Detalles del vuelo " + vueloId);
+        loadPilotHoursDetails(view.getPilotHoursDetailTableModel(), vueloId);
+    }
+
+    // Getters and setters
+    public int getSelectedVueloId() {
+        return selectedVueloId;
+    }
+
+    public void updateSelectedVueloId() {
+        if (view.getLastFlightsTableModel().getRowCount() > 0) {
+            selectedVueloId = (int) view.getLastFlightsTableModel().getValueAt(0, 0);
+        }
+    }
+
 }

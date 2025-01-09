@@ -171,7 +171,7 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
         horasLabel = new JLabel("Horas");
         vueloLabel = new JLabel("Vuelo");
-        instrumentosLabel = new JLabel("Instr.");
+        instrumentosLabel = new JLabel("Instrumental");
         hdmsLabel = new JLabel("HMDS");
         instructorLabel = new JLabel("IP");
         formacionesLabel = new JLabel("Formaciones");

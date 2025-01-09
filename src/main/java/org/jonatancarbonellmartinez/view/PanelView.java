@@ -12,6 +12,7 @@ public interface PanelView {
      */
 
     public static final Font ENTITY_TITLE_LABEL_FONT = new Font("Segoe UI", Font.BOLD, 15);
+    Font ENTITY_SUBTITLE_LABEL_FONT = new Font("Segoe UI", Font.BOLD, 13);
 
     static void showMessage(JPanel parentView, String message) {
         JOptionPane.showMessageDialog(parentView, message);

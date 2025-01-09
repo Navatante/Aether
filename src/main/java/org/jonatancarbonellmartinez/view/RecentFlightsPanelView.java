@@ -12,20 +12,25 @@ import java.awt.*;
 
 public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     private RecentFlightsPanelPresenter presenter;
-    private JTable lastFlightsTable, pilotHoursDetailTable;
+    private JTable lastFlightsTable, pilotHoursDetailTable, dvHoursDetailTable;
 
     private DefaultTableModel lastFlightsTableModel;
 
-    private DefaultTableModel pilotHoursDetailTableModel;
+    private DefaultTableModel pilotHoursDetailTableModel, dvHoursDetailTableModel;
     private TableRowSorter<TableModel> sorter;
 
-    JLabel lastFlightsTitleLabel, pilotHoursDetailTitleLabel;
+    JLabel lastFlightsTitleLabel;
+    JLabel pilotHoursDetailTitleLabel;
+    JLabel flightDetailsTitleLabel;
+    JLabel dvHoursDetailTitleLabel;
 
     private JTextField searchField;
     private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     private JPanel middlePanel;
-    private JPanel bottomPanel;
-    JScrollPane lastFlightsScrollPane, pilotHoursDetailScrollPane;
+    private JPanel bottomPanel, bottomPanelTop, bottomPanelCenter, bottomPanelCenterTop, bottomPanelCenterBottom;
+    private JPanel pilotHoursDetailPanel, pilotHoursDetailPanelTop, pilotHoursDetailPanelCenter;
+    private JPanel dvHoursDetailPanel, dvHoursDetailPanelTop, dvHoursDetailPanelCenter;
+    private JScrollPane lastFlightsScrollPane, pilotHoursDetailScrollPane, dvHoursDetailScrollPane;
 
     public RecentFlightsPanelView() {
         this.presenter = new RecentFlightsPanelPresenter(this);
@@ -37,8 +42,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     @Override
     public void updatePanel() {
         presenter.loadLatest50Flights(lastFlightsTableModel);
-        presenter.loadPilotHoursDetails(pilotHoursDetailTableModel, presenter.getHighestFlightId());
-        // TODO maybe load other detail queries.
+        presenter.updateSelectedVueloId();
+        presenter.loadPilotHoursDetails(pilotHoursDetailTableModel, presenter.getSelectedVueloId());
+        flightDetailsTitleLabel.setText("Detalles del vuelo " + presenter.getSelectedVueloId());
     }
 
     @Override
@@ -52,13 +58,25 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         topPanel = new JPanel(new BorderLayout());
         insideTopPanelLeft = new JPanel();
         insideTopPanelRight = new JPanel();
-        middlePanel = new JPanel(new BorderLayout());
-        bottomPanel = new JPanel(new BorderLayout());
+        middlePanel = new JPanel(new BorderLayout()); // Here is the lastFlightsTable
+        bottomPanel = new JPanel(new BorderLayout()); // Here are all the details
+        bottomPanelTop = new JPanel(new BorderLayout());
+        bottomPanelCenter = new JPanel(new BorderLayout());
+        bottomPanelCenterTop = new JPanel(new GridLayout(1,2,10,5)); // TODO AQUI VAN HORAS VUELO PITLOS Y HORAS VUELO DVs
+        bottomPanelCenterBottom = new JPanel(new GridLayout()); // TODO AQUI VAN TOMAS APPS INST SAR PROYECTILES CUPO Y PASAJEROS
+        pilotHoursDetailPanel = new JPanel(new BorderLayout());
+        pilotHoursDetailPanelTop = new JPanel();
+        pilotHoursDetailPanelCenter = new JPanel(new BorderLayout());
+        dvHoursDetailPanel = new JPanel(new BorderLayout());
+        dvHoursDetailPanelTop = new JPanel();
+        dvHoursDetailPanelCenter = new JPanel(new BorderLayout());
     }
 
     @Override
     public void createComponents() {
         lastFlightsTitleLabel = new JLabel("Últimos vuelos");
+        flightDetailsTitleLabel = new JLabel("Detalles del vuelo " + presenter.getSelectedVueloId());
+
         // Last Flights Table
         lastFlightsTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
             @Override
@@ -92,18 +110,10 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
         // Pilot Hours Details Table
         pilotHoursDetailTitleLabel = new JLabel("Horas Pilotos");
-        pilotHoursDetailTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Piloto", "Vuelo Dia", "Vuelo Noche", "Vuelo GVN", "Instr.", "HMDS", "IP", "Formación Dia", "Formación GVN"}, 0) {
+        pilotHoursDetailTableModel = new DefaultTableModel(new String[] {"Piloto", "Dia", "Noche", "GVN", "Instrumental", "HMDS", "IP", "Form. Dia", "Form. GVN"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
-            }
-            // Define "ID" as Integer; other columns default to String (in order to sort properly when headers are clicked)
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Integer.class;
-                }
-                return String.class;
             }
         };
 
@@ -115,11 +125,29 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         }
 
         pilotHoursDetailScrollPane = new JScrollPane(pilotHoursDetailTable);
-        // TODO this is the render to gray the 0.0 numbers
+
         // Apply the custom renderer to the lastFlightsTable
         for (int i = 0; i < pilotHoursDetailTable.getColumnCount(); i++) {
             pilotHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
+
+        // DV Hours Details Table
+        dvHoursDetailTitleLabel = new JLabel("Horas Dotaciones");
+        dvHoursDetailTableModel = new DefaultTableModel(new String[] {"Dotación", "Dia", "Noche", "GVN", "WT"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Making table non-editable
+            }
+        };
+
+        dvHoursDetailTable = new JTable(dvHoursDetailTableModel);
+
+        // Center-align all columns
+        for (int i = 0; i < dvHoursDetailTable.getColumnModel().getColumnCount(); i++) {
+            dvHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        dvHoursDetailScrollPane = new JScrollPane(dvHoursDetailTable);
     }
 
     // INNER CLASS Custom cell renderer to gray out 0.0 values
@@ -148,45 +176,63 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         }
     }
 
-
-
     @Override
     public void configurePanels() {
         topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        bottomPanelTop.setBorder(new EmptyBorder(5, 10, 5, 10));
         lastFlightsScrollPane.setPreferredSize(new Dimension(0, 150));
-        pilotHoursDetailScrollPane.setPreferredSize(new Dimension(0, 100));
+        //pilotHoursDetailScrollPane.setPreferredSize(new Dimension(900, 100));
     }
 
     @Override
     public void configureComponents() {
         lastFlightsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
-        pilotHoursDetailTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
+        flightDetailsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
+        pilotHoursDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
+        dvHoursDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
 
         searchField.setPreferredSize(new Dimension(200, 25));
         lastFlightsTable.setRowSorter(sorter);
 
-        lastFlightsTable.setCellSelectionEnabled(true);
         pilotHoursDetailTable.setCellSelectionEnabled(true);
-
-        lastFlightsTable.setToolTipText("Doble click para detalles");
-
     }
 
     @Override
     public void assemblePanels() {
+        // Top Panel
         this.add(topPanel, BorderLayout.NORTH);
         topPanel.add(insideTopPanelLeft, BorderLayout.WEST);
         topPanel.add(insideTopPanelRight, BorderLayout.EAST);
+
+        // Middle Panel
         this.add(middlePanel, BorderLayout.CENTER);
         middlePanel.add(lastFlightsScrollPane, BorderLayout.NORTH);
+
+        // Bottom Panel
         this.add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.add(pilotHoursDetailScrollPane, BorderLayout.NORTH);
+        bottomPanel.add(bottomPanelTop, BorderLayout.NORTH);
+        bottomPanel.add(bottomPanelCenter, BorderLayout.CENTER);
+        bottomPanelCenter.add(bottomPanelCenterTop, BorderLayout.NORTH);
+        bottomPanelCenter.add(bottomPanelCenterBottom, BorderLayout.SOUTH);
+        bottomPanelCenterTop.add(pilotHoursDetailPanel);
+        bottomPanelCenterTop.add(dvHoursDetailPanel);
+
+        pilotHoursDetailPanel.add(pilotHoursDetailPanelTop, BorderLayout.NORTH);
+        pilotHoursDetailPanel.add(pilotHoursDetailPanelCenter, BorderLayout.CENTER);
+        dvHoursDetailPanel.add(dvHoursDetailPanelTop, BorderLayout.NORTH);
+        dvHoursDetailPanel.add(dvHoursDetailPanelCenter, BorderLayout.CENTER);
+
     }
 
     @Override
     public void assembleComponents() {
         View.addComponentsToPanel(insideTopPanelLeft, lastFlightsTitleLabel);
         View.addComponentsToPanel(insideTopPanelRight, searchField);
+        View.addComponentsToPanel(bottomPanelTop, flightDetailsTitleLabel);
+        View.addComponentsToPanel(pilotHoursDetailPanelTop, pilotHoursDetailTitleLabel);
+        View.addComponentsToPanel(pilotHoursDetailPanelCenter, pilotHoursDetailScrollPane);
+        View.addComponentsToPanel(dvHoursDetailPanelTop, dvHoursDetailTitleLabel);
+        View.addComponentsToPanel(dvHoursDetailPanelCenter, dvHoursDetailScrollPane);
     }
 
     @Override
@@ -213,5 +259,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     public DefaultTableModel getPilotHoursDetailTableModel() {
         return pilotHoursDetailTableModel;
+    }
+
+    public JLabel getFlightDetailsTitleLabel() {
+        return flightDetailsTitleLabel;
     }
 }
