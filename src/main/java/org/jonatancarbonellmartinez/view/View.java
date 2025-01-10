@@ -53,6 +53,7 @@ public interface View {
     Color transparentColor = new Color(0, 0, 0, 0);
     Color mousePressedColor = new Color(93,95,98);
     Color borderColor = new Color(48,50,51);
+    Color tableBackgroundColor = new Color(70,73,75);
 
     // To be used when Placeholder is larger than input.
     static JTextField createTextField(String placeholder) {

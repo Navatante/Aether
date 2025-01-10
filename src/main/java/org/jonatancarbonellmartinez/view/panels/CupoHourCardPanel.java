@@ -13,7 +13,7 @@ public class CupoHourCardPanel extends JPanel implements View {
     private RegisterFlightPresenter presenter;
     private RegisterFlightDialogView registerFlightDialogView;
 
-    private JPanel mainPanel, unitPanel, hourPanel; // TODO
+    private JPanel mainPanel, unitPanel, hourPanel;
 
     private JComboBox unitBox;
     private JTextField hourQtyField;
@@ -36,13 +36,13 @@ public class CupoHourCardPanel extends JPanel implements View {
     @Override
     public void createPanels() {
         mainPanel = new JPanel(new BorderLayout());
-        unitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,8));
-        hourPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,8));
+        unitPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,20,8));
+        hourPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,20,8));
     }
 
     @Override
     public void createComponents() {
-        unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Unidad");
+        unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Autoridad");
         hourQtyField = View.createTextField("Horas");
     }
 
@@ -54,7 +54,7 @@ public class CupoHourCardPanel extends JPanel implements View {
     @Override
     public void configureComponents() {
         View.setInitialComboBoxLook(unitBox);
-        View.setPreferredSizeForComponents(CrewCardPanel.SESSION_BOX_DIMENSION, unitBox);
+        unitBox.setPreferredSize(new Dimension(200,25));
         View.setPreferredSizeForComponents(CrewCardPanel.PERSON_BOX_DIMENSION, hourQtyField);
         hourQtyField.setHorizontalAlignment(JTextField.CENTER);
     }

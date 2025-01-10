@@ -19,6 +19,7 @@ public class MainPresenter implements Observer, Presenter {
     public void setActionListeners() {
         view.getBotonPersonal().addActionListener(e -> navigationController.navigateTo("PersonPanelView"));
         view.getBotonEventos().addActionListener(e -> navigationController.navigateTo("EventPanelView"));
+        view.getBotonRecentFlights().addActionListener(e -> navigationController.navigateTo("RecentFlightsPanelView"));
         view.getRegistrarVueloMenuItem().addActionListener(e -> navigationController.openDialog("RegistrarVuelo"));
         view.getAnadirPersonalMenuItem().addActionListener(e -> navigationController.openDialog("AddPerson"));
         view.getEditarPersonalMenuItem().addActionListener(e -> navigationController.openDialog("EditPerson"));
@@ -35,6 +36,8 @@ public class MainPresenter implements Observer, Presenter {
                 ((PersonPanelView) component).updatePanel();
             } else if (component instanceof EventPanelView) {
                 ((EventPanelView) component).updatePanel();
+            } else if (component instanceof RecentFlightsPanelView) {
+                ((RecentFlightsPanelView) component).updatePanel();
             }
             // Add more `else if` blocks for other component types as needed
         }
