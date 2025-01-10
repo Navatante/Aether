@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
-    //private final GenericDAO<View,Integer> latestFlightDAO; creo que tengo que crear una entidad y su correspondiente DAO de la vista.
+
     private final RecentFlightsPanelView view;
 
     private int selectedVueloId;
@@ -62,6 +62,43 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     // Pilot Hours Details TableModel
     public void loadCrewHoursDetails(DefaultTableModel tableModel, int flightId) {
         String sql = "SELECT * FROM view_crew_hours_detail WHERE flight_sk = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Crew"),
+                        rs.getString("Rol"),
+                        rs.getDouble("Vuelo_Dia"),
+                        rs.getDouble("Vuelo_Noche"),
+                        rs.getDouble("Vuelo_GVN"),
+                        rs.getDouble("Instr"),
+                        rs.getDouble("HMDS"),
+                        rs.getDouble("IP"),
+                        rs.getDouble("Formacion_Dia"),
+                        rs.getDouble("Formacion_GVN"),
+                        rs.getDouble("Winch_Trim")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Pilot Hours Details TableModel
+    public void loadSessionDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_crew_hours_detail WHERE flight_sk = ?"; // TODO create the view
 
         try (Connection connection = Database.getInstance().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(sql);

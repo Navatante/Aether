@@ -12,16 +12,17 @@ import java.awt.*;
 
 public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     private RecentFlightsPanelPresenter presenter;
-    private JTable lastFlightsTable, crewHoursDetailTable;
+    private JTable lastFlightsTable, crewHoursDetailTable, sessionDetailTable;
 
     private DefaultTableModel lastFlightsTableModel;
 
-    private DefaultTableModel crewHoursDetailTableModel;
-    ;
+    private DefaultTableModel crewHoursDetailTableModel, sessionDetailTableModel;
+
     private TableRowSorter<TableModel> sorter;
 
     JLabel lastFlightsTitleLabel;
     JLabel crewHoursDetailTitleLabel;
+    JLabel sessionDetailTitleLabel;
     JLabel flightDetailsTitleLabel;
 
     private JTextField searchField;
@@ -29,7 +30,8 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     private JPanel middlePanel;
     private JPanel bottomPanel, bottomPanelTop, bottomPanelCenter, bottomPanelCenterTop, bottomPanelCenterBottom;
     private JPanel crewHoursDetailPanel, crewHoursDetailPanelTop, crewHoursDetailPanelCenter;
-    private JScrollPane lastFlightsScrollPane, crewHoursDetailScrollPane;
+    private JPanel sessionDetailPanel, sessionDetailPanelTop, sessionDetailPanelCenter;
+    private JScrollPane lastFlightsScrollPane, crewHoursDetailScrollPane, sessionDetailScrollPane;
 
     public RecentFlightsPanelView() {
         this.presenter = new RecentFlightsPanelPresenter(this);
@@ -61,11 +63,14 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         bottomPanel = new JPanel(new BorderLayout()); // Here are all the details
         bottomPanelTop = new JPanel(new BorderLayout());
         bottomPanelCenter = new JPanel(new BorderLayout());
-        bottomPanelCenterTop = new JPanel(new GridLayout(1,2,10,5)); // TODO AQUI VAN HORAS VUELO CREW y denajo falta meter Papeletas
+        bottomPanelCenterTop = new JPanel(new GridLayout(2,1,10,5)); // TODO AQUI VAN HORAS VUELO CREW y debajo falta meter Papeletas
         bottomPanelCenterBottom = new JPanel(new GridLayout()); // TODO AQUI VAN TOMAS APPS INST SAR PROYECTILES CUPO Y PASAJEROS
         crewHoursDetailPanel = new JPanel(new BorderLayout());
         crewHoursDetailPanelTop = new JPanel();
         crewHoursDetailPanelCenter = new JPanel(new BorderLayout());
+        sessionDetailPanel = new JPanel(new BorderLayout());
+        sessionDetailPanelTop = new JPanel();
+        sessionDetailPanelCenter = new JPanel(new BorderLayout());
     }
 
     @Override
@@ -126,7 +131,27 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         for (int i = 0; i < crewHoursDetailTable.getColumnCount(); i++) {
             crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
+
+        // Session Details Table
+        sessionDetailTitleLabel = new JLabel("Papeletas");
+        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Papeleta", "Descripcion", "Plan", "Bloque"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Making table non-editable
+            }
+        };
+
+        sessionDetailTable = new JTable(sessionDetailTableModel);
+
+        // Center-align all columns
+        for (int i = 0; i < sessionDetailTable.getColumnModel().getColumnCount(); i++) {
+            sessionDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        sessionDetailScrollPane = new JScrollPane(sessionDetailTable);
     }
+
+
 
     // INNER CLASS Custom cell renderer to gray out 0.0 values
     public class ZeroValueCellRenderer extends DefaultTableCellRenderer {
@@ -154,6 +179,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         }
     }
 
+
     @Override
     public void configurePanels() {
         topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -166,11 +192,16 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         lastFlightsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
         flightDetailsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
         crewHoursDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
+        sessionDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
 
         searchField.setPreferredSize(new Dimension(200, 25));
         lastFlightsTable.setRowSorter(sorter);
 
         crewHoursDetailTable.setCellSelectionEnabled(true);
+        sessionDetailTable.setCellSelectionEnabled(true);
+
+        crewHoursDetailPanel.setPreferredSize(new Dimension(0,130));
+        sessionDetailPanel.setPreferredSize(new Dimension(0, 130));
     }
 
     @Override
@@ -191,10 +222,13 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         bottomPanelCenter.add(bottomPanelCenterTop, BorderLayout.NORTH);
         bottomPanelCenter.add(bottomPanelCenterBottom, BorderLayout.SOUTH);
         bottomPanelCenterTop.add(crewHoursDetailPanel);
+        bottomPanelCenterTop.add(sessionDetailPanel);
 
         crewHoursDetailPanel.add(crewHoursDetailPanelTop, BorderLayout.NORTH);
         crewHoursDetailPanel.add(crewHoursDetailPanelCenter, BorderLayout.CENTER);
 
+        sessionDetailPanel.add(sessionDetailPanelTop, BorderLayout.NORTH);
+        sessionDetailPanel.add(sessionDetailPanelCenter, BorderLayout.CENTER);
     }
 
     @Override
@@ -204,6 +238,8 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         View.addComponentsToPanel(bottomPanelTop, flightDetailsTitleLabel);
         View.addComponentsToPanel(crewHoursDetailPanelTop, crewHoursDetailTitleLabel);
         View.addComponentsToPanel(crewHoursDetailPanelCenter, crewHoursDetailScrollPane);
+        View.addComponentsToPanel(sessionDetailPanelTop, sessionDetailTitleLabel);
+        View.addComponentsToPanel(sessionDetailPanelCenter, sessionDetailScrollPane);
     }
 
     @Override
