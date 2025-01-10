@@ -135,6 +135,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
             crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
         // TODO, TENGO QUE HACER FIJAS (O ANCHURA MAXIMA) LAS COLUMNAS DE CREW Y ROL Y PAPELETA Y PLAN Y BLOQUE Y QUE LA UNICA MOVIBLE SEA DESCRIPCION
+        // TODO, investiga porque en el dialog de recent flights, el cuadro de busqueda no funcoina con Vuelo ID
         // Session Details Table
         sessionDetailTitleLabel = new JLabel("Papeletas");
         sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripcion", "Plan", "Bloque"}, 0) {
