@@ -16,7 +16,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     private DefaultTableModel lastFlightsTableModel;
 
-    private DefaultTableModel crewHoursDetailTableModel, sessionDetailTableModel;
+    private DefaultTableModel crewHoursDetailTableModel;
+
+    private DefaultTableModel sessionDetailTableModel;
 
     private TableRowSorter<TableModel> sorter;
 
@@ -46,6 +48,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         presenter.updateSelectedVueloId();
         presenter.loadCrewHoursDetails(crewHoursDetailTableModel, presenter.getSelectedVueloId());
         flightDetailsTitleLabel.setText("Detalles del vuelo " + presenter.getSelectedVueloId());
+        presenter.loadSessionDetails(sessionDetailTableModel, presenter.getSelectedVueloId());
     }
 
     @Override
@@ -131,10 +134,10 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         for (int i = 0; i < crewHoursDetailTable.getColumnCount(); i++) {
             crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
-
+        // TODO, TENGO QUE HACER FIJAS (O ANCHURA MAXIMA) LAS COLUMNAS DE CREW Y ROL Y PAPELETA Y PLAN Y BLOQUE Y QUE LA UNICA MOVIBLE SEA DESCRIPCION
         // Session Details Table
         sessionDetailTitleLabel = new JLabel("Papeletas");
-        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Papeleta", "Descripcion", "Plan", "Bloque"}, 0) {
+        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripcion", "Plan", "Bloque"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
@@ -270,5 +273,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     public JLabel getFlightDetailsTitleLabel() {
         return flightDetailsTitleLabel;
+    }
+
+    public DefaultTableModel getSessionDetailTableModel() {
+        return sessionDetailTableModel;
     }
 }

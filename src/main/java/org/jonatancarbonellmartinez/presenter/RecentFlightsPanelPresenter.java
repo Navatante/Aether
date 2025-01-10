@@ -98,7 +98,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
 
     // Pilot Hours Details TableModel
     public void loadSessionDetails(DefaultTableModel tableModel, int flightId) {
-        String sql = "SELECT * FROM view_crew_hours_detail WHERE flight_sk = ?"; // TODO create the view
+        String sql = "SELECT * FROM view_session_details WHERE Vuelo_ID = ?";
 
         try (Connection connection = Database.getInstance().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -113,15 +113,10 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
                 Object[] row = {
                         rs.getString("Crew"),
                         rs.getString("Rol"),
-                        rs.getDouble("Vuelo_Dia"),
-                        rs.getDouble("Vuelo_Noche"),
-                        rs.getDouble("Vuelo_GVN"),
-                        rs.getDouble("Instr"),
-                        rs.getDouble("HMDS"),
-                        rs.getDouble("IP"),
-                        rs.getDouble("Formacion_Dia"),
-                        rs.getDouble("Formacion_GVN"),
-                        rs.getDouble("Winch_Trim")
+                        rs.getString("Papeleta"),
+                        rs.getString("Descripción"),
+                        rs.getString("Plan"),
+                        rs.getString("Bloque")
                 };
                 tableModel.addRow(row);
             }
@@ -190,6 +185,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     private void updateFlightDetails(int vueloId) {
         view.getFlightDetailsTitleLabel().setText("Detalles del vuelo " + vueloId);
         loadCrewHoursDetails(view.getCrewHoursDetailTableModel(), vueloId);
+        loadSessionDetails(view.getSessionDetailTableModel(), vueloId);
     }
 
     // Getters and setters
