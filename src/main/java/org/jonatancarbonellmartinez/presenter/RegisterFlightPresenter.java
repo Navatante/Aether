@@ -636,9 +636,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             view.dispose();
 
             // Create a new instance of RegisterFlightDialogView at the same position
-            RegisterFlightDialogView newView = new RegisterFlightDialogView(view.getMainView());
-            newView.setLocation(location);
-            newView.setVisible(true); // TODO esto no esta funcionando bien, porque la vista primero aparece donde la mainView y despues en la lastLocation. arreglalo
+            RegisterFlightDialogView newView = new RegisterFlightDialogView(view.getMainView(), location);
+
         }
     }
 
@@ -1326,7 +1325,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // Validate pilot boxes for primary and secondary pilots
         boolean isDv1Selected = DialogPresenter.validateDynamicComboBox(view, view.getDvCardPanel1().getCrewBox(), "Primer DV");
 
-        // Validate all extra pilot boxes
+        // Validate all extra dv boxes
         boolean areExtraDvsSelected = view.getExtraDvCardPanelDeque()
                 .stream()
                 .allMatch(panel -> DialogPresenter.validateDynamicComboBox(view, panel.getCrewBox(), "Extra DV"));

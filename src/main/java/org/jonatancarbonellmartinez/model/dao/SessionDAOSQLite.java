@@ -12,19 +12,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO cuando los oficiales se aclaren y sepan como seran las Sesiones, entonces creare la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
+public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO Falta crear la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
     @Override
     public void insert(Session entity) throws DatabaseException {
-        String sql = "INSERT INTO dim_session (session_nk, session_dv, session_name, session_type, session_subtype, session_crp_value, session_expiration)" +
+        String sql = "INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, entity.getSessionNk());
-            pstmt.setString(2, entity.getSessionDv());
-            pstmt.setString(3, entity.getSessionName());
-            pstmt.setString(4, entity.getSessionType());
-            pstmt.setString(5, entity.getSessionSubType());
+            pstmt.setString(1, entity.getSessionName());
+            pstmt.setString(2, entity.getSessionDescription());
+            pstmt.setString(3, entity.getSessionBlock());
+            pstmt.setString(4, entity.getSessionPlan());
+            pstmt.setString(5, entity.getSessionTv());
             pstmt.setDouble(6, entity.getCrpValue());
             pstmt.setInt(7, entity.getExpiration());
 
@@ -51,7 +51,7 @@ public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO 
 
     @Override
     public List<Session> getAll() throws DatabaseException {
-        String sql = "SELECT * FROM dim_session ORDER BY session_nk";
+        String sql = "SELECT * FROM dim_session ORDER BY session_name";
         List<Session> sessionList = new ArrayList<>();
 
         // Obtain a new connection each time the method is called
@@ -72,11 +72,11 @@ public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO 
     public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {
         Session session = new Session();
         session.setSessionSk(rs.getInt("session_sk"));
-        session.setSessionNk(rs.getString("session_nk"));
-        session.setSessionDv(rs.getString("session_dv"));
         session.setSessionName(rs.getString("session_name"));
-        session.setSessionType(rs.getString("session_type"));
-        session.setSessionSubType(rs.getString("session_subtype"));
+        session.setSessionDescription(rs.getString("session_description"));
+        session.setSessionBlock(rs.getString("session_block"));
+        session.setSessionPlan(rs.getString("session_plan"));
+        session.setSessionTv(rs.getString("session_tv"));
         session.setCrpValue(rs.getDouble("session_crp_value"));
         session.setExpiration(rs.getInt("session_expiration"));
         return session;

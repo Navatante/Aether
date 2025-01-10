@@ -20,7 +20,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     private RegisterFlightPresenter presenter;
 
     private PilotCrewCardPanel pilotCardPanel1, pilotCardPanel2;
-    private DvCrewCardPanel dvCardPanel1;
+    private DvCrewCardPanel dvCardPanel1; // no creo un dvCardPanel2 porque por defecto solo quiero tener personal que obligatoriamente tenga que rellenarse.
     private SessionCardPanel sessionCardPanel;
     private CupoHourCardPanel cupoHourCardPanel1, cupoHourCardPanel2;
     private PassengerCardPanel passengerCardPanel1, passengerCardPanel2;
@@ -57,11 +57,12 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     JPopupMenu passengerPopupMenu;
     JMenuItem addPassengerCardItem, deletePassengerCardItem;
 
-    public RegisterFlightDialogView(MainView mainView) {
+    public RegisterFlightDialogView(MainView mainView, Point locationRelativeTo) {
         super(mainView, "Registrar vuelo",true);
         this.mainView = mainView;
         this.presenter = new RegisterFlightPresenter(this, mainView.getPresenter());
         this.initializeUI();
+        setLocation(locationRelativeTo); // Solamente en este caso he anadido ese segundo argumento para poder reabrilo en la misma posicion cuando se pulse guardar.
         setVisible(true);
 
         // Request focus on the dateTimeSpinner after the dialog is shown
@@ -75,7 +76,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         setLayout(new BorderLayout());
         setResizable(false);
         setSize(1280,810);
-        setLocationRelativeTo(mainView);
     }
 
     @Override

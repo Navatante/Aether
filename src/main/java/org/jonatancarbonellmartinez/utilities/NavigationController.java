@@ -48,7 +48,7 @@ public class NavigationController {
                 new EventDialogView(mainView,true);
                 break;
             case "RegistrarVuelo":
-                new RegisterFlightDialogView(mainView);
+                new RegisterFlightDialogView(mainView, mainView.getLocation());
                 break;
             // Additional dialog cases
         }

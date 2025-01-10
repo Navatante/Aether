@@ -2,11 +2,11 @@ package org.jonatancarbonellmartinez.model.entities;
 
 public class Session implements Entity {
     private int sessionSk;
-    private String sessionNk;
-    private String sessionDv;
     private String sessionName;
-    private String sessionType;
-    private String sessionSubType;
+    private String sessionDescription;
+    private String sessionBlock;
+    private String sessionPlan;
+    private String sessionTv;
     private double crpValue;
     private int expiration;
 
@@ -17,28 +17,12 @@ public class Session implements Entity {
 
     @Override
     public String toString() {
-        return sessionNk;
+        return sessionName;
     }
 
     // Getters and Setters
     public void setSessionSk(int sessionSk) {
         this.sessionSk = sessionSk;
-    }
-
-    public String getSessionNk() {
-        return sessionNk;
-    }
-
-    public void setSessionNk(String sessionNk) {
-        this.sessionNk = sessionNk;
-    }
-
-    public String getSessionDv() {
-        return sessionDv;
-    }
-
-    public void setSessionDv(String sessionDv) {
-        this.sessionDv = sessionDv;
     }
 
     public String getSessionName() {
@@ -49,20 +33,20 @@ public class Session implements Entity {
         this.sessionName = sessionName;
     }
 
-    public String getSessionType() {
-        return sessionType;
+    public String getSessionDescription() {
+        return sessionDescription;
     }
 
-    public void setSessionType(String sessionType) {
-        this.sessionType = sessionType;
+    public void setSessionDescription(String sessionDescription) {
+        this.sessionDescription = sessionDescription;
     }
 
-    public String getSessionSubType() {
-        return sessionSubType;
+    public String getSessionBlock() {
+        return sessionBlock;
     }
 
-    public void setSessionSubType(String sessionSubType) {
-        this.sessionSubType = sessionSubType;
+    public void setSessionBlock(String sessionBlock) {
+        this.sessionBlock = sessionBlock;
     }
 
     public double getCrpValue() {
@@ -79,6 +63,22 @@ public class Session implements Entity {
 
     public void setExpiration(int expiration) {
         this.expiration = expiration;
+    }
+
+    public String getSessionTv() {
+        return sessionTv;
+    }
+
+    public void setSessionTv(String sessionTv) {
+        this.sessionTv = sessionTv;
+    }
+
+    public String getSessionPlan() {
+        return sessionPlan;
+    }
+
+    public void setSessionPlan(String sessionPlan) {
+        this.sessionPlan = sessionPlan;
     }
 }
 

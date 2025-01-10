@@ -229,7 +229,7 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
         hoursPanel.setBorder(new EmptyBorder(0, 50, 0, 0));
         appsPanel.setBorder(new EmptyBorder(0, 100, 0, 0));
         sarPanel.setBorder(new EmptyBorder(0, 100, 0, 0));
-        landingsPanel.setBorder(new EmptyBorder(0, 50, 0, 0));
+        landingsPanel.setBorder(new EmptyBorder(0, 62, 0, 0));
     }
 
     @Override
