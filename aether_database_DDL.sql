@@ -584,6 +584,20 @@ FROM
         INNER JOIN fact_flight f ON ch.cupo_flight_fk = f.flight_sk
         INNER JOIN dim_authority a ON ch.cupo_authority_fk = a.authority_sk;
 
+-- Passenger view
+CREATE VIEW view_passengers AS
+SELECT
+    f.flight_sk AS Vuelo_ID,
+    dpt.passenger_type_name AS Tipo,
+    jp.passenger_qty AS Cantidad,
+    jp.passenger_route AS Ruta
+FROM
+    junction_passenger jp
+        INNER JOIN fact_flight f ON jp.passenger_flight_fk = f.flight_sk
+        INNER JOIN dim_passenger_type dpt ON jp.passenger_type_fk = dpt.passenger_type_sk;
+
+select * from view_passengers;
+
 -- ############################### --
 -- 		  	  TRIGGERS		       --
 -- ############################### --
