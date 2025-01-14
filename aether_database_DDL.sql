@@ -388,21 +388,6 @@ INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('Operaciones 
 INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Civiles');
 INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Militares');
 
-	--('COMFLOAN', 							'CF'),
-	--('ALPER', 							'NA'),
-	--('ALFLOT', 							'NA'),
-	--('COMGRUPFLOT',						'GD'),
-	--('COMANDES-31', 						'C3'),
-	--('COMANDES-41', 						'C4'),
-	--('COMTEMECOM', 						'MC'),
-	--('ALMART', 							'AM'),
-	--('GETEAR', 							'GT'),
-	--('GEPROAR', 							'GP'),
-	--('COMNAVES', 							'CN'),
-	--('COMSUBMAR', 						'CS'),
-	--('COCEVACO', 							'CC'),
-	--('Ejercicios en cumplimiento', 		'OE'),
-	--('Operaciones en cumplimiento', 		'OE');
 
 -- ############################### --
 -- 		  	   VIEWS 		       --
@@ -573,7 +558,31 @@ FROM
         INNER JOIN dim_person p ON a.app_person_fk = p.person_sk
         INNER JOIN dim_ifr_app_type at ON a.app_type_fk = at.ifr_app_type_sk
 WHERE
-    at.ifr_app_type_type LIKE '%SAR%';	
+    at.ifr_app_type_type LIKE '%SAR%';
+
+-- Projectile view
+CREATE VIEW view_projectiles AS
+SELECT
+    f.flight_sk AS Vuelo_ID,
+    p.person_nk AS Dotación,
+    pt.projectile_type_weapon AS Arma,
+    pj.projectile_qty AS Cantidad
+FROM
+    junction_projectile pj
+        INNER JOIN fact_flight f ON pj.projectile_flight_fk = f.flight_sk
+        INNER JOIN dim_person p ON pj.projectile_person_fk = p.person_sk
+        INNER JOIN dim_projectile_type pt ON pj.projectile_type_fk = pt.projectile_type_sk;
+
+-- Cupo view
+CREATE VIEW view_cupo AS
+SELECT
+    f.flight_sk AS Vuelo_ID,
+    a.authority_name AS Autoridad,
+    ch.cupo_hour_qty AS Horas
+FROM
+    junction_cupo_hour ch
+        INNER JOIN fact_flight f ON ch.cupo_flight_fk = f.flight_sk
+        INNER JOIN dim_authority a ON ch.cupo_authority_fk = a.authority_sk;
 
 -- ############################### --
 -- 		  	  TRIGGERS		       --
