@@ -164,7 +164,7 @@ public class MainView extends JFrame implements View {
         botonRecentFlights.setToolTipText("Últimos vuelos");
         botonPersonal.setToolTipText("Personal");
         botonEventos.setToolTipText("Eventos");
-        botonSesiones.setToolTipText("Sesiones");
+        botonSesiones.setToolTipText("Papeletas");
         botonHelos.setToolTipText("Helicópteros"); // TODO DELETE HELICOPTEROS BUTTON, maybe not, it will show estado aeronave (new table i have to create) not dim_helos
 
         this.setJMenuBar(menuBar);

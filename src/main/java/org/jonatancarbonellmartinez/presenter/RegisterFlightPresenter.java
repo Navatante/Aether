@@ -912,7 +912,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
                 // Check for duplicates during addition
                 if (!persons.add(personName)) {
-                    JOptionPane.showMessageDialog(view, "Hay tripulantes repetidos en sesiones.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view, "Hay tripulantes repetidos en Papeletas.", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
@@ -938,7 +938,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
                 // Check for duplicates during addition
                 if (!sessions.add(sessionName)) {
-                    JOptionPane.showMessageDialog(view, "Hay sesiones repetidas.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(view, "Hay papeletas repetidas.", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
@@ -971,7 +971,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         // Check for persons in personsOfSession not in personsOfFlight
         for (String person : personsOfSession) {
             if (!personsOfFlight.contains(person)) {
-                JOptionPane.showMessageDialog(view, "Hay tripulantes en sesiones que no han volado.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Hay tripulantes en Papeletas que no han volado.", "Error", JOptionPane.ERROR_MESSAGE);
                 return false; // Found a person in session not in flight
             }
         }
@@ -1007,7 +1007,7 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
             // Check if this combination already exists
             if (!uniqueCombinations.add(combinationKey)) {
                 // Duplicate found
-                JOptionPane.showMessageDialog(view, "Hay grupos de sesiones repetidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Hay grupos de papeletas repetidos.", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         }

@@ -168,7 +168,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         ));
 
         // Sesion
-        TitledBorder titleBorder3 = new TitledBorder("Sesiones");
+        TitledBorder titleBorder3 = new TitledBorder("Papeletas");
         titleBorder3.setTitleFont(new Font("Segoe UI", Font.PLAIN, 15));
 
         sessionScrollPanel.setBorder(BorderFactory.createCompoundBorder(

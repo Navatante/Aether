@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO Falta crear la opcion de anadir y modificar secciones en la barra superior del menu. igual que eventos y personas.
+public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO Falta crear la opcion de anadir y modificar papeletas en la barra superior del menu. igual que eventos y personas.
     @Override
     public void insert(Session entity) throws DatabaseException {
         String sql = "INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration)" +
@@ -62,7 +62,7 @@ public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO 
                 sessionList.add( (Session)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder a las sesiones", e);
+            throw new DatabaseException("Error al acceder a las papeletas", e);
         }
 
         return sessionList;

@@ -77,7 +77,7 @@ public class SessionCardPanel extends JPanel implements View {
         personBox = View.createDynamicComboBox(new Vector<>(presenter.getAllPersonsVector()),"CREW");
         extraPersonBoxesDeque.add(personBox);
 
-        sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()), "Sesión");
+        sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()), "Papeleta");
         extraSessionBoxesDeque.add(sessionBox);
 
         sessionPopupMenu = new JPopupMenu();
@@ -86,8 +86,8 @@ public class SessionCardPanel extends JPanel implements View {
         deleteGroupItem = new JMenuItem("Eliminar grupo");
         addPersonItem = new JMenuItem("Añadir persona");
         deletePersonItem = new JMenuItem("Eliminar persona");
-        addSessionItem = new JMenuItem("Añadir sesión");
-        deleteSessionItem = new JMenuItem("Eliminar sesión");
+        addSessionItem = new JMenuItem("Añadir papeleta");
+        deleteSessionItem = new JMenuItem("Eliminar papeleta");
     }
 
     @Override
@@ -200,7 +200,7 @@ public class SessionCardPanel extends JPanel implements View {
 
     public void addExtraSessionBox() {
         if(extraSessionBoxesDeque.size()<6) { // I limit the addition of personBoxes to 6
-            JComboBox sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()),"Sesión");
+            JComboBox sessionBox = View.createDynamicComboBox(new Vector<>(presenter.getAllSessionsVector()),"Papeleta");
             View.setInitialComboBoxLook(sessionBox);
             sessionBox.setMaximumSize(CrewCardPanel.SESSION_BOX_DIMENSION);
             sessionBox.setAlignmentX(Component.CENTER_ALIGNMENT);
