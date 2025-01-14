@@ -134,10 +134,10 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         for (int i = 0; i < crewHoursDetailTable.getColumnCount(); i++) {
             crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
         }
-        // TODO, TENGO QUE HACER FIJAS (O ANCHURA MAXIMA) LAS COLUMNAS DE CREW Y ROL Y PAPELETA Y PLAN Y BLOQUE Y QUE LA UNICA MOVIBLE SEA DESCRIPCION
+
         // Session Details Table
         sessionDetailTitleLabel = new JLabel("Papeletas");
-        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripcion", "Plan", "Bloque"}, 0) {
+        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripción", "Plan", "Bloque"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
@@ -145,7 +145,8 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         };
 
         sessionDetailTable = new JTable(sessionDetailTableModel);
-
+        // Le poonemos un ancho minimo a la columna de la descripcion
+        sessionDetailTable.getColumnModel().getColumn(3).setMinWidth(400);
         // Center-align all columns
         for (int i = 0; i < sessionDetailTable.getColumnModel().getColumnCount(); i++) {
             sessionDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
