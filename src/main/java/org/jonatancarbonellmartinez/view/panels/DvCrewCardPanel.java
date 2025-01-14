@@ -107,7 +107,8 @@ public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
     public void configureComponents() {
         View.setInitialComboBoxLook(dvBox);
         View.setPreferredSizeForComponents(CrewCardPanel.PERSON_BOX_DIMENSION,dvBox);
-        View.setPreferredSizeForComponents(CrewCardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
+        View.setPreferredSizeForComponents(CrewCardPanel.HOUR_FIELD_DIMENSION, dayHourField, nightHourField, gvnHourField, winchTrimHourField);
+        View.setPreferredSizeForComponents(CrewCardPanel.PROJECTILE_FIELD_DIMENSION, m3mField, magField);
         View.setHorizontalAlignmentToFields(dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField);
     }
 

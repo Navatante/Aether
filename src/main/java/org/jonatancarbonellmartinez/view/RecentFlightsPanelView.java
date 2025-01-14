@@ -12,13 +12,17 @@ import java.awt.*;
 
 public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     private RecentFlightsPanelPresenter presenter;
-    private JTable lastFlightsTable, crewHoursDetailTable, sessionDetailTable;
+    private JTable lastFlightsTable, crewHoursDetailTable, sessionDetailTable, landingTable, instrumentalAppsTable, sarTable, projectilesTable, cupoTable, passengersTable;
 
     private DefaultTableModel lastFlightsTableModel;
-
     private DefaultTableModel crewHoursDetailTableModel;
-
     private DefaultTableModel sessionDetailTableModel;
+    private DefaultTableModel landingTableModel;
+    private DefaultTableModel instrumentalAppsTableModel;
+    private DefaultTableModel sarAppsTableModel;
+    private DefaultTableModel projectilesTableModel;
+    private DefaultTableModel cupoTableModel;
+    private DefaultTableModel passengersTableModel;
 
     private TableRowSorter<TableModel> sorter;
 
@@ -26,14 +30,30 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     JLabel crewHoursDetailTitleLabel;
     JLabel sessionDetailTitleLabel;
     JLabel flightDetailsTitleLabel;
+    JLabel landingTitleLabel;
+    JLabel instrumentalAppsTitleLabel;
+    JLabel sarTitleLabel;
+    JLabel projectilesTitleLabel;
+    JLabel cupoTitleLabel;
+    JLabel passengersTitleLabel;
 
     private JTextField searchField;
-    private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
-    private JPanel middlePanel;
-    private JPanel bottomPanel, bottomPanelTop, bottomPanelCenter, bottomPanelCenterTop, bottomPanelCenterBottom;
-    private JPanel crewHoursDetailPanel, crewHoursDetailPanelTop, crewHoursDetailPanelCenter;
-    private JPanel sessionDetailPanel, sessionDetailPanelTop, sessionDetailPanelCenter;
-    private JScrollPane lastFlightsScrollPane, crewHoursDetailScrollPane, sessionDetailScrollPane;
+
+    private JPanel topPanel;
+    private JPanel centerPanel;
+    private JPanel insideTopPanelTop, insideTopPanelTopLeft, insideTopPanelTopRight;
+    private JPanel insideTopPanelBottom;
+    private JPanel centerPanelTop, centerPanelCenter, bottomPanelCenterTop, bottomPanelCenterBottom;
+    private JPanel crewHoursDetailPanel, crewHoursDetailPanelTop, crewHoursDetailPanelBottom;
+    private JPanel sessionDetailPanel, sessionDetailPanelTop, sessionDetailPanelBottom;
+    private JPanel landingPanel, landingPanelTop, landingPanelBottom;
+    private JPanel instrumentalAppsPanel, instrumentalAppsPanelTop, instrumentalAppsPanelBottom;
+    private JPanel sarPanel, sarPanelTop, sarPanelBottom;
+    private JPanel projectilesPanel, projectilesPanelTop, projectilesPanelBottom;
+    private JPanel cupoPanel, cupoPanelTop, cupoPanelBottom;
+    private JPanel passengersPanel, passengersPanelTop, passengersPanelBottom;
+
+    private JScrollPane lastFlightsScrollPane, crewHoursDetailScrollPane, sessionDetailScrollPane, landingScrollPane, instrumentalAppsScrollPane, sarScrollPane, projectilesScrollPane, cupoScrollPane, passengersScrollPane;
 
     public RecentFlightsPanelView() {
         this.presenter = new RecentFlightsPanelPresenter(this);
@@ -49,6 +69,12 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         presenter.loadCrewHoursDetails(crewHoursDetailTableModel, presenter.getSelectedVueloId());
         flightDetailsTitleLabel.setText("Detalles del vuelo " + presenter.getSelectedVueloId());
         presenter.loadSessionDetails(sessionDetailTableModel, presenter.getSelectedVueloId());
+        presenter.loadLandingDetails(landingTableModel, presenter.getSelectedVueloId());
+        presenter.loadInstrumentalAppsDetails(instrumentalAppsTableModel, presenter.getSelectedVueloId());
+        presenter.loadSarAppsDetails(sarAppsTableModel, presenter.getSelectedVueloId());
+        presenter.loadProjectilesDetails(projectilesTableModel, presenter.getSelectedVueloId());
+        presenter.loadCupoDetails(cupoTableModel, presenter.getSelectedVueloId());
+        presenter.loadPassengersDetails(passengersTableModel, presenter.getSelectedVueloId());
     }
 
     @Override
@@ -60,29 +86,268 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     @Override
     public void createPanels() {
         topPanel = new JPanel(new BorderLayout());
-        insideTopPanelLeft = new JPanel();
-        insideTopPanelRight = new JPanel();
-        middlePanel = new JPanel(new BorderLayout()); // Here is the lastFlightsTable
-        bottomPanel = new JPanel(new BorderLayout()); // Here are all the details
-        bottomPanelTop = new JPanel(new BorderLayout());
-        bottomPanelCenter = new JPanel(new BorderLayout());
-        bottomPanelCenterTop = new JPanel(new GridLayout(2,1,10,5)); // TODO AQUI VAN HORAS VUELO CREW y debajo falta meter Papeletas
-        bottomPanelCenterBottom = new JPanel(new GridLayout()); // TODO AQUI VAN TOMAS APPS INST SAR PROYECTILES CUPO Y PASAJEROS
+        insideTopPanelTop = new JPanel(new BorderLayout());
+        insideTopPanelTopLeft = new JPanel();
+        insideTopPanelTopRight = new JPanel();
+        insideTopPanelBottom = new JPanel(new BorderLayout()); // Here is the lastFlightsTable
+        centerPanel = new JPanel(new BorderLayout()); // Here are all the details
+        centerPanelTop = new JPanel(); // si quieres centrar el texto Detalles del vuelo X. pon: new JPanel(new BorderLayout()).
+        centerPanelCenter = new JPanel(new GridLayout(2,1));
+
+        bottomPanelCenterTop = new JPanel(new GridLayout(2,1,10,5)); // Aqui van HORAS y debajo  PAPELETAS
+        // Hour panels
         crewHoursDetailPanel = new JPanel(new BorderLayout());
         crewHoursDetailPanelTop = new JPanel();
-        crewHoursDetailPanelCenter = new JPanel(new BorderLayout());
+        crewHoursDetailPanelBottom = new JPanel(new BorderLayout());
+        // Session panels
         sessionDetailPanel = new JPanel(new BorderLayout());
         sessionDetailPanelTop = new JPanel();
-        sessionDetailPanelCenter = new JPanel(new BorderLayout());
+        sessionDetailPanelBottom = new JPanel(new BorderLayout());
+
+        bottomPanelCenterBottom = new JPanel(new GridLayout(2,3,34,5)); // Aqui van TOMAS APPS INST SAR PROYECTILES CUPO y PASAJEROS
+        // Landing panels
+        landingPanel = new JPanel(new BorderLayout());
+        landingPanelTop = new JPanel();
+        landingPanelBottom = new JPanel(new BorderLayout());
+        // Instrumental Apps panels
+        instrumentalAppsPanel = new JPanel(new BorderLayout());
+        instrumentalAppsPanelTop = new JPanel();
+        instrumentalAppsPanelBottom = new JPanel(new BorderLayout());
+        // SAR panels
+        sarPanel = new JPanel(new BorderLayout());
+        sarPanelTop = new JPanel();
+        sarPanelBottom = new JPanel(new BorderLayout());
+        // Projectiles panels
+        projectilesPanel = new JPanel(new BorderLayout());
+        projectilesPanelTop = new JPanel();
+        projectilesPanelBottom = new JPanel(new BorderLayout());
+        // Cupo panels
+        cupoPanel = new JPanel(new BorderLayout());
+        cupoPanelTop = new JPanel();
+        cupoPanelBottom = new JPanel(new BorderLayout());
+        // Passengers panels
+        passengersPanel = new JPanel(new BorderLayout());
+        passengersPanelTop = new JPanel();
+        passengersPanelBottom = new JPanel(new BorderLayout());
+
     }
 
     @Override
     public void createComponents() {
+        // Render to hide 0.0 values
+        ZeroValueCellRenderer zeroValuesRenderer = new ZeroValueCellRenderer();
+        // Render to center-align all columns
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // LAST FLIGHTS TABLE
         lastFlightsTitleLabel = new JLabel("Últimos vuelos");
+        lastFlightsTableModel = createLastFlightsTableModel();
+        lastFlightsTable = new JTable(lastFlightsTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < lastFlightsTable.getColumnModel().getColumnCount(); i++) {
+            lastFlightsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        lastFlightsScrollPane = new JScrollPane(lastFlightsTable);
+        searchField = View.createTextField("Buscar");
+        sorter = new TableRowSorter<>(lastFlightsTableModel);
+
+
         flightDetailsTitleLabel = new JLabel("Detalles del vuelo " + presenter.getSelectedVueloId());
 
-        // Last Flights Table
-        lastFlightsTableModel = new DefaultTableModel(new String[] {"Vuelo ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
+        // HOURS TABLE
+        crewHoursDetailTitleLabel = new JLabel("Horas");
+        crewHoursDetailTableModel = createGenericTableModel((new String[] {"Crew", "Rol", "Dia", "Noche", "GVN", "Instrumental", "HMDS", "IP", "Formación Dia", "Formación GVN", "Winch Trim"}));
+        crewHoursDetailTable = new JTable(crewHoursDetailTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < crewHoursDetailTable.getColumnModel().getColumnCount(); i++) {
+            crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        crewHoursDetailScrollPane = new JScrollPane(crewHoursDetailTable);
+
+        // Apply the custom renderer to hide 0.0 values
+        for (int i = 0; i < crewHoursDetailTable.getColumnCount(); i++) {
+            crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(zeroValuesRenderer);
+        }
+
+        // SESSION TABLE
+        sessionDetailTitleLabel = new JLabel("Papeletas");
+        sessionDetailTableModel = createGenericTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripción", "Plan", "Bloque"});
+        sessionDetailTable = new JTable(sessionDetailTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < sessionDetailTable.getColumnModel().getColumnCount(); i++) {
+            sessionDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        sessionDetailScrollPane = new JScrollPane(sessionDetailTable);
+        // Le poonemos un ancho minimo a la columna de la descripcion
+        sessionDetailTable.getColumnModel().getColumn(3).setMinWidth(400);
+
+        // LANDING TABLE
+        landingTitleLabel = new JLabel("Tomas");
+        landingTableModel = createGenericTableModel(new String[] {"Piloto", "Lugar", "Periodo", "Cantidad"});
+        landingTable = new JTable(landingTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < landingTable.getColumnModel().getColumnCount(); i++) {
+            landingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        landingScrollPane = new JScrollPane(landingTable);
+
+        // INSTRUMENTAL APPS TABLE
+        instrumentalAppsTitleLabel = new JLabel("Aproximaciones Instrumentales");
+        instrumentalAppsTableModel = createGenericTableModel(new String[] {"Piloto", "Tipo", "Cantidad"});
+        instrumentalAppsTable = new JTable(instrumentalAppsTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < instrumentalAppsTable.getColumnModel().getColumnCount(); i++) {
+            instrumentalAppsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        instrumentalAppsScrollPane = new JScrollPane(instrumentalAppsTable);
+
+        // SAR TABLE
+        sarTitleLabel = new JLabel("SAR");
+        sarAppsTableModel = createGenericTableModel(new String[] {"Piloto", "Tipo", "Cantidad"});
+        sarTable = new JTable(sarAppsTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < sarTable.getColumnModel().getColumnCount(); i++) {
+            sarTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        sarScrollPane = new JScrollPane(sarTable);
+
+        // PROJECTILES TABLE
+        projectilesTitleLabel = new JLabel("Proyectiles");
+        projectilesTableModel = createGenericTableModel(new String[] {"Dotación", "Arma", "Cantidad"});
+        projectilesTable = new JTable(projectilesTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < projectilesTable.getColumnModel().getColumnCount(); i++) {
+            projectilesTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        projectilesScrollPane = new JScrollPane(projectilesTable);
+
+        // CUPO TABLE
+        cupoTitleLabel = new JLabel("Cupo");
+        cupoTableModel = createGenericTableModel(new String[] {"Autoridad", "Horas"});
+        cupoTable = new JTable(cupoTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < cupoTable.getColumnModel().getColumnCount(); i++) {
+            cupoTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        cupoScrollPane = new JScrollPane(cupoTable);
+
+        // PASSENGERS TABLE
+        passengersTitleLabel = new JLabel("Pasajeros");
+        passengersTableModel = createGenericTableModel(new String[] {"Tipo", "Cantidad", "Ruta"});
+        passengersTable = new JTable(passengersTableModel);
+        // Apply render to center columns
+        for (int i = 0; i < passengersTable.getColumnModel().getColumnCount(); i++) {
+            passengersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        passengersScrollPane = new JScrollPane(passengersTable);
+    }
+
+    @Override
+    public void configurePanels() {
+
+        insideTopPanelTop.setBorder(new EmptyBorder(5, 10, 5, 10));
+        insideTopPanelTop.setPreferredSize(new Dimension(0, 45));
+
+        centerPanelTop.setBorder(new EmptyBorder(5, 10, 0, 10)); // Panel: Detalles del vuelo X
+        lastFlightsScrollPane.setPreferredSize(new Dimension(0, 110));
+
+        bottomPanelCenterTop.setBorder(new EmptyBorder(0, 0, 5, 0)); // Panel: Horas y Papeletas
+    }
+
+    @Override
+    public void configureComponents() {
+        View.setFontToLabels(PanelView.ENTITY_TITLE_LABEL_FONT, lastFlightsTitleLabel, flightDetailsTitleLabel);
+        View.setFontToLabels(PanelView.ENTITY_SUBTITLE_LABEL_FONT, crewHoursDetailTitleLabel, sessionDetailTitleLabel, landingTitleLabel, instrumentalAppsTitleLabel, sarTitleLabel, projectilesTitleLabel, cupoTitleLabel, passengersTitleLabel);
+
+        searchField.setPreferredSize(new Dimension(200, 25));
+        lastFlightsTable.setRowSorter(sorter);
+
+        crewHoursDetailTable.setCellSelectionEnabled(true);
+        sessionDetailTable.setCellSelectionEnabled(true);
+        landingTable.setCellSelectionEnabled(true);
+        instrumentalAppsTable.setCellSelectionEnabled(true);
+        sarTable.setCellSelectionEnabled(true);
+        projectilesTable.setCellSelectionEnabled(true);
+        cupoTable.setCellSelectionEnabled(true);
+        passengersTable.setCellSelectionEnabled(true);
+    }
+
+    @Override
+    public void assemblePanels() {
+        // Top Panel
+        this.add(topPanel,BorderLayout.NORTH);
+        topPanel.add(insideTopPanelTop, BorderLayout.NORTH);
+        insideTopPanelTop.add(insideTopPanelTopLeft, BorderLayout.WEST);
+        insideTopPanelTop.add(insideTopPanelTopRight, BorderLayout.EAST);
+        topPanel.add(insideTopPanelBottom, BorderLayout.SOUTH);
+        insideTopPanelBottom.add(lastFlightsScrollPane, BorderLayout.NORTH);
+
+        // Bottom Panel
+        this.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(centerPanelTop, BorderLayout.NORTH); // Este es solo para el titulo
+        centerPanel.add(centerPanelCenter, BorderLayout.CENTER); // Aqui van todos los detalles
+        centerPanelCenter.add(bottomPanelCenterTop); // Aqui van horas y sesiones
+        centerPanelCenter.add(bottomPanelCenterBottom); // Aqui el resto
+        View.addComponentsToPanel(bottomPanelCenterTop, crewHoursDetailPanel, sessionDetailPanel);
+        View.addComponentsToPanel(bottomPanelCenterBottom, landingPanel, instrumentalAppsPanel, sarPanel, projectilesPanel, cupoPanel, passengersPanel);
+
+        crewHoursDetailPanel.add(crewHoursDetailPanelTop, BorderLayout.NORTH);
+        crewHoursDetailPanel.add(crewHoursDetailPanelBottom, BorderLayout.CENTER);
+
+        sessionDetailPanel.add(sessionDetailPanelTop, BorderLayout.NORTH);
+        sessionDetailPanel.add(sessionDetailPanelBottom, BorderLayout.CENTER);
+
+        landingPanel.add(landingPanelTop, BorderLayout.NORTH);
+        landingPanel.add(landingPanelBottom, BorderLayout.CENTER);
+
+        instrumentalAppsPanel.add(instrumentalAppsPanelTop, BorderLayout.NORTH);
+        instrumentalAppsPanel.add(instrumentalAppsPanelBottom, BorderLayout.CENTER);
+
+        sarPanel.add(sarPanelTop, BorderLayout.NORTH);
+        sarPanel.add(sarPanelBottom, BorderLayout.CENTER);
+
+        projectilesPanel.add(projectilesPanelTop, BorderLayout.NORTH);
+        projectilesPanel.add(projectilesPanelBottom, BorderLayout.CENTER);
+
+        cupoPanel.add(cupoPanelTop, BorderLayout.NORTH);
+        cupoPanel.add(cupoPanelBottom, BorderLayout.CENTER);
+
+        passengersPanel.add(passengersPanelTop, BorderLayout.NORTH);
+        passengersPanel.add(passengersPanelBottom, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void assembleComponents() {
+        View.addComponentsToPanel(insideTopPanelTopLeft, lastFlightsTitleLabel);
+        View.addComponentsToPanel(insideTopPanelTopRight, searchField);
+        View.addComponentsToPanel(centerPanelTop, flightDetailsTitleLabel);
+        View.addComponentsToPanel(crewHoursDetailPanelTop, crewHoursDetailTitleLabel);
+        View.addComponentsToPanel(crewHoursDetailPanelBottom, crewHoursDetailScrollPane);
+        View.addComponentsToPanel(sessionDetailPanelTop, sessionDetailTitleLabel);
+        View.addComponentsToPanel(sessionDetailPanelBottom, sessionDetailScrollPane);
+        View.addComponentsToPanel(landingPanelTop, landingTitleLabel);
+        View.addComponentsToPanel(landingPanelBottom, landingScrollPane);
+        View.addComponentsToPanel(instrumentalAppsPanelTop, instrumentalAppsTitleLabel);
+        View.addComponentsToPanel(instrumentalAppsPanelBottom, instrumentalAppsScrollPane);
+        View.addComponentsToPanel(sarPanelTop, sarTitleLabel);
+        View.addComponentsToPanel(sarPanelBottom, sarScrollPane);
+        View.addComponentsToPanel(projectilesPanelTop, projectilesTitleLabel);
+        View.addComponentsToPanel(projectilesPanelBottom, projectilesScrollPane);
+        View.addComponentsToPanel(cupoPanelTop, cupoTitleLabel);
+        View.addComponentsToPanel(cupoPanelBottom, cupoScrollPane);
+        View.addComponentsToPanel(passengersPanelTop, passengersTitleLabel);
+        View.addComponentsToPanel(passengersPanelBottom, passengersScrollPane);
+    }
+
+    @Override
+    public void addActionListeners() {
+        presenter.setActionListeners();
+    }
+
+    // Table Models
+    private DefaultTableModel createLastFlightsTableModel() {
+        return new DefaultTableModel(new String[] {"ID", "Fecha", "Helicóptero", "Evento", "HAC", "Horas"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Making table non-editable
@@ -97,65 +362,16 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
                 return String.class; // Other columns as String
             }
         };
-
-        lastFlightsTable = new JTable(lastFlightsTableModel);
-
-        // Center-align all columns
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for (int i = 0; i < lastFlightsTable.getColumnModel().getColumnCount(); i++) {
-            lastFlightsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        lastFlightsScrollPane = new JScrollPane(lastFlightsTable);
-
-        searchField = View.createTextField("Buscar");
-        sorter = new TableRowSorter<>(lastFlightsTableModel);
-
-        // Crew Hours Details Table
-        crewHoursDetailTitleLabel = new JLabel("Horas");
-        crewHoursDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Dia", "Noche", "GVN", "Instrumental", "HMDS", "IP", "Formación Dia", "Formación GVN", "Winch Trim"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Making table non-editable
-            }
-        };
-
-        crewHoursDetailTable = new JTable(crewHoursDetailTableModel);
-
-        // Center-align all columns
-        for (int i = 0; i < crewHoursDetailTable.getColumnModel().getColumnCount(); i++) {
-            crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        crewHoursDetailScrollPane = new JScrollPane(crewHoursDetailTable);
-
-        // Apply the custom renderer to the lastFlightsTable
-        for (int i = 0; i < crewHoursDetailTable.getColumnCount(); i++) {
-            crewHoursDetailTable.getColumnModel().getColumn(i).setCellRenderer(new ZeroValueCellRenderer());
-        }
-
-        // Session Details Table
-        sessionDetailTitleLabel = new JLabel("Papeletas");
-        sessionDetailTableModel = new DefaultTableModel(new String[] {"Crew", "Rol", "Papeleta", "Descripción", "Plan", "Bloque"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Making table non-editable
-            }
-        };
-
-        sessionDetailTable = new JTable(sessionDetailTableModel);
-        // Le poonemos un ancho minimo a la columna de la descripcion
-        sessionDetailTable.getColumnModel().getColumn(3).setMinWidth(400);
-        // Center-align all columns
-        for (int i = 0; i < sessionDetailTable.getColumnModel().getColumnCount(); i++) {
-            sessionDetailTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        sessionDetailScrollPane = new JScrollPane(sessionDetailTable);
     }
 
-
+    private DefaultTableModel createGenericTableModel(String[] columnNames) {
+        return new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Making table non-editable
+            }
+        };
+    }
 
     // INNER CLASS Custom cell renderer to gray out 0.0 values
     public class ZeroValueCellRenderer extends DefaultTableCellRenderer {
@@ -181,74 +397,6 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
             return cell;
         }
-    }
-
-
-    @Override
-    public void configurePanels() {
-        topPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
-        bottomPanelTop.setBorder(new EmptyBorder(5, 10, 5, 10));
-        lastFlightsScrollPane.setPreferredSize(new Dimension(0, 150));
-    }
-
-    @Override
-    public void configureComponents() {
-        lastFlightsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
-        flightDetailsTitleLabel.setFont(PanelView.ENTITY_TITLE_LABEL_FONT);
-        crewHoursDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
-        sessionDetailTitleLabel.setFont(PanelView.ENTITY_SUBTITLE_LABEL_FONT);
-
-        searchField.setPreferredSize(new Dimension(200, 25));
-        lastFlightsTable.setRowSorter(sorter);
-
-        crewHoursDetailTable.setCellSelectionEnabled(true);
-        sessionDetailTable.setCellSelectionEnabled(true);
-
-        crewHoursDetailPanel.setPreferredSize(new Dimension(0,130));
-        sessionDetailPanel.setPreferredSize(new Dimension(0, 130));
-    }
-
-    @Override
-    public void assemblePanels() {
-        // Top Panel
-        this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(insideTopPanelLeft, BorderLayout.WEST);
-        topPanel.add(insideTopPanelRight, BorderLayout.EAST);
-
-        // Middle Panel
-        this.add(middlePanel, BorderLayout.CENTER);
-        middlePanel.add(lastFlightsScrollPane, BorderLayout.NORTH);
-
-        // Bottom Panel
-        this.add(bottomPanel, BorderLayout.SOUTH);
-        bottomPanel.add(bottomPanelTop, BorderLayout.NORTH);
-        bottomPanel.add(bottomPanelCenter, BorderLayout.CENTER);
-        bottomPanelCenter.add(bottomPanelCenterTop, BorderLayout.NORTH);
-        bottomPanelCenter.add(bottomPanelCenterBottom, BorderLayout.SOUTH);
-        bottomPanelCenterTop.add(crewHoursDetailPanel);
-        bottomPanelCenterTop.add(sessionDetailPanel);
-
-        crewHoursDetailPanel.add(crewHoursDetailPanelTop, BorderLayout.NORTH);
-        crewHoursDetailPanel.add(crewHoursDetailPanelCenter, BorderLayout.CENTER);
-
-        sessionDetailPanel.add(sessionDetailPanelTop, BorderLayout.NORTH);
-        sessionDetailPanel.add(sessionDetailPanelCenter, BorderLayout.CENTER);
-    }
-
-    @Override
-    public void assembleComponents() {
-        View.addComponentsToPanel(insideTopPanelLeft, lastFlightsTitleLabel);
-        View.addComponentsToPanel(insideTopPanelRight, searchField);
-        View.addComponentsToPanel(bottomPanelTop, flightDetailsTitleLabel);
-        View.addComponentsToPanel(crewHoursDetailPanelTop, crewHoursDetailTitleLabel);
-        View.addComponentsToPanel(crewHoursDetailPanelCenter, crewHoursDetailScrollPane);
-        View.addComponentsToPanel(sessionDetailPanelTop, sessionDetailTitleLabel);
-        View.addComponentsToPanel(sessionDetailPanelCenter, sessionDetailScrollPane);
-    }
-
-    @Override
-    public void addActionListeners() {
-        presenter.setActionListeners();
     }
 
     // Getters and Setters
@@ -278,5 +426,29 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     public DefaultTableModel getSessionDetailTableModel() {
         return sessionDetailTableModel;
+    }
+
+    public DefaultTableModel getLandingTableModel() {
+        return landingTableModel;
+    }
+
+    public DefaultTableModel getInstrumentalAppsTableModel() {
+        return instrumentalAppsTableModel;
+    }
+
+    public DefaultTableModel getSarAppsTableModel() {
+        return sarAppsTableModel;
+    }
+
+    public DefaultTableModel getProjectilesTableModel() {
+        return projectilesTableModel;
+    }
+
+    public DefaultTableModel getCupoTableModel() {
+        return cupoTableModel;
+    }
+
+    public DefaultTableModel getPassengersTableModel() {
+        return passengersTableModel;
     }
 }

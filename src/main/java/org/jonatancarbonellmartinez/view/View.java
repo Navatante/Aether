@@ -252,4 +252,10 @@ public interface View {
             }
         });
     }
+
+    static void setFontToLabels(Font font, JLabel... labels) {
+        for (JLabel label : labels) {
+            label.setFont(font);
+        }
+    }
 }

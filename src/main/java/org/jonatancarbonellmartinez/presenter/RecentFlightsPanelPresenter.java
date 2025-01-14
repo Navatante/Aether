@@ -96,7 +96,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         }
     }
 
-    // Pilot Hours Details TableModel
+    // Session Details TableModel
     public void loadSessionDetails(DefaultTableModel tableModel, int flightId) {
         String sql = "SELECT * FROM view_session_details WHERE Vuelo_ID = ?";
 
@@ -117,6 +117,180 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
                         rs.getString("Descripción"),
                         rs.getString("Plan"),
                         rs.getString("Bloque")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Landing Details TableModel
+    public void loadLandingDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_landings WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Piloto"),
+                        rs.getString("Lugar"),
+                        rs.getString("Periodo"),
+                        rs.getInt("Cantidad")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Instrumental Apps. Details TableModel
+    public void loadInstrumentalAppsDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_instrumental_apps WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Piloto"),
+                        rs.getString("Tipo"),
+                        rs.getInt("Cantidad")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // SAR Apps. Details TableModel
+    public void loadSarAppsDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_sar_apps WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Piloto"),
+                        rs.getString("Tipo"),
+                        rs.getInt("Cantidad")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Projectiles Details TableModel
+    public void loadProjectilesDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_projectiles WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Dotación"),
+                        rs.getString("Arma"),
+                        rs.getInt("Cantidad")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Cupo Details TableModel
+    public void loadCupoDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_cupo WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Autoridad"),
+                        rs.getDouble("Horas")
+                };
+                tableModel.addRow(row);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder a la vista", e);
+        }
+    }
+
+    // Passengers Details TableModel
+    public void loadPassengersDetails(DefaultTableModel tableModel, int flightId) {
+        String sql = "SELECT * FROM view_passengers WHERE Vuelo_ID = ?";
+
+        try (Connection connection = Database.getInstance().getConnection()) {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, flightId);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Clear existing rows in the table model
+            tableModel.setRowCount(0);
+
+            // Populate the table model with new data
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getString("Tipo"),
+                        rs.getInt("Cantidad"),
+                        rs.getString("Ruta")
                 };
                 tableModel.addRow(row);
             }
@@ -186,6 +360,12 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         view.getFlightDetailsTitleLabel().setText("Detalles del vuelo " + vueloId);
         loadCrewHoursDetails(view.getCrewHoursDetailTableModel(), vueloId);
         loadSessionDetails(view.getSessionDetailTableModel(), vueloId);
+        loadLandingDetails(view.getLandingTableModel(), vueloId);
+        loadInstrumentalAppsDetails(view.getInstrumentalAppsTableModel(), vueloId);
+        loadSarAppsDetails(view.getSarAppsTableModel(), vueloId);
+        loadProjectilesDetails(view.getProjectilesTableModel(), vueloId);
+        loadCupoDetails(view.getCupoTableModel(), vueloId);
+        loadPassengersDetails(view.getPassengersTableModel(), vueloId);
     }
 
     // Getters and setters

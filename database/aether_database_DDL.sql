@@ -298,7 +298,7 @@ INSERT INTO dim_event (event_name, event_place) VALUES ('Colaboración', 'Cartag
 
 -- Insert into dim_period
 INSERT INTO dim_period (period_name) VALUES ('Diurno');
-INSERT INTO dim_period (period_name) VALUES ('Nocturno convencional');
+INSERT INTO dim_period (period_name) VALUES ('Noche sin GVN');
 INSERT INTO dim_period (period_name) VALUES ('GVN');
 
 -- Insert into dim_ifr_app_type
