@@ -260,6 +260,15 @@ CREATE TABLE fact_session_capba (
 	UNIQUE (session_fk, capba_fk) -- Ensure uniqueness of natural keys
 );
 
+-- Log for deleted flights
+CREATE TABLE deleted_flights_log (
+    deleted_flights_id  INTEGER NOT NULL,
+    flight_id           INTEGER NOT NULL,
+    user_name           TEXT    NOT NULL,
+    timestamp           TEXT    NOT NULL,
+    PRIMARY KEY (deleted_flights_id)
+);
+
 -- ############################### --
 -- 		  INSERT DATA		 	   --
 -- ############################### --

@@ -5,10 +5,7 @@ import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.SessionCrewCount;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +20,15 @@ public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, I
             return; // No operation needed for empty lists
         }
 
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO main.junction_session_crew_count (session_crew_count_flight_fk, session_crew_count_person_fk, session_crew_count_session_fk) VALUES (?, ?, ?)";
 
-        try (Connection connection = Database.getInstance().getConnection()) {
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

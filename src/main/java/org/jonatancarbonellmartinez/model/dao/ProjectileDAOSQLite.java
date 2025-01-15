@@ -5,10 +5,7 @@ import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Projectile;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +20,15 @@ public class ProjectileDAOSQLite implements GenericDAO<Projectile, Integer> {
             return; // No operation needed for empty lists
         }
 
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO main.junction_projectile (projectile_flight_fk, projectile_person_fk, projectile_type_fk, projectile_qty) VALUES (?, ?, ?, ?)";
 
-        try (Connection connection = Database.getInstance().getConnection()) {
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

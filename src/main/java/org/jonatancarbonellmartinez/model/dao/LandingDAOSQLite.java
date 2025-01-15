@@ -5,10 +5,7 @@ import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Landing;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +20,15 @@ public class LandingDAOSQLite implements GenericDAO<Landing, Integer>{
             return; // No operation needed for empty lists
         }
 
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO main.junction_landing (landing_flight_fk, landing_person_fk, landing_place_fk, landing_period_fk, landing_qty) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = Database.getInstance().getConnection()) {
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

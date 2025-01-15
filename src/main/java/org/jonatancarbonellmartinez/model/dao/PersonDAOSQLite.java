@@ -5,10 +5,7 @@ import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,17 +13,23 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
     @Override
     public void insert(Person person) throws DatabaseException {
+
         // Paso 1: Verificar si ya existe un registro con el mismo número de orden
         if (checkIfOrderExists(person.getPersonOrder())) {
             // Paso 2: Si existe, incrementar el orden de los registros activos con orden >= al nuevo
             incrementOrders(person.getPersonOrder());
         }
-
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             pstmt.setString(1, person.getPersonNk());
             pstmt.setString(2, person.getPersonRank());
             pstmt.setString(3, person.getPersonName());
@@ -68,6 +71,7 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
     @Override
     public void update(Person entity, int skToUpdate) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "UPDATE dim_person\n" +
                     "SET \n" +
                     "    person_nk = ?," +
@@ -84,7 +88,12 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
                     "WHERE person_sk = ?";
 
         try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             pstmt.setString(1, entity.getPersonNk());
             pstmt.setString(2, entity.getPersonRank());
             pstmt.setString(3, entity.getPersonName());
@@ -203,9 +212,16 @@ public class PersonDAOSQLite implements GenericDAO<Person,Integer> {
 
     // Metodo para incrementar el orden de los registros >= al nuevo
     private void incrementOrders(int orden) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "UPDATE dim_person SET person_order = person_order + 1 WHERE person_order >= ? AND person_current_flag = 1";
+
         try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             pstmt.setInt(1, orden);
             pstmt.executeUpdate();
         } catch (SQLException e) {

@@ -6,10 +6,7 @@ import org.jonatancarbonellmartinez.model.entities.IftHour;
 import org.jonatancarbonellmartinez.model.entities.Passenger;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +21,15 @@ public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
             return; // No operation needed for empty lists
         }
 
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO main.junction_passenger (passenger_flight_fk, passenger_type_fk, passenger_qty, passenger_route) VALUES (?, ?, ?, ?)";
 
-        try (Connection connection = Database.getInstance().getConnection()) {
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

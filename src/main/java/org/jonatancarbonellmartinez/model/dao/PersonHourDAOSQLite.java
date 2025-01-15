@@ -5,20 +5,22 @@ import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.PersonHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
 public class PersonHourDAOSQLite implements GenericDAO<PersonHour, Integer> {
     @Override
     public void insert(PersonHour entity) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO junction_person_hour (person_hour_flight_fk, person_hour_person_fk, person_hour_period_fk, person_hour_hour_qty) VALUES (?, ?, ?, ?)";
 
         try(Connection connection = Database.getInstance().getConnection();
+            Statement stmt = connection.createStatement();
             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
 
             pstmt.setInt(1, entity.getFlightFk());
             pstmt.setInt(2,    entity.getPersonFk());

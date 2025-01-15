@@ -6,10 +6,7 @@ import org.jonatancarbonellmartinez.model.entities.FormationHour;
 import org.jonatancarbonellmartinez.model.entities.InstructorHour;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +21,15 @@ public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer
             return; // No operation needed for empty lists
         }
 
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO main.junction_formation_hour (formation_hour_flight_fk, formation_hour_person_fk, formation_hour_period_fk ,formation_hour_formation_qty) VALUES (?, ?, ?, ?)";
 
-        try (Connection connection = Database.getInstance().getConnection()) {
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

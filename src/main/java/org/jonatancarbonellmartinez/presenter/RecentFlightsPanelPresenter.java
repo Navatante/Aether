@@ -4,13 +4,16 @@ import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.utilities.Database;
 import org.jonatancarbonellmartinez.view.RecentFlightsPanelView;
 
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.awt.*;
+import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
 
@@ -26,7 +29,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
     public void setActionListeners() {
         createSearchFieldListener();
         idOfLastFlightListener();
-        // aqui iria el listener de seleccionar el ID para actualizar las tablas de detalles
+        view.getDeleteFlightMenuItem().addActionListener( e -> onDeleteFlightItemClicked(selectedVueloId));
     }
 
     public void loadLatest50Flights(DefaultTableModel tableModel) {
@@ -340,8 +343,11 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         view.getLastFlightsTable().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 1) {
+                if (evt.getClickCount() == 1 && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
                     handleFlightSelection();
+                } else if (evt.getClickCount() == 1 && evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+                    // Handle right-click to show popup menu
+                    view.getDeleteFlightPopupMenu().show(view.getLastFlightsTable(), evt.getX(), evt.getY());
                 }
             }
         });
@@ -367,6 +373,117 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
         loadCupoDetails(view.getCupoTableModel(), vueloId);
         loadPassengersDetails(view.getPassengersTableModel(), vueloId);
     }
+
+    public void onDeleteFlightItemClicked(int flightId) {
+        final String confirmationCode = "QUIEROELIMINARELVUELO" + flightId;
+        boolean validInput = false;
+
+        while (!validInput) {
+            // Create a deletion confirmation panel
+            JPanel deletionConfirmationPanel = new JPanel(new BorderLayout(5, 5));
+
+            // Warning label
+            JLabel idLabel = new JLabel(String.valueOf(flightId));
+            idLabel.setFont(new Font("SEGOE UI", Font.BOLD, 16));
+            JLabel warningLabel = new JLabel("Va a borrar el vuelo: ");
+            JPanel warningPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            deletionConfirmationPanel.add(warningPanel, BorderLayout.NORTH);
+            warningPanel.add(warningLabel);
+            warningPanel.add(idLabel);
+
+            // Instruction label
+            JLabel instructionLabel = new JLabel("Escribe '" + confirmationCode + "' para confirmar:");
+            deletionConfirmationPanel.add(instructionLabel, BorderLayout.CENTER);
+
+            // Text field for user input
+            JTextField confirmationTextField = new JTextField(20);
+            deletionConfirmationPanel.add(confirmationTextField, BorderLayout.SOUTH);
+
+            // Show the dialog
+            int result = JOptionPane.showOptionDialog(
+                    null, deletionConfirmationPanel, "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+                    new String[]{"Borrar", "Cancelar"}, "Cancelar"
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                // Validate input
+                if (confirmationTextField.getText().equals(confirmationCode)) {
+                    try {
+                        deleteFlight(flightId);
+                        validInput = true;
+                        JOptionPane.showMessageDialog(null,
+                                "Vuelo eliminado correctamente.",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (DatabaseException e) {
+                        JOptionPane.showMessageDialog(null,
+                                "Error al eliminar el vuelo: " + e.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Entrada incorrecta. Inténtalo de nuevo.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // El usuario pulso cancelar
+                validInput = true;
+            }
+        }
+    }
+
+    private void deleteFlight(int flightId) {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;"; // TODO lo dejo marcado porque es muy importante.
+        String sql = "DELETE FROM fact_flight WHERE flight_sk = ?";
+
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
+            // Preparar y ejecutar la eliminación
+            pstmt.setInt(1, flightId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Si se consigue eliminar un registro, actualizamos la tabla y logeamos la eliminación
+                view.updatePanel(); // actualizamos el panel
+                logFlightDeletion(flightId);
+            }
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error eliminando el vuelo", e);
+        }
+    }
+
+    private void logFlightDeletion(int flightId) {
+        String sql = "INSERT INTO deleted_flights_log (flight_id, user_name, timestamp) VALUES (?, ?, ?)";
+
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, flightId);
+            pstmt.setString(2, System.getProperty("user.name")); // Get current user name
+            pstmt.setString(3, getCurrentTimestamp()); // Use current timestamp
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error inserting log entry for deleted flight", e);
+        }
+    }
+
+    private String getCurrentTimestamp() {
+        // Define the formatter for SQLite DATETIME
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Convert Instant to LocalDateTime and format it
+        return LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).format(formatter);
+    }
+
+
 
     // Getters and setters
     public int getSelectedVueloId() {

@@ -6,10 +6,7 @@ import org.jonatancarbonellmartinez.model.entities.Event;
 import org.jonatancarbonellmartinez.model.entities.Person;
 import org.jonatancarbonellmartinez.utilities.Database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,11 +14,17 @@ import java.util.List;
 public class EventDAOSQLite implements GenericDAO<Event, Integer> {
     @Override
     public void insert(Event entity) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "INSERT INTO dim_event (event_name, event_place)" +
                 " VALUES (?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             pstmt.setString(1, entity.getEventName());
             pstmt.setString(2, entity.getEventPlace());
 
@@ -54,6 +57,7 @@ public class EventDAOSQLite implements GenericDAO<Event, Integer> {
 
     @Override
     public void update(Event entity, int skToUpdate) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
         String sql = "UPDATE dim_event\n" +
                 "SET \n" +
                 "    event_name = ?," +
@@ -61,7 +65,12 @@ public class EventDAOSQLite implements GenericDAO<Event, Integer> {
                 "WHERE event_sk = ?";
 
         try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
             pstmt.setString(1, entity.getEventName());
             pstmt.setString(2, entity.getEventPlace());
             pstmt.setInt(3, skToUpdate);

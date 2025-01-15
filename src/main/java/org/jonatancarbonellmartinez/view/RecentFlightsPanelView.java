@@ -55,6 +55,10 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     private JScrollPane lastFlightsScrollPane, crewHoursDetailScrollPane, sessionDetailScrollPane, landingScrollPane, instrumentalAppsScrollPane, sarScrollPane, projectilesScrollPane, cupoScrollPane, passengersScrollPane;
 
+    private JPopupMenu deleteFlightPopupMenu;
+
+    private JMenuItem deleteFlightMenuItem;
+
     public RecentFlightsPanelView() {
         this.presenter = new RecentFlightsPanelPresenter(this);
         this.initializeUI();
@@ -241,6 +245,10 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
             passengersTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         passengersScrollPane = new JScrollPane(passengersTable);
+
+        // DELETE FLIGHT POPUP MENU
+        deleteFlightPopupMenu = new JPopupMenu();
+        deleteFlightMenuItem = new JMenuItem("Eliminar vuelo");
     }
 
     @Override
@@ -253,6 +261,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
         lastFlightsScrollPane.setPreferredSize(new Dimension(0, 110));
 
         bottomPanelCenterTop.setBorder(new EmptyBorder(0, 0, 5, 0)); // Panel: Horas y Papeletas
+
     }
 
     @Override
@@ -315,6 +324,9 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
         passengersPanel.add(passengersPanelTop, BorderLayout.NORTH);
         passengersPanel.add(passengersPanelBottom, BorderLayout.CENTER);
+
+        //PopUpMenu
+        deleteFlightPopupMenu.add(deleteFlightMenuItem);
     }
 
     @Override
@@ -450,5 +462,13 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
 
     public DefaultTableModel getPassengersTableModel() {
         return passengersTableModel;
+    }
+
+    public JPopupMenu getDeleteFlightPopupMenu() {
+        return deleteFlightPopupMenu;
+    }
+
+    public JMenuItem getDeleteFlightMenuItem() {
+        return deleteFlightMenuItem;
     }
 }
