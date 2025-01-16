@@ -1,5 +1,6 @@
--- Muy importante acticar las foreign keys antes de anadir ninguna tabla.
 -- Las PK tienen que ser INTEGER para que puedan autoincrementar implicitamente.
+
+-- Muy importante acticar las foreign keys antes de anadir ninguna tabla.
 PRAGMA foreign_keys = ON;
 
 -- ############################### --
@@ -277,14 +278,9 @@ INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1,
 VALUES ('JON', 'SG1', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1 , 1);
 
 -- Insert into dim_helo
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number)
-VALUES ('1234', 'NH-90', '1401');
-
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number)
-VALUES (1235, 'NH-90', '1402');
-
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number)
-VALUES ('1236', 'NH-90', '1403');
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1236', 'NH-90', '1403');
 
 -- Insert into dim_event
 INSERT INTO dim_event (event_name, event_place) VALUES ('Adaptación', 'BNR');
@@ -327,7 +323,6 @@ INSERT INTO dim_landing_place (landing_place_name) VALUES ('Carrier');
 INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('7.62', 'M3M');
 INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('12.7', 'MAG58');
 
--- Insert into dim_session
 
 -- Insert into dim_session
 INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FAM-301', 'Vuelo de Familiarización', 'Vuelo', 'Básico', 1.5, 4, 180);
@@ -425,17 +420,6 @@ FROM
         INNER JOIN dim_helo h ON f.flight_helo_fk = h.helo_sk
         INNER JOIN dim_event e ON f.flight_event_fk = e.event_sk
         INNER JOIN dim_person p ON f.flight_person_cta_fk = p.person_sk;
-
-select * from view_last_flights;
-
-drop view view_last_flights;
-
--- Query for last 50 flights
-SELECT *
-FROM view_last_flights
-ORDER BY "ID" DESC
-LIMIT 50;
-
 
 -- Crew hours detail view
 
@@ -605,7 +589,7 @@ FROM
         INNER JOIN fact_flight f ON jp.passenger_flight_fk = f.flight_sk
         INNER JOIN dim_passenger_type dpt ON jp.passenger_type_fk = dpt.passenger_type_sk;
 
-select * from view_passengers;
+
 
 -- ############################### --
 -- 		  	  TRIGGERS		       --
@@ -615,23 +599,23 @@ select * from view_passengers;
 -- Seguramente consiga hacerlo mejor dejandole esa logica a Java, en lugar de con un trigger.
 
 
-
-CREATE TRIGGER set_event_code
-    AFTER INSERT ON dim_event
-    FOR EACH ROW
-BEGIN
-    UPDATE dim_event
-    SET event_code =
-            CASE
-                WHEN NEW.event_name = 'Adaptación' THEN 'A'
-                WHEN NEW.event_name = 'Instrucción' THEN 'E'
-                WHEN NEW.event_name = 'Adiestramiento' THEN 'I'
-                WHEN NEW.event_name IN ('Maniobra nacional', 'Maniobra internacional') THEN 'O'
-                WHEN NEW.event_name = 'Misión' THEN 'M'
-                WHEN NEW.event_name = 'Colaboración' THEN 'U'
-                WHEN NEW.event_name = 'Pruebas' THEN 'X'
-                ELSE event_code -- Keep existing code if no match
-                END
-    WHERE rowid = NEW.rowid;
-END;
+-- Este triger no se realmente si crarlo o no, voy a dejarlo comentado por si acaso.
+-- CREATE TRIGGER set_event_code
+--     AFTER INSERT ON dim_event
+--     FOR EACH ROW
+-- BEGIN
+--     UPDATE dim_event
+--     SET event_code =
+--             CASE
+--                 WHEN NEW.event_name = 'Adaptación' THEN 'A'
+--                 WHEN NEW.event_name = 'Instrucción' THEN 'E'
+--                 WHEN NEW.event_name = 'Adiestramiento' THEN 'I'
+--                 WHEN NEW.event_name IN ('Maniobra nacional', 'Maniobra internacional') THEN 'O'
+--                 WHEN NEW.event_name = 'Misión' THEN 'M'
+--                 WHEN NEW.event_name = 'Colaboración' THEN 'U'
+--                 WHEN NEW.event_name = 'Pruebas' THEN 'X'
+--                 ELSE event_code -- Keep existing code if no match
+--                 END
+--     WHERE rowid = NEW.rowid;
+-- END;
 
