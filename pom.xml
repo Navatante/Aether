@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jonatancarbonellmartinez</groupId>
-    <artifactId>FlightHub</artifactId>
+    <artifactId>Aether</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
