@@ -4,6 +4,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.BadLocationException;
 
+// TODO future delete me
 public class LimitDocumentFilter extends DocumentFilter {
     private final int limit;
 
