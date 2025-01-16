@@ -1,6 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +12,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     private PersonDialogPresenter presenter;
     private boolean isEditMode;
 
-    private JTextField personPhoneField, personNkField, personNameField, personLastName1Field,
+    private JonJTextField personPhoneField, personNkField, personNameField, personLastName1Field,
                        personLastName2Field, orderField, personDniField, editPersonIdField;
 
     private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;

@@ -55,40 +55,6 @@ public interface View {
     Color borderColor = new Color(48,50,51);
     Color tableBackgroundColor = new Color(70,73,75);
 
-    // To be used when Placeholder is larger than input.
-    static JTextField createTextField(String placeholder) {
-        JTextField textField = new JTextField(placeholder);
-        View.setPlaceholder(textField, placeholder);
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                View.onTextFieldFocusGained(textField, placeholder);
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                View.onTextFieldFocusLost(textField, placeholder);
-            }
-        });
-        return textField;
-    }
-
-    static JTextField createTextField(String placeholder, int inputLimit, int placeHolderLimit) {
-        JTextField textField = new JTextField(placeholder);
-        View.setPlaceholder(textField, placeholder);
-        textField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                View.onTextFieldFocusGained(textField, placeholder, inputLimit);
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                View.onTextFieldFocusLost(textField, placeholder, placeHolderLimit);
-            }
-        });
-        return textField;
-    }
 
     static JComboBox<String> createFixedComboBox(String[] values, String placeholder) {
         JComboBox<String> comboBox = new JComboBox<>(values);
