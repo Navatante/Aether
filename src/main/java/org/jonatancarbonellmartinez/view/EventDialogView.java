@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.EventDialogPresenter;
+import org.jonatancarbonellmartinez.utilities.CustomJTextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +61,8 @@ public class EventDialogView extends JDialog implements View, DialogView {
         eventNameBox = View.createFixedComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
                 "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO demomento este lo dejo asi porque el metodo toString() de Event devuevle nombre y lugar, y aqui solo necesito nombre.
 
-        eventPlaceField = View.createTextField("Lugar");
+        //eventPlaceField = View.createTextField("Lugar");
+        eventPlaceField = new CustomJTextField("Lugar", 10, 5, null);
 
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
@@ -136,7 +138,8 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void setDocumentFilters() {
-        View.setDocumentFilter(eventPlaceField, 100);
+        // TODO era esta linea la que me estaba dando por culo
+        //View.setDocumentFilter(eventPlaceField, 100);
 
     }
 
