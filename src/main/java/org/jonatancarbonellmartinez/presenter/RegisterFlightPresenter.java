@@ -792,7 +792,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean isVueloCardValid() {
         boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
-                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento");
+                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
+                            DialogPresenter.isFieldCompleted(view, view.getTotalHoursField(),"Horas totales");
 
         return isValid;
     }
