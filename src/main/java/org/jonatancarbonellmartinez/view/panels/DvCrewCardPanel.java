@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -26,7 +27,7 @@ public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private JLabel horasLabel, vueloLabel, winchTrimLabel, projectilesLabel, m3mLabel, magLabel;
 
-    private JTextField dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField;
+    private JonJTextField dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField;
 
     private JComboBox dvBox;
 
@@ -86,12 +87,12 @@ public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
         m3mLabel = new JLabel("M3M");
         magLabel = new JLabel("MAG58");
 
-        dayHourField = View.createTextField("D");
-        nightHourField = View.createTextField("N");
-        gvnHourField = View.createTextField("G");
-        winchTrimHourField = View.createTextField("W");
-        m3mField = View.createTextField("P");
-        magField = View.createTextField("P");
+        dayHourField = new JonJTextField("D",4, View.HOUR);
+        nightHourField = new JonJTextField("N",4, View.HOUR);
+        gvnHourField = new JonJTextField("G",4, View.HOUR);
+        winchTrimHourField = new JonJTextField("W",4, View.HOUR);
+        m3mField = new JonJTextField("P",4, View.HOUR);
+        magField = new JonJTextField("P",4, View.HOUR);
     }
 
     @Override

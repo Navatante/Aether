@@ -792,8 +792,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
 
     private boolean isVueloCardValid() {
         boolean isValid = DialogPresenter.validateDynamicComboBox(view, view.getHeloBox(),"Helicóptero") &&
-                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento") &&
-                            DialogPresenter.isAValidMandatoryHour(view, view.getTotalHoursField(),"Horas totales");
+                            DialogPresenter.validateDynamicComboBox(view, view.getEventBox(),"Evento");
+
         return isValid;
     }
 
@@ -801,7 +801,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         boolean isValid = arePilotsSelected() &&
                             selectedPilotsAreNotRepeated() &&
                             isAnyFlightHourInsertedPerPilotCard() &&
-                            arePilotCardsHoursValid() &&
                             areInstrumentalHoursEqualOrLessThanTotalHours() &&
                             areHmdsHoursEqualOrLessThanTotalHours() &&
                             areIpHoursEqualOrLessThanTotalHours() &&
@@ -809,9 +808,8 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
                             doesTotalHoursEqualsSumOfPilotHours() &&
                             areDvsSelected() &&
                             selectedDvsAreNotRepeated() &&
-                            isAnyFlightHourInsertedPerDvCard() &&
-                            areDvCardsHoursValid();
-                            //doesTotalHoursEqualsSumOfDvHours(), i think i dont need this method, but we will see.
+                            isAnyFlightHourInsertedPerDvCard();
+                            // TODO doesTotalHoursEqualsSumOfDvHours(), i think i dont need this method, but we will see.
         return isValid;
     }
 
@@ -1265,62 +1263,6 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true; // No se encontraron duplicados.
     }
 
-
-    private boolean arePilotCardsHoursValid() {
-        // Validate each PilotCardPanel
-        for (PilotCrewCardPanel panel : allPilotCardPanels) {
-            if (!validatePilotCardPanel(panel)) {
-                return false; // Return false immediately if any panel is invalid
-            }
-        }
-        return true;
-    }
-
-    // Validates a single PilotCardPanel
-    private boolean validatePilotCardPanel(PilotCrewCardPanel panel) {
-        String crewName = panel.getCrewBox().getSelectedItem().toString();
-
-        // Validate "Horas" fields
-        if (!DialogPresenter.isAValidOptionalHour(view, panel.getDayHourField(), crewName + " Horas Vuelo Dia", "D") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getNightHourField(), crewName + " Horas Vuelo Noche", "N") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getGvnHourField(), crewName + " Horas Vuelo GVN", "G") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getIftHourField(), crewName + " Horas Instrumentos", "I") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getHdmsHourField(), crewName + " Horas HDMS", "H") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getInstructorHourField(), crewName + " Horas Instructor", "I") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getDayFormacionesHourField(), crewName + " Horas Formacion Dia", "D") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getGvnFormacionesHourField(), crewName + " Horas Formacion Gvn", "G")) {
-            return false;
-        }
-
-        // Validate "Precision" fields
-        if (!DialogPresenter.isAValidOptionalNumber(view, panel.getPrecisionField(), crewName + " Aproximación de Precisión", "P") ||
-                !DialogPresenter.isAValidOptionalNumber(view, panel.getNoPrecisionField(), crewName + " Aproximación de No precisión", "N") ||
-                !DialogPresenter.isAValidOptionalNumber(view, panel.getTdField(), crewName + " Aproximación T/D", "T")) {
-            return false;
-        }
-
-        // Validate "Tomas" fields
-        if (!validateTomasFields(panel, crewName)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    // Helper method for validating "Tomas" fields
-    private boolean validateTomasFields(PilotCrewCardPanel panel, String crewName) {
-        return
-                DialogPresenter.isAValidOptionalNumber(view, panel.getMonoDayField(), crewName + " Toma Monospot Día", "D") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getMonoNightField(), crewName + " Toma Monospot Noche", "N") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getMonoGvnField(), crewName + " Toma Monospot GVN", "G") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiDayField(), crewName + " Toma Multispot Día", "D") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiNightField(), crewName + " Toma Multispot Noche", "N") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getMultiGvnField(), crewName + " Toma Multispot GVN", "G") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraDayField(), crewName + " Toma Tierra Día", "D") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraNightField(), crewName + " Toma Tierra Noche", "N") &&
-                        DialogPresenter.isAValidOptionalNumber(view, panel.getTierraGvnField(), crewName + " Toma Tierra GVN", "G");
-    }
-
     private boolean areDvsSelected() {
         // Validate pilot boxes for primary and secondary pilots
         boolean isDv1Selected = DialogPresenter.validateDynamicComboBox(view, view.getDvCardPanel1().getCrewBox(), "Primer DV");
@@ -1382,41 +1324,10 @@ public class RegisterFlightPresenter implements Presenter, DialogPresenter {
         return true;
     }
 
-    private boolean areDvCardsHoursValid() {
-        // Validate each DvCardPanel
-        for (DvCrewCardPanel panel : allDvCardPanels) {
-            if (!validateDvCardPanel(panel)) {
-                return false; // Return false immediately if any panel is invalid
-            }
-        }
-        return true;
-    }
-
     private boolean areCupoHourCardsValid() {
         return isCupoHourCardValid() &&
                 doesTotalHoursEqualsSumOfCupoHours() &&
                 hasNoDuplicateCupoPanels();
-    }
-
-    // Validates a single DvCardPanel
-    private boolean validateDvCardPanel(DvCrewCardPanel panel) {
-        String crewName = panel.getCrewBox().getSelectedItem().toString();
-
-        // Validate "Horas" fields
-        if (!DialogPresenter.isAValidOptionalHour(view, panel.getDayHourField(), crewName + " Horas Vuelo Dia", "D") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getNightHourField(), crewName + " Horas Vuelo Noche", "N") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getGvnHourField(), crewName + " Horas Vuelo GVN", "G") ||
-                !DialogPresenter.isAValidOptionalHour(view, panel.getWinchTrimHourField(), crewName + " Horas Winch Trim", "W")) {
-            return false;
-        }
-
-        // Validate "Proyectiles" fields
-        if (!DialogPresenter.isAValidOptionalNumber(view, panel.getM3mField(), crewName + " Proyectil M3M", "P") ||
-                !DialogPresenter.isAValidOptionalNumber(view, panel.getMagField(), crewName + " Proyectil MAG56", "P")) {
-            return false;
-        }
-
-        return true;
     }
 
     public void createVectors() {

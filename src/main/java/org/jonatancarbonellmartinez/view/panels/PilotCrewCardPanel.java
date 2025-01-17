@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -41,33 +42,33 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, formacionesLabel, aproximacionesLabel, sarLabel, precisionLabel, noPrecisionLabel, tdLabel,srchPattLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel, carrierLabel;
 
-    private JTextField dayHourField;
-    private JTextField nightHourField;
-    private JTextField gvnHourField;
-    private JTextField iftHourField;
-    private JTextField hdmsHourField;
-    private JTextField instructorHourField;
-    private JTextField dayFormacionesHourField;
-    private JTextField gvnFormacionesHourField;
+    private JonJTextField dayHourField;
+    private JonJTextField nightHourField;
+    private JonJTextField gvnHourField;
+    private JonJTextField iftHourField;
+    private JonJTextField hdmsHourField;
+    private JonJTextField instructorHourField;
+    private JonJTextField dayFormacionesHourField;
+    private JonJTextField gvnFormacionesHourField;
 
-    private JTextField precisionField, noPrecisionField;
+    private JonJTextField precisionField, noPrecisionField;
 
-    private JTextField tdField;
+    private JonJTextField tdField;
 
-    private JTextField srchPattField;
+    private JonJTextField srchPattField;
 
-    private JTextField monoDayField;
-    private JTextField monoNightField;
-    private JTextField monoGvnField;
-    private JTextField multiDayField;
-    private JTextField multiNightField;
-    private JTextField multiGvnField;
-    private JTextField tierraDayField;
-    private JTextField tierraNightField;
-    private JTextField tierraGvnField;
-    private JTextField carrierDayField;
-    private JTextField carrierNightField;
-    private JTextField carrierGvnField;
+    private JonJTextField monoDayField;
+    private JonJTextField monoNightField;
+    private JonJTextField monoGvnField;
+    private JonJTextField multiDayField;
+    private JonJTextField multiNightField;
+    private JonJTextField multiGvnField;
+    private JonJTextField tierraDayField;
+    private JonJTextField tierraNightField;
+    private JonJTextField tierraGvnField;
+    private JonJTextField carrierDayField;
+    private JonJTextField carrierNightField;
+    private JonJTextField carrierGvnField;
 
     JComboBox pilotBox;
 
@@ -176,46 +177,45 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
         instructorLabel = new JLabel("IP");
         formacionesLabel = new JLabel("Formaciones");
 
-        dayHourField = View.createTextField("D");
-        nightHourField = View.createTextField("N");
-        gvnHourField = View.createTextField("G");
-        iftHourField = View.createTextField("I");
-        hdmsHourField = View.createTextField("H");
-        instructorHourField = View.createTextField("I");
-        dayFormacionesHourField = View.createTextField("D");
-        gvnFormacionesHourField = View.createTextField("G");
 
+        dayHourField = new JonJTextField("D", 4, View.HOUR);
+        nightHourField = new JonJTextField("N", 4, View.HOUR);
+        gvnHourField = new JonJTextField("G", 4, View.HOUR);
+        iftHourField = new JonJTextField("I", 4, View.HOUR);
+        hdmsHourField = new JonJTextField("H", 4, View.HOUR);
+        instructorHourField = new JonJTextField("I", 4, View.HOUR);
+        dayFormacionesHourField = new JonJTextField("D", 4, View.HOUR);
+        gvnFormacionesHourField = new JonJTextField("G", 4, View.HOUR);
         aproximacionesLabel = new JLabel("App. Instrumentales");
         precisionLabel = new JLabel("Precisión");
         noPrecisionLabel = new JLabel("No Precisión ");
-        precisionField = View.createTextField("P");
-        noPrecisionField = View.createTextField("N");
-
+        precisionField = new JonJTextField("P", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        noPrecisionField = new JonJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
 
         sarLabel = new JLabel("SAR");
         tdLabel = new JLabel("T/D");
-        tdField = View.createTextField("T");
+        tdField = new JonJTextField("T", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
         srchPattLabel = new JLabel("Search Pattern");
-        srchPattField = View.createTextField("S");
+        srchPattField = new JonJTextField("S", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
 
         tomasLabel = new JLabel("Tomas");
         tierraLabel = new JLabel("Tierra");
         monospotLabel = new JLabel("Monospot");
         multispotLabel = new JLabel("Multispot");
         carrierLabel = new JLabel("Carrier");
-        tierraDayField = View.createTextField("D");
-        tierraNightField = View.createTextField("N");
-        tierraGvnField = View.createTextField("G");
-        monoDayField = View.createTextField("D");
-        monoNightField = View.createTextField("N");
-        monoGvnField = View.createTextField("G");
-        multiDayField = View.createTextField("D");
-        multiNightField = View.createTextField("N");
-        multiGvnField = View.createTextField("G");
-        carrierDayField = View.createTextField("D");
-        carrierNightField = View.createTextField("N");
-        carrierGvnField = View.createTextField("G");
 
+        tierraDayField = new JonJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        tierraNightField = new JonJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        tierraGvnField = new JonJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoDayField = new JonJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoNightField = new JonJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoGvnField = new JonJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiDayField = new JonJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiNightField = new JonJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiGvnField = new JonJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierDayField = new JonJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierNightField = new JonJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierGvnField = new JonJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
     }
 
     @Override

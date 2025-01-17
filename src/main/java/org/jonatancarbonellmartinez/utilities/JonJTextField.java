@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-// TODO use me, sigue por aqui
 public class JonJTextField extends JTextField {
     private String placeholder;
     private int userLimit;
@@ -22,8 +21,9 @@ public class JonJTextField extends JTextField {
         this.jonPlainDocument = new JonPlainDocument(); // de primeras no le pongo ningun limite ni filtro, hasta que no gane focus.
         this.userInputFont = new Font("Segoe UI", Font.PLAIN, 15);
         this.placeholderFont = new Font("Segoe UI", Font.ITALIC, 15);
+
+        setDocument(this.jonPlainDocument); // este tiene que venir ejecutarse primero
         changeTextFontAndColor(placeholder, placeholderFont, Color.GRAY);
-        setDocument(this.jonPlainDocument);
         addFocusListener();
     }
 

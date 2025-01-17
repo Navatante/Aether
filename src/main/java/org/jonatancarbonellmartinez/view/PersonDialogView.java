@@ -53,14 +53,13 @@ public class PersonDialogView extends JDialog implements View, DialogView {
                 "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = View.createFixedComboBox(new String[] {"Piloto", "Dotación"},"Rol");
 
-        personNkField = View.createTextField("Código",3,6);
-        personNameField = View.createTextField("Nombre");
-        personLastName1Field = View.createTextField("Apellido 1");
-        personLastName2Field = View.createTextField("Apellido 2");
-        personPhoneField = View.createTextField("Teléfono");
-        personDniField = View.createTextField("DNI");
-        orderField = View.createTextField("Orden");
-
+        personNkField = new JonJTextField("Código",3, View.CREW_NK);
+        personNameField = new JonJTextField("Nombre",30, View.SPANISH_WORDS);
+        personLastName1Field = new JonJTextField("Apellido 1",30, View.SPANISH_WORDS);
+        personLastName1Field = new JonJTextField("Apellido 2",30, View.SPANISH_WORDS);
+        personPhoneField = new JonJTextField("Teléfono",9, View.PHONE);
+        personPhoneField = new JonJTextField("DNI",8, View.DNI);
+        orderField = new JonJTextField("Orden",5, View.NON_NEGATIVE_OR_ZERO_INTEGER);
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
         if (isEditMode) createEditModeComponents();
@@ -76,7 +75,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     public void configureComponents() {
         View.setPreferredSizeForComponents(DialogView.FIELD_SIZE, empleoBox, divisionBox, rolBox, personNkField, personNameField, personLastName1Field,
                 personLastName2Field, personPhoneField, personDniField, orderField);
-        setDocumentFilters();
         View.setInitialComboBoxLook(empleoBox,divisionBox,rolBox);
 
         if (isEditMode) configureEditModeComponents();
@@ -108,7 +106,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createEditModeComponents() {
-        editPersonIdField = View.createTextField("ID");
+        editPersonIdField = new JonJTextField("ID",99999999, View.NON_NEGATIVE_INTEGER);
         personStateBox = View.createFixedComboBox(new String[]{"Activo", "Inactivo"}, "Situación");
         insertIdLabel = new JLabel("Introduzca el ID");
     }
@@ -163,24 +161,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
                 DialogView.showError(this,"Por favor, introduce un ID válido");
             }
         }
-    }
-
-    @Override
-    public void setDocumentFilters() {
-        View.setDocumentFilter(personNkField,30);
-        View.setDocumentFilter(personLastName1Field,30);
-        View.setDocumentFilter(personLastName2Field,30);
-        View.setDocumentFilter(personDniField,8);
-        View.setDocumentFilter(personPhoneField,9);
-        View.setDocumentFilter(orderField,5);
-    }
-
-    public boolean doNotContainZero(JTextField field, String fieldName) { // Este metodo de momento lo dejo aqui porque no creo que otra clase lo necesite.
-        if(field.getText().equals("0")) {
-            DialogView.showError(this,"El campo " + fieldName + " no puede ser 0.");
-            return false;
-        }
-        return true;
     }
 
 

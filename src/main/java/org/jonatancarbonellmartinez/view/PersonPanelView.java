@@ -1,6 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.PersonPanelPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,7 +18,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     private TableRowSorter<TableModel> sorter;
 
     private JRadioButton togglePersonState;
-    private JTextField searchField;
+    private JonJTextField searchField;
     private JLabel personTitleLabel;
     private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     JScrollPane scrollPane;
@@ -69,7 +71,8 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
         scrollPane = new JScrollPane(personTable);
 
-        searchField = View.createTextField("Buscar");
+        searchField = new JonJTextField("Buscar", 9999999, null);
+
         sorter = new TableRowSorter<>(tableModel);
         togglePersonState = new JRadioButton("Activos");
         personTitleLabel = new JLabel("Personal");

@@ -49,11 +49,23 @@ public interface View {
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
      */
 
+    // COLORS
     public static final Color mouseEnteredColor = new Color(78,80,82);
     Color transparentColor = new Color(0, 0, 0, 0);
     Color mousePressedColor = new Color(93,95,98);
     Color borderColor = new Color(48,50,51);
     Color tableBackgroundColor = new Color(70,73,75);
+
+    // REGEX PATTERNS
+    String HOUR = "^\\d*\\.?\\d*$";
+    String ID = "^\\d+$"; // TODO at least one digit, nose si me dara problemas
+    String CREW_NK = "^[A-Z]{3}$";
+    String SPANISH_WORDS = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$";
+    String PHONE = "^[0-9]{10}$";
+    String DNI = "^\\d{8}$";
+    String NON_NEGATIVE_OR_ZERO_INTEGER = "^[1-9]\\d*$";
+    String NON_NEGATIVE_INTEGER = "^\\d+$";
+    String ROUTE = "^\\b[A-Z]{1,10}\\b-\\b[A-Z]{1,10}\\b$";
 
 
     static JComboBox<String> createFixedComboBox(String[] values, String placeholder) {
@@ -107,36 +119,6 @@ public interface View {
         textField.setText(placeholder);
         textField.setForeground(Color.GRAY);
         textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-    }
-
-    static void onTextFieldFocusGained(JTextField textField, String placeholder) {
-        if (textField.getText().equals(placeholder)) {
-            textField.setText("");
-            textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-            textField.setForeground(Color.LIGHT_GRAY);
-        }
-    }
-
-    static void onTextFieldFocusGained(JTextField textField, String placeholder, int limit) {
-        if (textField.getText().equals(placeholder)) {
-            View.setDocumentFilter(textField,limit);
-            textField.setText("");
-            textField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-            textField.setForeground(Color.LIGHT_GRAY);
-        }
-    }
-
-    static void onTextFieldFocusLost(JTextField textField, String placeholder) {
-        if (textField.getText().isEmpty()) {
-            View.setPlaceholder(textField, placeholder);
-        }
-    }
-
-    static void onTextFieldFocusLost(JTextField textField, String placeholder, int limit) {
-        if (textField.getText().isEmpty()) {
-            View.setDocumentFilter(textField,limit);
-            View.setPlaceholder(textField, placeholder);
-        }
     }
 
     static void setInitialComboBoxLook(JComponent... comboBox) {

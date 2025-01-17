@@ -37,8 +37,8 @@ public interface DialogPresenter {
         return true;
     }
 
-    static boolean validateField(JDialog parentView, JTextField field, String placeHolderName) {
-        if (field.getText().isEmpty() || field.getText().equals(placeHolderName)) {
+    static boolean isFieldCompleted(JDialog parentView, JTextField field, String placeHolderName) {
+        if (field.getText().equals(placeHolderName)) {
             DialogView.showError(parentView,"Complete el campo " + placeHolderName);
             return false;
         }
@@ -58,54 +58,6 @@ public interface DialogPresenter {
             }
         }
         return capitalizedName.toString().trim();
-    }
-
-    static boolean containsOnlyLetters(JDialog parentView, JTextField field, String fieldName) {
-        if(!field.getText().matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*$")) {
-            DialogView.showError(parentView,"El campo " + fieldName + " solo acepta letras.");
-            return false;
-        }
-        return  true;
-    }
-
-    static boolean isAValidMandatoryHour(JDialog parentView, JTextField field, String fieldName) {
-        if (field.getText().matches("\\d{1,2}\\.\\d{1,1}")) {
-            return true;
-        } else {
-            DialogView.showError(parentView,"El formato de " + fieldName+ " no es correcto.");
-            return false;
-        }
-    }
-
-    static boolean isAValidOptionalHour(JDialog parentView, JTextField field, String fieldName, String placeHolder) {
-        String text = field.getText();
-        if (text.isEmpty() || text.equals(placeHolder)) {
-            return true; // Field is empty or contains the placeholder, considered valid
-        } else if (text.matches("\\d{1,2}\\.\\d{1}")) {
-            return true; // Matches valid hour format
-        } else {
-            DialogView.showError(parentView, "El formato de " + fieldName+ " no es correcto.");
-            return false;
-        }
-    }
-
-    static boolean isAValidOptionalNumber(JDialog parentView, JTextField field, String fieldName, String placeHolder) {
-        String text = field.getText();
-        if (text.isEmpty() || text.equals(placeHolder)) {
-            return true; // Field is empty or contains the placeholder, considered valid
-        } else if (text.matches("[1-9][0-9]*")) {
-            return true; // Matches valid hour format
-        } else {
-            DialogView.showError(parentView, "El formato de " + fieldName+ " no es correcto.");
-            return false;
-        }
-    }
-
-    static boolean containsOnlyNumbers(JDialog parentView, JTextField field, String fieldName) {
-        if(!field.getText().matches("^[0-9]*$")) {
-            DialogView.showError(parentView, "El campo " + fieldName + " solo acepta números.");
-        }
-        return true;
     }
 
     static String calculateDniLetter(JTextField personDniField) {

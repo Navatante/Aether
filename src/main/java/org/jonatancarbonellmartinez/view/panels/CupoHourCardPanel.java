@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -16,7 +17,7 @@ public class CupoHourCardPanel extends JPanel implements View {
     private JPanel mainPanel, unitPanel, hourPanel;
 
     private JComboBox unitBox;
-    private JTextField hourQtyField;
+    private JonJTextField hourQtyField;
 
     public CupoHourCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
@@ -43,7 +44,7 @@ public class CupoHourCardPanel extends JPanel implements View {
     @Override
     public void createComponents() {
         unitBox = View.createDynamicComboBox(new Vector<>(presenter.getAllUnitsVector()), "Autoridad");
-        hourQtyField = View.createTextField("Horas");
+        hourQtyField = new JonJTextField("Horas", 4, View.HOUR);
     }
 
     @Override

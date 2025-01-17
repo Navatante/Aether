@@ -25,24 +25,17 @@ public class PersonDialogPresenter implements Presenter, DialogPresenter {
         boolean isValid = DialogPresenter.validateSimpleComboBox(view, view.getEmpleoBox(), "Empleo") &&
                             DialogPresenter.validateSimpleComboBox(view, view.getDivisionBox(), "División") &&
                             DialogPresenter.validateSimpleComboBox(view, view.getRolBox(), "Rol") &&
-                            DialogPresenter.validateField(view, view.getPersonNkField(), "Código") &&
-                            DialogPresenter.validateField(view, view.getPersonNameField(), "Nombre") &&
-                            DialogPresenter.validateField(view, view.getPersonLastName1Field(), "Apellido 1") &&
-                            DialogPresenter.validateField(view, view.getPersonLastName2Field(), "Apellido 2") &&
-                            DialogPresenter.validateField(view, view.getPersonPhoneField(), "Teléfono") &&
-                            DialogPresenter.validateField(view, view.getPersonDniField(), "DNI") &&
-                            DialogPresenter.validateField(view, view.getOrderField(), "Orden") &&
-                            DialogPresenter.containsOnlyLetters(view, view.getPersonNkField(), "Código") &&
-                            DialogPresenter.containsOnlyLetters(view, view.getPersonNameField(), "Nombre") &&
-                            DialogPresenter.containsOnlyLetters(view, view.getPersonLastName1Field(), "Apellido 1") &&
-                            DialogPresenter.containsOnlyLetters(view, view.getPersonLastName2Field(), "Apellido 2") &&
-                            DialogPresenter.containsOnlyNumbers(view, view.getPersonPhoneField(), "Teléfono") &&
-                            DialogPresenter.containsOnlyNumbers(view, view.getPersonDniField(), "DNI") &&
-                            view.doNotContainZero(view.getOrderField(), "Orden");
+                            DialogPresenter.isFieldCompleted(view, view.getPersonNkField(), "Código") &&
+                            DialogPresenter.isFieldCompleted(view, view.getPersonNameField(), "Nombre") &&
+                            DialogPresenter.isFieldCompleted(view, view.getPersonLastName1Field(), "Apellido 1") &&
+                            DialogPresenter.isFieldCompleted(view, view.getPersonLastName2Field(), "Apellido 2") &&
+                            DialogPresenter.isFieldCompleted(view, view.getPersonPhoneField(), "Teléfono") &&
+                            DialogPresenter.isFieldCompleted(view, view.getPersonDniField(), "DNI") &&
+                            DialogPresenter.isFieldCompleted(view, view.getOrderField(), "Orden");
 
         // Additional validation if in edit mode
         if (view.isEditMode()) {
-            isValid = isValid && DialogPresenter.validateField(view, view.getEditPersonIdField(), "ID");
+            isValid = isValid && DialogPresenter.isFieldCompleted(view, view.getEditPersonIdField(), "ID");
         }
 
         return isValid;

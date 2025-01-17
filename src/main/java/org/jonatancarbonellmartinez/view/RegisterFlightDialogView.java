@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.panels.*;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private JComboBox heloBox, eventBox;
 
-    private JTextField totalHoursField;
+    private JonJTextField totalHoursField;
 
     private JButton saveButton;
 
@@ -120,7 +121,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         heloBox = View.createDynamicComboBox(new Vector<>(presenter.getHeloList()),"Helicóptero");
         eventBox = View.createDynamicComboBox(new Vector<>(presenter.getEventList()),"Evento");
-        totalHoursField = View.createTextField("Horas totales",4,13);
+        totalHoursField = new JonJTextField("Horas totales",4,View.HOUR);
         saveButton = new JButton("Guardar");
 
         extraPilotCardPanelDeque = new ArrayDeque<>();
@@ -241,7 +242,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
         View.setPreferredSizeForComponents(new Dimension(eventBox.getPreferredSize().width+100, 25), eventBox);
         View.setPreferredSizeForComponents(new Dimension(155,24),dateTimeSpinner,heloBox, totalHoursField);
         totalHoursField.setHorizontalAlignment(JTextField.CENTER);
-        setDocumentFilters();
 
         // Set a bigger font for the editor
         JSpinner.DateEditor editor = (JSpinner.DateEditor) dateTimeSpinner.getEditor();
@@ -321,11 +321,6 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     @Override
     public void onEditEntityIdFieldAction() {
         // nothing to do here
-    }
-
-    @Override
-    public void setDocumentFilters() {
-        View.setDocumentFilter(totalHoursField,4);
     }
 
     public void addExtraPilotCardView() {

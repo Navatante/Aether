@@ -1,11 +1,11 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class PassengerCardPanel extends JPanel implements View {
@@ -15,7 +15,7 @@ public class PassengerCardPanel extends JPanel implements View {
     private JPanel mainPanel, typePanel, qtyPanel, routePanel;
 
     private JComboBox typeBox;
-    private JTextField qtyField, routeField;
+    private JonJTextField qtyField, routeField;
 
     public PassengerCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
@@ -41,8 +41,8 @@ public class PassengerCardPanel extends JPanel implements View {
     @Override
     public void createComponents() {
         typeBox = View.createFixedComboBox(new String[] {"Civiles", "Militares"},"Tipo");
-        qtyField = View.createTextField("Cantidad");
-        routeField =  View.createTextField("Ruta");
+        qtyField = new JonJTextField("Cantidad",4, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        routeField = new JonJTextField("Ruta",10, View.ROUTE);
     }
 
     @Override

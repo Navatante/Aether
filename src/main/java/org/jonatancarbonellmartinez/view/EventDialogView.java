@@ -61,8 +61,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
         eventNameBox = View.createFixedComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
                 "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO demomento este lo dejo asi porque el metodo toString() de Event devuevle nombre y lugar, y aqui solo necesito nombre.
 
-        //eventPlaceField = View.createTextField("Lugar");
-        eventPlaceField = new JonJTextField("Lugar", 5, null);
+        eventPlaceField = new JonJTextField("Lugar", 100, null);
 
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
@@ -73,7 +72,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
     public void configureComponents() {
         View.setPreferredSizeForComponents(DialogView.FIELD_SIZE, eventPlaceField);
         View.setPreferredSizeForComponents(new Dimension(200, 25), eventNameBox);
-        setDocumentFilters();
         View.setInitialComboBoxLook(eventNameBox);
 
         if (isEditMode) configureEditModeComponents();
@@ -97,7 +95,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createEditModeComponents() {
-        editEventIdField = new JonJTextField("ID",10,"^\\d+$");
+        editEventIdField = new JonJTextField("ID",10,View.ID);
         insertIdLabel = new JLabel("Introduzca el ID");
     }
 
@@ -135,14 +133,6 @@ public class EventDialogView extends JDialog implements View, DialogView {
             }
         }
     }
-
-    @Override
-    public void setDocumentFilters() {
-        // TODO era esta linea la que me estaba dando por culo
-        //View.setDocumentFilter(eventPlaceField, 100);
-
-    }
-
 
     public boolean isEditMode() {
         return isEditMode;

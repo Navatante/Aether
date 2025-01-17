@@ -13,8 +13,6 @@ public interface DialogView { // TODO hacer esto mejor, porque hay algunos que n
 
     void onEditEntityIdFieldAction();
 
-    void setDocumentFilters();
-
     /**
      * UTILITY STATIC MEMBERS ON INTERFACES ACT AS UTILITY FIELDS AND METHODS, THERE IS NO NEED FOR A UTILITY CLASS.
      */
