@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -15,7 +15,7 @@ public class PassengerCardPanel extends JPanel implements View {
     private JPanel mainPanel, typePanel, qtyPanel, routePanel;
 
     private JComboBox typeBox;
-    private JonValidateAndLimitJTextField qtyField, routeField;
+    private JonJTextField qtyField, routeField;
 
     public PassengerCardPanel(RegisterFlightDialogView registerFlightDialogView, RegisterFlightPresenter registerFlightPresenter) {
         this.presenter = registerFlightPresenter;
@@ -41,8 +41,8 @@ public class PassengerCardPanel extends JPanel implements View {
     @Override
     public void createComponents() {
         typeBox = View.createFixedComboBox(new String[] {"Civiles", "Militares"},"Tipo");
-        qtyField = new JonValidateAndLimitJTextField("Cantidad",4, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        routeField = new JonValidateAndLimitJTextField("Ruta",10, View.ROUTE);
+        qtyField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Cantidad",View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        routeField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Ruta",View.DYNAMIC_ROUTE, View.FINAL_ROUTE);
     }
 
     @Override

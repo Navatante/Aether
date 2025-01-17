@@ -15,12 +15,12 @@ public class JonJTextField extends JTextField {
     private Font inputFont;
     private Font placeholderFont;
 
-    public JonJTextField(String placeholder, String dynamicRegex, String finalRegex) {
+    public JonJTextField(Font inputFont, Font placeholderFont, String placeholder, String dynamicRegex, String finalRegex) {
+        this.inputFont = inputFont;
+        this.placeholderFont = placeholderFont;
         this.placeholder = placeholder;
         this.dynamicRegex = dynamicRegex;
         this.finalRegex = finalRegex;
-        this.inputFont = new Font("Segoe UI", Font.PLAIN, 15);
-        this.placeholderFont = new Font("Segoe UI", Font.ITALIC, 15);
         changeTextFontAndColor(placeholder, placeholderFont, Color.GRAY);
         setFocusListener();
         setInputVerifier();

@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.PersonDialogPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
     private PersonDialogPresenter presenter;
     private boolean isEditMode;
 
-    private JonValidateAndLimitJTextField personPhoneField, personNkField, personNameField, personLastName1Field,
+    private JonJTextField personPhoneField, personNkField, personNameField, personLastName1Field,
                        personLastName2Field, orderField, personDniField, editPersonIdField;
 
     private JComboBox<String> empleoBox, divisionBox, rolBox, personStateBox;
@@ -53,13 +53,13 @@ public class PersonDialogView extends JDialog implements View, DialogView {
                 "Seguridad de vuelo","Estandarización","Inteligencia"},"División");
         rolBox = View.createFixedComboBox(new String[] {"Piloto", "Dotación"},"Rol");
 
-        personNkField = new JonValidateAndLimitJTextField("Código",3, View.CREW_NK);
-        personNameField = new JonValidateAndLimitJTextField("Nombre",30, View.SPANISH_WORDS);
-        personLastName1Field = new JonValidateAndLimitJTextField("Apellido 1",30, View.SPANISH_WORDS);
-        personLastName1Field = new JonValidateAndLimitJTextField("Apellido 2",30, View.SPANISH_WORDS);
-        personPhoneField = new JonValidateAndLimitJTextField("Teléfono",9, View.PHONE);
-        personPhoneField = new JonValidateAndLimitJTextField("DNI",8, View.DNI);
-        orderField = new JonValidateAndLimitJTextField("Orden",5, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        personNkField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Código",View.DYNAMIC_CREW_NK, View.FINAL_CREW_NK);
+        personNameField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Nombre",View.DYNAMIC_FINAL_SPANISH_WORDS, View.DYNAMIC_FINAL_SPANISH_WORDS);
+        personLastName1Field = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Apellido 1",View.DYNAMIC_FINAL_SPANISH_WORDS, View.DYNAMIC_FINAL_SPANISH_WORDS);
+        personLastName2Field = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Apellido 2",View.DYNAMIC_FINAL_SPANISH_WORDS, View.DYNAMIC_FINAL_SPANISH_WORDS);
+        personPhoneField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Teléfono",View.DYNAMIC_PHONE, View.FINAL_PHONE);
+        personDniField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"DNI",View.DYNAMIC_DNI, View.FINAL_DNI);
+        orderField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Orden",View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
         if (isEditMode) createEditModeComponents();
@@ -106,7 +106,7 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createEditModeComponents() {
-        editPersonIdField = new JonValidateAndLimitJTextField("ID",99999999, View.NON_NEGATIVE_INTEGER);
+        editPersonIdField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"ID",View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
         personStateBox = View.createFixedComboBox(new String[]{"Activo", "Inactivo"}, "Situación");
         insertIdLabel = new JLabel("Introduzca el ID");
     }
@@ -122,21 +122,11 @@ public class PersonDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void clearFields() {
-        View.setDocumentFilter(personNkField,6); // Because input was shorter than placeholder.
-        View.setPlaceholder(personNkField, "Código");
-        View.setPlaceholder(personPhoneField, "Teléfono");
-        View.setPlaceholder(personNameField, "Nombre");
-        View.setPlaceholder(personLastName1Field, "Apellido 1");
-        View.setPlaceholder(personLastName2Field, "Apellido 2");
-        View.setPlaceholder(personDniField, "DNI");
-        View.setPlaceholder(orderField, "Orden");
-
         empleoBox.setSelectedIndex(0);
         divisionBox.setSelectedIndex(0);
         rolBox.setSelectedIndex(0);
         if(isEditMode) {
             personStateBox.setSelectedIndex(0);
-            View.setPlaceholder(editPersonIdField,"ID");
         }
     }
 
@@ -155,7 +145,6 @@ public class PersonDialogView extends JDialog implements View, DialogView {
                 }
 
                 int personId = Integer.parseInt(idText);
-                View.setDocumentFilter(personNkField,3);
                 presenter.getEntity(personId);
             } catch (NumberFormatException ex) {
                 DialogView.showError(this,"Por favor, introduce un ID válido");

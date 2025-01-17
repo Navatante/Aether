@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.PersonPanelPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,7 +18,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
     private TableRowSorter<TableModel> sorter;
 
     private JRadioButton togglePersonState;
-    private JonValidateAndLimitJTextField searchField;
+    private JonJTextField searchField;
     private JLabel personTitleLabel;
     private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     JScrollPane scrollPane;
@@ -71,7 +71,7 @@ public class PersonPanelView extends JPanel implements View, PanelView {
 
         scrollPane = new JScrollPane(personTable);
 
-        searchField = new JonValidateAndLimitJTextField("Buscar", 9999999, null);
+        searchField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Buscar", View.DYNAMIC_FINAL_SEARCH, View.DYNAMIC_FINAL_SEARCH);
 
         sorter = new TableRowSorter<>(tableModel);
         togglePersonState = new JRadioButton("Activos");

@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -42,33 +42,33 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private JLabel horasLabel, vueloLabel, instrumentosLabel, hdmsLabel, instructorLabel, formacionesLabel, aproximacionesLabel, sarLabel, precisionLabel, noPrecisionLabel, tdLabel,srchPattLabel, tomasLabel, monospotLabel, multispotLabel, tierraLabel, carrierLabel;
 
-    private JonValidateAndLimitJTextField dayHourField;
-    private JonValidateAndLimitJTextField nightHourField;
-    private JonValidateAndLimitJTextField gvnHourField;
-    private JonValidateAndLimitJTextField iftHourField;
-    private JonValidateAndLimitJTextField hdmsHourField;
-    private JonValidateAndLimitJTextField instructorHourField;
-    private JonValidateAndLimitJTextField dayFormacionesHourField;
-    private JonValidateAndLimitJTextField gvnFormacionesHourField;
+    private JonJTextField dayHourField;
+    private JonJTextField nightHourField;
+    private JonJTextField gvnHourField;
+    private JonJTextField iftHourField;
+    private JonJTextField hdmsHourField;
+    private JonJTextField instructorHourField;
+    private JonJTextField dayFormacionesHourField;
+    private JonJTextField gvnFormacionesHourField;
 
-    private JonValidateAndLimitJTextField precisionField, noPrecisionField;
+    private JonJTextField precisionField, noPrecisionField;
 
-    private JonValidateAndLimitJTextField tdField;
+    private JonJTextField tdField;
 
-    private JonValidateAndLimitJTextField srchPattField;
+    private JonJTextField srchPattField;
 
-    private JonValidateAndLimitJTextField monoDayField;
-    private JonValidateAndLimitJTextField monoNightField;
-    private JonValidateAndLimitJTextField monoGvnField;
-    private JonValidateAndLimitJTextField multiDayField;
-    private JonValidateAndLimitJTextField multiNightField;
-    private JonValidateAndLimitJTextField multiGvnField;
-    private JonValidateAndLimitJTextField tierraDayField;
-    private JonValidateAndLimitJTextField tierraNightField;
-    private JonValidateAndLimitJTextField tierraGvnField;
-    private JonValidateAndLimitJTextField carrierDayField;
-    private JonValidateAndLimitJTextField carrierNightField;
-    private JonValidateAndLimitJTextField carrierGvnField;
+    private JonJTextField monoDayField;
+    private JonJTextField monoNightField;
+    private JonJTextField monoGvnField;
+    private JonJTextField multiDayField;
+    private JonJTextField multiNightField;
+    private JonJTextField multiGvnField;
+    private JonJTextField tierraDayField;
+    private JonJTextField tierraNightField;
+    private JonJTextField tierraGvnField;
+    private JonJTextField carrierDayField;
+    private JonJTextField carrierNightField;
+    private JonJTextField carrierGvnField;
 
     JComboBox pilotBox;
 
@@ -178,25 +178,25 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
         formacionesLabel = new JLabel("Formaciones");
 
 
-        dayHourField = new JonValidateAndLimitJTextField("D", 4, View.HOUR);
-        nightHourField = new JonValidateAndLimitJTextField("N", 4, View.HOUR);
-        gvnHourField = new JonValidateAndLimitJTextField("G", 4, View.HOUR);
-        iftHourField = new JonValidateAndLimitJTextField("I", 4, View.HOUR);
-        hdmsHourField = new JonValidateAndLimitJTextField("H", 4, View.HOUR);
-        instructorHourField = new JonValidateAndLimitJTextField("I", 4, View.HOUR);
-        dayFormacionesHourField = new JonValidateAndLimitJTextField("D", 4, View.HOUR);
-        gvnFormacionesHourField = new JonValidateAndLimitJTextField("G", 4, View.HOUR);
+        dayHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        nightHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        gvnHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        iftHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"I", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        hdmsHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"H", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        instructorHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"I", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        dayFormacionesHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        gvnFormacionesHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_HOUR, View.FINAL_HOUR);
         aproximacionesLabel = new JLabel("App. Instrumentales");
         precisionLabel = new JLabel("Precisión");
         noPrecisionLabel = new JLabel("No Precisión ");
-        precisionField = new JonValidateAndLimitJTextField("P", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        noPrecisionField = new JonValidateAndLimitJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        precisionField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"P", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        noPrecisionField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
 
         sarLabel = new JLabel("SAR");
         tdLabel = new JLabel("T/D");
-        tdField = new JonValidateAndLimitJTextField("T", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        tdField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"T", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
         srchPattLabel = new JLabel("Search Pattern");
-        srchPattField = new JonValidateAndLimitJTextField("S", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        srchPattField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"S", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
 
         tomasLabel = new JLabel("Tomas");
         tierraLabel = new JLabel("Tierra");
@@ -204,18 +204,18 @@ public class PilotCrewCardPanel extends JPanel implements View, CrewCardPanel {
         multispotLabel = new JLabel("Multispot");
         carrierLabel = new JLabel("Carrier");
 
-        tierraDayField = new JonValidateAndLimitJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        tierraNightField = new JonValidateAndLimitJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        tierraGvnField = new JonValidateAndLimitJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        monoDayField = new JonValidateAndLimitJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        monoNightField = new JonValidateAndLimitJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        monoGvnField = new JonValidateAndLimitJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        multiDayField = new JonValidateAndLimitJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        multiNightField = new JonValidateAndLimitJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        multiGvnField = new JonValidateAndLimitJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        carrierDayField = new JonValidateAndLimitJTextField("D", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        carrierNightField = new JonValidateAndLimitJTextField("N", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
-        carrierGvnField = new JonValidateAndLimitJTextField("G", 3, View.NON_NEGATIVE_OR_ZERO_INTEGER);
+        tierraDayField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        tierraNightField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        tierraGvnField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoDayField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoNightField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        monoGvnField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiDayField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiNightField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        multiGvnField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierDayField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierNightField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
+        carrierGvnField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G", View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER, View.DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER);
     }
 
     @Override

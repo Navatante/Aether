@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view.panels;
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;
 
@@ -27,7 +27,7 @@ public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
 
     private JLabel horasLabel, vueloLabel, winchTrimLabel, projectilesLabel, m3mLabel, magLabel;
 
-    private JonValidateAndLimitJTextField dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField;
+    private JonJTextField dayHourField, nightHourField, gvnHourField, winchTrimHourField, m3mField, magField;
 
     private JComboBox dvBox;
 
@@ -87,12 +87,12 @@ public class DvCrewCardPanel extends JPanel implements View, CrewCardPanel {
         m3mLabel = new JLabel("M3M");
         magLabel = new JLabel("MAG58");
 
-        dayHourField = new JonValidateAndLimitJTextField("D",4, View.HOUR);
-        nightHourField = new JonValidateAndLimitJTextField("N",4, View.HOUR);
-        gvnHourField = new JonValidateAndLimitJTextField("G",4, View.HOUR);
-        winchTrimHourField = new JonValidateAndLimitJTextField("W",4, View.HOUR);
-        m3mField = new JonValidateAndLimitJTextField("P",4, View.HOUR);
-        magField = new JonValidateAndLimitJTextField("P",4, View.HOUR);
+        dayHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"D",View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        nightHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"N",View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        gvnHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"G",View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        winchTrimHourField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"W",View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        m3mField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"P",View.DYNAMIC_HOUR, View.FINAL_HOUR);
+        magField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"P",View.DYNAMIC_HOUR, View.FINAL_HOUR);
     }
 
     @Override

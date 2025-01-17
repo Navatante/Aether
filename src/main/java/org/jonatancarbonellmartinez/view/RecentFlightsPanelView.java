@@ -1,7 +1,8 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.RecentFlightsPanelPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +39,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
     JLabel cupoTitleLabel;
     JLabel passengersTitleLabel;
 
-    private JonValidateAndLimitJTextField searchField;
+    private JonJTextField searchField;
 
     private JPanel topPanel;
     private JPanel centerPanel;
@@ -154,7 +155,7 @@ public class RecentFlightsPanelView extends JPanel implements View, PanelView {
             lastFlightsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         lastFlightsScrollPane = new JScrollPane(lastFlightsTable);
-        searchField = new JonValidateAndLimitJTextField("Buscar", 9999999, null);
+        searchField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Buscar", View.DYNAMIC_FINAL_SEARCH, View.DYNAMIC_FINAL_SEARCH);
         sorter = new TableRowSorter<>(lastFlightsTableModel);
 
 

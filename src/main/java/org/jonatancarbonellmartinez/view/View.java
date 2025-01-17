@@ -52,17 +52,25 @@ public interface View {
     Color borderColor = new Color(48,50,51);
     Color tableBackgroundColor = new Color(70,73,75);
 
+    // FONTS
+    Font INPUT_FONT = new Font("Segoe UI", Font.PLAIN, 15);
+    Font PLACEHOLDER_FONT = new Font("Segoe UI", Font.ITALIC, 15);
+
     // REGEX PATTERNS
     String DYNAMIC_HOUR = "^(?=.{1,4}$)[1-9]\\d*\\.?\\d*$";
     String FINAL_HOUR = "^[1-9]\\d?\\.(\\d{1})$";
-    String DYNAMIC_FINAL_ID = "^\\d+$"; // TODO at least one digit, nose si me dara problemas
-    String CREW_NK = "^[A-Z]{3}$";
-    String SPANISH_WORDS = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$";
-    String PHONE = "^[0-9]{10}$";
-    String DNI = "^\\d{8}$";
-    String NON_NEGATIVE_OR_ZERO_INTEGER = "^[1-9]\\d*$";
-    String NON_NEGATIVE_INTEGER = "^\\d+$";
-    String ROUTE = "^\\b[A-Z]{1,10}\\b-\\b[A-Z]{1,10}\\b$";
+    String DYNAMIC_FINAL_ID = "\\d{1,17}$"; // requiere al menos un digito y hasta 17 digitos
+    String DYNAMIC_CREW_NK = "^[A-Z]{1,3}$";
+    String FINAL_CREW_NK = "^[A-Z]{3}$";
+    String DYNAMIC_FINAL_SPANISH_WORDS = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s-]{1,30}$";
+    String DYNAMIC_PHONE = "^\\d{1,9}$";
+    String FINAL_PHONE = "^\\d{9}$";
+    String DYNAMIC_DNI = "^\\d{1,8}$";
+    String FINAL_DNI = "^\\d{8}$";
+    String DYNAMIC_FINAL_NON_NEGATIVE_OR_ZERO_INTEGER = "^[1-9]\\d{0,6}$";
+    String DYNAMIC_ROUTE = "^[A-ZÁÉÍÓÚÑ\\s-]{1,40}$";
+    String FINAL_ROUTE = "^[A-ZÁÉÍÓÚÑ\\s-]{4,20}-[A-ZÁÉÍÓÚÑ\\s-]{4,20}$";
+    String DYNAMIC_FINAL_SEARCH = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_.-]{1,100}$";
 
 
     static JComboBox<String> createFixedComboBox(String[] values, String placeholder) {
@@ -108,11 +116,6 @@ public interface View {
         }
     }
 
-    static void setPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-        textField.setFont(new Font("Segoe UI", Font.ITALIC, 15));
-    }
 
     static void setInitialComboBoxLook(JComponent... comboBox) {
         for (JComponent box : comboBox) {

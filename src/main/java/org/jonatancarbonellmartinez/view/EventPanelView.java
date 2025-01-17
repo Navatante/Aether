@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.EventPanelPresenter;
-import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
+import org.jonatancarbonellmartinez.utilities.JonJTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,7 +17,7 @@ public class EventPanelView extends JPanel implements View, PanelView {
 
     JLabel eventTitleLabel;
 
-    private JonValidateAndLimitJTextField searchField;
+    private JonJTextField searchField;
     private JPanel topPanel, insideTopPanelLeft, insideTopPanelRight;
     JScrollPane scrollPane;
 
@@ -80,7 +80,7 @@ public class EventPanelView extends JPanel implements View, PanelView {
 
         scrollPane = new JScrollPane(eventTable);
 
-        searchField = new JonValidateAndLimitJTextField("Buscar", 9999999, null);
+        searchField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Buscar", View.DYNAMIC_FINAL_SEARCH, View.DYNAMIC_FINAL_SEARCH);
         sorter = new TableRowSorter<>(tableModel);
 
         eventTitleLabel = new JLabel("Eventos");
