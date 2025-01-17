@@ -392,7 +392,7 @@ public class RecentFlightsPanelPresenter implements Presenter, PanelPresenter {
             warningPanel.add(idLabel);
 
             // Instruction label
-            JLabel instructionLabel = new JLabel("Escribe '" + confirmationCode + "' para confirmar:");
+            JLabel instructionLabel = new JLabel("Escriba '" + confirmationCode + "' para confirmar:");
             deletionConfirmationPanel.add(instructionLabel, BorderLayout.CENTER);
 
             // Text field for user input
