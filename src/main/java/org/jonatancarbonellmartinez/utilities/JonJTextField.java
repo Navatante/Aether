@@ -1,51 +1,95 @@
 package org.jonatancarbonellmartinez.utilities;
 
+import javax.swing.text.AbstractDocument;
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
+
 public class JonJTextField extends JTextField {
     private String placeholder;
-    private int userLimit;
-    private String regex;
-    JonPlainDocument jonPlainDocument;
-    private Font userInputFont;
+    private String dynamicRegex;
+    private String finalRegex; // he quitado el input limit porque ya en el finalRegex puedo poner el limite de caracteres.
+    private Font inputFont;
     private Font placeholderFont;
 
-    public JonJTextField(String placeholder, int userLimit, String regex) {
-        super();
+    public JonJTextField(String placeholder, String dynamicRegex, String finalRegex) {
         this.placeholder = placeholder;
-        this.userLimit = userLimit;
-        this.regex = regex;
-        this.jonPlainDocument = new JonPlainDocument(); // de primeras no le pongo ningun limite ni filtro, hasta que no gane focus.
-        this.userInputFont = new Font("Segoe UI", Font.PLAIN, 15);
+        this.dynamicRegex = dynamicRegex;
+        this.finalRegex = finalRegex;
+        this.inputFont = new Font("Segoe UI", Font.PLAIN, 15);
         this.placeholderFont = new Font("Segoe UI", Font.ITALIC, 15);
-
-        setDocument(this.jonPlainDocument); // este tiene que venir ejecutarse primero
         changeTextFontAndColor(placeholder, placeholderFont, Color.GRAY);
-        addFocusListener();
+        setFocusListener();
+        setInputVerifier();
     }
 
-
-    private void addFocusListener() {
+    private void setFocusListener() {
         addFocusListener(new FocusAdapter() {
 
             @Override
             public void focusGained(FocusEvent e) {
                 if (getText().equals(placeholder)) {
-                    changeTextFontAndColor("", userInputFont, Color.LIGHT_GRAY);
-                    jonPlainDocument.setLimit(userLimit);
-                    jonPlainDocument.setRegex(regex);
+                    changeTextFontAndColor("", inputFont, Color.LIGHT_GRAY);
+                    setDocumentFilter(); // Solo pongo el documentfilter cuando gano el focus y se lo quitare al perderlo.
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (getText().isEmpty()) {
+                    ((AbstractDocument) getDocument()).setDocumentFilter(null); // Remove DocumentFilter by resetting the Document
+                    changeTextFontAndColor(placeholder, placeholderFont, Color.GRAY); // Restore placeholder appearance
+                }
+            }
+        });
+    }
+
+    private void setDocumentFilter() {
+        // Configurar el filtro para que solo se puedan escribir valores válidos
+        ((AbstractDocument) this.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                StringBuilder currentText = new StringBuilder(fb.getDocument().getText(0, fb.getDocument().getLength()));
+                currentText.insert(offset, string);
+
+                if (currentText.toString().matches(dynamicRegex)) {
+                    super.insertString(fb, offset, string, attr);
                 }
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
-                if (getText().isEmpty()) {
-                    jonPlainDocument.setLimit(100);
-                    jonPlainDocument.setRegex(null);
-                    changeTextFontAndColor(placeholder, placeholderFont, Color.GRAY);
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                StringBuilder currentText = new StringBuilder(fb.getDocument().getText(0, fb.getDocument().getLength()));
+                currentText.replace(offset, offset + length, text);
+
+                if (currentText.toString().matches(dynamicRegex)) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+
+            @Override
+            public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+                super.remove(fb, offset, length); // Siempre permitir eliminar texto
+            }
+        });
+    }
+
+    private void setInputVerifier() {
+        // Configurar el InputVerifier para bloquear pérdida de foco si el texto es inválido
+        this.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                String text = getText();
+                if (text.equals(placeholder) || text.isEmpty()) {
+                    return true;
+                } else if (!text.matches(finalRegex)) {
+                    JOptionPane.showMessageDialog(input, "Cagada.", "Error", JOptionPane.ERROR_MESSAGE);
+                    requestFocusInWindow();
+                    return false;
+                } else {
+                    return true;
                 }
             }
         });
@@ -56,22 +100,4 @@ public class JonJTextField extends JTextField {
         setFont(font);
         setForeground(color);
     }
-
-    // Getters y Setters
-    public Font getUserInputFont() {
-        return userInputFont;
-    }
-
-    public void setUserInputFont(Font userInputFont) {
-        this.userInputFont = userInputFont;
-    }
-
-    public Font getPlaceholderFont() {
-        return placeholderFont;
-    }
-
-    public void setPlaceholderFont(Font placeholderFont) {
-        this.placeholderFont = placeholderFont;
-    }
 }
-

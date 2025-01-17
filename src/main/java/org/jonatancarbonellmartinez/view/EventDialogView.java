@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.presenter.EventDialogPresenter;
-import org.jonatancarbonellmartinez.utilities.JonJTextField;
+import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
     private EventDialogPresenter presenter;
     private boolean isEditMode;
 
-    private JonJTextField eventPlaceField ,editEventIdField;
+    private JonValidateAndLimitJTextField eventPlaceField ,editEventIdField;
 
     private JComboBox<String> eventNameBox;
     private JLabel insertIdLabel;
@@ -61,7 +61,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
         eventNameBox = View.createFixedComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
                 "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO demomento este lo dejo asi porque el metodo toString() de Event devuevle nombre y lugar, y aqui solo necesito nombre.
 
-        eventPlaceField = new JonJTextField("Lugar", 100, null);
+        eventPlaceField = new JonValidateAndLimitJTextField("Lugar", 100, null);
 
         saveButton = new JButton(isEditMode ? "Guardar cambios" : "Guardar");
 
@@ -95,7 +95,7 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createEditModeComponents() {
-        editEventIdField = new JonJTextField("ID",10,View.ID);
+        editEventIdField = new JonValidateAndLimitJTextField("ID",10,View.DYNAMIC_FINAL_ID);
         insertIdLabel = new JLabel("Introduzca el ID");
     }
 

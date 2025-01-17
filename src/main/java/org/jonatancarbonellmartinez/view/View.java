@@ -1,13 +1,9 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.utilities.LimitDocumentFilter;
 
 import javax.swing.*;
-import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
@@ -57,8 +53,9 @@ public interface View {
     Color tableBackgroundColor = new Color(70,73,75);
 
     // REGEX PATTERNS
-    String HOUR = "^\\d*\\.?\\d*$";
-    String ID = "^\\d+$"; // TODO at least one digit, nose si me dara problemas
+    String DYNAMIC_HOUR = "^(?=.{1,4}$)[1-9]\\d*\\.?\\d*$";
+    String FINAL_HOUR = "^[1-9]\\d?\\.(\\d{1})$";
+    String DYNAMIC_FINAL_ID = "^\\d+$"; // TODO at least one digit, nose si me dara problemas
     String CREW_NK = "^[A-Z]{3}$";
     String SPANISH_WORDS = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$";
     String PHONE = "^[0-9]{10}$";
@@ -109,10 +106,6 @@ public interface View {
         for (JTextField component : fields) {
             component.setHorizontalAlignment(JTextField.CENTER);
         }
-    }
-
-    static void setDocumentFilter(JTextField field, int limit) {
-        ((AbstractDocument) field.getDocument()).setDocumentFilter(new LimitDocumentFilter(limit));
     }
 
     static void setPlaceholder(JTextField textField, String placeholder) {

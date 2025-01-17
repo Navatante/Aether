@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.utilities.JonJTextField;
+import org.jonatancarbonellmartinez.utilities.JonValidateAndLimitJTextField;
 import org.jonatancarbonellmartinez.view.panels.*;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     private JComboBox heloBox, eventBox;
 
-    private JonJTextField totalHoursField;
+    private JonValidateAndLimitJTextField totalHoursField;
 
     private JButton saveButton;
 
@@ -121,7 +121,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
         heloBox = View.createDynamicComboBox(new Vector<>(presenter.getHeloList()),"Helicóptero");
         eventBox = View.createDynamicComboBox(new Vector<>(presenter.getEventList()),"Evento");
-        totalHoursField = new JonJTextField("Horas totales",4,View.HOUR);
+        totalHoursField = new JonValidateAndLimitJTextField("Horas totales",4,View.HOUR);
         saveButton = new JButton("Guardar");
 
         extraPilotCardPanelDeque = new ArrayDeque<>();
