@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 
+import org.jonatancarbonellmartinez.model.entities.Helo;
 import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
 import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.panels.*;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Vector;
+import java.util.List;
 
 public class RegisterFlightDialogView extends JDialog implements View, DialogView {
 
@@ -57,6 +59,11 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
 
     JPopupMenu passengerPopupMenu;
     JMenuItem addPassengerCardItem, deletePassengerCardItem;
+
+    // TODO listas que sean alimentadas de la conexion unica a la base de datos.
+    // TODO al abrir el dialog de Registrar vuelos, solo se debe realizar una conexion a la base de datos. En esa conexion se tienen que realizar las consultas necesarias y dichas consultas crear las listas necesarias y asignarlas a las variables que les corresponda.
+    List<Helo> heloList;
+    List<Event> eventList;
 
     public RegisterFlightDialogView(MainView mainView, Point locationRelativeTo) {
         super(mainView, "Registrar vuelo",true);
@@ -118,7 +125,7 @@ public class RegisterFlightDialogView extends JDialog implements View, DialogVie
     @Override
     public void createComponents() {
         dateTimeSpinner = new JSpinner(new SpinnerDateModel(new Date(), null, null, java.util.Calendar.MINUTE));
-
+        // TODO extraer las consultas que rellenan los comboboxes de un mismo panel de tal manera que se hagan en una sola conexion. En una misma conexion se crean consultas, cada una de ellas genera una lista que se asigna a la variable List correspondiente. Luego esa variable alimetara al metodo new Vector<>().
         heloBox = View.createDynamicComboBox(new Vector<>(presenter.getHeloList()),"Helicóptero");
         eventBox = View.createDynamicComboBox(new Vector<>(presenter.getEventList()),"Evento");
         totalHoursField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Horas totales",View.DYNAMIC_HOUR,View.FINAL_HOUR);
