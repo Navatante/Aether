@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.utilities;
 
 import java.io.File;
 import java.sql.*;
-
+// TODO tengo que crear dos connections, una para read y otra para write. mirate la captura de pantalla
 public class Database { // THIS IS A SINGLETON
     private static Database databaseInstance;
     private String pathToDatabase;
