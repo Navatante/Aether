@@ -58,7 +58,8 @@ public class EventDialogView extends JDialog implements View, DialogView {
 
     @Override
     public void createComponents() {
-        eventNameBox = View.createFixedComboBox(new String[]{"Adiestramiento", "Colaboración", "Maniobra nacional",
+
+        eventNameBox = View.createFixedComboBox(new String[]{"Adaptación","Adiestramiento", "Colaboración", "Maniobra nacional",
                 "Maniobra internacional", "Misión", "Pruebas"}, "Nombre"); // TODO demomento este lo dejo asi porque el metodo toString() de Event devuevle nombre y lugar, y aqui solo necesito nombre.
 
         eventPlaceField = new JonJTextField(View.INPUT_FONT, View.PLACEHOLDER_FONT,"Lugar", View.DYNAMIC_FINAL_SPANISH_WORDS, View.DYNAMIC_FINAL_SPANISH_WORDS);

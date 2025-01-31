@@ -10,7 +10,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE dim_person ( 
     person_sk                 INTEGER		NOT NULL,
-    person_nk                 TEXT  		NOT NULL,
+    person_nk                 TEXT  		NOT NULL, -- tengo que aceptar nulos para meter no tripilantes.
     person_rank               TEXT  		NOT NULL,
     person_name               TEXT  		NOT NULL,
     person_last_name_1        TEXT  		NOT NULL,
@@ -284,7 +284,6 @@ INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1236', 'NH
 
 -- Insert into dim_event
 INSERT INTO dim_event (event_name, event_place) VALUES ('Adaptación', 'BNR');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Instrucción', 'BNR');
 INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'BNR');
 INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'Logroño');
 INSERT INTO dim_event (event_name, event_place) VALUES ('Pruebas', 'BNR');
