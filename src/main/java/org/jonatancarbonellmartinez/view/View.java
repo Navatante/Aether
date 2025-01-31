@@ -57,8 +57,8 @@ public interface View {
     Font PLACEHOLDER_FONT = new Font("Segoe UI", Font.ITALIC, 15);
 
     // REGEX PATTERNS
-    String DYNAMIC_HOUR = "^(?=.{1,4}$)[1-9]\\d*\\.?\\d*$";
-    String FINAL_HOUR = "^[1-9]\\d?\\.(\\d{1})$";
+    String DYNAMIC_HOUR = "^(?=.{1,4}$)[0-9]\\d*\\.?\\d*$";
+    String FINAL_HOUR = "^[0-9]\\d?\\.(\\d{1})$";
     String DYNAMIC_FINAL_ID = "\\d{1,17}$"; // requiere al menos un digito y hasta 17 digitos
     String DYNAMIC_CREW_NK = "^[A-Z]{1,3}$";
     String FINAL_CREW_NK = "^[A-Z]{3}$";
