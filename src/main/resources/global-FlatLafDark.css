@@ -1,0 +1,128 @@
+/* FlatLaf Dark Theme for JavaFX */
+
+/* === Variables de color === */
+.root {
+    -fx-base: #2b2b2b;
+    -fx-background: #2b2b2b;
+    -fx-accent: #3d84f5;
+    -fx-control-inner-background: #3c3f41;
+    -fx-text-fill: #bbbbbb;
+    -fx-disabled-text-fill: #777777;
+    -fx-focus-color: #3d84f5;
+    -fx-faint-focus-color: transparent;
+    -fx-font: 14px "Segoe UI";
+}
+
+/* === Botones === */
+.button {
+    -fx-background-color: #3c3f41, linear-gradient(#4e5254, #3c3f41);
+    -fx-text-fill: #e0e0e0;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+}
+.button:hover {
+    -fx-background-color: #4e5254;
+}
+.button:pressed {
+    -fx-background-color: #2e2e2e;
+}
+.button:disabled {
+    -fx-background-color: #444444;
+    -fx-text-fill: #777777;
+}
+
+/* === Campos de Texto === */
+.text-field, .password-field, .text-area {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #555555;
+    -fx-border-radius: 4;
+    -fx-padding: 6;
+}
+.text-field:focused, .password-field:focused, .text-area:focused {
+    -fx-border-color: #3d84f5;
+}
+
+/* === Listas y Tablas === */
+.list-view, .table-view {
+    -fx-background-color: #2b2b2b;
+    -fx-control-inner-background: #3c3f41;
+    -fx-cell-hover-color: #4e5254;
+    -fx-text-background-color: #e0e0e0;
+}
+.table-view .column-header {
+    -fx-background-color: #3c3f41;
+    -fx-border-color: #555555;
+    -fx-text-fill: #bbbbbb;
+}
+.table-row-cell:filled:selected, .list-cell:filled:selected {
+    -fx-background-color: #3d84f5;
+    -fx-text-fill: white;
+}
+
+/* === Menús y Barras de Herramientas === */
+.menu-bar, .tool-bar {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #444444;
+}
+.menu-item:hover {
+    -fx-background-color: #3d84f5;
+    -fx-text-fill: white;
+}
+
+/* === Barras de Progreso y Sliders === */
+.progress-bar {
+    -fx-accent: #3d84f5;
+    -fx-control-inner-background: #3c3f41;
+}
+.slider .track {
+    -fx-background-color: #555555;
+}
+.slider .thumb {
+    -fx-background-color: #3d84f5;
+    -fx-background-radius: 50%;
+}
+
+/* === Barras de Desplazamiento === */
+.scroll-bar .thumb {
+    -fx-background-color: #4e5254;
+    -fx-background-radius: 4;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: #3d84f5;
+}
+
+/* === Checkboxes y RadioButtons === */
+.check-box, .radio-button {
+    -fx-text-fill: #e0e0e0;
+}
+.check-box:selected .box, .radio-button:selected .radio {
+    -fx-background-color: #3d84f5;
+}
+
+/* === Pestañas (TabPane) === */
+.tab-pane .tab-header-background {
+    -fx-background-color: #2b2b2b;
+}
+.tab-pane .tab {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: #bbbbbb;
+}
+.tab-pane .tab:selected {
+    -fx-background-color: #3d84f5;
+    -fx-text-fill: white;
+}
+
+/* === Diálogos y Alertas === */
+.dialog-pane {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3d84f5;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #e0e0e0;
+}
+.dialog-pane .text {
+    -fx-fill: #e0e0e0; /* For SVGPath or Text elements directly */
+}

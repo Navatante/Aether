@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.viewmodel.PersonPanelPresenter;
-import org.jonatancarbonellmartinez.utilities.JonJTextField;
+import org.jonatancarbonellmartinez.components.JonJTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

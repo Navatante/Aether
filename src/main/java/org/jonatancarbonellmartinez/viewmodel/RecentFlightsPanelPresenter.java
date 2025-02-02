@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.viewmodel;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 import org.jonatancarbonellmartinez.view.RecentFlightsPanelView;
 
 import javax.swing.*;

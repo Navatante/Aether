@@ -2,9 +2,8 @@ package org.jonatancarbonellmartinez.model.dao;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.model.entities.IftHour;
 import org.jonatancarbonellmartinez.model.entities.Passenger;
-import org.jonatancarbonellmartinez.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 
 import java.sql.*;
 import java.util.Collections;

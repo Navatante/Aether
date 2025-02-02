@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.view;
 
 import org.jonatancarbonellmartinez.model.entities.Helo;
 import org.jonatancarbonellmartinez.viewmodel.RegisterFlightPresenter;
-import org.jonatancarbonellmartinez.utilities.JonJTextField;
+import org.jonatancarbonellmartinez.components.JonJTextField;
 import org.jonatancarbonellmartinez.view.panels.*;
 
 import javax.swing.*;

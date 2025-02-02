@@ -4,7 +4,7 @@ package org.jonatancarbonellmartinez.model.dao;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.CupoHour;
 import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 
 import java.sql.*;
 import java.util.Collections;

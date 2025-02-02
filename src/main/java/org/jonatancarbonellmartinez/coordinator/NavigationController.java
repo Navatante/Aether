@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.utilities;
+package org.jonatancarbonellmartinez.coordinator;
 
 
 import org.jonatancarbonellmartinez.view.*;

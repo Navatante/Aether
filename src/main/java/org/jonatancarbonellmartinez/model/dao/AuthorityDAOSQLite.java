@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.model.dao;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Authority;
-import org.jonatancarbonellmartinez.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

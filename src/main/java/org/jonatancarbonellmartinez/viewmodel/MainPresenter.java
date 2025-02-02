@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.viewmodel;
 
 import org.jonatancarbonellmartinez.observers.Observer;
-import org.jonatancarbonellmartinez.utilities.NavigationController;
+import org.jonatancarbonellmartinez.coordinator.NavigationController;
 import org.jonatancarbonellmartinez.view.*;
 
 import java.awt.*;

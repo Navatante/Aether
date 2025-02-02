@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.utilities;
+package org.jonatancarbonellmartinez.components;
 
 import javax.swing.text.AbstractDocument;
 import javax.swing.*;

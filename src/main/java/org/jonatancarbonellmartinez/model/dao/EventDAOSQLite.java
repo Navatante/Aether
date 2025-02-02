@@ -3,12 +3,10 @@ package org.jonatancarbonellmartinez.model.dao;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.model.entities.Entity;
 import org.jonatancarbonellmartinez.model.entities.Event;
-import org.jonatancarbonellmartinez.model.entities.Person;
-import org.jonatancarbonellmartinez.utilities.Database;
+import org.jonatancarbonellmartinez.model.utilities.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class EventDAOSQLite implements GenericDAO<Event, Integer> {

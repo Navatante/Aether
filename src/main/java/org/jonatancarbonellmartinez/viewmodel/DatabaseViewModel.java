@@ -1,50 +1,94 @@
 package org.jonatancarbonellmartinez.viewmodel;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import org.jonatancarbonellmartinez.utilities.Database;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
+import org.jonatancarbonellmartinez.model.utilities.Database;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.Optional;
 
 public class DatabaseViewModel {
-    private final Database database;
-    private final BooleanProperty databaseConnected;
-    private final StringProperty errorMessage;
+    private final Database model;
+    private final BooleanProperty connectionSuccess = new SimpleBooleanProperty(false);
 
     public DatabaseViewModel() {
-        this.database = Database.getInstance();
-        this.databaseConnected = new SimpleBooleanProperty(false);
-        this.errorMessage = new SimpleStringProperty("");
+        this.model = Database.getInstance();
     }
 
-    public void checkDatabaseConnection() {
-        try {
-            if (database.isDatabaseFilePresent()) {
-                database.getConnection();
-                databaseConnected.set(true);
-            } else {
-                errorMessage.set("Database file not found. Please select a database file.");
-            }
-        } catch (Exception e) {
-            errorMessage.set("Error connecting to database: " + e.getMessage());
+    public void checkAndInitializeDatabase() {
+        if (!model.isDatabaseFilePresent()) {
+            showFileChooser();
+        } else {
+            testConnection();
         }
     }
 
-    public void setDatabaseFile(String filePath) {
-        try {
-            database.setDatabasePath(filePath);
-            database.getConnection();
-            databaseConnected.set(true);
-        } catch (Exception e) {
-            errorMessage.set("Error connecting to database: " + e.getMessage());
+    private void showFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle("Seleccione la base de datos SQLite");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Archivos de base de datos (*.db)", "*.db")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            handleFileSelection(selectedFile.getAbsolutePath());
+        } else {
+            showConfirmationDialog();
         }
     }
 
-    public BooleanProperty getDatabaseConnectedProperty() {
-        return databaseConnected;
+    private void handleFileSelection(String filePath) {
+        String fullPath = "jdbc:sqlite:" + filePath.replace("\\", "/");
+        model.setDatabasePath(fullPath);
+        testConnection();
     }
 
-    public StringProperty getErrorMessageProperty() {
-        return errorMessage;
+    private void testConnection() {
+        try {
+            model.getConnection();
+            model.closeConnection();
+            connectionSuccess.set(true);
+        } catch (SQLException e) {
+            showError("Error de conexión: " + e.getMessage());
+            showFileChooser();
+        }
+    }
+
+    private void showConfirmationDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        // TODO metele una hoja de estilos tema oscuro.
+        //alert.getDialogPane().getStylesheets().add("/path/to/your/stylesheet.css");
+        alert.setTitle("Confirmación");
+        alert.setHeaderText(null);
+        alert.setContentText("No ha seleccionado ninguna base de datos. ¿Desea intentarlo de nuevo?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            showFileChooser();
+        } else {
+            showError("Se requiere una conexión a la base de datos. Cerrando aplicación.");
+            Platform.exit();
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        // TODO metele una hoja de estilos tema oscuro.
+        //alert.getDialogPane().getStylesheets().add("/path/to/your/stylesheet.css");
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public BooleanProperty connectionSuccessProperty() {
+        return connectionSuccess;
     }
 }
