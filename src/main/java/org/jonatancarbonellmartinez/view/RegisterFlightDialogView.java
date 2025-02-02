@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.view;
 
 
 import org.jonatancarbonellmartinez.model.entities.Helo;
-import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.viewmodel.RegisterFlightPresenter;
 import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.panels.*;
 

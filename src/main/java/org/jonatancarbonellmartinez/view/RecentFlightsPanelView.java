@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.presenter.RecentFlightsPanelPresenter;
+import org.jonatancarbonellmartinez.viewmodel.RecentFlightsPanelPresenter;
 import org.jonatancarbonellmartinez.utilities.JonJTextField;
 
 

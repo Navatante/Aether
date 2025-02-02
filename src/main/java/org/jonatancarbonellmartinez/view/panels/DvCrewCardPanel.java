@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.view.panels;
 
-import org.jonatancarbonellmartinez.presenter.RegisterFlightPresenter;
+import org.jonatancarbonellmartinez.viewmodel.RegisterFlightPresenter;
 import org.jonatancarbonellmartinez.utilities.JonJTextField;
 import org.jonatancarbonellmartinez.view.RegisterFlightDialogView;
 import org.jonatancarbonellmartinez.view.View;

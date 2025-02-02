@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presenter;
+package org.jonatancarbonellmartinez.viewmodel;
 
 import org.jonatancarbonellmartinez.observers.Observer;
 import org.jonatancarbonellmartinez.utilities.NavigationController;

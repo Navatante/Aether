@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presenter;
+package org.jonatancarbonellmartinez.viewmodel;
 
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.utilities.Database;

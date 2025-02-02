@@ -1,7 +1,4 @@
-package org.jonatancarbonellmartinez.presenter;
-
-import org.jonatancarbonellmartinez.model.entities.Entity;
-import org.jonatancarbonellmartinez.view.DialogView;
+package org.jonatancarbonellmartinez.viewmodel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;

@@ -3,77 +3,64 @@ package org.jonatancarbonellmartinez.utilities;
 import java.io.File;
 import java.sql.*;
 // TODO tengo que crear dos connections, una para read y otra para write. mirate la captura de pantalla
-public class Database { // THIS IS A SINGLETON
-    private static Database databaseInstance;
-    private String pathToDatabase;
+public class Database {
+    private static Database instance;
+    private String databasePath;
     private Connection connection;
-    private final Properties propertiesFile = Properties.getInstanceOfPropertiesFile();
+    private final Properties properties;
 
-    // Private constructor to prevent direct instantiation
     private Database() {
-        setPathToDatabaseFromPropertiesFile();  // Load path on initialization
+        this.properties = Properties.getInstanceOfPropertiesFile();
+        loadDatabasePath();
     }
 
-    // Singleton pattern with lazy initialization
     public static synchronized Database getInstance() {
-        if (databaseInstance == null) {
-            databaseInstance = new Database();
+        if (instance == null) {
+            instance = new Database();
         }
-        return databaseInstance;
+        return instance;
     }
 
-    // Set database path from properties file
-    public void setPathToDatabaseFromPropertiesFile() {
-        this.pathToDatabase = propertiesFile.readFromPropertiesFile("path");
+    private void loadDatabasePath() {
+        this.databasePath = properties.readFromPropertiesFile("path");
     }
 
-    // Check if the database file is present
-    private boolean isDatabaseFilePresent() {
-        if (pathToDatabase == null || pathToDatabase.isEmpty()) {
-            return false; // No valid path, database doesn't exist
+    public boolean isDatabaseFilePresent() {
+        if (databasePath == null || databasePath.isEmpty()) {
+            return false;
         }
 
-        // Remove "jdbc:sqlite:" from the beginning of the path to get the actual file path
-        String actualFilePath = pathToDatabase.replace("jdbc:sqlite:", "");
+        String actualFilePath = databasePath.replace("jdbc:sqlite:", "");
         File databaseFile = new File(actualFilePath);
-
-        // Check if the file exists and is indeed a file
         return databaseFile.exists() && databaseFile.isFile();
     }
 
-    // Establish connection to the database
     public Connection getConnection() throws SQLException {
-        // Ensure path is loaded before connecting
-        setPathToDatabaseFromPropertiesFile();
+        loadDatabasePath();
 
-        // Check if the database file exists before connecting
         if (!isDatabaseFilePresent()) {
-            throw new SQLException("El archivo de base de datos no existe: " + pathToDatabase);
+            throw new SQLException("Database file does not exist: " + databasePath);
         }
 
-        // If the connection is null or closed, establish a new connection
-        if (this.connection == null || this.connection.isClosed()) {
-            try {
-                this.connection = DriverManager.getConnection(this.pathToDatabase);
-                System.out.println("Connected to database at " + pathToDatabase);
-            } catch (SQLException e) {
-                // Handle SQL exceptions more explicitly if needed
-                throw new SQLException("Error connecting to the database: " + e.getMessage(), e);
-            }
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(databasePath);
         }
 
-        return this.connection;
+        return connection;
     }
 
-    // Optional: Method to close the connection (if required later)
+    public void setDatabasePath(String path) {
+        this.databasePath = "jdbc:sqlite:" + path.replace("\\", "/");
+        properties.writeIntoPropertiesFile("path", this.databasePath);
+    }
+
     public void closeConnection() {
-        if (this.connection != null) {
-            try {
-                this.connection.close();
-                System.out.println("Database connection closed.");
-            } catch (SQLException e) {
-                System.err.println("Error closing the database connection: " + e.getMessage());
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
+        } catch (SQLException e) {
+            // Log error
         }
     }
 }

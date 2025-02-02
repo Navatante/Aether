@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.presenter.MainPresenter;
+import org.jonatancarbonellmartinez.viewmodel.MainPresenter;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.view;
 
-import org.jonatancarbonellmartinez.presenter.EventDialogPresenter;
+import org.jonatancarbonellmartinez.viewmodel.EventDialogPresenter;
 import org.jonatancarbonellmartinez.utilities.JonJTextField;
 
 import javax.swing.*;
