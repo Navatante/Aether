@@ -13,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         // TODO Cargar el CSS global
-        Application.setUserAgentStylesheet(Objects.requireNonNull(getClass().getResource("/global-FlatLafDark.css")).toExternalForm());
+        Application.setUserAgentStylesheet(Objects.requireNonNull(getClass().getResource("/css/global-FlatLafDark.css")).toExternalForm());
 
         DatabaseViewModel databaseViewModel = new DatabaseViewModel();
 

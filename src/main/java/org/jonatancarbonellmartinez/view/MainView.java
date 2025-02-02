@@ -110,10 +110,10 @@ public class MainView extends JFrame implements View {
         docSemanalMenuItem = new JMenuItem("Documentación semanal");
         docMensualMenuItem = new JMenuItem("Documentación mensual");
 
-        iconPersonal = new ImageIcon(getClass().getResource("/Icon_Personal.png"));
-        iconEvent = new ImageIcon(getClass().getResource("/Icon_Event.png"));
-        iconPending = new ImageIcon(getClass().getResource("/Icon_Pending.png"));
-        iconRecentFlights = new ImageIcon(getClass().getResource("/Icon_RecentFlights.png"));
+        iconPersonal = new ImageIcon(getClass().getResource("/images/Icon_Personal.png"));
+        iconEvent = new ImageIcon(getClass().getResource("/images/Icon_Event.png"));
+        iconPending = new ImageIcon(getClass().getResource("/images/Icon_Pending.png"));
+        iconRecentFlights = new ImageIcon(getClass().getResource("/images/Icon_RecentFlights.png"));
 
         botonPrincipal = createRoundedButton(iconPending);
         botonPilotos = createRoundedButton(iconPending);
