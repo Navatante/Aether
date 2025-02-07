@@ -1,0 +1,258 @@
+com.yourapp
+├── application/
+│   ├── coordinator/
+│   │   ├── MainCoordinator.java
+│   │   └── FlightCoordinator.java
+│   └── di/
+│       ├── AppComponent.java
+│       ├── DatabaseModule.java
+│       ├── RepositoryModule.java
+│       ├── UseCaseModule.java
+│       └── ViewModelModule.java
+│
+├── presentation/
+│   ├── viewmodel/
+│   │   ├── base/
+│   │   │   └── BaseViewModel.java
+│   │   ├── FlightListViewModel.java
+│   │   └── PersonListViewModel.java
+│   └── view/
+│       ├── controller/
+│       │   ├── FlightListController.java
+│       │   └── PersonListController.java
+│       └── fxml/
+│           ├── flight_list.fxml
+│           └── person_list.fxml
+│
+├── domain/
+│   ├── interactor/
+│   │   ├── GetFlightsInteractor.java
+│   │   ├── GetPersonsInteractor.java
+│   ├── repository/contract/
+│   │   ├── FlightRepository.java
+│   │   ├── PersonRepository.java
+│
+└── data/
+    ├── database/
+    │   ├── Database.java
+    │   ├── FlightDAO.java
+    │   └── PersonDAO.java
+    ├── model/
+    │   ├── Flight.java
+    │   └── Person.java
+    ├── repository/
+    │   ├── FlightRepositoryImpl.java
+    │   ├── PersonRepositoryImpl.java
+
+
+
+📌 Explicación de la Arquitectura
+Esta estructura sigue MVVM-C (Model-View-ViewModel-Coordinator) junto con DAO (Data Access Object) y Clean Architecture.
+
+Cada carpeta tiene una responsabilidad clara, lo que facilita la escalabilidad, el mantenimiento y la separación de lógica.
+
+com.yourapp
+├── application/       # Configuración global, navegación y DI
+│   ├── coordinator/   # Manejo de navegación entre pantallas
+│   └── di/            # Inyección de dependencias con Dagger 2
+│
+├── presentation/      # Capa de UI (interfaz de usuario)
+│   ├── viewmodel/     # Lógica de presentación, maneja la UI
+│   └── view/          # Pantallas y controladores JavaFX
+│
+├── domain/            # Reglas de negocio y contratos
+│   ├── interactor/    # Casos de uso (lógica de negocio)
+│   └── repository/    # Interfaces de los repositorios
+│
+└── data/              # Acceso a datos (DB, API, Repositorios)
+    ├── database/      # Configuración de la base de datos y DAOs
+    ├── model/         # Modelos de datos (Entidades)
+    ├── repository/    # Implementaciones de los repositorios
+
+1️⃣ application/ → Configuración Global
+Esta carpeta maneja la configuración principal de la app, como la navegación y la inyección de dependencias.
+
+📌 Subcarpetas
+
+coordinator/ → Controla la navegación entre pantallas.
+di/ → Configura Dagger 2 para la inyección de dependencias.
+
+✅ coordinator/ → Manejo de Navegación
+El Coordinator se encarga de manejar las transiciones entre pantallas. Así, los controladores (Controller) no tienen que preocuparse por la navegación, lo que mejora la organización del código.
+
+📌 Ejemplo: MainCoordinator.java
+
+public class MainCoordinator {
+    private final Stage primaryStage;
+
+    public MainCoordinator(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    public void showFlightList() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/presentation/view/fxml/flight_list.fxml"));
+        Parent root = loader.load();
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
+}
+
+✅ Beneficio: Centraliza la navegación, evitando que cada Controller tenga que manejar cambios de pantalla.
+
+✅ di/ → Inyección de Dependencias con Dagger 2
+
+📌 Ejemplo de AppComponent.java (Dagger 2)
+
+@Component(modules = {DatabaseModule.class, RepositoryModule.class, UseCaseModule.class})
+public interface AppComponent {
+    FlightRepository getFlightRepository();
+    GetFlightsInteractor getFlightsInteractor();
+}
+
+✅ Beneficio: Facilita la inyección de dependencias, evitando la creación manual de objetos.
+
+2️⃣ presentation/ → Capa de UI (JavaFX)
+Aquí se manejan la interfaz gráfica y la lógica de presentación.
+
+📌 Subcarpetas
+
+viewmodel/ → Contiene los ViewModels, que procesan la lógica de UI.
+view/ → Contiene los FXML y sus respectivos Controladores (Controllers).
+
+✅ viewmodel/ → Lógica de Presentación
+Los ViewModels manejan la lógica de la UI, interactuando con los Interactors para obtener datos.
+
+📌 Ejemplo: FlightListViewModel.java
+
+public class FlightListViewModel {
+    private final GetFlightsInteractor getFlightsInteractor;
+    private final ObservableList<Flight> flights = FXCollections.observableArrayList();
+
+    public FlightListViewModel(GetFlightsInteractor getFlightsInteractor) {
+        this.getFlightsInteractor = getFlightsInteractor;
+    }
+
+    public void loadFlights() {
+        List<Flight> flightList = getFlightsInteractor.execute();
+        flights.setAll(flightList);  // Actualiza la UI con los datos obtenidos
+    }
+
+    public ObservableList<Flight> getFlights() {
+        return flights;
+    }
+}
+
+✅ Beneficio: Separa la lógica de presentación del Controller, haciendo que el código sea más limpio.
+
+✅ view/ → Pantallas y Controladores
+
+📌 Ejemplo: FlightListController.java
+
+public class FlightListController {
+    @FXML private TableView<Flight> flightTable;
+
+    private final FlightListViewModel flightListViewModel;
+
+    public FlightListController(FlightListViewModel flightListViewModel) {
+        this.flightListViewModel = flightListViewModel;
+    }
+
+    @FXML
+    public void initialize() {
+        flightTable.setItems(flightListViewModel.getFlights());
+        flightListViewModel.loadFlights();
+    }
+}
+
+✅ Beneficio: Evita mezclar lógica de negocio con la UI, mejorando la mantenibilidad.
+
+3️⃣ domain/ → Lógica de Negocio
+Aquí se define la lógica de negocio pura, sin depender de la UI ni de la base de datos.
+
+📌 Subcarpetas
+
+interactor/ → Contiene los Casos de Uso (reglas de negocio).
+repository/contract/ → Define interfaces de los repositorios.
+
+✅ interactor/ → Casos de Uso
+
+Los Casos de Uso (Use Cases) encapsulan reglas de negocio.
+
+📌 Ejemplo: GetFlightsInteractor.java
+
+public class GetFlightsInteractor {
+    private final FlightRepository flightRepository;
+
+    public GetFlightsInteractor(FlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
+    }
+
+    public List<Flight> execute() {
+        return flightRepository.getAllFlights();
+    }
+}
+
+✅ Beneficio: Permite reutilizar lógica de negocio sin depender de la UI o la base de datos.
+
+✅ repository/contract/ → Interfaces de Repositorios
+
+📌 Ejemplo: FlightRepository.java (Interface)
+
+public interface FlightRepository {
+    List<Flight> getAllFlights();
+}
+✅ Beneficio: Define un contrato independiente de la implementación de datos.
+
+4️⃣ data/ → Capa de Datos (Base de datos, Modelos, Repositorios)
+Aquí se maneja el acceso a los datos y su almacenamiento.
+
+📌 Subcarpetas
+
+database/ → Configuración de SQLite y DAOs.
+model/ → Modelos de datos (Entidades).
+repository/ → Implementaciones de los repositorios.
+✅ database/ → Configuración de SQLite
+
+📌 Ejemplo: FlightDAO.java
+
+public interface FlightDAO {
+    @Query("SELECT * FROM flights")
+    List<Flight> getAllFlights();
+}
+✅ Beneficio: Encapsula las consultas SQL en interfaces DAO.
+
+✅ model/ → Entidades de Datos
+
+📌 Ejemplo: Flight.java
+
+public class Flight {
+    private int id;
+    private String destination;
+    private String departureTime;
+}
+✅ Beneficio: Separa los modelos de la lógica de negocio.
+
+✅ repository/ → Implementaciones de Repositorios
+
+📌 Ejemplo: FlightRepositoryImpl.java
+
+public class FlightRepositoryImpl implements FlightRepository {
+    private final FlightDAO flightDAO;
+
+    public FlightRepositoryImpl(FlightDAO flightDAO) {
+        this.flightDAO = flightDAO;
+    }
+
+    @Override
+    public List<Flight> getAllFlights() {
+        return flightDAO.getAllFlights();
+    }
+}
+✅ Beneficio: Separa la lógica de negocio del acceso a datos.
+
+📌 Conclusión
+🔹 Esta estructura modular mejora la escalabilidad y mantenimiento.
+🔹 Separa correctamente la lógica de UI, negocio y datos.
+🔹 Usa Coordinators para navegación y Dagger 2 para inyección de dependencias.
+
+¡Con esto puedes desarrollar la app de manera clara y escalable! 🚀

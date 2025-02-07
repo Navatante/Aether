@@ -1,0 +1,60 @@
+package org.jonatancarbonellmartinez.data.database;
+
+import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.data.model.Entity;
+import org.jonatancarbonellmartinez.data.model.PersonHour;
+
+import java.sql.*;
+import java.util.Collections;
+import java.util.List;
+
+public class PersonHourDAOSQLite implements GenericDAO<PersonHour, Integer> {
+    @Override
+    public void insert(PersonHour entity) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
+        String sql = "INSERT INTO junction_person_hour (person_hour_flight_fk, person_hour_person_fk, person_hour_period_fk, person_hour_hour_qty) VALUES (?, ?, ?, ?)";
+
+        try(Connection connection = Database.getInstance().getConnection();
+            Statement stmt = connection.createStatement();
+            PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
+            pstmt.setInt(1, entity.getFlightFk());
+            pstmt.setInt(2,    entity.getPersonFk());
+            pstmt.setInt(3,    entity.getPeriodFk());
+            pstmt.setDouble(4,    entity.getHourQty());
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error insertando horas persona en la base de datos", e);
+        }
+    }
+
+    @Override
+    public Entity read(Integer entitySk) throws DatabaseException { // TODO
+        return null;
+    }
+
+    @Override
+    public void update(PersonHour entity, int skToUpdate) throws DatabaseException { // TODO
+
+    }
+
+    @Override
+    public void delete(Integer entitySk) throws DatabaseException { // TODO
+
+    }
+
+    @Override
+    public List<PersonHour> getAll() throws DatabaseException { // TODO
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Entity mapResultSetToEntity(ResultSet rs) throws SQLException { // TODO
+        return null;
+    }
+}

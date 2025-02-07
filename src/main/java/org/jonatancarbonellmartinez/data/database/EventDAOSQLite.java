@@ -1,0 +1,113 @@
+package org.jonatancarbonellmartinez.data.database;
+
+import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.data.model.Entity;
+import org.jonatancarbonellmartinez.data.model.Event;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EventDAOSQLite implements GenericDAO<Event, Integer> {
+    @Override
+    public void insert(Event entity) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
+        String sql = "INSERT INTO dim_event (event_name, event_place)" +
+                " VALUES (?, ?)";
+
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
+            pstmt.setString(1, entity.getEventName());
+            pstmt.setString(2, entity.getEventPlace());
+
+            pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
+        } catch (SQLException e) {
+            throw new DatabaseException("Error insertando persona en la base de datos", e);
+        }
+    }
+
+    @Override
+    public Entity read(Integer entitySk) throws DatabaseException {
+        String sql = "SELECT * FROM dim_event WHERE event_sk = ?";
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, entitySk);
+
+            // Execute the query and get the ResultSet
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // Check if a person with the given ID exists
+                if (rs.next()) {
+                    return (Event)mapResultSetToEntity(rs); // Return the populated Person object
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error buscando persona por ID", e);
+        }
+        return null; // Return null if no person was found with the given ID
+    }
+
+    @Override
+    public void update(Event entity, int skToUpdate) throws DatabaseException {
+        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
+        String sql = "UPDATE dim_event\n" +
+                "SET \n" +
+                "    event_name = ?," +
+                "    event_place = ?" +
+                "WHERE event_sk = ?";
+
+        try (Connection connection = Database.getInstance().getConnection();
+             Statement stmt = connection.createStatement();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            // Habilitar claves foráneas
+            stmt.execute(enableForeignKeys);
+
+            pstmt.setString(1, entity.getEventName());
+            pstmt.setString(2, entity.getEventPlace());
+            pstmt.setInt(3, skToUpdate);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error editando evento en la base de datos", e);
+        }
+    }
+
+    @Override
+    public void delete(Integer entitySk) throws DatabaseException {
+
+    }
+
+    @Override
+    public List<Event> getAll() throws DatabaseException {
+        String sql = "SELECT * FROM dim_event ORDER BY event_name";
+        List<Event> eventList = new ArrayList<>();
+
+        // Obtain a new connection each time the method is called
+        try (Connection connection = Database.getInstance().getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                eventList.add( (Event) mapResultSetToEntity(rs) );
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error al acceder al evento", e);
+        }
+
+        return eventList;
+    }
+
+    @Override
+    public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {
+        Event event = new Event();
+        event.setEventSk(rs.getInt("event_sk"));
+        event.setEventName(rs.getString("event_name"));
+        event.setEventPlace(rs.getString("event_place"));
+        return event;
+    }
+}
