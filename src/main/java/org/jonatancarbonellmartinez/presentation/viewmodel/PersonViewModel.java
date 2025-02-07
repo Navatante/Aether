@@ -10,26 +10,18 @@ import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-/**
- * Maneja la lógica de la UI y la conexión con los datos.
- * ObservableList y FilteredList permiten filtrar y mostrar personas en la UI.
- * Se inyecta PersonRepository para acceder a los datos.
- */
+import java.util.stream.Collectors;
 
 public class PersonViewModel {
     private final PersonRepository repository;
-
-    // UI State
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
     private final StringProperty searchQuery = new SimpleStringProperty("");
     private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
     private final StringProperty errorMessage = new SimpleStringProperty("");
-
-    // Selection state
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
@@ -39,7 +31,6 @@ public class PersonViewModel {
     }
 
     private void setupFilters() {
-        // Combine active filter and search filter
         filteredPersons.predicateProperty().bind(
                 Bindings.createObjectBinding(() ->
                                 person -> {
@@ -53,29 +44,29 @@ public class PersonViewModel {
     }
 
     public void loadPersons() {
-        isLoading.set(true);
-        errorMessage.set("");
+        setLoading(true);
+        setError("");
 
         repository.getAllPersons()
                 .thenAccept(personList -> {
                     Platform.runLater(() -> {
                         persons.clear();
                         persons.addAll(mapToUI(personList));
-                        isLoading.set(false);
+                        setLoading(false);
                     });
                 })
                 .exceptionally(throwable -> {
                     Platform.runLater(() -> {
-                        errorMessage.set("Error loading persons: " + throwable.getMessage());
-                        isLoading.set(false);
+                        setError("Error loading persons: " + throwable.getMessage());
+                        setLoading(false);
                     });
                     return null;
                 });
     }
 
     public void savePerson(PersonUI person) {
-        isLoading.set(true);
-        errorMessage.set("");
+        setLoading(true);
+        setError("");
 
         Person domainPerson = mapToDomain(person);
         CompletableFuture<Boolean> future = person.getId() == null ?
@@ -85,25 +76,76 @@ public class PersonViewModel {
         future.thenAccept(success -> {
                     Platform.runLater(() -> {
                         if (success) {
-                            loadPersons(); // Reload to get updated data
+                            loadPersons();
                         } else {
-                            errorMessage.set("Error saving person");
+                            setError("Error saving person");
                         }
-                        isLoading.set(false);
+                        setLoading(false);
                     });
                 })
                 .exceptionally(throwable -> {
                     Platform.runLater(() -> {
-                        errorMessage.set("Error saving person: " + throwable.getMessage());
-                        isLoading.set(false);
+                        setError("Error saving person: " + throwable.getMessage());
+                        setLoading(false);
                     });
                     return null;
                 });
     }
 
-    // UI Model
+    private List<PersonUI> mapToUI(List<Person> domainPersons) {
+        return domainPersons.stream()
+                .map(person -> {
+                    PersonUI ui = new PersonUI();
+                    ui.setId(person.getId());
+                    ui.setCode(person.getCode());
+                    ui.setRank(person.getRank());
+                    ui.setName(person.getName());
+                    ui.setLastName1(person.getLastName1());
+                    ui.setLastName2(person.getLastName2());
+                    ui.setPhone(person.getPhone());
+                    ui.setDni(person.getDni());
+                    ui.setDivision(person.getDivision());
+                    ui.setRole(person.getRole());
+                    ui.setOrder(person.getOrder());
+                    ui.setActive(person.isActive());
+                    return ui;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Person mapToDomain(PersonUI ui) {
+        return new Person.Builder()
+                .id(ui.getId())
+                .code(ui.getCode())
+                .rank(ui.getRank())
+                .name(ui.getName())
+                .lastName1(ui.getLastName1())
+                .lastName2(ui.getLastName2())
+                .phone(ui.getPhone())
+                .dni(ui.getDni())
+                .division(ui.getDivision())
+                .role(ui.getRole())
+                .order(ui.getOrder())
+                .isActive(ui.isActive())
+                .build();
+    }
+
+    public void cleanup() {
+        persons.clear();
+        selectedPerson.set(null);
+        errorMessage.set("");
+    }
+
+    private void setLoading(boolean loading) {
+        Platform.runLater(() -> isLoading.set(loading));
+    }
+
+    private void setError(String error) {
+        Platform.runLater(() -> errorMessage.set(error));
+    }
+
     public static class PersonUI {
-        private final Integer id;
+        private Integer id;
         private final StringProperty code = new SimpleStringProperty();
         private final StringProperty rank = new SimpleStringProperty();
         private final StringProperty name = new SimpleStringProperty();
@@ -116,7 +158,9 @@ public class PersonViewModel {
         private final IntegerProperty order = new SimpleIntegerProperty();
         private final BooleanProperty active = new SimpleBooleanProperty();
 
-        // TODO Add getters/setters for properties
+        public PersonUI() {
+            this.id = null;
+        }
 
         public boolean matchesSearch(String query) {
             if (query == null || query.isEmpty()) return true;
@@ -126,30 +170,61 @@ public class PersonViewModel {
                     lastName1.get().toLowerCase().contains(lowerQuery) ||
                     code.get().toLowerCase().contains(lowerQuery);
         }
+
+        // Getters and Setters
+        public Integer getId() { return id; }
+        public void setId(Integer id) { this.id = id; }
+
+        public String getCode() { return code.get(); }
+        public void setCode(String value) { code.set(value); }
+        public StringProperty codeProperty() { return code; }
+
+        public String getRank() { return rank.get(); }
+        public void setRank(String value) { rank.set(value); }
+        public StringProperty rankProperty() { return rank; }
+
+        public String getName() { return name.get(); }
+        public void setName(String value) { name.set(value); }
+        public StringProperty nameProperty() { return name; }
+
+        public String getLastName1() { return lastName1.get(); }
+        public void setLastName1(String value) { lastName1.set(value); }
+        public StringProperty lastName1Property() { return lastName1; }
+
+        public String getLastName2() { return lastName2.get(); }
+        public void setLastName2(String value) { lastName2.set(value); }
+        public StringProperty lastName2Property() { return lastName2; }
+
+        public String getPhone() { return phone.get(); }
+        public void setPhone(String value) { phone.set(value); }
+        public StringProperty phoneProperty() { return phone; }
+
+        public String getDni() { return dni.get(); }
+        public void setDni(String value) { dni.set(value); }
+        public StringProperty dniProperty() { return dni; }
+
+        public String getDivision() { return division.get(); }
+        public void setDivision(String value) { division.set(value); }
+        public StringProperty divisionProperty() { return division; }
+
+        public String getRole() { return role.get(); }
+        public void setRole(String value) { role.set(value); }
+        public StringProperty roleProperty() { return role; }
+
+        public int getOrder() { return order.get(); }
+        public void setOrder(int value) { order.set(value); }
+        public IntegerProperty orderProperty() { return order; }
+
+        public boolean isActive() { return active.get(); }
+        public void setActive(boolean value) { active.set(value); }
+        public BooleanProperty activeProperty() { return active; }
     }
 
-    // Getters for properties
-    public ObservableList<PersonUI> getFilteredPersons() {
-        return filteredPersons;
-    }
-
-    public BooleanProperty showOnlyActiveProperty() {
-        return showOnlyActive;
-    }
-
-    public StringProperty searchQueryProperty() {
-        return searchQuery;
-    }
-
-    public BooleanProperty isLoadingProperty() {
-        return isLoading;
-    }
-
-    public StringProperty errorMessageProperty() {
-        return errorMessage;
-    }
-
-    public ObjectProperty<PersonUI> selectedPersonProperty() {
-        return selectedPerson;
-    }
+    // Public property getters
+    public ObservableList<PersonUI> getFilteredPersons() { return filteredPersons; }
+    public BooleanProperty showOnlyActiveProperty() { return showOnlyActive; }
+    public StringProperty searchQueryProperty() { return searchQuery; }
+    public BooleanProperty isLoadingProperty() { return isLoading; }
+    public StringProperty errorMessageProperty() { return errorMessage; }
+    public ObjectProperty<PersonUI> selectedPersonProperty() { return selectedPerson; }
 }

@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.di;
 import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
+import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 /**
  * Este módulo proporciona ViewModels, que manejan la lógica de presentación.

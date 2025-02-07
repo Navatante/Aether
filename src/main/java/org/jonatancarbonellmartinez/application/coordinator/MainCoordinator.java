@@ -14,11 +14,11 @@ public class MainCoordinator {
 
     @Inject
     public MainCoordinator(
-            FlightCoordinator flightCoordinator,
+            //FlightCoordinator flightCoordinator,
             PersonCoordinator personCoordinator
             // ... otros coordinadores
     ) {
-        coordinators.put(FlightCoordinator.class, flightCoordinator);
+        //coordinators.put(FlightCoordinator.class, flightCoordinator);
         coordinators.put(PersonCoordinator.class, personCoordinator);
         // ... registrar otros coordinadores
     }
