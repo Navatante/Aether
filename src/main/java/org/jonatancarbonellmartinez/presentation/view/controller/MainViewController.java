@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presentation.view.fxml;
+package org.jonatancarbonellmartinez.presentation.view.controller;
 
 import javafx.fxml.FXML;
 

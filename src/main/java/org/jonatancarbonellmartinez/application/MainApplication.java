@@ -6,7 +6,7 @@ import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.di.DaggerAppComponent;
 import org.jonatancarbonellmartinez.application.di.AppComponent;
 
-public class App extends Application {
+public class MainApplication extends Application {
     private AppComponent appComponent;
 
     @Override

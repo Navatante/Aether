@@ -5,6 +5,10 @@ import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 
+/**
+ * Este módulo proporciona un coordinador, que organiza la navegación o interacción entre ViewModels.
+ */
+
 // Coordinadores para navegación entre pantallas.
 @Module
 public class CoordinatorModule {

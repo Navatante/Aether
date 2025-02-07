@@ -5,6 +5,10 @@ import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.data.database.Database;
 
+/**
+ * Este módulo proporciona una instancia de la base de datos.
+ */
+
 // Provee conexiones y DAOs.
 @Module
 public class DatabaseModule {

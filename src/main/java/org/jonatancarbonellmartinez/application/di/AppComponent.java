@@ -2,9 +2,16 @@ package org.jonatancarbonellmartinez.application.di;
 
 import javax.inject.Singleton;
 import dagger.Component;
+import org.jonatancarbonellmartinez.application.MainApplication;
+import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 
-@Singleton
-@Component(modules = {
+/**
+ * Este es el componente principal de Dagger.
+ * En Dagger, un @Component conecta los módulos con las clases que necesitan dependencias.
+ */
+
+@Singleton // Indica que las instancias creadas por este componente serán únicas en toda la aplicación.
+@Component(modules = { // Lista los módulos que proporcionan dependencias a la aplicación.
         DatabaseModule.class,
         ViewModelModule.class,
         RepositoryModule.class,
@@ -18,6 +25,6 @@ public interface AppComponent {
     }
 
     // Métodos para inyección
-    void inject(MainApplication app);
-    MainCoordinator mainCoordinator();
+    void inject(MainApplication app); // Permite inyectar dependencias en MainApplication
+    MainCoordinator mainCoordinator(); // Expone MainCoordinator para su uso en otras partes de la
 }

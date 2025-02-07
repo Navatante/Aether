@@ -4,6 +4,10 @@ import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 
+/**
+ * Este módulo proporciona ViewModels, que manejan la lógica de presentación.
+ */
+
 // ViewModels para la UI.
 @Module
 public class ViewModelModule {
@@ -15,11 +19,11 @@ public class ViewModelModule {
         return new PersonViewModel(repository, mapper);
     }
 
-    @Provides
-    EventViewModel provideEventViewModel(
-            EventRepository repository,
-            EventMapper mapper
-    ) {
-        return new EventViewModel(repository, mapper);
-    }
+//    @Provides
+//    EventViewModel provideEventViewModel(
+//            EventRepository repository,
+//            EventMapper mapper
+//    ) {
+//        return new EventViewModel(repository, mapper);
+//    }
 }
