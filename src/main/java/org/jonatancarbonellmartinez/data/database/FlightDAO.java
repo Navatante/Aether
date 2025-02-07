@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-public class FlightDAOSQLite implements GenericDAO<Flight, Integer>{
+public class FlightDAO implements GenericDAO<Flight, Integer>{
     @Override
     public void insert(Flight entity) throws DatabaseException {
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";

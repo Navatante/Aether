@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class CupoHourDAOSQLite implements GenericDAO<CupoHour, Integer> {
+public class CupoHourDAO implements GenericDAO<CupoHour, Integer> {
 
     @Override
     public void insert(CupoHour entity) throws DatabaseException {

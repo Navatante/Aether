@@ -2,25 +2,25 @@ package org.jonatancarbonellmartinez.data.database;
 
 import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.Entity;
-import org.jonatancarbonellmartinez.data.model.SessionCrewCount;
+import org.jonatancarbonellmartinez.data.model.Landing;
 
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, Integer> {
+public class LandingDAO implements GenericDAO<Landing, Integer>{
     @Override
-    public void insert(SessionCrewCount entity) throws DatabaseException {
-        // Sessions are inserted in batch.
+    public void insert(Landing entity) throws DatabaseException {
+        // Landings are inserted in batch.
     }
 
-    public void insertBatch(List<SessionCrewCount> entities) throws DatabaseException {
+    public void insertBatch(List<Landing> entities) throws DatabaseException {
         if (entities == null || entities.isEmpty()) {
             return; // No operation needed for empty lists
         }
 
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "INSERT INTO main.junction_session_crew_count (session_crew_count_flight_fk, session_crew_count_person_fk, session_crew_count_session_fk) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO main.junction_landing (landing_flight_fk, landing_person_fk, landing_place_fk, landing_period_fk, landing_qty) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
              Statement stmt = connection.createStatement()) {
@@ -31,10 +31,12 @@ public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, I
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                for (SessionCrewCount entity : entities) {
-                    pstmt.setInt(1, entity.getFlightFk());
-                    pstmt.setInt(2, entity.getPersonFk());
-                    pstmt.setInt(3, entity.getSessionFk());
+                for (Landing entity : entities) {
+                    pstmt.setInt(1,     entity.getFlightFk());
+                    pstmt.setInt(2,     entity.getPersonFk());
+                    pstmt.setDouble(3,  entity.getPlaceFk());
+                    pstmt.setDouble(4,  entity.getPeriodFk());
+                    pstmt.setDouble(5,  entity.getLandingQty());
                     pstmt.addBatch();
                 }
 
@@ -42,14 +44,12 @@ public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, I
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(); // Undo all changes in case of an error
-                throw new DatabaseException("Error inserting session crew count data in batch", e);
+                throw new DatabaseException("Error inserting Landing data in batch", e);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
-
-
 
     @Override
     public Entity read(Integer entitySk) throws DatabaseException {
@@ -57,7 +57,7 @@ public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, I
     }
 
     @Override
-    public void update(SessionCrewCount entity, int skToUpdate) throws DatabaseException {
+    public void update(Landing entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -67,7 +67,7 @@ public class SessionCrewCountDAOSQLite implements GenericDAO<SessionCrewCount, I
     }
 
     @Override
-    public List<SessionCrewCount> getAll() throws DatabaseException {
+    public List<Landing> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 

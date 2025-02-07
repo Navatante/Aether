@@ -16,24 +16,24 @@ import java.util.*;
 
 public class xRegisterFlightXPresenterX implements xPresenter, xDialogPresenter {
 
-    private final HeloDAOSQLite heloDAO;
-    private final EventDAOSQLite eventDAO;
-    private final PersonDAOSQLite personDAO;
-    private final FlightDAOSQLite flightDAO;
-    private final PersonHourDAOSQLite personHourDAO;
-    private final IftHourDAOSQLite iftHourDAO;
-    private final InstructorHourDAOSQLite instructorHourDAO;
-    private final HdmsHourDAOSQLite hdmsHourDAO;
-    private final FormationHourDAOSQLite formationHourDAO;
-    private final AppDAOSQLite appDAO;
-    private final LandingDAOSQLite landingDAO;
-    private final WtHourDAOSQLite wtHourDAO;
-    private final ProjectileDAOSQLite projectileDAO;
-    private final SessionDAOSQLite sessionDAO;
-    private final SessionCrewCountDAOSQLite sessionCrewCountDAO;
-    private final AuthorityDAOSQLite unitDAO;
-    private final CupoHourDAOSQLite cupoHourDAO;
-    private final PassengerDAOSQLite passengerDAO;
+    private final HeloDAO heloDAO;
+    private final EventDAO eventDAO;
+    private final PersonDAO personDAO;
+    private final FlightDAO flightDAO;
+    private final PersonHourDAO personHourDAO;
+    private final IftHourDAO iftHourDAO;
+    private final InstructorHourDAO instructorHourDAO;
+    private final HdmsHourDAO hdmsHourDAO;
+    private final FormationHourDAO formationHourDAO;
+    private final AppDAO appDAO;
+    private final LandingDAO landingDAO;
+    private final WtHourDAO wtHourDAO;
+    private final ProjectileDAO projectileDAO;
+    private final SessionDAO sessionDAO;
+    private final SessionCrewCountDAO sessionCrewCountDAO;
+    private final AuthorityDAO unitDAO;
+    private final CupoHourDAO cupoHourDAO;
+    private final PassengerDAO passengerDAO;
     private final xRegisterFlightXDialogXView view;
     private final Observer observer;
 
@@ -770,15 +770,15 @@ public class xRegisterFlightXPresenterX implements xPresenter, xDialogPresenter 
         return eventDAO.getAll();
     }
 
-    public List<Person> getAllPersons() {
+    public List<PersonEntity> getAllPersons() {
         return personDAO.getAll();
     }
 
-    public List<Person> getOnlyActualPilots() {
+    public List<PersonEntity> getOnlyActualPilots() {
         return  personDAO.getOnlyActualPilots();
     }
 
-    public List<Person> getOnlyActualDvs() {
+    public List<PersonEntity> getOnlyActualDvs() {
         return  personDAO.getOnlyActualDvs();
     }
 

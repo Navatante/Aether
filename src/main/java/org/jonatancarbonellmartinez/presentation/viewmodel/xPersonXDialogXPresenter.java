@@ -4,13 +4,13 @@ import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
 import org.jonatancarbonellmartinez.xfactory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.data.database.GenericDAO;
 import org.jonatancarbonellmartinez.data.model.Entity;
-import org.jonatancarbonellmartinez.data.model.Person;
+import org.jonatancarbonellmartinez.data.model.PersonEntity;
 import org.jonatancarbonellmartinez.xobservers.Observer;
 import org.jonatancarbonellmartinez.presentation.view.fxml.xDialogView;
 import org.jonatancarbonellmartinez.presentation.view.fxml.xPersonXDialogXView;
 
 public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
-    private final GenericDAO<Person,Integer> personDAO;
+    private final GenericDAO<PersonEntity,Integer> personDAO;
     private final xPersonXDialogXView view;
     private final Observer observer;
 
@@ -44,10 +44,10 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     @Override
     public void insertEntity() {
         try {
-            Person person = collectEntityData();
-            person.setPersonCurrentFlag(1);
+            PersonEntity personEntity = collectEntityData();
+            personEntity.setPersonCurrentFlag(1);
 
-            personDAO.insert(person);
+            personDAO.insert(personEntity);
             xDialogView.showMessage(view,"Persona añadida correctamente.");
 
             view.clearFields();
@@ -62,13 +62,13 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     @Override
     public void editEntity() {
         try {
-            Person person = collectEntityData();
+            PersonEntity personEntity = collectEntityData();
 
             int personId = Integer.parseInt(view.getEditPersonIdField().getText());
-            person.setPersonCurrentFlag(view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0);
-            person.setPersonOrder(calculatePersonOrder());
+            personEntity.setPersonCurrentFlag(view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0);
+            personEntity.setPersonOrder(calculatePersonOrder());
 
-            personDAO.update(person, personId);
+            personDAO.update(personEntity, personId);
             xDialogView.showMessage(view,"Persona editada correctamente.");
 
             view.clearFields();
@@ -83,9 +83,9 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     @Override
     public void getEntity(int entityId) {
         try {
-            Person person = (Person) personDAO.read(entityId);
-            if (person != null) {
-                populateEntityDialog(person);
+            PersonEntity personEntity = (PersonEntity) personDAO.read(entityId);
+            if (personEntity != null) {
+                populateEntityDialog(personEntity);
             } else {
                 xDialogView.showMessage(view,"No se encontró ninguna persona con ese ID.");
             }
@@ -115,20 +115,20 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     }
 
     @Override
-    public Person collectEntityData() {
-        Person person = new Person();
+    public PersonEntity collectEntityData() {
+        PersonEntity personEntity = new PersonEntity();
 
-        person.setPersonNk(view.getPersonNkField().getText().toUpperCase());
-        person.setPersonRank(view.getEmpleoBox().getSelectedItem().toString());
-        person.setPersonName(xDialogPresenter.capitalizeWords(view.getPersonNameField()));
-        person.setPersonLastName1(xDialogPresenter.capitalizeWords(view.getPersonLastName1Field()));
-        person.setPersonLastName2(xDialogPresenter.capitalizeWords(view.getPersonLastName2Field()));
-        person.setPersonPhone(view.getPersonPhoneField().getText());
-        person.setPersonDni(xDialogPresenter.calculateDniLetter(view.getPersonDniField()));
-        person.setPersonDivision(view.getDivisionBox().getSelectedItem().toString());
-        person.setPersonRol(view.getRolBox().getSelectedItem().toString());
-        person.setPersonOrder(Integer.parseInt(view.getOrderField().getText()));
-        return person;
+        personEntity.setPersonNk(view.getPersonNkField().getText().toUpperCase());
+        personEntity.setPersonRank(view.getEmpleoBox().getSelectedItem().toString());
+        personEntity.setPersonName(xDialogPresenter.capitalizeWords(view.getPersonNameField()));
+        personEntity.setPersonLastName1(xDialogPresenter.capitalizeWords(view.getPersonLastName1Field()));
+        personEntity.setPersonLastName2(xDialogPresenter.capitalizeWords(view.getPersonLastName2Field()));
+        personEntity.setPersonPhone(view.getPersonPhoneField().getText());
+        personEntity.setPersonDni(xDialogPresenter.calculateDniLetter(view.getPersonDniField()));
+        personEntity.setPersonDivision(view.getDivisionBox().getSelectedItem().toString());
+        personEntity.setPersonRol(view.getRolBox().getSelectedItem().toString());
+        personEntity.setPersonOrder(Integer.parseInt(view.getOrderField().getText()));
+        return personEntity;
     }
 
     @Override
@@ -138,18 +138,18 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
 
     @Override
     public void populateEntityDialog(Entity entity) {
-        Person person = (Person) entity;
-        view.setPersonNk(person.getPersonNk());
-        view.setPersonRank(person.getPersonRank());
-        view.setPersonName(person.getPersonName());
-        view.setPersonLastName1(person.getPersonLastName1());
-        view.setPersonLastName2(person.getPersonLastName2());
-        view.setPersonPhone(person.getPersonPhone());
-        view.setPersonDni(stripDniLetter(person.getPersonDni()));
-        view.setPersonDivision(person.getPersonDivision());
-        view.setPersonRol(person.getPersonRol());
-        view.setPersonOrder(person.getPersonOrder());
-        view.setPersonStateBox(person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo");
+        PersonEntity personEntity = (PersonEntity) entity;
+        view.setPersonNk(personEntity.getPersonNk());
+        view.setPersonRank(personEntity.getPersonRank());
+        view.setPersonName(personEntity.getPersonName());
+        view.setPersonLastName1(personEntity.getPersonLastName1());
+        view.setPersonLastName2(personEntity.getPersonLastName2());
+        view.setPersonPhone(personEntity.getPersonPhone());
+        view.setPersonDni(stripDniLetter(personEntity.getPersonDni()));
+        view.setPersonDivision(personEntity.getPersonDivision());
+        view.setPersonRol(personEntity.getPersonRol());
+        view.setPersonOrder(personEntity.getPersonOrder());
+        view.setPersonStateBox(personEntity.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo");
     }
 
     private int calculatePersonOrder() {

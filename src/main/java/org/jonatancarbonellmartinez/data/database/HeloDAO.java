@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeloDAOSQLite implements GenericDAO<Helo,Integer> {
+public class HeloDAO implements GenericDAO<Helo,Integer> {
     @Override
     public void insert(Helo entity) throws DatabaseException {
         // helo is only readable.

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SessionDAOSQLite implements GenericDAO<Session, Integer> { // TODO Falta crear la opcion de anadir y modificar papeletas en la barra superior del menu. igual que eventos y personas.
+public class SessionDAO implements GenericDAO<Session, Integer> { // TODO Falta crear la opcion de anadir y modificar papeletas en la barra superior del menu. igual que eventos y personas.
     @Override
     public void insert(Session entity) throws DatabaseException {
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorityDAOSQLite implements GenericDAO<Authority, Integer>{
+public class AuthorityDAO implements GenericDAO<Authority, Integer>{
     @Override
     public void insert(Authority entity) throws DatabaseException {
     }

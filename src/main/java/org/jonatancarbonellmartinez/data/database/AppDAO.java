@@ -1,26 +1,26 @@
 package org.jonatancarbonellmartinez.data.database;
 
 import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.data.model.App;
 import org.jonatancarbonellmartinez.data.model.Entity;
-import org.jonatancarbonellmartinez.data.model.Passenger;
 
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
+public class AppDAO implements GenericDAO<App, Integer>{
     @Override
-    public void insert(Passenger entity) throws DatabaseException {
-
+    public void insert(App entity) throws DatabaseException {
+        // Apps are inserted in batch.
     }
 
-    public void insertBatch(List<Passenger> entities) throws DatabaseException {
+    public void insertBatch(List<App> entities) throws DatabaseException {
         if (entities == null || entities.isEmpty()) {
             return; // No operation needed for empty lists
         }
 
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "INSERT INTO main.junction_passenger (passenger_flight_fk, passenger_type_fk, passenger_qty, passenger_route) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO main.junction_app (app_flight_fk, app_person_fk, app_type_fk, app_qty) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
              Statement stmt = connection.createStatement()) {
@@ -31,11 +31,11 @@ public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                for (Passenger entity : entities) {
+                for (App entity : entities) {
                     pstmt.setInt(1,     entity.getFlightFk());
-                    pstmt.setInt(2,     entity.getPassengerTypeFk());
-                    pstmt.setDouble(3,  entity.getPassengerQty());
-                    pstmt.setString(4, entity.getRoute());
+                    pstmt.setInt(2,     entity.getPersonFk());
+                    pstmt.setInt(3,  entity.getAppTypeFk());
+                    pstmt.setInt(4,  entity.getAppQty());
                     pstmt.addBatch();
                 }
 
@@ -43,10 +43,10 @@ public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(); // Undo all changes in case of an error
-                throw new DatabaseException("Error inserting Passenger data in batch.", e);
+                throw new DatabaseException("Error inserting App data in batch", e);
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error with database connection or transaction.", e);
+            throw new DatabaseException("Error with database connection or transaction", e);
         }
     }
 
@@ -56,7 +56,7 @@ public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
     }
 
     @Override
-    public void update(Passenger entity, int skToUpdate) throws DatabaseException {
+    public void update(App entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -66,7 +66,7 @@ public class PassengerDAOSQLite implements GenericDAO<Passenger, Integer>{
     }
 
     @Override
-    public List<Passenger> getAll() throws DatabaseException {
+    public List<App> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 

@@ -6,7 +6,7 @@ import org.jonatancarbonellmartinez.data.database.GenericDAO;
 
 
 public interface DAOFactory {
-    GenericDAO<Person,Integer> createPersonDAO() throws DatabaseException;
+    GenericDAO<PersonEntity,Integer> createPersonDAO() throws DatabaseException;
     GenericDAO<Event,Integer> createEventDAO() throws DatabaseException;
     GenericDAO<Helo,Integer> createHeloDAO() throws DatabaseException;
     GenericDAO<Flight,Integer> createFlightDAO() throws DatabaseException;

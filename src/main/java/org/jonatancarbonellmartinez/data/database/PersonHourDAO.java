@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-public class PersonHourDAOSQLite implements GenericDAO<PersonHour, Integer> {
+public class PersonHourDAO implements GenericDAO<PersonHour, Integer> {
     @Override
     public void insert(PersonHour entity) throws DatabaseException {
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";

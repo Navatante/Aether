@@ -21,93 +21,93 @@ public class DAOFactorySQLite implements DAOFactory {
     }
 
     @Override
-    public PersonDAOSQLite createPersonDAO() {
-        return new PersonDAOSQLite();
+    public PersonDAO createPersonDAO() {
+        return new PersonDAO();
     }
 
     @Override
-    public EventDAOSQLite createEventDAO() throws DatabaseException {
-        return new EventDAOSQLite();
+    public EventDAO createEventDAO() throws DatabaseException {
+        return new EventDAO();
     }
 
     @Override
-    public HeloDAOSQLite createHeloDAO() throws DatabaseException {
-        return new HeloDAOSQLite();
+    public HeloDAO createHeloDAO() throws DatabaseException {
+        return new HeloDAO();
     }
 
     @Override
-    public FlightDAOSQLite createFlightDAO() throws DatabaseException {
-        return new FlightDAOSQLite();
+    public FlightDAO createFlightDAO() throws DatabaseException {
+        return new FlightDAO();
     }
 
     @Override
-    public PersonHourDAOSQLite createPersonHourDAO() throws DatabaseException {
-        return new PersonHourDAOSQLite();
+    public PersonHourDAO createPersonHourDAO() throws DatabaseException {
+        return new PersonHourDAO();
     }
 
     @Override
-    public IftHourDAOSQLite createIftHourDAO() throws DatabaseException {
-        return new IftHourDAOSQLite();
+    public IftHourDAO createIftHourDAO() throws DatabaseException {
+        return new IftHourDAO();
     }
 
     @Override
-    public InstructorHourDAOSQLite createInstructorHourDAO() throws DatabaseException {
-        return new InstructorHourDAOSQLite();
+    public InstructorHourDAO createInstructorHourDAO() throws DatabaseException {
+        return new InstructorHourDAO();
     }
 
     @Override
-    public HdmsHourDAOSQLite createHdmsHourDAO() throws DatabaseException {
-        return new HdmsHourDAOSQLite();
+    public HdmsHourDAO createHdmsHourDAO() throws DatabaseException {
+        return new HdmsHourDAO();
     }
 
     @Override
-    public FormationHourDAOSQLite createFormationHourDAO() throws DatabaseException {
-        return new FormationHourDAOSQLite();
+    public FormationHourDAO createFormationHourDAO() throws DatabaseException {
+        return new FormationHourDAO();
     }
 
     @Override
-    public AppDAOSQLite createAppDAO() throws DatabaseException {
-        return new AppDAOSQLite();
+    public AppDAO createAppDAO() throws DatabaseException {
+        return new AppDAO();
     }
 
     @Override
-    public LandingDAOSQLite createLandingDAO() throws DatabaseException {
-        return new LandingDAOSQLite();
+    public LandingDAO createLandingDAO() throws DatabaseException {
+        return new LandingDAO();
     }
 
     @Override
-    public WtHourDAOSQLite createWtHourDAO() throws DatabaseException {
-        return new WtHourDAOSQLite();
+    public WtHourDAO createWtHourDAO() throws DatabaseException {
+        return new WtHourDAO();
     }
 
     @Override
-    public ProjectileDAOSQLite createProjectileDAO() throws DatabaseException {
-        return new ProjectileDAOSQLite();
+    public ProjectileDAO createProjectileDAO() throws DatabaseException {
+        return new ProjectileDAO();
     }
 
     @Override
-    public SessionCrewCountDAOSQLite createSessionCrewCountDAO() throws DatabaseException {
-        return new SessionCrewCountDAOSQLite();
+    public SessionCrewCountDAO createSessionCrewCountDAO() throws DatabaseException {
+        return new SessionCrewCountDAO();
     }
 
     @Override
-    public SessionDAOSQLite createSessionDAO() throws DatabaseException {
-        return new SessionDAOSQLite();
+    public SessionDAO createSessionDAO() throws DatabaseException {
+        return new SessionDAO();
     }
 
     @Override
-    public CupoHourDAOSQLite createCupoHourDAO() throws DatabaseException {
-        return new CupoHourDAOSQLite();
+    public CupoHourDAO createCupoHourDAO() throws DatabaseException {
+        return new CupoHourDAO();
     }
 
     @Override
-    public AuthorityDAOSQLite createUnitDAO() throws DatabaseException {
-        return new AuthorityDAOSQLite();
+    public AuthorityDAO createUnitDAO() throws DatabaseException {
+        return new AuthorityDAO();
     }
 
     @Override
-    public PassengerDAOSQLite createPassengerDAO() throws DatabaseException {
-        return new PassengerDAOSQLite();
+    public PassengerDAO createPassengerDAO() throws DatabaseException {
+        return new PassengerDAO();
     }
 
 

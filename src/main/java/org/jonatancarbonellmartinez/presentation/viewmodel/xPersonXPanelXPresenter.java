@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.presentation.viewmodel;
 import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
 import org.jonatancarbonellmartinez.xfactory.DAOFactorySQLite;
 import org.jonatancarbonellmartinez.data.database.GenericDAO;
-import org.jonatancarbonellmartinez.data.model.Person;
+import org.jonatancarbonellmartinez.data.model.PersonEntity;
 import org.jonatancarbonellmartinez.presentation.view.fxml.xPanelView;
 import org.jonatancarbonellmartinez.presentation.view.fxml.xPersonXPanelXView;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class xPersonXPanelXPresenter implements xPresenter, xPanelPresenter {
-    private final GenericDAO<Person,Integer> personDAO;
+    private final GenericDAO<PersonEntity,Integer> personDAO;
     private final xPersonXPanelXView view;
     private boolean isShowingActive = true; // Default to showing "Active" persons
 
@@ -64,32 +64,32 @@ public class xPersonXPanelXPresenter implements xPresenter, xPanelPresenter {
 
     public void loadAllPersons() {
         try {
-            List<Person> persons = personDAO.getAll();
+            List<PersonEntity> personEntities = personDAO.getAll();
             if (view != null) {
-                addPersonsToTableModel(persons);  // Populate table model with persons
+                addPersonsToTableModel(personEntities);  // Populate table model with persons
             }
         } catch (DatabaseException e) {
             xPanelView.showError(view,"Error loading persons: " + e.getMessage());
         }
     }
 
-    public void addPersonsToTableModel(List<Person> persons) {
+    public void addPersonsToTableModel(List<PersonEntity> personEntities) {
         view.getTableModel().setRowCount(0); // Clear existing rows
 
-        for (Person person : persons) {
+        for (PersonEntity personEntity : personEntities) {
             Object[] rowData = {
-                    person.getPersonSk(),
-                    person.getPersonNk(),
-                    person.getPersonRank(),
-                    person.getPersonName(),
-                    person.getPersonLastName1(),
-                    person.getPersonLastName2(),
-                    person.getPersonPhone(),
-                    person.getPersonDni(),
-                    person.getPersonDivision(),
-                    person.getPersonRol(),
-                    person.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo",
-                    person.getPersonOrder()
+                    personEntity.getPersonSk(),
+                    personEntity.getPersonNk(),
+                    personEntity.getPersonRank(),
+                    personEntity.getPersonName(),
+                    personEntity.getPersonLastName1(),
+                    personEntity.getPersonLastName2(),
+                    personEntity.getPersonPhone(),
+                    personEntity.getPersonDni(),
+                    personEntity.getPersonDivision(),
+                    personEntity.getPersonRol(),
+                    personEntity.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo",
+                    personEntity.getPersonOrder()
             };
             view.getTableModel().addRow(rowData);
         }

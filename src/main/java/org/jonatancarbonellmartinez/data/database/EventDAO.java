@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventDAOSQLite implements GenericDAO<Event, Integer> {
+public class EventDAO implements GenericDAO<Event, Integer> {
     @Override
     public void insert(Event entity) throws DatabaseException {
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";

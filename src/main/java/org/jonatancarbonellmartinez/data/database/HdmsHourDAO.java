@@ -2,25 +2,25 @@ package org.jonatancarbonellmartinez.data.database;
 
 import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.Entity;
-import org.jonatancarbonellmartinez.data.model.FormationHour;
+import org.jonatancarbonellmartinez.data.model.HdmsHour;
 
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
 
-public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer> {
+public class HdmsHourDAO implements GenericDAO<HdmsHour, Integer> {
     @Override
-    public void insert(FormationHour entity) throws DatabaseException {
-        // Formation hours are inserted in batch.
+    public void insert(HdmsHour entity) throws DatabaseException {
+        // HDMS hours are inserted in batch.
     }
 
-    public void insertBatch(List<FormationHour> entities) throws DatabaseException {
+    public void insertBatch(List<HdmsHour> entities) throws DatabaseException {
         if (entities == null || entities.isEmpty()) {
             return; // No operation needed for empty lists
         }
 
         String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "INSERT INTO main.junction_formation_hour (formation_hour_flight_fk, formation_hour_person_fk, formation_hour_period_fk ,formation_hour_formation_qty) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO main.junction_hdms_hour (hdms_hour_flight_fk, hdms_hour_person_fk, hdms_hour_qty) VALUES (?, ?, ?)";
 
         try (Connection connection = Database.getInstance().getConnection();
              Statement stmt = connection.createStatement()) {
@@ -31,11 +31,10 @@ public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                for (FormationHour entity : entities) {
+                for (HdmsHour entity : entities) {
                     pstmt.setInt(1,     entity.getFlightFk());
                     pstmt.setInt(2,     entity.getPersonFk());
-                    pstmt.setInt(3,     entity.getPerdiodFk());
-                    pstmt.setDouble(4,  entity.getFormationHourQty());
+                    pstmt.setDouble(3,  entity.getHdmsHourQty());
                     pstmt.addBatch();
                 }
 
@@ -43,7 +42,7 @@ public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback(); // Undo all changes in case of an error
-                throw new DatabaseException("Error inserting Formation hours data in batch", e);
+                throw new DatabaseException("Error inserting HDMS hours data in batch", e);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error with database connection or transaction", e);
@@ -56,7 +55,7 @@ public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer
     }
 
     @Override
-    public void update(FormationHour entity, int skToUpdate) throws DatabaseException {
+    public void update(HdmsHour entity, int skToUpdate) throws DatabaseException {
 
     }
 
@@ -66,7 +65,7 @@ public class FormationHourDAOSQLite implements GenericDAO<FormationHour, Integer
     }
 
     @Override
-    public List<FormationHour> getAll() throws DatabaseException {
+    public List<HdmsHour> getAll() throws DatabaseException {
         return Collections.emptyList();
     }
 
