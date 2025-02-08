@@ -26,7 +26,7 @@ public class ConnectionManager {
     public Connection getConnection() throws SQLException {
         Connection conn = connectionHolder.get();
         if (conn == null || conn.isClosed()) {
-            conn = database.createConnection();
+            conn = database.getConnection();
             connectionHolder.set(conn);
             connectionUsageCount.put(conn, 1);
         } else {

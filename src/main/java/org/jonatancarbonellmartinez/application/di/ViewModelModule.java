@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.di;
 import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
+import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 /**
@@ -15,7 +16,7 @@ public class ViewModelModule {
     @Provides
     PersonViewModel providePersonViewModel(
             PersonRepository repository,
-            PersonMapper mapper
+            PersonUiMapper mapper
     ) {
         return new PersonViewModel(repository, mapper);
     }

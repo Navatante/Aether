@@ -33,7 +33,7 @@ public class PersonRepositoryImpl implements PersonRepository {
                  ResultSet rs = pstmt.executeQuery()) {
 
                 while (rs.next()) {
-                    entities.add(mapResultSetToEntity(rs));
+                    //entities.add(mapResultSetToEntity(rs));
                 }
 
                 return entities.stream()

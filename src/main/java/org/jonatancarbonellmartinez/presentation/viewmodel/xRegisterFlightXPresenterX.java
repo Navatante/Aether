@@ -1332,11 +1332,11 @@ public class xRegisterFlightXPresenterX implements xPresenter, xDialogPresenter 
     }
 
     public void createVectors() {
-        allPersonsVector = new Vector<>(getAllPersons());
-        allPilotsVector = new Vector<>(getOnlyActualPilots());
-        allDvsVector = new Vector<>(getOnlyActualDvs());
-        allSessionsVector =  new Vector<>(getAllSessions());
-        allUnitsVector = new Vector<>(getAllUnits());
+//        allPersonsVector = new Vector<>(getAllPersons());
+//        allPilotsVector = new Vector<>(getOnlyActualPilots());
+//        allDvsVector = new Vector<>(getOnlyActualDvs());
+//        allSessionsVector =  new Vector<>(getAllSessions());
+//        allUnitsVector = new Vector<>(getAllUnits());
     }
 
     public Vector<Entity> getAllPilotsVector() {

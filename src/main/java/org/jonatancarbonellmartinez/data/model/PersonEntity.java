@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.data.model;
 
 import org.jonatancarbonellmartinez.domain.model.Person;
 
+// Data Layer (how it's stored in database)
 public class PersonEntity {
     private Integer personSk;
     private String personNk;

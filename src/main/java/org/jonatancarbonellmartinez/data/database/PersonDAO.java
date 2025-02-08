@@ -48,7 +48,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
     }
 
     @Override
-    public PersonEntity read(Integer entitySk) throws DatabaseException {
+    public Entity read(Integer entitySk) throws DatabaseException {
         String sql = "SELECT * FROM dim_person WHERE person_sk = ?";
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -59,7 +59,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
             try (ResultSet rs = pstmt.executeQuery()) {
                 // Check if a person with the given ID exists
                 if (rs.next()) {
-                    return (PersonEntity)mapResultSetToEntity(rs); // Return the populated Person object
+                    return mapResultSetToEntity(rs); // Return the populated Person object
                 }
             }
         } catch (SQLException e) {
@@ -189,7 +189,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
         personEntity.setPersonOrder(rs.getInt("person_order"));
         personEntity.setPersonRole(rs.getString("person_rol"));
         personEntity.setPersonCurrentFlag(rs.getInt("person_current_flag"));
-        return personEntity;
+        return (Entity)personEntity;
     }
 
     // Metodo para comprobar si ya existe un registro con el mismo orden

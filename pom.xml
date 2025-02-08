@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jonatancarbonellmartinez</groupId>
     <artifactId>Aether</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <dagger.version>2.40.5</dagger.version>  <!-- Cambiado para Java 8 -->
+    </properties>
 
     <dependencies>
         <!-- FlatLaf (Look & Feel) -->
@@ -23,44 +29,42 @@
             <version>3.46.1.3</version>
         </dependency>
 
-        <!-- Dagger 2 Core -->
+        <!-- Dagger 2 -->
         <dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger</artifactId>
-            <version>2.40.5</version>
+            <version>${dagger.version}</version>
         </dependency>
 
-        <!-- Dagger 2 Compiler (Annotation Processor) -->
         <dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger-compiler</artifactId>
-            <version>2.40.5</version>
+            <version>${dagger.version}</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- Inyección de dependencias estándar -->
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin para compilar el código y procesar anotaciones -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>8</source>  <!-- Si usas Java 8, cámbialo si usas otra versión -->
-                    <target>8</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>com.google.dagger</groupId>
                             <artifactId>dagger-compiler</artifactId>
-                            <version>2.40.5</version>
+                            <version>${dagger.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.domain.model;
 
+// Domain Layer (business logic)
 public class Person {
     private final Integer id;
     private final String code;

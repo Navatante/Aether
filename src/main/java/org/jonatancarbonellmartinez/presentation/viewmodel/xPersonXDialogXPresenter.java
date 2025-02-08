@@ -44,7 +44,7 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     @Override
     public void insertEntity() {
         try {
-            PersonEntity personEntity = collectEntityData();
+            PersonEntity personEntity = (PersonEntity) collectEntityData();
             personEntity.setPersonCurrentFlag(1);
 
             personDAO.insert(personEntity);
@@ -62,11 +62,11 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     @Override
     public void editEntity() {
         try {
-            PersonEntity personEntity = collectEntityData();
+            PersonEntity personEntity = (PersonEntity) collectEntityData();
 
             int personId = Integer.parseInt(view.getEditPersonIdField().getText());
-            personEntity.setPersonCurrentFlag(view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0);
-            personEntity.setPersonOrder(calculatePersonOrder());
+            //personEntity.setPersonCurrentFlag(view.getPersonStateBox().getSelectedItem().toString().equals("Activo") ? 1 : 0);
+            //personEntity.setPersonOrder(calculatePersonOrder());
 
             personDAO.update(personEntity, personId);
             xDialogView.showMessage(view,"Persona editada correctamente.");
@@ -85,7 +85,7 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
         try {
             PersonEntity personEntity = (PersonEntity) personDAO.read(entityId);
             if (personEntity != null) {
-                populateEntityDialog(personEntity);
+                populateEntityDialog((Entity) personEntity);
             } else {
                 xDialogView.showMessage(view,"No se encontró ninguna persona con ese ID.");
             }
@@ -115,7 +115,7 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
     }
 
     @Override
-    public PersonEntity collectEntityData() {
+    public Entity collectEntityData() {
         PersonEntity personEntity = new PersonEntity();
 
         personEntity.setPersonNk(view.getPersonNkField().getText().toUpperCase());
@@ -126,9 +126,9 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
         personEntity.setPersonPhone(view.getPersonPhoneField().getText());
         personEntity.setPersonDni(xDialogPresenter.calculateDniLetter(view.getPersonDniField()));
         personEntity.setPersonDivision(view.getDivisionBox().getSelectedItem().toString());
-        personEntity.setPersonRol(view.getRolBox().getSelectedItem().toString());
+        personEntity.setPersonRole(view.getRolBox().getSelectedItem().toString());
         personEntity.setPersonOrder(Integer.parseInt(view.getOrderField().getText()));
-        return personEntity;
+        return (Entity) personEntity;
     }
 
     @Override
@@ -147,7 +147,7 @@ public class xPersonXDialogXPresenter implements xPresenter, xDialogPresenter {
         view.setPersonPhone(personEntity.getPersonPhone());
         view.setPersonDni(stripDniLetter(personEntity.getPersonDni()));
         view.setPersonDivision(personEntity.getPersonDivision());
-        view.setPersonRol(personEntity.getPersonRol());
+        view.setPersonRol(personEntity.getPersonRole());
         view.setPersonOrder(personEntity.getPersonOrder());
         view.setPersonStateBox(personEntity.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo");
     }

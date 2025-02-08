@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml">
+    <HBox spacing="10">
+        <TextField fx:id="searchField" promptText="Buscar persona..." HBox.hgrow="ALWAYS" />
+        <!-- Remove onAction attributes and add fx:id instead -->
+        <Button fx:id="addButton" text="Añadir" />
+        <Button fx:id="editButton" text="Editar" />
+    </HBox>
+    <TableView fx:id="personTable">
+        <columns>
+            <TableColumn text="ID" />
+            <TableColumn text="Nombre" />
+            <TableColumn text="Rol" />
+        </columns>
+    </TableView>
+</VBox>
+
+

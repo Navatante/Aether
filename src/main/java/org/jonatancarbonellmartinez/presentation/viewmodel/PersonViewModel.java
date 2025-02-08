@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
+import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class PersonViewModel {
     private final PersonRepository repository;
+    private final PersonUiMapper uiMapper;  // Add this
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
@@ -25,8 +27,9 @@ public class PersonViewModel {
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
-    public PersonViewModel(PersonRepository repository) {
+    public PersonViewModel(PersonRepository repository, PersonUiMapper uiMapper) {  // Update constructor
         this.repository = repository;
+        this.uiMapper = uiMapper;
         setupFilters();
     }
 
@@ -48,10 +51,12 @@ public class PersonViewModel {
         setError("");
 
         repository.getAllPersons()
-                .thenAccept(personList -> {
+                .thenAccept(domainPersons -> {
                     Platform.runLater(() -> {
                         persons.clear();
-                        persons.addAll(mapToUI(personList));
+                        persons.addAll(domainPersons.stream()
+                                .map(uiMapper::toUiModel)
+                                .collect(Collectors.toList()));
                         setLoading(false);
                     });
                 })
@@ -68,7 +73,7 @@ public class PersonViewModel {
         setLoading(true);
         setError("");
 
-        Person domainPerson = mapToDomain(person);
+        Person domainPerson = uiMapper.toDomain(person);
         CompletableFuture<Boolean> future = person.getId() == null ?
                 repository.insertPerson(domainPerson) :
                 repository.updatePerson(domainPerson, person.getId());

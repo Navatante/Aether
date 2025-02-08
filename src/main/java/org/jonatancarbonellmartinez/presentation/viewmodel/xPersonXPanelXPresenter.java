@@ -87,7 +87,7 @@ public class xPersonXPanelXPresenter implements xPresenter, xPanelPresenter {
                     personEntity.getPersonPhone(),
                     personEntity.getPersonDni(),
                     personEntity.getPersonDivision(),
-                    personEntity.getPersonRol(),
+                    personEntity.getPersonRole(),
                     personEntity.getPersonCurrentFlag() == 1 ? "Activo" : "Inactivo",
                     personEntity.getPersonOrder()
             };
