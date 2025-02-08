@@ -18,9 +18,6 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Reset default stylesheet
-        Application.setUserAgentStylesheet(null);
-
         // Initialize Dagger
         appComponent = DaggerAppComponent.factory().create();
         appComponent.inject(this);
@@ -29,7 +26,7 @@ public class MainApplication extends Application {
         mainCoordinator.start(primaryStage);
 
         // Navigate to initial view
-       // mainCoordinator.navigateTo(PersonCoordinator.class);
+        // mainCoordinator.navigateTo(MainCoordinator.class);
     }
 
     @Override

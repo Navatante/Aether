@@ -1,9 +1,13 @@
 package org.jonatancarbonellmartinez.application.coordinator;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,20 +35,35 @@ public class MainCoordinator implements Cleanable {
     private final Map<Class<?>, BaseCoordinator> coordinators;
     private Stage primaryStage;
     private BaseCoordinator currentCoordinator;
+    private final MainViewController mainViewController;
 
     @Inject
-    public MainCoordinator(Map<Class<?>, BaseCoordinator> coordinators) {
+    public MainCoordinator(
+            Map<Class<?>, BaseCoordinator> coordinators,
+            MainViewController mainViewController
+    ) {
         this.coordinators = coordinators;
+        this.mainViewController = mainViewController;
     }
 
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("Mi Aplicación JavaFX");
+        primaryStage.setTitle("Flight Hub");
 
-        // Configurar el evento de cierre
-        primaryStage.setOnCloseRequest(event -> cleanup());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            Scene scene = new Scene(loader.load());
 
-        primaryStage.show();
+            // Apply styles
+            String css = getClass().getResource("/css/styles/dark-theme.css").toExternalForm();
+            scene.getStylesheets().add(css);
+
+            primaryStage.setScene(scene);
+            primaryStage.setOnCloseRequest(event -> cleanup());
+            primaryStage.show();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load main view", e);
+        }
     }
 
     public void navigateTo(Class<?> viewClass) {

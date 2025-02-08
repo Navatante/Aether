@@ -6,6 +6,7 @@ import dagger.Provides;
 import org.jonatancarbonellmartinez.application.coordinator.BaseCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
+import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
 import org.jonatancarbonellmartinez.presentation.view.controller.PersonViewController;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
@@ -23,29 +24,39 @@ public class CoordinatorModule {
     @Singleton
     Map<Class<?>, BaseCoordinator> provideCoordinators(
             PersonCoordinator personCoordinator
-            // Otros coordinadores...
     ) {
         Map<Class<?>, BaseCoordinator> coordinators = new HashMap<>();
         coordinators.put(PersonCoordinator.class, personCoordinator);
-        // Agregar otros coordinadores al mapa...
         return coordinators;
     }
 
     @Provides
     @Singleton
     MainCoordinator provideMainCoordinator(
-            Map<Class<?>, BaseCoordinator> coordinators
+            Map<Class<?>, BaseCoordinator> coordinators,
+            MainViewController mainViewController
     ) {
-        return new MainCoordinator(coordinators);
+        return new MainCoordinator(coordinators, mainViewController);
+    }
+
+    @Provides
+    @Singleton
+    MainViewController provideMainViewController() {
+        return new MainViewController();
+    }
+
+    @Provides
+    @Singleton
+    PersonViewController providePersonViewController(PersonViewModel viewModel) {
+        return new PersonViewController(viewModel);
     }
 
     @Provides
     @Singleton
     PersonCoordinator providePersonCoordinator(
             PersonViewModel viewModel,
-            PersonViewController controller) {
-        return new PersonCoordinator(viewModel, controller);
+            PersonViewController personViewController
+    ) {
+        return new PersonCoordinator(viewModel, personViewController);
     }
-
-    // Proveer otros coordinadores...
 }
