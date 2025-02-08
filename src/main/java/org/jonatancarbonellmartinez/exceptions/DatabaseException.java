@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.xexceptions;
+package org.jonatancarbonellmartinez.exceptions;
 
 public class DatabaseException extends RuntimeException{
     public DatabaseException(String message){

@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
-import org.jonatancarbonellmartinez.data.database.Database;
+import org.jonatancarbonellmartinez.data.database.configuration.Database;
 
 import java.io.File;
 import java.sql.SQLException;

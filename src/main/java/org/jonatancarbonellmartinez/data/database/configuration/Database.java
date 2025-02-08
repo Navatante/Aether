@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.data.database;
+package org.jonatancarbonellmartinez.data.database.configuration;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

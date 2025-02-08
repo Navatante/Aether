@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.coordinator;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
 
 import javax.inject.Inject;
@@ -48,10 +49,12 @@ public class MainCoordinator implements Cleanable {
 
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("Flight Hub");
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         try {
+            // Load MainView
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            loader.setController(mainViewController);
             Scene scene = new Scene(loader.load());
 
             // Apply styles
@@ -59,10 +62,16 @@ public class MainCoordinator implements Cleanable {
             scene.getStylesheets().add(css);
 
             primaryStage.setScene(scene);
+
+            // Configure close event
             primaryStage.setOnCloseRequest(event -> cleanup());
+
             primaryStage.show();
+
+            // Navigate to PersonView by default
+            mainViewController.loadView("PersonView");
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load main view", e);
+            e.printStackTrace();
         }
     }
 

@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.data.database;
 
 
-import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.Entity;
 
 import java.sql.ResultSet;

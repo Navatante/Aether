@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.data.database;
+package org.jonatancarbonellmartinez.data.database.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;

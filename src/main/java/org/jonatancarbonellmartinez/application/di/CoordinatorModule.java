@@ -16,8 +16,6 @@ import java.util.Map;
 /**
  * Este módulo proporciona un coordinador, que organiza la navegación o interacción entre ViewModels.
  */
-
-// Coordinadores para navegación entre pantallas.
 @Module
 public class CoordinatorModule {
     @Provides
@@ -41,14 +39,14 @@ public class CoordinatorModule {
 
     @Provides
     @Singleton
-    MainViewController provideMainViewController() {
-        return new MainViewController();
+    PersonViewController providePersonViewController(PersonViewModel viewModel) {
+        return new PersonViewController(viewModel);
     }
 
     @Provides
     @Singleton
-    PersonViewController providePersonViewController(PersonViewModel viewModel) {
-        return new PersonViewController(viewModel);
+    MainViewController provideMainViewController(PersonViewController personViewController) {
+        return new MainViewController(personViewController);
     }
 
     @Provides

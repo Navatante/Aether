@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.data.repository;
 
-import org.jonatancarbonellmartinez.data.database.ConnectionManager;
+import org.jonatancarbonellmartinez.data.database.configuration.ConnectionManager;
 import org.jonatancarbonellmartinez.data.database.SQLiteTransactionManager;
 import org.jonatancarbonellmartinez.domain.repository.contract.UnitOfWork;
 import org.jonatancarbonellmartinez.domain.repository.contract.UnitOfWorkFactory;

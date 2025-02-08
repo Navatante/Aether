@@ -1,20 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
 
-<BorderPane fx:id="mainContainer" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml">
-    <top>
-        <MenuBar>
-            <Menu text="Gestión">
-                <MenuItem fx:id="personsMenuItem" text="Personas"/>
-                <!-- Añade más menús según necesites -->
-            </Menu>
-        </MenuBar>
-    </top>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainContainer" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <BorderPane fx:id="contentArea"/>
+        <BorderPane fx:id="contentArea" />
     </center>
+   <left>
+      <BorderPane id="topAndleftPanel" minWidth="50.0" prefHeight="300.0" prefWidth="50.0" BorderPane.alignment="CENTER">
+         <top>
+            <VBox alignment="TOP_CENTER" minWidth="50.0" prefHeight="200.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Pending.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Pending.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_RecentFlights.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </top>
+         <bottom>
+            <VBox alignment="TOP_CENTER" prefHeight="45.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <children>
+                  <Button fx:id="personnelButton" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                      <tooltip>
+                          <Tooltip opacity="0.9" text="Personal">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font></Tooltip>
+                      </tooltip>
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Personal.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Event.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </bottom>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </BorderPane>
+   </left>
+   <top>
+      <BorderPane id="topAndleftPanel" prefHeight="50.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
+         <left>
+            <HBox spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Pending.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <MenuBar prefHeight="25.0">
+                    <menus>
+                      <Menu mnemonicParsing="false" text="Registrar">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Close" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Añadir">
+                        <items>
+                          <MenuItem mnemonicParsing="false" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Editar">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+         </left>
+         <right>
+            <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </top>
 </BorderPane>

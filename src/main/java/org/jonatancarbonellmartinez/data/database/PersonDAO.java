@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.data.database;
 
-import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.data.database.configuration.Database;
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.Entity;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 

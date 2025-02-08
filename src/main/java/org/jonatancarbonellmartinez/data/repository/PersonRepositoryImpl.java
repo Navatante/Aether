@@ -3,8 +3,8 @@ package org.jonatancarbonellmartinez.data.repository;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
-import org.jonatancarbonellmartinez.data.database.ConnectionManager;
-import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.data.database.configuration.ConnectionManager;
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,7 +1,8 @@
 package org.jonatancarbonellmartinez.data.database;
 
+import org.jonatancarbonellmartinez.data.database.configuration.ConnectionManager;
 import org.jonatancarbonellmartinez.domain.repository.contract.DatabaseTransactionManager;
-import org.jonatancarbonellmartinez.xexceptions.DatabaseException;
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
 import java.sql.Connection;
