@@ -12,9 +12,9 @@
         <BorderPane fx:id="contentArea" />
     </center>
    <left>
-      <BorderPane id="topAndleftPanel" minWidth="50.0" prefHeight="300.0" prefWidth="50.0" BorderPane.alignment="CENTER">
+      <BorderPane id="topAndleftPanel" fx:id="leftBar" minWidth="52.0" prefHeight="300.0" prefWidth="52.0" BorderPane.alignment="CENTER">
          <top>
-            <VBox alignment="TOP_CENTER" minWidth="50.0" prefHeight="200.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
+            <VBox alignment="TOP_CENTER" minWidth="50.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
                   <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
                      <graphic>
@@ -44,6 +44,9 @@
                      </graphic>
                   </Button>
                </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </BorderPane.margin>
             </VBox>
          </top>
          <bottom>
@@ -52,7 +55,7 @@
                   <Insets />
                </opaqueInsets>
                <BorderPane.margin>
-                  <Insets />
+                  <Insets bottom="5.0" top="5.0" />
                </BorderPane.margin>
                <children>
                   <Button fx:id="personnelButton" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
@@ -85,42 +88,48 @@
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
       </BorderPane>
    </left>
    <top>
-      <BorderPane id="topAndleftPanel" prefHeight="50.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
+      <BorderPane id="topAndleftPanel" fx:id="topBar" minHeight="50.0" onMouseDragged="#handleTopBarDragged" onMousePressed="#handleTopBarPressed" prefHeight="50.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
          <left>
-            <HBox spacing="10.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
-                     <graphic>
-                        <ImageView pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/Icon_Pending.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Icon_Unit.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets left="10.0" right="5.0" />
+                     </HBox.margin>
+                  </ImageView>
                   <MenuBar prefHeight="25.0">
                     <menus>
                       <Menu mnemonicParsing="false" text="Registrar">
                         <items>
-                          <MenuItem mnemonicParsing="false" text="Close" />
+                          <MenuItem mnemonicParsing="false" text="Vuelo" />
                         </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Añadir">
                         <items>
-                          <MenuItem mnemonicParsing="false" />
+                          <MenuItem mnemonicParsing="false" text="Persona" />
                         </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="Editar">
                         <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
+                          <MenuItem mnemonicParsing="false" text="Persona" />
                         </items>
                       </Menu>
+                        <Menu mnemonicParsing="false" text="Generar">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Ayuda">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                          </items>
+                        </Menu>
                     </menus>
                   </MenuBar>
                </children>
@@ -130,7 +139,39 @@
             </HBox>
          </left>
          <right>
-            <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button id="minimizeAndMaximizeButton" fx:id="minimizeButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#handleWindowMinimized" prefHeight="55.0" prefWidth="50.0">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Minimize.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button id="minimizeAndMaximizeButton" fx:id="maximizeButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#handleWindowMaximized" prefHeight="55.0" prefWidth="50.0">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Maximize.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button id="quitButton" fx:id="quitButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#handleWindowClosed" prefHeight="55.0" prefWidth="50.0">
+                     <graphic>
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Quit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin></HBox>
          </right>
       </BorderPane>
    </top>

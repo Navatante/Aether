@@ -5,7 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.inject.Inject;
@@ -18,8 +20,50 @@ import java.util.Map;
 public class MainViewController {
     @FXML
     private BorderPane contentArea;
+//    @FXML
+//    private MenuItem personsMenuItem;
+
     @FXML
-    private MenuItem personsMenuItem;
+    private BorderPane topBar;
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @FXML
+    private void handleTopBarPressed(MouseEvent event) {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleTopBarDragged(MouseEvent event) {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
+        stage.setMaximized(false); // TODO tengo que arreglar que el cursor se queda fuera de la ventana.
+    }
+
+    @FXML
+    private void handleWindowClosed(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handleWindowMaximized(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isMaximized()) {
+            stage.setMaximized(false);
+        } else {
+            stage.setMaximized(true);
+        }
+    }
+
+    @FXML
+    private void handleWindowMinimized(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setIconified(true);
+    }
 
     private final Map<String, Node> cachedViews = new HashMap<>();
     private final PersonViewController personViewController;

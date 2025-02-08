@@ -154,3 +154,19 @@
     -fx-border-color: #1E1F22;
     -fx-border-width: 1;
 }
+
+#quitButton, #minimizeAndMaximizeButton {
+    -fx-background-color: #2B2D30;
+    -fx-background-radius: 0;
+}
+
+#quitButton:hover {
+    -fx-background-color: #BE2C26;
+    -fx-text-fill: #CED0D6;
+}
+
+#minimizeAndMaximizeButton:hover {
+    -fx-background-color: #4B4C4F;
+    -fx-text-fill: #CED0D6;
+}
+
