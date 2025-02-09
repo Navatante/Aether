@@ -97,7 +97,7 @@
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/Icon_Unit.png" />
+                        <Image url="@../images/Icon_Aether_provisional_logo.png" />
                      </image>
                      <HBox.margin>
                         <Insets left="10.0" right="5.0" />
