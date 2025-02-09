@@ -2,15 +2,18 @@ package org.jonatancarbonellmartinez.presentation.view.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javafx.scene.Cursor.*;
@@ -30,6 +33,10 @@ public class MainViewController {
     private double initHeight = 0;
     private final Map<String, Node> cachedViews = new HashMap<>();
     private final PersonViewController personViewController;
+
+    private Rectangle2D previousBounds;
+    private boolean wasMaximized = false;
+
     @FXML
     private BorderPane root;
     @FXML
@@ -150,12 +157,18 @@ public class MainViewController {
     @FXML
     private void handleTopBarDragged(MouseEvent event) {
         Stage stage = (Stage) topBar.getScene().getWindow();
+        final int SNAP_DISTANCE = 20;
+        double cursorScreenX = event.getScreenX();
+        double cursorScreenY = event.getScreenY();
+        Screen currentScreen = getCurrentScreen(cursorScreenX, cursorScreenY);
+        Rectangle2D screenBounds = currentScreen.getVisualBounds();
 
         if (resizing) return; // No permitir arrastre si se está redimensionando
 
+
+
         if (stage.isMaximized()) {
-            double cursorScreenX = event.getScreenX();
-            double cursorScreenY = event.getScreenY();
+
 
             // Solo restaurar si el usuario realmente está arrastrando
             if (Math.abs(cursorScreenX - xOffset) > 5 || Math.abs(cursorScreenY - yOffset) > 5) {
@@ -170,6 +183,29 @@ public class MainViewController {
                 xOffset = cursorScreenX - stage.getX()+(actualWidth/2);
                 yOffset = cursorScreenY - stage.getY()+50;
             }
+        }
+
+        // TODO new code
+
+        if (previousBounds == null && !stage.isMaximized()) {
+            storePreviousState(stage);
+        }
+
+        // Left edge snap
+        if (cursorScreenX <= screenBounds.getMinX() + SNAP_DISTANCE) {
+            snapToLeft(stage, screenBounds);
+            return;
+        }
+
+        // Right edge snap
+        if (cursorScreenX >= screenBounds.getMaxX() - SNAP_DISTANCE) {
+            snapToRight(stage, screenBounds);
+            return;
+        }
+
+        // Restore if dragging away from snapped position
+        if (isDragging && previousBounds != null) {
+            restorePreviousState(stage);
         }
 
         // Mover la ventana con el nuevo offset
@@ -246,5 +282,46 @@ public class MainViewController {
         } else {
             stage.setMaximized(true);
         }
+    }
+
+    private Screen getCurrentScreen(double x, double y) {
+        List<Screen> screens = Screen.getScreensForRectangle(x, y, 1, 1);
+        return screens.isEmpty() ? Screen.getPrimary() : screens.get(0);
+    }
+
+    private void storePreviousState(Stage stage) {
+        previousBounds = new Rectangle2D(
+                stage.getX(), stage.getY(),
+                stage.getWidth(), stage.getHeight()
+        );
+        wasMaximized = stage.isMaximized();
+    }
+
+    private void restorePreviousState(Stage stage) {
+        if (previousBounds != null) {
+            stage.setMaximized(false);
+            stage.setX(previousBounds.getMinX());
+            stage.setY(previousBounds.getMinY());
+            stage.setWidth(previousBounds.getWidth());
+            stage.setHeight(previousBounds.getHeight());
+            previousBounds = null;
+            wasMaximized = false;
+        }
+    }
+
+    private void snapToLeft(Stage stage, Rectangle2D screenBounds) {
+        stage.setMaximized(false);
+        stage.setX(screenBounds.getMinX());
+        stage.setY(screenBounds.getMinY());
+        stage.setWidth(screenBounds.getWidth() / 2);
+        stage.setHeight(screenBounds.getHeight());
+    }
+
+    private void snapToRight(Stage stage, Rectangle2D screenBounds) {
+        stage.setMaximized(false);
+        stage.setX(screenBounds.getMinX() + screenBounds.getWidth() / 2);
+        stage.setY(screenBounds.getMinY());
+        stage.setWidth(screenBounds.getWidth() / 2);
+        stage.setHeight(screenBounds.getHeight());
     }
 }
