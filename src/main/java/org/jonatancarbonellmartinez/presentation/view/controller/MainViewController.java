@@ -65,23 +65,8 @@ public class MainViewController {
     @FXML
     public void initialize() {
         loadView("PersonView"); // Load PersonView by default
-
-        // Add keyboard shortcut for refreshButton
-        root.setOnKeyPressed(event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.R) {
-                handleRefreshButtonClicked(null);
-            }
-        });
-
-        // Make sure the root node can receive key events
-        root.setFocusTraversable(true);
-
-        // Asegurarse de que siempre haya un botón seleccionado
-        leftPanelToggleButtonsGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-            if (newToggle == null) {
-                leftPanelToggleButtonsGroup.selectToggle(oldToggle);
-            }
-        });
+        setRefreshButtonShortCut();
+        atLeastOneToggleButtonSelectedListener();
     }
 
     @FXML
@@ -378,5 +363,26 @@ public class MainViewController {
         stage.setY(screenBounds.getMinY());
         stage.setWidth(screenBounds.getWidth() / 2);
         stage.setHeight(screenBounds.getHeight());
+    }
+
+    private void atLeastOneToggleButtonSelectedListener() {
+        // Asegurarse de que siempre haya un botón seleccionado
+        leftPanelToggleButtonsGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == null) {
+                leftPanelToggleButtonsGroup.selectToggle(oldToggle);
+            }
+        });
+    }
+
+    private void setRefreshButtonShortCut() {
+        // Add keyboard shortcut for refreshButton
+        root.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.R) {
+                handleRefreshButtonClicked(null);
+            }
+        });
+
+        // Make sure the root node can receive key events
+        root.setFocusTraversable(true);
     }
 }
