@@ -1,8 +1,11 @@
+-- Para ejecutar el script en Intellij IDEA usa la opcion 'Execute as Single Statement'
 -- Las PK tienen que ser INTEGER para que puedan autoincrementar implicitamente.
 
 -- Muy importante acticar las foreign keys antes de anadir ninguna tabla.
 
 -- SQLite crea automaticamente indices a los campo que son PRIMARY KEY. Pero no los crea a los campos que son FOREIGN KEY.
+
+BEGIN TRANSACTION;
 PRAGMA foreign_keys = ON;
 
 -- ############################### --
@@ -957,3 +960,5 @@ CREATE INDEX idx_helo_plate ON dim_helo(helo_plate_nk);
 CREATE INDEX idx_person_hour_flight_person ON junction_person_hour(person_hour_flight_fk, person_hour_person_fk);
 CREATE INDEX idx_landing_flight_person ON junction_landing(landing_flight_fk, landing_person_fk);
 CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(session_crew_count_flight_fk, session_crew_count_person_fk);
+
+COMMIT;
