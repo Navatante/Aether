@@ -1,6 +1,8 @@
 -- Las PK tienen que ser INTEGER para que puedan autoincrementar implicitamente.
 
 -- Muy importante acticar las foreign keys antes de anadir ninguna tabla.
+
+-- SQLite crea automaticamente indices a los campo que son PRIMARY KEY. Pero no los crea a los campos que son FOREIGN KEY.
 PRAGMA foreign_keys = ON;
 
 -- ############################### --
@@ -10,7 +12,7 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE dim_person ( 
     person_sk                 INTEGER		NOT NULL,
-    person_nk                 TEXT  		NOT NULL, -- tengo que aceptar nulos para meter no tripilantes.
+    person_nk                 TEXT,                     -- tengo que aceptar nulos para meter no tripulantes.
     person_rank               TEXT  		NOT NULL,
     person_name               TEXT  		NOT NULL,
     person_last_name_1        TEXT  		NOT NULL,
@@ -22,7 +24,8 @@ CREATE TABLE dim_person (
 	person_order	          INTEGER 		NOT NULL,
     person_current_flag       INTEGER  		NOT NULL,
 	PRIMARY KEY (person_sk),
-	CHECK 		(person_current_flag 	IN (0,1))
+	CHECK 		(person_current_flag 	IN (0,1)),
+    CHECK       (person_rol IN('Piloto', 'Dotación', 'No tripulante'))
 );
 
 CREATE TABLE dim_helo (
@@ -107,7 +110,7 @@ CREATE TABLE dim_capba (
 -- Second Create Facts
 CREATE TABLE fact_flight (
 	flight_sk          			INTEGER  	NOT NULL,
-	flight_datetime    			TEXT		NOT NULL,
+	flight_datetime    			INTEGER		NOT NULL,
 	flight_helo_fk     			INTEGER		NOT NULL,
 	flight_event_fk    			INTEGER		NOT NULL,
 	flight_person_cta_fk	    INTEGER  	NOT NULL,
@@ -116,6 +119,17 @@ CREATE TABLE fact_flight (
 	FOREIGN KEY (flight_helo_fk)  		 REFERENCES dim_helo (helo_sk),
 	FOREIGN KEY (flight_event_fk) 		 REFERENCES dim_event (event_sk),
 	FOREIGN KEY (flight_person_cta_fk)   REFERENCES dim_person (person_sk)	
+);
+
+CREATE TABLE fact_previous_hour (
+    previous_hours_sk            INTEGER       NOT NULL,
+    previous_hours_person_fk     INTEGER       NOT NULL,
+    previous_hours_cta           REAL          NOT NULL,
+    previous_hours_day           REAL          NOT NULL,
+    previous_hours_conv_night    REAL          NOT NULL,
+    previous_hours_gvn           REAL          NOT NULL,
+    PRIMARY KEY (previous_hours_sk),
+    FOREIGN KEY (previous_hours_person_fk)  REFERENCES dim_person(person_sk)
 );
 
 CREATE TABLE junction_person_hour (
@@ -261,13 +275,16 @@ CREATE TABLE fact_session_capba (
 	UNIQUE (session_fk, capba_fk) -- Ensure uniqueness of natural keys
 );
 
--- Log for deleted flights
-CREATE TABLE deleted_flights_log (
-    deleted_flights_id  INTEGER NOT NULL,
-    flight_id           INTEGER NOT NULL,
-    user_name           TEXT    NOT NULL,
-    timestamp           TEXT    NOT NULL,
-    PRIMARY KEY (deleted_flights_id)
+-- Tabla maestra de auditoría
+CREATE TABLE audit_log (
+    audit_id INTEGER PRIMARY KEY,
+    table_name TEXT NOT NULL,
+    operation TEXT NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
+    record_id TEXT NOT NULL,
+    old_data TEXT,
+    new_data TEXT,
+    changed_by TEXT,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ############################### --
@@ -588,33 +605,355 @@ FROM
         INNER JOIN fact_flight f ON jp.passenger_flight_fk = f.flight_sk
         INNER JOIN dim_passenger_type dpt ON jp.passenger_type_fk = dpt.passenger_type_sk;
 
+-- Auditoria View
+-- Vista para consultar el log de auditoría
+CREATE VIEW view_audit_log AS
+SELECT
+    audit_id,
+    table_name,
+    operation,
+    record_id,
+    json_extract(old_data, '$') as old_data,
+    json_extract(new_data, '$') as new_data,
+    changed_by,
+    changed_at
+FROM audit_log
+ORDER BY audit_id DESC;
+
 
 
 -- ############################### --
 -- 		  	  TRIGGERS		       --
 -- ############################### --
 
--- Demomento dejo el tema del person_orden para meterlo en manual. Ya me calentare la cabeza mas adelante. Ninguno de los triggers de abajo funciona bien.
--- Seguramente consiga hacerlo mejor dejandole esa logica a Java, en lugar de con un trigger.
+-- TRIGGERS DE AUDITORIAS
+-- Trigger para fact_flight
+-- INSERT
+CREATE TRIGGER tr_audit_fact_flight_insert AFTER INSERT ON fact_flight
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    VALUES (
+               'fact_flight',
+               'INSERT',
+               NEW.flight_sk,
+               json_object(
+                       'flight_sk', NEW.flight_sk,
+                       'flight_datetime', NEW.flight_datetime,
+                       'flight_helo_fk', NEW.flight_helo_fk,
+                       'flight_event_fk', NEW.flight_event_fk,
+                       'flight_person_cta_fk', NEW.flight_person_cta_fk,
+                       'flight_total_hours', NEW.flight_total_hours
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- UPDATE
+CREATE TRIGGER tr_audit_fact_flight_update AFTER UPDATE ON fact_flight
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    VALUES (
+               'fact_flight',
+               'UPDATE',
+               OLD.flight_sk,
+               json_object(
+                       'flight_sk', OLD.flight_sk,
+                       'flight_datetime', OLD.flight_datetime,
+                       'flight_helo_fk', OLD.flight_helo_fk,
+                       'flight_event_fk', OLD.flight_event_fk,
+                       'flight_person_cta_fk', OLD.flight_person_cta_fk,
+                       'flight_total_hours', OLD.flight_total_hours
+               ),
+               json_object(
+                       'flight_sk', NEW.flight_sk,
+                       'flight_datetime', NEW.flight_datetime,
+                       'flight_helo_fk', NEW.flight_helo_fk,
+                       'flight_event_fk', NEW.flight_event_fk,
+                       'flight_person_cta_fk', NEW.flight_person_cta_fk,
+                       'flight_total_hours', NEW.flight_total_hours
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- DELETE
+CREATE TRIGGER tr_audit_fact_flight_delete AFTER DELETE ON fact_flight
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    VALUES (
+               'fact_flight',
+               'DELETE',
+               OLD.flight_sk,
+               json_object(
+                       'flight_sk', OLD.flight_sk,
+                       'flight_datetime', OLD.flight_datetime,
+                       'flight_helo_fk', OLD.flight_helo_fk,
+                       'flight_event_fk', OLD.flight_event_fk,
+                       'flight_person_cta_fk', OLD.flight_person_cta_fk,
+                       'flight_total_hours', OLD.flight_total_hours
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
 
+-- Trigger para dim_person
+-- INSERT
+CREATE TRIGGER tr_audit_dim_person_insert AFTER INSERT ON dim_person
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    VALUES (
+               'dim_person',
+               'INSERT',
+               NEW.person_sk,
+               json_object(
+                       'person_sk', NEW.person_sk,
+                       'person_nk', NEW.person_nk,
+                       'person_rank', NEW.person_rank,
+                       'person_name', NEW.person_name,
+                       'person_last_name_1', NEW.person_last_name_1,
+                       'person_last_name_2', NEW.person_last_name_2,
+                       'person_current_flag', NEW.person_current_flag
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- UPDATE
+CREATE TRIGGER tr_audit_dim_person_update AFTER UPDATE ON dim_person
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    VALUES (
+               'dim_person',
+               'UPDATE',
+               OLD.person_sk,
+               json_object(
+                       'person_sk', OLD.person_sk,
+                       'person_nk', OLD.person_nk,
+                       'person_rank', OLD.person_rank,
+                       'person_name', OLD.person_name,
+                       'person_last_name_1', OLD.person_last_name_1,
+                       'person_last_name_2', OLD.person_last_name_2,
+                       'person_current_flag', OLD.person_current_flag
+               ),
+               json_object(
+                       'person_sk', NEW.person_sk,
+                       'person_nk', NEW.person_nk,
+                       'person_rank', NEW.person_rank,
+                       'person_name', NEW.person_name,
+                       'person_last_name_1', NEW.person_last_name_1,
+                       'person_last_name_2', NEW.person_last_name_2,
+                       'person_current_flag', NEW.person_current_flag
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- DELETE
+CREATE TRIGGER tr_audit_dim_person_delete AFTER DELETE ON dim_person
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    VALUES (
+               'dim_person',
+               'DELETE',
+               OLD.person_sk,
+               json_object(
+                       'person_sk', OLD.person_sk,
+                       'person_nk', OLD.person_nk,
+                       'person_rank', OLD.person_rank,
+                       'person_name', OLD.person_name,
+                       'person_last_name_1', OLD.person_last_name_1,
+                       'person_last_name_2', OLD.person_last_name_2,
+                       'person_current_flag', OLD.person_current_flag
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
 
--- Este triger no se realmente si crarlo o no, voy a dejarlo comentado por si acaso.
--- CREATE TRIGGER set_event_code
---     AFTER INSERT ON dim_event
---     FOR EACH ROW
--- BEGIN
---     UPDATE dim_event
---     SET event_code =
---             CASE
---                 WHEN NEW.event_name = 'Adaptación' THEN 'A'
---                 WHEN NEW.event_name = 'Instrucción' THEN 'E'
---                 WHEN NEW.event_name = 'Adiestramiento' THEN 'I'
---                 WHEN NEW.event_name IN ('Maniobra nacional', 'Maniobra internacional') THEN 'O'
---                 WHEN NEW.event_name = 'Misión' THEN 'M'
---                 WHEN NEW.event_name = 'Colaboración' THEN 'U'
---                 WHEN NEW.event_name = 'Pruebas' THEN 'X'
---                 ELSE event_code -- Keep existing code if no match
---                 END
---     WHERE rowid = NEW.rowid;
--- END;
+-- Triggers para dim_event
+-- INSERT
+CREATE TRIGGER tr_audit_dim_event_insert AFTER INSERT ON dim_event
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    VALUES (
+               'dim_event',
+               'INSERT',
+               NEW.event_sk,
+               json_object(
+                       'event_sk', NEW.event_sk,
+                       'event_name', NEW.event_name,
+                       'event_place', NEW.event_place,
+                       'event_code', NEW.event_code
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- UPDATE
+CREATE TRIGGER tr_audit_dim_event_update AFTER UPDATE ON dim_event
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    VALUES (
+               'dim_event',
+               'UPDATE',
+               OLD.event_sk,
+               json_object(
+                       'event_sk', OLD.event_sk,
+                       'event_name', OLD.event_name,
+                       'event_place', OLD.event_place,
+                       'event_code', OLD.event_code
+               ),
+               json_object(
+                       'event_sk', NEW.event_sk,
+                       'event_name', NEW.event_name,
+                       'event_place', NEW.event_place,
+                       'event_code', NEW.event_code
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- DELETE
+CREATE TRIGGER tr_audit_dim_event_delete AFTER DELETE ON dim_event
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    VALUES (
+               'dim_event',
+               'DELETE',
+               OLD.event_sk,
+               json_object(
+                       'event_sk', OLD.event_sk,
+                       'event_name', OLD.event_name,
+                       'event_place', OLD.event_place,
+                       'event_code', OLD.event_code
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- INSERT
+-- Triggers para junction_person_hour
+CREATE TRIGGER tr_audit_junction_person_hour_insert AFTER INSERT ON junction_person_hour
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    VALUES (
+               'junction_person_hour',
+               'INSERT',
+               NEW.person_hour_sk,
+               json_object(
+                       'person_hour_sk', NEW.person_hour_sk,
+                       'person_hour_flight_fk', NEW.person_hour_flight_fk,
+                       'person_hour_person_fk', NEW.person_hour_person_fk,
+                       'person_hour_period_fk', NEW.person_hour_period_fk,
+                       'person_hour_hour_qty', NEW.person_hour_hour_qty
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- UPDATE
+CREATE TRIGGER tr_audit_junction_person_hour_update AFTER UPDATE ON junction_person_hour
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    VALUES (
+               'junction_person_hour',
+               'UPDATE',
+               OLD.person_hour_sk,
+               json_object(
+                       'person_hour_sk', OLD.person_hour_sk,
+                       'person_hour_flight_fk', OLD.person_hour_flight_fk,
+                       'person_hour_person_fk', OLD.person_hour_person_fk,
+                       'person_hour_period_fk', OLD.person_hour_period_fk,
+                       'person_hour_hour_qty', OLD.person_hour_hour_qty
+               ),
+               json_object(
+                       'person_hour_sk', NEW.person_hour_sk,
+                       'person_hour_flight_fk', NEW.person_hour_flight_fk,
+                       'person_hour_person_fk', NEW.person_hour_person_fk,
+                       'person_hour_period_fk', NEW.person_hour_period_fk,
+                       'person_hour_hour_qty', NEW.person_hour_hour_qty
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
+-- DELETE
+CREATE TRIGGER tr_audit_junction_person_hour_delete AFTER DELETE ON junction_person_hour
+BEGIN
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    VALUES (
+               'junction_person_hour',
+               'DELETE',
+               OLD.person_hour_sk,
+               json_object(
+                       'person_hour_sk', OLD.person_hour_sk,
+                       'person_hour_flight_fk', OLD.person_hour_flight_fk,
+                       'person_hour_person_fk', OLD.person_hour_person_fk,
+                       'person_hour_period_fk', OLD.person_hour_period_fk,
+                       'person_hour_hour_qty', OLD.person_hour_hour_qty
+               ),
+               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+           );
+END;
 
+-- ############################### --
+-- 		  	   INDEXES 		       --
+-- ############################### --
+
+-- Índices para la tabla de auditoría
+CREATE INDEX idx_audit_log_table ON audit_log(table_name);
+CREATE INDEX idx_audit_log_operation ON audit_log(operation);
+CREATE INDEX idx_audit_log_changed_at ON audit_log(changed_at);
+
+-- Índices para fact_flight (tabla central)
+CREATE INDEX idx_flight_datetime ON fact_flight(flight_datetime);
+CREATE INDEX idx_flight_helo_fk ON fact_flight(flight_helo_fk);
+CREATE INDEX idx_flight_event_fk ON fact_flight(flight_event_fk);
+CREATE INDEX idx_flight_person_cta_fk ON fact_flight(flight_person_cta_fk);
+
+-- Índices para dim_person (tabla dimensión muy utilizada)
+CREATE INDEX idx_person_nk ON dim_person(person_nk);
+CREATE INDEX idx_person_rol ON dim_person(person_rol);
+CREATE INDEX idx_person_current_flag ON dim_person(person_current_flag);
+CREATE INDEX idx_person_division ON dim_person(person_division);
+
+-- Índices para tablas junction principales
+-- junction_person_hour
+CREATE INDEX idx_person_hour_flight ON junction_person_hour(person_hour_flight_fk);
+CREATE INDEX idx_person_hour_person ON junction_person_hour(person_hour_person_fk);
+CREATE INDEX idx_person_hour_period ON junction_person_hour(person_hour_period_fk);
+
+-- junction_formation_hour
+CREATE INDEX idx_formation_hour_flight ON junction_formation_hour(formation_hour_flight_fk);
+CREATE INDEX idx_formation_hour_person ON junction_formation_hour(formation_hour_person_fk);
+CREATE INDEX idx_formation_hour_period ON junction_formation_hour(formation_hour_period_fk);
+
+-- junction_landing
+CREATE INDEX idx_landing_flight ON junction_landing(landing_flight_fk);
+CREATE INDEX idx_landing_person ON junction_landing(landing_person_fk);
+CREATE INDEX idx_landing_place ON junction_landing(landing_place_fk);
+CREATE INDEX idx_landing_period ON junction_landing(landing_period_fk);
+
+-- junction_app
+CREATE INDEX idx_app_flight ON junction_app(app_flight_fk);
+CREATE INDEX idx_app_person ON junction_app(app_person_fk);
+CREATE INDEX idx_app_type ON junction_app(app_type_fk);
+
+-- junction_projectile
+CREATE INDEX idx_projectile_flight ON junction_projectile(projectile_flight_fk);
+CREATE INDEX idx_projectile_person ON junction_projectile(projectile_person_fk);
+CREATE INDEX idx_projectile_type ON junction_projectile(projectile_type_fk);
+
+-- junction_session_crew_count
+CREATE INDEX idx_session_crew_flight ON junction_session_crew_count(session_crew_count_flight_fk);
+CREATE INDEX idx_session_crew_person ON junction_session_crew_count(session_crew_count_person_fk);
+CREATE INDEX idx_session_crew_session ON junction_session_crew_count(session_crew_count_session_fk);
+
+-- junction_cupo_hour
+CREATE INDEX idx_cupo_hour_flight ON junction_cupo_hour(cupo_flight_fk);
+CREATE INDEX idx_cupo_hour_authority ON junction_cupo_hour(cupo_authority_fk);
+
+-- Índices para dimensiones frecuentemente consultadas
+CREATE INDEX idx_session_name ON dim_session(session_name);
+CREATE INDEX idx_session_plan ON dim_session(session_plan);
+
+CREATE INDEX idx_event_name ON dim_event(event_name);
+CREATE INDEX idx_event_place ON dim_event(event_place);
+
+CREATE INDEX idx_helo_number ON dim_helo(helo_number);
+CREATE INDEX idx_helo_plate ON dim_helo(helo_plate_nk);
+
+-- Índices compuestos para optimizar joins frecuentes
+CREATE INDEX idx_person_hour_flight_person ON junction_person_hour(person_hour_flight_fk, person_hour_person_fk);
+CREATE INDEX idx_landing_flight_person ON junction_landing(landing_flight_fk, landing_person_fk);
+CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(session_crew_count_flight_fk, session_crew_count_person_fk);
