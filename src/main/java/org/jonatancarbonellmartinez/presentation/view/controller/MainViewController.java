@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 
 @Singleton
 public class MainViewController {
@@ -53,7 +55,7 @@ public class MainViewController {
     @FXML
     private ImageView refreshIcon;
     @FXML
-    private Button overviewButton;
+    private ToggleGroup leftPanelToggleButtonsGroup;
 
     @Inject
     public MainViewController(PersonViewController personViewController) {
@@ -74,10 +76,10 @@ public class MainViewController {
         // Make sure the root node can receive key events
         root.setFocusTraversable(true);
 
-        // Esperar a que la escena esté lista y darle el foco al Boton general
-        overviewButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
-            if (newScene != null) {
-                Platform.runLater(() -> overviewButton.requestFocus());
+        // Asegurarse de que siempre haya un botón seleccionado
+        leftPanelToggleButtonsGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == null) {
+                leftPanelToggleButtonsGroup.selectToggle(oldToggle);
             }
         });
     }

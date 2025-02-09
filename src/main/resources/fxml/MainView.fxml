@@ -17,7 +17,10 @@
          <top>
             <VBox alignment="TOP_CENTER" minWidth="50.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="overviewButton" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                  <ToggleButton fx:id="overviewToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" selected="true">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="leftPanelToggleButtonsGroup" />
+                     </toggleGroup>
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -25,8 +28,8 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                  </ToggleButton>
+                  <ToggleButton fx:id="pendingToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" toggleGroup="$leftPanelToggleButtonsGroup">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -34,8 +37,8 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                  </ToggleButton>
+                  <ToggleButton fx:id="recentFlightsToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" toggleGroup="$leftPanelToggleButtonsGroup">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -43,7 +46,14 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
+                     <tooltip>
+                        <Tooltip text="Últimos vuelos">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </ToggleButton>
                </children>
                <BorderPane.margin>
                   <Insets bottom="5.0" top="5.0" />
@@ -59,13 +69,7 @@
                   <Insets bottom="5.0" top="5.0" />
                </BorderPane.margin>
                <children>
-                  <Button fx:id="personnelButton" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
-                      <tooltip>
-                          <Tooltip opacity="0.9" text="Personal">
-                           <font>
-                              <Font name="Segoe UI" size="14.0" />
-                           </font></Tooltip>
-                      </tooltip>
+                  <ToggleButton fx:id="personnelToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" toggleGroup="$leftPanelToggleButtonsGroup">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -73,8 +77,14 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                     <tooltip>
+                          <Tooltip opacity="0.9" text="Personal">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font></Tooltip>
+                     </tooltip>
+                  </ToggleButton>
+                  <ToggleButton fx:id="eventsToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" toggleGroup="$leftPanelToggleButtonsGroup">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -82,7 +92,14 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
+                     <tooltip>
+                        <Tooltip opacity="0.9" text="Eventos">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </ToggleButton>
                </children>
             </VBox>
          </bottom>

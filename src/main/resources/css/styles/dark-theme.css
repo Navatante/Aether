@@ -53,7 +53,18 @@
     -fx-background-color: #4B4C4F;
 }
 
-.button:focused {
+/* Toggle Button styling */
+.toggle-button {
+    -fx-background-color: #2B2D30;
+    -fx-text-fill: #CED0D6;
+    -fx-background-radius: 10;
+}
+
+.toggle-button:hover {
+    -fx-background-color: #4B4C4F;
+}
+
+.toggle-button:selected {
     -fx-background-color: #4B4C4F ;
 }
 
