@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
@@ -16,7 +17,7 @@
          <top>
             <VBox alignment="TOP_CENTER" minWidth="50.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
+                  <Button fx:id="overviewButton" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -141,6 +142,25 @@
          <right>
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
+                  <Button fx:id="refreshButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#handleRefreshButtonClicked" prefHeight="30.0" prefWidth="30.0">
+                     <graphic>
+                        <ImageView fx:id="refreshIcon" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Icon_Refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <tooltip>
+                        <Tooltip opacity="0.9" text="Actualizar (Ctrl + R)">
+                           <font>
+                              <Font name="Segoe UI" size="14.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                  </Button>
                   <Button id="minimizeAndMaximizeButton" fx:id="minimizeButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#handleWindowMinimized" prefHeight="55.0" prefWidth="50.0">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">

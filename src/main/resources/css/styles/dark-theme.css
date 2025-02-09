@@ -170,4 +170,12 @@
     -fx-text-fill: #CED0D6;
 }
 
+#refreshButton:focused {
+    -fx-background-color: null;
+}
+
+#refreshButton:hover {
+    -fx-background-color: #4B4C4F;
+}
+
 

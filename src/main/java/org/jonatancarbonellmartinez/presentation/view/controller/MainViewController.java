@@ -1,22 +1,27 @@
 package org.jonatancarbonellmartinez.presentation.view.controller;
 
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static javafx.scene.Cursor.*;
 
 @Singleton
 public class MainViewController {
@@ -43,6 +48,12 @@ public class MainViewController {
     private BorderPane contentArea;
     @FXML
     private BorderPane topBar;
+    @FXML
+    private Button refreshButton;
+    @FXML
+    private ImageView refreshIcon;
+    @FXML
+    private Button overviewButton;
 
     @Inject
     public MainViewController(PersonViewController personViewController) {
@@ -52,6 +63,23 @@ public class MainViewController {
     @FXML
     public void initialize() {
         loadView("PersonView"); // Load PersonView by default
+
+        // Add keyboard shortcut for refreshButton
+        root.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.R) {
+                handleRefreshButtonClicked(null);
+            }
+        });
+
+        // Make sure the root node can receive key events
+        root.setFocusTraversable(true);
+
+        // Esperar a que la escena esté lista y darle el foco al Boton general
+        overviewButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> overviewButton.requestFocus());
+            }
+        });
     }
 
     @FXML
@@ -234,6 +262,31 @@ public class MainViewController {
     private void handleWindowMinimized(MouseEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setIconified(true);
+    }
+
+    @FXML
+    private void handleRefreshButtonClicked(MouseEvent event) {
+        // Create a 360-degree rotation animation
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(750), refreshIcon);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(1);
+        rotateTransition.setInterpolator(Interpolator.EASE_BOTH);
+
+        // Add animation finished handler
+        rotateTransition.setOnFinished(e -> {
+            // Reset the rotation to 0 after animation
+            refreshIcon.setRotate(0);
+
+            // Refresh your content here
+            refreshContent();
+        });
+
+        // Start the animation
+        rotateTransition.play();
+    }
+
+    private void refreshContent() {
+        // TODO
     }
 
     public void loadView(String viewName) {
