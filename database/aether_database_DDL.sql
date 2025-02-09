@@ -298,128 +298,6 @@ CREATE TABLE session_info (
 );
 
 -- ############################### --
--- 		  INSERT DATA		 	   --
--- ############################### --
--- DIM_PERSON
-INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
-VALUES ('JON', 'SG1', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1 , 1);
-
--- Insert into dim_helo
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');
-INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1236', 'NH-90', '1403');
-
--- Insert into dim_event
-INSERT INTO dim_event (event_name, event_place) VALUES ('Adaptación', 'BNR');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'BNR');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'Logroño');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Pruebas', 'BNR');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'ARMEX');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'GRUFLEX');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'ADELFIBEX');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'FLOTEX');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'SINKEX');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra internacional', 'DEDALO');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'ATALANTA');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'SNMG-1');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'SNMG-2');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Colaboración', 'BNR');
-INSERT INTO dim_event (event_name, event_place) VALUES ('Colaboración', 'Cartagena');
-
-
--- Insert into dim_period
-INSERT INTO dim_period (period_name) VALUES ('Diurno');
-INSERT INTO dim_period (period_name) VALUES ('Noche sin GVN');
-INSERT INTO dim_period (period_name) VALUES ('GVN');
-
--- Insert into dim_ifr_app_type
-INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('Precisión', 'Instrumental');
-INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('No precisión', 'Instrumental');
-INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('T/D', 'SAR');
-INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('Search Pattern', 'SAR');
-
--- Insert into dim_landing_place
-INSERT INTO dim_landing_place (landing_place_name) VALUES ('Tierra');
-INSERT INTO dim_landing_place (landing_place_name) VALUES ('Monospot');
-INSERT INTO dim_landing_place (landing_place_name) VALUES ('Multispot');
-INSERT INTO dim_landing_place (landing_place_name) VALUES ('Carrier');
-
-
--- Insert into dim_projectile_type
-INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('7.62', 'M3M');
-INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('12.7', 'MAG58');
-
-
--- Insert into dim_session
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FAM-301', 'Vuelo de Familiarización', 'Vuelo', 'Básico', 1.5, 4, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TAC-302', 'Vuelo de Táctico', 'Vuelo', 'Básico', 1.5, 4, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CAL-303', 'Tomas Confinadas', 'Vuelo', 'Básico', 1.5, 4, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FORM-304', 'Vuelo táctico en formación', 'Vuelo', 'Básico', 1.5, 4, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('VERTREP-305', 'Operaciones de Gancho', 'Vuelo', 'Básico', 1.5, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('VOD-306', 'Operaciones de grúa', 'Vuelo', 'Básico', 1.5, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('BUQ-307', 'Calificación en buque mono/multi/carrier Día/noche/GVN', 'Vuelo', 'Básico', 1.5, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('INST-308', 'Requisito de App Instrumentales anuales', 'Vuelo', 'Básico', 1.5, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-310', 'Familiarización/Emergencias en tierra y en vuelo', 'Simulador', 'Básico', 3, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-311', 'Vuelo IFR en IMC', 'Simulador', 'Básico', 3, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-312', 'Vuelo en montaña/táctico. IIMC con aproximación instrumental', 'Simulador', 'Básico', 3, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-313', 'Tomas en buques mono/multi/carrier. Procedimientos de emergencia', 'Simulador', 'Básico', 3, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-314(G)', 'Familiarización/Emergencias en tierra/ en vuelo y buque con GVN', 'Simulador', 'Básico', 3, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TFM', 'Tactical Formation Maneuvering', 'Vuelo', 'Avanzado', 0, 1, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('HIGE/HOGE T/D', 'Hover automático sobre la mar o sobre tierra', 'Vuelo', 'Avanzado', 0, 2, 90);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TCT', 'Threat Counter Tactics', 'Vuelo', 'Avanzado', 0, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FR', 'Técnica de Fast Rope', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('RAP', 'Técnica de Rappel', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SPIE', 'Empleo de Técnicas de extracción Spie Rig o AirTrep', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('RUBBER CAST', 'Cast de embarcaciones y equipo asociado.', 'Vuelo', 'Avanzado', 0, 1, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('DIV CAST', 'Cast nadadores/buceadores', 'Vuelo', 'Avanzado', 0, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('PARAOPS', 'Lanzamiento de Paracaidistas', 'Vuelo', 'Avanzado', 0, 1, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('GND TPT', 'Transporte Táctico de Tropas con Infil/Exfil por toma en LZ', 'Vuelo', 'Avanzado', 0, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TPT (E)', 'Transporte Táctico empleando líneas de vida', 'Vuelo', 'Avanzado', 0, 1, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CA INF/EXF', 'Confined Area Infil/Exfil', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CAS/CCA', 'Procedimientos de Apoyo de Fuegos', 'Vuelo', 'Avanzado', 0, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SNP', 'Tirador de precisión desde helicóptero', 'Vuelo', 'Avanzado', 0, 1, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ESCORT', 'Escolta de columnas de vehículos o helicópteros', 'Vuelo', 'Avanzado', 0, 1, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('WPN LF', 'Weapons Live Fire', 'Vuelo', 'Avanzado', 0, 3, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('MIO (OB)', 'Maritime Interdiction Operation', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('PR', 'Misión de Recuperación de Personal', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('AASLT', 'Misión de Asalto Aéreo o formación compleja', 'Vuelo', 'Avanzado', 0, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('LOG/AE', 'Misión logística Material/Personal o evacuaciones aéreas', 'Vuelo', 'Avanzado', 0, 1, 180);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM FAM-410', 'Vuelo Estandarización Básico FAM. (50% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM NAVTAC-411', 'Vuelo Estandarización Táctico y Navegación Táctica (50% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM SAR-412', 'Vuelo Estandarización Procedimientos SAR y SARN (50% GVN)', 'Simulador', 'Avanzado', 1, 1, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM BUQ-413', 'Vuelo Estandarización Procedimientos Aeronavales (50% GVN)', 'Simulador', 'Avanzado', 1, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ASSAULT MISSION', 'CHECK Misión Anfibia o SAO en entorno terrestre (100% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('MARITIME MISSION', 'CHECK Misión marítima incluyendo un MIO (OB) (100% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('AIR TACPLAN', 'Planeamiento completo de misión aérea (4Ts o SOATU Planning & Briefing Guidelines)', 'Tierra', 'Avanzado', 0, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ECM', 'Electronic countermeasures (ECM)', 'Tierra', 'Avanzado', 0, 2, 365);
-INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ECCM', 'Electronic counter-countermeasures (ECCM)', 'Tierra', 'Avanzado', 0, 2, 365);
-
--- Insert into dim_unit
-
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMFLOAN', 'CF');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALPER', 'NA');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALFLOT', 'NA');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMGRUPFLOT', 'GD');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMANDES-31', 'C3');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMANDES-41', 'C4');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMTEMECOM', 'MC');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALMART', 'AM');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('GETEAR', 'GT');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('GEPROAR', 'GP');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMNAVES', 'CN');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMSUBMAR', 'CS');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COCEVACO', 'CC');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('Ejercicios en cumplimiento', 'OE');
-INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('Operaciones en cumplimiento', 'OE');
-
-
--- Insert into dim_passenger_type
-
-INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Civiles');
-INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Militares');
-
-
--- ############################### --
 -- 		  	   VIEWS 		       --
 -- ############################### --
 
@@ -977,5 +855,126 @@ CREATE INDEX idx_helo_plate ON dim_helo(helo_plate_nk);
 CREATE INDEX idx_person_hour_flight_person ON junction_person_hour(person_hour_flight_fk, person_hour_person_fk);
 CREATE INDEX idx_landing_flight_person ON junction_landing(landing_flight_fk, landing_person_fk);
 CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(session_crew_count_flight_fk, session_crew_count_person_fk);
+
+-- ############################### --
+-- 		  INSERT DATA		 	   --
+-- ############################### --
+-- DIM_PERSON
+INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
+VALUES ('JON', 'SG1', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1 , 1);
+
+-- Insert into dim_helo
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');
+INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1236', 'NH-90', '1403');
+
+-- Insert into dim_event
+INSERT INTO dim_event (event_name, event_place) VALUES ('Adaptación', 'BNR');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'BNR');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Adiestramiento', 'Logroño');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Pruebas', 'BNR');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'ARMEX');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'GRUFLEX');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'ADELFIBEX');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'FLOTEX');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra nacional', 'SINKEX');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Maniobra internacional', 'DEDALO');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'ATALANTA');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'SNMG-1');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Misión', 'SNMG-2');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Colaboración', 'BNR');
+INSERT INTO dim_event (event_name, event_place) VALUES ('Colaboración', 'Cartagena');
+
+
+-- Insert into dim_period
+INSERT INTO dim_period (period_name) VALUES ('Diurno');
+INSERT INTO dim_period (period_name) VALUES ('Noche sin GVN');
+INSERT INTO dim_period (period_name) VALUES ('GVN');
+
+-- Insert into dim_ifr_app_type
+INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('Precisión', 'Instrumental');
+INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('No precisión', 'Instrumental');
+INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('T/D', 'SAR');
+INSERT INTO dim_ifr_app_type (ifr_app_type_name, ifr_app_type_type) VALUES ('Search Pattern', 'SAR');
+
+-- Insert into dim_landing_place
+INSERT INTO dim_landing_place (landing_place_name) VALUES ('Tierra');
+INSERT INTO dim_landing_place (landing_place_name) VALUES ('Monospot');
+INSERT INTO dim_landing_place (landing_place_name) VALUES ('Multispot');
+INSERT INTO dim_landing_place (landing_place_name) VALUES ('Carrier');
+
+
+-- Insert into dim_projectile_type
+INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('7.62', 'M3M');
+INSERT INTO dim_projectile_type (projectile_type_name, projectile_type_weapon)	VALUES ('12.7', 'MAG58');
+
+
+-- Insert into dim_session
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FAM-301', 'Vuelo de Familiarización', 'Vuelo', 'Básico', 1.5, 4, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TAC-302', 'Vuelo de Táctico', 'Vuelo', 'Básico', 1.5, 4, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CAL-303', 'Tomas Confinadas', 'Vuelo', 'Básico', 1.5, 4, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FORM-304', 'Vuelo táctico en formación', 'Vuelo', 'Básico', 1.5, 4, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('VERTREP-305', 'Operaciones de Gancho', 'Vuelo', 'Básico', 1.5, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('VOD-306', 'Operaciones de grúa', 'Vuelo', 'Básico', 1.5, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('BUQ-307', 'Calificación en buque mono/multi/carrier Día/noche/GVN', 'Vuelo', 'Básico', 1.5, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('INST-308', 'Requisito de App Instrumentales anuales', 'Vuelo', 'Básico', 1.5, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-310', 'Familiarización/Emergencias en tierra y en vuelo', 'Simulador', 'Básico', 3, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-311', 'Vuelo IFR en IMC', 'Simulador', 'Básico', 3, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-312', 'Vuelo en montaña/táctico. IIMC con aproximación instrumental', 'Simulador', 'Básico', 3, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-313', 'Tomas en buques mono/multi/carrier. Procedimientos de emergencia', 'Simulador', 'Básico', 3, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM-314(G)', 'Familiarización/Emergencias en tierra/ en vuelo y buque con GVN', 'Simulador', 'Básico', 3, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TFM', 'Tactical Formation Maneuvering', 'Vuelo', 'Avanzado', 0, 1, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('HIGE/HOGE T/D', 'Hover automático sobre la mar o sobre tierra', 'Vuelo', 'Avanzado', 0, 2, 90);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TCT', 'Threat Counter Tactics', 'Vuelo', 'Avanzado', 0, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('FR', 'Técnica de Fast Rope', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('RAP', 'Técnica de Rappel', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SPIE', 'Empleo de Técnicas de extracción Spie Rig o AirTrep', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('RUBBER CAST', 'Cast de embarcaciones y equipo asociado.', 'Vuelo', 'Avanzado', 0, 1, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('DIV CAST', 'Cast nadadores/buceadores', 'Vuelo', 'Avanzado', 0, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('PARAOPS', 'Lanzamiento de Paracaidistas', 'Vuelo', 'Avanzado', 0, 1, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('GND TPT', 'Transporte Táctico de Tropas con Infil/Exfil por toma en LZ', 'Vuelo', 'Avanzado', 0, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('TPT (E)', 'Transporte Táctico empleando líneas de vida', 'Vuelo', 'Avanzado', 0, 1, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CA INF/EXF', 'Confined Area Infil/Exfil', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('CAS/CCA', 'Procedimientos de Apoyo de Fuegos', 'Vuelo', 'Avanzado', 0, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SNP', 'Tirador de precisión desde helicóptero', 'Vuelo', 'Avanzado', 0, 1, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ESCORT', 'Escolta de columnas de vehículos o helicópteros', 'Vuelo', 'Avanzado', 0, 1, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('WPN LF', 'Weapons Live Fire', 'Vuelo', 'Avanzado', 0, 3, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('MIO (OB)', 'Maritime Interdiction Operation', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('PR', 'Misión de Recuperación de Personal', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('AASLT', 'Misión de Asalto Aéreo o formación compleja', 'Vuelo', 'Avanzado', 0, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('LOG/AE', 'Misión logística Material/Personal o evacuaciones aéreas', 'Vuelo', 'Avanzado', 0, 1, 180);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM FAM-410', 'Vuelo Estandarización Básico FAM. (50% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM NAVTAC-411', 'Vuelo Estandarización Táctico y Navegación Táctica (50% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM SAR-412', 'Vuelo Estandarización Procedimientos SAR y SARN (50% GVN)', 'Simulador', 'Avanzado', 1, 1, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('SIM BUQ-413', 'Vuelo Estandarización Procedimientos Aeronavales (50% GVN)', 'Simulador', 'Avanzado', 1, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ASSAULT MISSION', 'CHECK Misión Anfibia o SAO en entorno terrestre (100% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('MARITIME MISSION', 'CHECK Misión marítima incluyendo un MIO (OB) (100% GVN)', 'Simulador', 'Avanzado', 2, 3, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('AIR TACPLAN', 'Planeamiento completo de misión aérea (4Ts o SOATU Planning & Briefing Guidelines)', 'Tierra', 'Avanzado', 0, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ECM', 'Electronic countermeasures (ECM)', 'Tierra', 'Avanzado', 0, 2, 365);
+INSERT INTO dim_session (session_name, session_description, session_block, session_plan, session_tv, session_crp_value, session_expiration) VALUES ('ECCM', 'Electronic counter-countermeasures (ECCM)', 'Tierra', 'Avanzado', 0, 2, 365);
+
+-- Insert into dim_unit
+
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMFLOAN', 'CF');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALPER', 'NA');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALFLOT', 'NA');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMGRUPFLOT', 'GD');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMANDES-31', 'C3');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMANDES-41', 'C4');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMTEMECOM', 'MC');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('ALMART', 'AM');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('GETEAR', 'GT');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('GEPROAR', 'GP');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMNAVES', 'CN');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COMSUBMAR', 'CS');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('COCEVACO', 'CC');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('Ejercicios en cumplimiento', 'OE');
+INSERT INTO dim_authority (authority_name, authority_abrv) VALUES ('Operaciones en cumplimiento', 'OE');
+
+
+-- Insert into dim_passenger_type
+
+INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Civiles');
+INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Militares');
 
 COMMIT;
