@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="haverkat_database.db" uuid="97871c72-33dd-4b58-a963-de769ca7cb88">
+    <data-source source="LOCAL" name="aether.db" uuid="2ebb8eee-831a-4edd-97be-363e451707b7">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/database/haverkat_database.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:G:\FlightHubApp\database\aether.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>

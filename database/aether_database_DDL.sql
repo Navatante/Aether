@@ -280,14 +280,21 @@ CREATE TABLE fact_session_capba (
 
 -- Tabla maestra de auditoría
 CREATE TABLE audit_log (
-    audit_id INTEGER PRIMARY KEY,
-    table_name TEXT NOT NULL,
-    operation TEXT NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
-    record_id TEXT NOT NULL,
-    old_data TEXT,
-    new_data TEXT,
-    changed_by TEXT,
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    audit_id        INTEGER PRIMARY KEY,
+    table_name      TEXT NOT NULL,
+    operation       TEXT NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
+    record_id       TEXT NOT NULL,
+    old_data        TEXT,
+    new_data        TEXT,
+    user_id         TEXT,
+    ip_address      TEXT,
+    changed_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla para la información de sesión, en cada inicio de sesion, se borraran y se actualizaran los datos.
+CREATE TABLE session_info (
+    user_id         TEXT,
+    ip_address      TEXT
 );
 
 -- ############################### --
@@ -618,7 +625,8 @@ SELECT
     record_id,
     json_extract(old_data, '$') as old_data,
     json_extract(new_data, '$') as new_data,
-    changed_by,
+    user_id,
+    ip_address,
     changed_at
 FROM audit_log
 ORDER BY audit_id DESC;
@@ -630,11 +638,10 @@ ORDER BY audit_id DESC;
 -- ############################### --
 
 -- TRIGGERS DE AUDITORIAS
--- Trigger para fact_flight
--- INSERT
+-- Triggers para fact_flight
 CREATE TRIGGER tr_audit_fact_flight_insert AFTER INSERT ON fact_flight
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, user_id, ip_address)
     VALUES (
                'fact_flight',
                'INSERT',
@@ -647,13 +654,14 @@ BEGIN
                        'flight_person_cta_fk', NEW.flight_person_cta_fk,
                        'flight_total_hours', NEW.flight_total_hours
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- UPDATE
+
 CREATE TRIGGER tr_audit_fact_flight_update AFTER UPDATE ON fact_flight
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, user_id, ip_address)
     VALUES (
                'fact_flight',
                'UPDATE',
@@ -674,13 +682,14 @@ BEGIN
                        'flight_person_cta_fk', NEW.flight_person_cta_fk,
                        'flight_total_hours', NEW.flight_total_hours
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- DELETE
+
 CREATE TRIGGER tr_audit_fact_flight_delete AFTER DELETE ON fact_flight
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, user_id, ip_address)
     VALUES (
                'fact_flight',
                'DELETE',
@@ -693,15 +702,15 @@ BEGIN
                        'flight_person_cta_fk', OLD.flight_person_cta_fk,
                        'flight_total_hours', OLD.flight_total_hours
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
 
--- Trigger para dim_person
--- INSERT
+-- Triggers para dim_person
 CREATE TRIGGER tr_audit_dim_person_insert AFTER INSERT ON dim_person
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, user_id, ip_address)
     VALUES (
                'dim_person',
                'INSERT',
@@ -715,13 +724,14 @@ BEGIN
                        'person_last_name_2', NEW.person_last_name_2,
                        'person_current_flag', NEW.person_current_flag
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- UPDATE
+
 CREATE TRIGGER tr_audit_dim_person_update AFTER UPDATE ON dim_person
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, user_id, ip_address)
     VALUES (
                'dim_person',
                'UPDATE',
@@ -744,13 +754,14 @@ BEGIN
                        'person_last_name_2', NEW.person_last_name_2,
                        'person_current_flag', NEW.person_current_flag
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- DELETE
+
 CREATE TRIGGER tr_audit_dim_person_delete AFTER DELETE ON dim_person
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, user_id, ip_address)
     VALUES (
                'dim_person',
                'DELETE',
@@ -764,15 +775,15 @@ BEGIN
                        'person_last_name_2', OLD.person_last_name_2,
                        'person_current_flag', OLD.person_current_flag
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
 
 -- Triggers para dim_event
--- INSERT
 CREATE TRIGGER tr_audit_dim_event_insert AFTER INSERT ON dim_event
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, user_id, ip_address)
     VALUES (
                'dim_event',
                'INSERT',
@@ -783,13 +794,14 @@ BEGIN
                        'event_place', NEW.event_place,
                        'event_code', NEW.event_code
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- UPDATE
+
 CREATE TRIGGER tr_audit_dim_event_update AFTER UPDATE ON dim_event
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, user_id, ip_address)
     VALUES (
                'dim_event',
                'UPDATE',
@@ -806,13 +818,14 @@ BEGIN
                        'event_place', NEW.event_place,
                        'event_code', NEW.event_code
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- DELETE
+
 CREATE TRIGGER tr_audit_dim_event_delete AFTER DELETE ON dim_event
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, user_id, ip_address)
     VALUES (
                'dim_event',
                'DELETE',
@@ -823,14 +836,15 @@ BEGIN
                        'event_place', OLD.event_place,
                        'event_code', OLD.event_code
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- INSERT
+
 -- Triggers para junction_person_hour
 CREATE TRIGGER tr_audit_junction_person_hour_insert AFTER INSERT ON junction_person_hour
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, new_data, user_id, ip_address)
     VALUES (
                'junction_person_hour',
                'INSERT',
@@ -842,13 +856,14 @@ BEGIN
                        'person_hour_period_fk', NEW.person_hour_period_fk,
                        'person_hour_hour_qty', NEW.person_hour_hour_qty
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- UPDATE
+
 CREATE TRIGGER tr_audit_junction_person_hour_update AFTER UPDATE ON junction_person_hour
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, new_data, user_id, ip_address)
     VALUES (
                'junction_person_hour',
                'UPDATE',
@@ -867,13 +882,14 @@ BEGIN
                        'person_hour_period_fk', NEW.person_hour_period_fk,
                        'person_hour_hour_qty', NEW.person_hour_hour_qty
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
--- DELETE
+
 CREATE TRIGGER tr_audit_junction_person_hour_delete AFTER DELETE ON junction_person_hour
 BEGIN
-    INSERT INTO audit_log (table_name, operation, record_id, old_data, changed_by)
+    INSERT INTO audit_log (table_name, operation, record_id, old_data, user_id, ip_address)
     VALUES (
                'junction_person_hour',
                'DELETE',
@@ -885,7 +901,8 @@ BEGIN
                        'person_hour_period_fk', OLD.person_hour_period_fk,
                        'person_hour_hour_qty', OLD.person_hour_hour_qty
                ),
-               COALESCE((SELECT sqlite_source_id()), 'SYSTEM')
+               COALESCE((SELECT user_id FROM session_info LIMIT 1), 'DIRECT_DB_ACCESS'),
+               COALESCE((SELECT ip_address FROM session_info LIMIT 1), 'UNKNOWN')
            );
 END;
 
