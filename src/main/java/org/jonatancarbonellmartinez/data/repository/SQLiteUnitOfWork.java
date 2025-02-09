@@ -86,4 +86,13 @@ public class SQLiteUnitOfWork implements UnitOfWork {
             throw new RuntimeException("Error closing unit of work", e);
         }
     }
+
+    // Getters
+    public String getIP_ADDRESS() {
+        return IP_ADDRESS;
+    }
+
+    public String getUSER_ID() {
+        return USER_ID;
+    }
 }

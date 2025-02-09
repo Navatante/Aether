@@ -22,6 +22,7 @@ public class SQLiteUnitOfWorkFactory implements UnitOfWorkFactory {
         this.personRepository = personRepository;
     }
 
+    // TODO tengo mis dudas si este new SqliteUnitOfWork es correcto cuando estoy usando Dagger2
     @Override
     public UnitOfWork create() {
         return new SQLiteUnitOfWork(connectionManager, transactionManager, personRepository);
