@@ -83,6 +83,10 @@ public class MainViewController {
             double deltaX = event.getScreenX() - initX;
             double deltaY = event.getScreenY() - initY;
 
+            // Le pongo al stage el tamano minimo en altura y anchura del root, asi no se puede redimensionar por completo.
+            stage.setMinWidth(root.getMinWidth());
+            stage.setMinHeight(root.getMinHeight());
+
             if (cursor == Cursor.SE_RESIZE) {
                 stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
                 stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
@@ -156,22 +160,10 @@ public class MainViewController {
             // Solo restaurar si el usuario realmente está arrastrando
             if (Math.abs(cursorScreenX - xOffset) > 5 || Math.abs(cursorScreenY - yOffset) > 5) {
 
-                double proportionX = event.getSceneX() / stage.getWidth();
-                double proportionY = event.getSceneY() / stage.getHeight();
-
-                double normalWidth = stage.getMinWidth() * 1.5;
-                double normalHeight = stage.getMinHeight() * 1.5;
-
                 stage.setMaximized(false);
-                stage.setWidth(normalWidth);
-                stage.setHeight(normalHeight);
 
-                // Calcular la nueva posición de la ventana manteniendo la posición relativa del cursor
-                double newX = cursorScreenX - (normalWidth * proportionX);
-                double newY = cursorScreenY - (normalHeight * proportionY);
-
-                stage.setX(newX);
-                stage.setY(newY);
+                stage.setX(cursorScreenX);
+                stage.setY(cursorScreenY);
 
                 // **Corrección clave**: Actualizamos xOffset e yOffset con la posición relativa en la nueva ventana
                 xOffset = cursorScreenX - stage.getX();
