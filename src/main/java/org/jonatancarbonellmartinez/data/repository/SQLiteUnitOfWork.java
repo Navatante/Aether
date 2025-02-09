@@ -6,6 +6,8 @@ import org.jonatancarbonellmartinez.data.database.configuration.ConnectionManage
 import org.jonatancarbonellmartinez.data.database.SQLiteTransactionManager;
 
 import javax.inject.Inject;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +17,17 @@ public class SQLiteUnitOfWork implements UnitOfWork {
     private final SQLiteTransactionManager transactionManager;
     private final ExecutorService executorService;
     private final PersonRepositoryImpl personRepository;
+    // TODO este user_id y ip_address es para insertarlo en cada conexion que requiera registro en audit_log
+    private final String USER_ID = System.getProperty("user.name");
+    private final String IP_ADDRESS;
+
+    {
+        try {
+            IP_ADDRESS = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Inject
     public SQLiteUnitOfWork(

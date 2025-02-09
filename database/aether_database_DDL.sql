@@ -978,3 +978,18 @@ INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Civiles');
 INSERT INTO dim_passenger_type (passenger_type_name)	VALUES ('Militares');
 
 COMMIT;
+
+-- // Al iniciar la conexión o antes de realizar operaciones
+-- public void setSessionInfo(Connection conn, String userId, String ipAddress) throws SQLException {
+--     // Limpiar información anterior
+--     try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM session_info")) {
+--         stmt.executeUpdate();
+-- }
+--
+--     // Insertar nueva información
+--     try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO session_info (user_id, ip_address) VALUES (?, ?)")) {
+--         stmt.setString(1, userId);
+-- stmt.setString(2, ipAddress);
+-- stmt.executeUpdate();
+-- }
+-- }
