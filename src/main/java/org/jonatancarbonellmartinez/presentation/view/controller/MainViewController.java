@@ -165,9 +165,10 @@ public class MainViewController {
                 stage.setX(cursorScreenX);
                 stage.setY(cursorScreenY);
 
-                // **Corrección clave**: Actualizamos xOffset e yOffset con la posición relativa en la nueva ventana
-                xOffset = cursorScreenX - stage.getX();
-                yOffset = cursorScreenY - stage.getY();
+                // Actualizamos xOffset e yOffset con la posición relativa en la nueva ventana
+                double actualWidth = stage.getWidth();
+                xOffset = cursorScreenX - stage.getX()+(actualWidth/2);
+                yOffset = cursorScreenY - stage.getY()+50;
             }
         }
 
