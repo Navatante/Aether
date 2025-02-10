@@ -6,8 +6,8 @@ import org.jonatancarbonellmartinez.application.MainApplication;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 
 /**
- * Este es el componente principal de Dagger.
- * En Dagger, un @Component conecta los módulos con las clases que necesitan dependencias.
+ * Este es el componente principal de Dagger 2.
+ * Su función es conectar los módulos (donde se definen las dependencias) con las clases que las necesitan.
  */
 
 @Singleton // Indica que las instancias creadas por este componente serán únicas en toda la aplicación.
@@ -27,5 +27,5 @@ public interface AppComponent {
 
     // Métodos para inyección
     void inject(MainApplication app); // Permite inyectar dependencias en MainApplication
-    MainCoordinator mainCoordinator(); // Expone MainCoordinator para su uso en otras partes de la
+    MainCoordinator mainCoordinator(); // Expone MainCoordinator para su uso en otras partes de la aplicacion.
 }

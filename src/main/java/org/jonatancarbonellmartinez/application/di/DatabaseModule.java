@@ -14,6 +14,18 @@ import org.jonatancarbonellmartinez.data.database.configuration.Properties;
 public class DatabaseModule {
     @Provides
     @Singleton
+    Properties provideProperties() {
+        return new Properties();
+    }
+
+    @Provides
+    @Singleton
+    Database provideDatabase(Properties properties) {
+        return new Database(properties);
+    }
+
+    @Provides
+    @Singleton
     PersonDAO providePersonDAO() {
         return new PersonDAO();
     }

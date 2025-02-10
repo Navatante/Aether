@@ -19,7 +19,6 @@ public abstract class RepositoryModule {
     @Singleton
     abstract UnitOfWork bindUnitOfWork(SQLiteUnitOfWork implementation);
 
-    // You already have this in your current RepositoryModule
     @Binds
     @Singleton
     abstract PersonRepository bindPersonRepository(PersonRepositoryImpl implementation);
