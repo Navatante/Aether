@@ -1,241 +1,189 @@
 package org.jonatancarbonellmartinez.data.database;
 
-import org.jonatancarbonellmartinez.data.database.configuration.Database;
 import org.jonatancarbonellmartinez.exceptions.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
-import org.jonatancarbonellmartinez.data.model.Entity;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 
+import javax.inject.Singleton;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
+@Singleton
+public class PersonDAO implements GenericDAO<PersonEntity, Integer> {
+    private static final String ENABLE_FOREIGN_KEYS = "PRAGMA foreign_keys = ON;";
+
+    private static final String INSERT_PERSON =
+            "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, " +
+                    "person_last_name_2, person_phone, person_dni, person_division, person_rol, " +
+                    "person_order, person_current_flag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String UPDATE_PERSON =
+            "UPDATE dim_person SET person_nk = ?, person_rank = ?, person_name = ?, " +
+                    "person_last_name_1 = ?, person_last_name_2 = ?, person_phone = ?, " +
+                    "person_dni = ?, person_division = ?, person_rol = ?, person_order = ?, " +
+                    "person_current_flag = ? WHERE person_sk = ?";
+
+    private static final String FIND_BY_ID =
+            "SELECT * FROM dim_person WHERE person_sk = ?";
+
+    private static final String FIND_ALL =
+            "SELECT * FROM dim_person ORDER BY person_order";
+
+    private static final String FIND_ACTIVE_PILOTS =
+            "SELECT * FROM dim_person WHERE person_rol='Piloto' AND person_current_flag=1 ORDER BY person_order";
+
+    private static final String FIND_ACTIVE_CREW =
+            "SELECT * FROM dim_person WHERE person_rol='Dotación' AND person_current_flag=1 ORDER BY person_order";
+
+    private static final String CHECK_ORDER_EXISTS =
+            "SELECT COUNT(*) FROM dim_person WHERE person_order = ? AND person_current_flag = 1";
+
+    private static final String INCREMENT_ORDERS =
+            "UPDATE dim_person SET person_order = person_order + 1 WHERE person_order >= ? AND person_current_flag = 1";
 
     @Override
-    public void insert(PersonEntity personEntity) throws DatabaseException {
+    public void insert(PersonEntity entity, Connection connection) throws DatabaseException {
+        try {
+            // Check and handle order conflicts
+            if (checkIfOrderExists(entity.getPersonOrder(), connection)) {
+                incrementOrders(entity.getPersonOrder(), connection);
+            }
 
-        // Paso 1: Verificar si ya existe un registro con el mismo número de orden
-        if (checkIfOrderExists(personEntity.getPersonOrder())) {
-            // Paso 2: Si existe, incrementar el orden de los registros activos con orden >= al nuevo
-            incrementOrders(personEntity.getPersonOrder());
-        }
-        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection connection = Database.getInstance().getConnection();
-             Statement stmt = connection.createStatement();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            // Habilitar claves foráneas
-            stmt.execute(enableForeignKeys);
-
-            pstmt.setString(1, personEntity.getPersonNk());
-            pstmt.setString(2, personEntity.getPersonRank());
-            pstmt.setString(3, personEntity.getPersonName());
-            pstmt.setString(4, personEntity.getPersonLastName1());
-            pstmt.setString(5, personEntity.getPersonLastName2());
-            pstmt.setString(6, personEntity.getPersonPhone());
-            pstmt.setString(7, personEntity.getPersonDni());
-            pstmt.setString(8, personEntity.getPersonDivision());
-            pstmt.setString(9, personEntity.getPersonRole());
-            pstmt.setInt(10, personEntity.getPersonOrder());
-            pstmt.setInt(11, personEntity.getPersonCurrentFlag());
-
-            pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
+            // Enable foreign keys and insert
+            enableForeignKeys(connection);
+            try (PreparedStatement pstmt = connection.prepareStatement(INSERT_PERSON)) {
+                setPersonParameters(pstmt, entity);
+                pstmt.executeUpdate();
+            }
         } catch (SQLException e) {
-            CustomLogger.logError("Error insertando persona con ID: " + personEntity.getPersonSk(), e);
-            throw new DatabaseException("Error insertando persona.", e);
+            CustomLogger.logError("Error inserting person", e);
+            throw new DatabaseException("Error inserting person", e);
         }
     }
 
     @Override
-    public Entity read(Integer entitySk) throws DatabaseException {
-        String sql = "SELECT * FROM dim_person WHERE person_sk = ?";
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            pstmt.setInt(1, entitySk);
-
-            // Execute the query and get the ResultSet
+    public PersonEntity findById(Integer id, Connection connection) throws DatabaseException {
+        try (PreparedStatement pstmt = connection.prepareStatement(FIND_BY_ID)) {
+            pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
-                // Check if a person with the given ID exists
-                if (rs.next()) {
-                    return mapResultSetToEntity(rs); // Return the populated Person object
-                }
+                return rs.next() ? mapResultSetToEntity(rs) : null;
             }
         } catch (SQLException e) {
-            CustomLogger.logError("Error buscando persona con ID: " + entitySk, e);
-            throw new DatabaseException("Error buscando persona.", e);
+            CustomLogger.logError("Error finding person with ID: " + id, e);
+            throw new DatabaseException("Error finding person", e);
         }
-        return null; // Return null if no person was found with the given ID
     }
 
     @Override
-    public void update(PersonEntity entity, int skToUpdate) throws DatabaseException {
-        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "UPDATE dim_person\n" +
-                    "SET \n" +
-                    "    person_nk = ?," +
-                    "    person_rank = ?," +
-                    "    person_name = ?," +
-                    "    person_last_name_1 = ?," +
-                    "    person_last_name_2 = ?," +
-                    "    person_phone = ?," +
-                    "    person_dni = ?," +
-                    "    person_division = ?," +
-                    "    person_rol = ?," +
-                    "    person_order = ?," +
-                    "    person_current_flag = ?" +
-                    "WHERE person_sk = ?";
-
-        try (Connection connection = Database.getInstance().getConnection();
-             Statement stmt = connection.createStatement();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            // Habilitar claves foráneas
-            stmt.execute(enableForeignKeys);
-
-            pstmt.setString(1, entity.getPersonNk());
-            pstmt.setString(2, entity.getPersonRank());
-            pstmt.setString(3, entity.getPersonName());
-            pstmt.setString(4, entity.getPersonLastName1());
-            pstmt.setString(5, entity.getPersonLastName2());
-            pstmt.setString(6, entity.getPersonPhone());
-            pstmt.setString(7, entity.getPersonDni());
-            pstmt.setString(8, entity.getPersonDivision());
-            pstmt.setString(9, entity.getPersonRole());
-            pstmt.setInt(10, entity.getPersonOrder());
-            pstmt.setInt(11, entity.getPersonCurrentFlag());
-            pstmt.setInt(12, skToUpdate);
-
-            pstmt.executeUpdate();
+    public void update(PersonEntity entity, Connection connection) throws DatabaseException {
+        try {
+            enableForeignKeys(connection);
+            try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_PERSON)) {
+                setPersonParameters(pstmt, entity);
+                pstmt.setInt(12, entity.getPersonSk());
+                pstmt.executeUpdate();
+            }
         } catch (SQLException e) {
-            CustomLogger.logError("Error insertando persona con ID: " + entity.getPersonSk(), e);
-            throw new DatabaseException("Error editando persona.", e);
+            CustomLogger.logError("Error updating person with ID: " + entity.getPersonSk(), e);
+            throw new DatabaseException("Error updating person", e);
         }
     }
 
     @Override
-    public void delete(Integer personSk) throws DatabaseException {
-        // I will not permit to delete persons.
-    }
-
-    @Override
-    // Each DAO method should handle its own connection lifecycle, creating a new connection
-    public List<PersonEntity> getAll() throws DatabaseException {
-        String sql = "SELECT * FROM dim_person ORDER BY person_order";
-        List<PersonEntity> personEntityList = new ArrayList<>();
-
-        // Obtain a new connection each time the method is called
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql);
+    public List<PersonEntity> findAll(Connection connection) throws DatabaseException {
+        try (PreparedStatement pstmt = connection.prepareStatement(FIND_ALL);
              ResultSet rs = pstmt.executeQuery()) {
+            List<PersonEntity> persons = new ArrayList<>();
             while (rs.next()) {
-                personEntityList.add( (PersonEntity)mapResultSetToEntity(rs) );
+                persons.add(mapResultSetToEntity(rs));
             }
+            return persons;
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder al personal.", e);
+            CustomLogger.logError("Error fetching all persons", e);
+            throw new DatabaseException("Error fetching all persons", e);
         }
-
-        return personEntityList;
     }
 
-    public List<PersonEntity> getOnlyActualPilots() throws DatabaseException {
-        String sql = "SELECT * FROM dim_person WHERE person_rol='Piloto' AND Person_current_flag=1 ORDER BY person_order";
-        List<PersonEntity> pilotList = new ArrayList<>();
-
-        // Obtain a new connection each time the method is called
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql);
+    public List<PersonEntity> getOnlyActualPilots(Connection connection) throws DatabaseException {
+        try (PreparedStatement pstmt = connection.prepareStatement(FIND_ACTIVE_PILOTS);
              ResultSet rs = pstmt.executeQuery()) {
+            List<PersonEntity> pilots = new ArrayList<>();
             while (rs.next()) {
-                pilotList.add( (PersonEntity)mapResultSetToEntity(rs) );
+                pilots.add(mapResultSetToEntity(rs));
             }
+            return pilots;
         } catch (SQLException e) {
-            CustomLogger.logError("Error al acceder a los pilotos", e);
-            throw new DatabaseException("Error al acceder a los pilotos.", e);
+            CustomLogger.logError("Error fetching active pilots", e);
+            throw new DatabaseException("Error fetching active pilots", e);
         }
-
-        return pilotList;
     }
 
-    public List<PersonEntity> getOnlyActualDvs() throws DatabaseException {
-        String sql = "SELECT * FROM dim_person WHERE person_rol='Dotación' AND Person_current_flag=1 ORDER BY person_order";
-        List<PersonEntity> dvList = new ArrayList<>();
-
-        // Obtain a new connection each time the method is called
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql);
+    public List<PersonEntity> getOnlyActualDvs(Connection connection) throws DatabaseException {
+        try (PreparedStatement pstmt = connection.prepareStatement(FIND_ACTIVE_CREW);
              ResultSet rs = pstmt.executeQuery()) {
+            List<PersonEntity> crew = new ArrayList<>();
             while (rs.next()) {
-                dvList.add( (PersonEntity)mapResultSetToEntity(rs) );
+                crew.add(mapResultSetToEntity(rs));
             }
+            return crew;
         } catch (SQLException e) {
-            CustomLogger.logError("Error al acceder a los DVs", e);
-            throw new DatabaseException("Error al acceder a los DVs.", e);
+            CustomLogger.logError("Error fetching active crew", e);
+            throw new DatabaseException("Error fetching active crew", e);
         }
-
-        return dvList;
     }
 
-    // Utility method to map a ResultSet row to a DimPerson object
-    @Override
-    public Entity mapResultSetToEntity(ResultSet rs) throws SQLException {
-        PersonEntity personEntity = new PersonEntity();
-        personEntity.setPersonSk(rs.getInt("person_sk"));
-        personEntity.setPersonNk(rs.getString("person_nk"));
-        personEntity.setPersonRank(rs.getString("person_rank"));
-        personEntity.setPersonName(rs.getString("person_name"));
-        personEntity.setPersonLastName1(rs.getString("person_last_name_1"));
-        personEntity.setPersonLastName2(rs.getString("person_last_name_2"));
-        personEntity.setPersonPhone(rs.getString("person_phone"));
-        personEntity.setPersonDni(rs.getString("person_dni"));
-        personEntity.setPersonDivision(rs.getString("person_division"));
-        personEntity.setPersonOrder(rs.getInt("person_order"));
-        personEntity.setPersonRole(rs.getString("person_rol"));
-        personEntity.setPersonCurrentFlag(rs.getInt("person_current_flag"));
-        return (Entity)personEntity;
+    private PersonEntity mapResultSetToEntity(ResultSet rs) throws SQLException {
+        PersonEntity entity = new PersonEntity();
+        entity.setPersonSk(rs.getInt("person_sk"));
+        entity.setPersonNk(rs.getString("person_nk"));
+        entity.setPersonRank(rs.getString("person_rank"));
+        entity.setPersonName(rs.getString("person_name"));
+        entity.setPersonLastName1(rs.getString("person_last_name_1"));
+        entity.setPersonLastName2(rs.getString("person_last_name_2"));
+        entity.setPersonPhone(rs.getString("person_phone"));
+        entity.setPersonDni(rs.getString("person_dni"));
+        entity.setPersonDivision(rs.getString("person_division"));
+        entity.setPersonOrder(rs.getInt("person_order"));
+        entity.setPersonRole(rs.getString("person_rol"));
+        entity.setPersonCurrentFlag(rs.getInt("person_current_flag"));
+        return entity;
     }
 
-    // Metodo para comprobar si ya existe un registro con el mismo orden
-    private boolean checkIfOrderExists(int orden) throws DatabaseException {
-        String sql = "SELECT COUNT(*) FROM dim_person WHERE person_order = ? AND person_current_flag = 1";
-        try (Connection connection = Database.getInstance().getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, orden);
+    private boolean checkIfOrderExists(int order, Connection connection) throws SQLException {
+        try (PreparedStatement pstmt = connection.prepareStatement(CHECK_ORDER_EXISTS)) {
+            pstmt.setInt(1, order);
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {  // Mover el cursor al primer registro
-                    return rs.getInt(1) > 0;  // Obtener el primer valor (COUNT)
-                }
-                return false;  // Si no hay resultados
+                return rs.next() && rs.getInt(1) > 0;
             }
-        } catch (SQLException e) {
-            CustomLogger.logError("Error al verificar el orden en la base de datos", e);
-            throw new DatabaseException("Error al verificar el orden en la base de datos", e);
         }
     }
 
-    // Metodo para incrementar el orden de los registros >= al nuevo
-    private void incrementOrders(int orden) throws DatabaseException {
-        String enableForeignKeys = "PRAGMA foreign_keys = ON;";
-        String sql = "UPDATE dim_person SET person_order = person_order + 1 WHERE person_order >= ? AND person_current_flag = 1";
-
-        try (Connection connection = Database.getInstance().getConnection();
-             Statement stmt = connection.createStatement();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            // Habilitar claves foráneas
-            stmt.execute(enableForeignKeys);
-
-            pstmt.setInt(1, orden);
+    private void incrementOrders(int order, Connection connection) throws SQLException {
+        enableForeignKeys(connection);
+        try (PreparedStatement pstmt = connection.prepareStatement(INCREMENT_ORDERS)) {
+            pstmt.setInt(1, order);
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            CustomLogger.logError("Error al incrementar el orden en la base de datos", e);
-            throw new DatabaseException("Error al incrementar el orden en la base de datos", e);
         }
+    }
+
+    private void enableForeignKeys(Connection connection) throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(ENABLE_FOREIGN_KEYS);
+        }
+    }
+
+    private void setPersonParameters(PreparedStatement pstmt, PersonEntity entity) throws SQLException {
+        pstmt.setString(1, entity.getPersonNk());
+        pstmt.setString(2, entity.getPersonRank());
+        pstmt.setString(3, entity.getPersonName());
+        pstmt.setString(4, entity.getPersonLastName1());
+        pstmt.setString(5, entity.getPersonLastName2());
+        pstmt.setString(6, entity.getPersonPhone());
+        pstmt.setString(7, entity.getPersonDni());
+        pstmt.setString(8, entity.getPersonDivision());
+        pstmt.setString(9, entity.getPersonRole());
+        pstmt.setInt(10, entity.getPersonOrder());
+        pstmt.setInt(11, entity.getPersonCurrentFlag());
     }
 }
-
-

@@ -261,3 +261,12 @@ public class FlightRepositoryImpl implements FlightRepository {
 "Aether" es un nombre interesante y evocador. Hace referencia al "éter", que en la mitología griega era el dios del cielo superior y,
 en la ciencia antigua, se consideraba el quinto elemento o la sustancia que llenaba el espacio. Para una aplicación que gestiona vuelos,
 puede dar la sensación de algo etéreo, ligero y relacionado con el cielo, lo cual encaja bastante bien.
+
+Recomendación:
+Eliminar ConnectionManager
+Confiar en SQLite para manejar la concurrencia
+Usar try-with-resources para manejar conexiones
+Mantener Database como singleton
+Seguir usando CompletableFuture para operaciones asíncronas
+
+El código sería más simple y seguiría siendo thread-safe y eficiente para tu caso de uso.

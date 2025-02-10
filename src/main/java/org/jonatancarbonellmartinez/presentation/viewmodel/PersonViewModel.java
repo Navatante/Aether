@@ -9,15 +9,19 @@ import javafx.collections.transformation.FilteredList;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
-
 import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * Las JavaFX Properties (StringProperty, IntegerProperty, BooleanProperty, etc.)
+ * se usan aquí porque permiten la vinculación de datos (data binding) entre la vista (FXML o código JavaFX) y el modelo de la aplicación.
+ */
+
 public class PersonViewModel {
     private final PersonRepository repository;
-    private final PersonUiMapper uiMapper;  // Add this
+    private final PersonUiMapper uiMapper;
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);

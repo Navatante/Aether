@@ -12,6 +12,11 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Las JavaFX Properties (StringProperty, IntegerProperty, BooleanProperty, etc.)
+ * se usan aquí porque permiten la vinculación de datos (data binding) entre la vista (FXML o código JavaFX) y el modelo de la aplicación.
+ */
+
 public class DatabaseViewModel {
     private final Database model;
     private final BooleanProperty connectionSuccess = new SimpleBooleanProperty(false);

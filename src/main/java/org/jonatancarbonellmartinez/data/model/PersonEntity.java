@@ -2,6 +2,10 @@ package org.jonatancarbonellmartinez.data.model;
 
 import org.jonatancarbonellmartinez.domain.model.Person;
 
+/**
+ * JavaFX Properties NO deben usarse en esta capa.
+ */
+
 // Data Layer (how it's stored in database)
 public class PersonEntity {
     private Integer personSk;

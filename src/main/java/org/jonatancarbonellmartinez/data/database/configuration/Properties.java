@@ -1,25 +1,32 @@
 package org.jonatancarbonellmartinez.data.database.configuration;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+@Singleton
 public class Properties {
+    private final java.util.Properties properties;
+    private final String propertiesDirectoryPath;
+    private final String propertiesFilePath;
+    private final File propertiesDirectory;
+    private final File propertiesFile;
 
-    private java.util.Properties properties;
-    private static Properties instanceOfPropertiesFile;
-    private static final String PROPERTIES_DIRECTORY_PATH = System.getProperty("user.dir") + File.separator + "properties";
-    private static final String PROPERTIES_FILE_PATH = PROPERTIES_DIRECTORY_PATH + File.separator + "flightHubDatabase.properties";
-    private File propertiesDirectory;
-    private File propertiesFile;
-
-    // Private constructor for Singleton pattern
-    private Properties() {
+    @Inject
+    public Properties() {
         this.properties = new java.util.Properties();
-        this.propertiesDirectory = new File(PROPERTIES_DIRECTORY_PATH);
-        this.propertiesFile = new File(PROPERTIES_FILE_PATH);
+        this.propertiesDirectoryPath = System.getProperty("user.dir") + File.separator + "properties";
+        this.propertiesFilePath = propertiesDirectoryPath + File.separator + "flightHubDatabase.properties";
+        this.propertiesDirectory = new File(propertiesDirectoryPath);
+        this.propertiesFile = new File(propertiesFilePath);
 
+        initializeProperties();
+    }
+
+    private void initializeProperties() {
         if (!checkIfPropertiesDirectoryExists() && !createPropertiesDirectory()) {
             throw new RuntimeException("Failed to create properties directory.");
         }
@@ -31,72 +38,53 @@ public class Properties {
         loadProperties();
     }
 
-    // Thread-safe singleton instance retrieval
-    public static synchronized Properties getInstanceOfPropertiesFile() {
-        if (instanceOfPropertiesFile == null) {
-            instanceOfPropertiesFile = new Properties();
-        }
-        return instanceOfPropertiesFile;
-    }
-
-    // Check if the properties directory exists
+    // Rest of the methods remain the same...
     private boolean checkIfPropertiesDirectoryExists() {
         return propertiesDirectory.exists() && propertiesDirectory.isDirectory();
     }
 
-    // Create the properties directory if it doesn't exist
     private boolean createPropertiesDirectory() {
         return propertiesDirectory.mkdirs();
     }
 
-    // Check if the properties file exists inside the directory
     private boolean checkIfPropertiesFileExists() {
         return propertiesFile.exists() && propertiesFile.isFile();
     }
 
-    // Create the properties file if it doesn't exist
     private boolean createPropertiesFile() {
         try {
             if (propertiesFile.createNewFile()) {
-                // Add default properties (like an empty path)
                 properties.setProperty("path", "");  // Default to empty path
                 saveProperties();
                 return true;
-            } else {
-                System.err.println("File already exists or failed to create.");
-                return false;
             }
+            throw new RuntimeException("Failed to create properties file");
         } catch (IOException e) {
             throw new RuntimeException("Failed to create properties file", e);
         }
     }
 
-    // Load properties from the file into memory
     private void loadProperties() {
         try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
             properties.load(fileInputStream);
-
         } catch (IOException e) {
-            System.err.println("Failed to load properties: " + e.getMessage());
+            throw new RuntimeException("Failed to load properties", e);
         }
     }
 
-    // Save properties to the file
     private void saveProperties() {
         try (FileOutputStream fileOutputStream = new FileOutputStream(propertiesFile)) {
             properties.store(fileOutputStream, null);
         } catch (IOException e) {
-            System.err.println("Failed to save properties: " + e.getMessage());
+            throw new RuntimeException("Failed to save properties", e);
         }
     }
 
-    // Write a key-value pair to the properties file
     public void writeIntoPropertiesFile(String key, String value) {
         properties.setProperty(key, value);
         saveProperties();
     }
 
-    // Read a value by key from the properties file
     public String readFromPropertiesFile(String key) {
         return properties.getProperty(key);
     }

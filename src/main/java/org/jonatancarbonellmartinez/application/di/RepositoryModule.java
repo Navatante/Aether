@@ -1,30 +1,28 @@
 package org.jonatancarbonellmartinez.application.di;
 
-import javax.inject.Singleton;
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+import javax.inject.Singleton;
+
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
+import org.jonatancarbonellmartinez.domain.repository.contract.UnitOfWork;
+import org.jonatancarbonellmartinez.data.repository.SQLiteUnitOfWork;
 
 /**
- * Este módulo administra los repositorios, que manejan la lógica de acceso a datos.
+ * This module provides bindings for repositories and UnitOfWork.
+ * Using @Binds is more efficient than @Provides for simple bindings.
  */
-
-
-// Implementaciones de repositorios.
 @Module
-public class RepositoryModule {
-    @Provides
+public abstract class RepositoryModule {
+    @Binds
     @Singleton
-    PersonRepository providePersonRepository(PersonRepositoryImpl impl) {
-        return impl;
-    }
+    abstract UnitOfWork bindUnitOfWork(SQLiteUnitOfWork implementation);
 
-//    @Provides
-//    @Singleton
-//    EventRepository provideEventRepository(EventRepositoryImpl impl) {
-//        return impl;
-//    }
+    // You already have this in your current RepositoryModule
+    @Binds
+    @Singleton
+    abstract PersonRepository bindPersonRepository(PersonRepositoryImpl implementation);
 
-    // Agregar más repositories según necesites
+    // Add other repository bindings as needed
 }
