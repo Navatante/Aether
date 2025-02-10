@@ -5,9 +5,8 @@ import dagger.Module;
 import javax.inject.Singleton;
 
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
+import org.jonatancarbonellmartinez.data.repository.UnitOfWork;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.domain.repository.contract.UnitOfWork;
-import org.jonatancarbonellmartinez.data.repository.SQLiteUnitOfWork;
 
 /**
  * This module provides bindings for repositories and UnitOfWork.
@@ -17,7 +16,7 @@ import org.jonatancarbonellmartinez.data.repository.SQLiteUnitOfWork;
 public abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract UnitOfWork bindUnitOfWork(SQLiteUnitOfWork implementation);
+    abstract UnitOfWork bindUnitOfWork();
 
     @Binds
     @Singleton
