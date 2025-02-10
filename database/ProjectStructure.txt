@@ -256,3 +256,8 @@ public class FlightRepositoryImpl implements FlightRepository {
 🔹 Usa Coordinators para navegación y Dagger 2 para inyección de dependencias.
 
 ¡Con esto puedes desarrollar la app de manera clara y escalable! 🚀
+
+
+"Aether" es un nombre interesante y evocador. Hace referencia al "éter", que en la mitología griega era el dios del cielo superior y,
+en la ciencia antigua, se consideraba el quinto elemento o la sustancia que llenaba el espacio. Para una aplicación que gestiona vuelos,
+puede dar la sensación de algo etéreo, ligero y relacionado con el cielo, lo cual encaja bastante bien.

@@ -6,8 +6,8 @@ import dagger.Provides;
 import org.jonatancarbonellmartinez.application.coordinator.BaseCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
-import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
-import org.jonatancarbonellmartinez.presentation.view.controller.PersonViewController;
+import org.jonatancarbonellmartinez.presentation.view.MainViewController;
+import org.jonatancarbonellmartinez.presentation.view.PersonViewController;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presentation.view.controller;
+package org.jonatancarbonellmartinez.presentation.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

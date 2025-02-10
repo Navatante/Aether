@@ -5,12 +5,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
+import org.jonatancarbonellmartinez.presentation.view.MainViewController;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

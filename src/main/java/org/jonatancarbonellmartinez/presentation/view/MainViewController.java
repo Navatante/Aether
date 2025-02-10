@@ -1,8 +1,7 @@
-package org.jonatancarbonellmartinez.presentation.view.controller;
+package org.jonatancarbonellmartinez.presentation.view;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.control.ToggleButton;
+
 import javafx.scene.control.ToggleGroup;
 
 @Singleton
