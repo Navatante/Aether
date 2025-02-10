@@ -18,13 +18,8 @@
     </properties>
 
     <dependencies>
-        <!-- Your existing dependencies remain the same -->
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>3.5.1</version>
-        </dependency>
 
+        <!-- SQLite JDBC -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -37,7 +32,6 @@
             <artifactId>dagger</artifactId>
             <version>${dagger.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.dagger</groupId>
             <artifactId>dagger-compiler</artifactId>
@@ -45,16 +39,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Compiler Plugin -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -72,44 +61,94 @@
                 </configuration>
             </plugin>
 
-            <!-- Build Helper Plugin -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
+                        <phase>package</phase>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/annotations</source>
-                            </sources>
+                            <!-- Sets your main class in the JAR's manifest -->
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.jonatancarbonellmartinez.application.MainApplication</mainClass>
+                                </transformer>
+                            </transformers>
+                            <!-- Handles signature files from dependencies -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Clean Plugin -->
+            <!-- Launch4j plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.build.directory}/generated-sources/annotations</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </fileset>
-                    </filesets>
-                </configuration>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>target/${project.artifactId}.exe</outfile>
+                            <jar>target/${project.artifactId}-${project.version}.jar</jar>
+                            <icon>src/main/resources/images/icon_aether_provisional_logo_Lf2_icon.ico</icon>
+                            <classPath>
+                                <mainClass>org.jonatancarbonellmartinez.application.MainApplication</mainClass>
+                            </classPath>
+                            <jre>
+                                <path>C:\Program Files\Java\jdk1.8.0_202\bin\java.exe</path>
+                                <minVersion>1.8.0</minVersion>
+                            </jre>
+                            <versionInfo>
+                                <companyName>Jonatan Carbonell Martinez</companyName>
+                                <fileDescription>Gestor Decimocuarta Escuadrilla</fileDescription>
+                                <copyright>Copyright © 2024</copyright>
+                                <productName>Aether</productName>
+                                <internalName>Aether</internalName>
+                                <originalFilename>Aether.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+
+        <!-- Include FXML and CSS files in the JAR -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.css</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.jpeg</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.ico</include>
+                </includes>
+            </resource>
+        </resources>
+
     </build>
 
 </project>
