@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.data.database;
 
 import org.jonatancarbonellmartinez.data.database.configuration.ConnectionManager;
 import org.jonatancarbonellmartinez.domain.repository.contract.DatabaseTransactionManager;
+import org.jonatancarbonellmartinez.exceptions.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
@@ -26,7 +27,9 @@ public class SQLiteTransactionManager implements DatabaseTransactionManager {
                 transactionActive.set(true);
             }
         } catch (SQLException e) {
+            CustomLogger.logError("Error beginning transaction", e);
             throw new DatabaseException("Error beginning transaction", e);
+
         }
     }
 

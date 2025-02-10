@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.data.database;
 
 import org.jonatancarbonellmartinez.data.database.configuration.Database;
+import org.jonatancarbonellmartinez.exceptions.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.Entity;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
@@ -44,7 +45,8 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
 
             pstmt.executeUpdate();  // Cambiar execute() por executeUpdate() para inserciones
         } catch (SQLException e) {
-            throw new DatabaseException("Error insertando persona en la base de datos.", e);
+            CustomLogger.logError("Error insertando persona con ID: " + personEntity.getPersonSk(), e);
+            throw new DatabaseException("Error insertando persona.", e);
         }
     }
 
@@ -64,7 +66,8 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error buscando persona por ID.", e);
+            CustomLogger.logError("Error buscando persona con ID: " + entitySk, e);
+            throw new DatabaseException("Error buscando persona.", e);
         }
         return null; // Return null if no person was found with the given ID
     }
@@ -109,7 +112,8 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseException("Error editando persona en la base de datos", e);
+            CustomLogger.logError("Error insertando persona con ID: " + entity.getPersonSk(), e);
+            throw new DatabaseException("Error editando persona.", e);
         }
     }
 
@@ -150,6 +154,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
                 pilotList.add( (PersonEntity)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
+            CustomLogger.logError("Error al acceder a los pilotos", e);
             throw new DatabaseException("Error al acceder a los pilotos.", e);
         }
 
@@ -168,7 +173,8 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
                 dvList.add( (PersonEntity)mapResultSetToEntity(rs) );
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error al acceder a los pilotos.", e);
+            CustomLogger.logError("Error al acceder a los DVs", e);
+            throw new DatabaseException("Error al acceder a los DVs.", e);
         }
 
         return dvList;
@@ -206,6 +212,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
                 return false;  // Si no hay resultados
             }
         } catch (SQLException e) {
+            CustomLogger.logError("Error al verificar el orden en la base de datos", e);
             throw new DatabaseException("Error al verificar el orden en la base de datos", e);
         }
     }
@@ -225,6 +232,7 @@ public class PersonDAO implements GenericDAO<PersonEntity,Integer> {
             pstmt.setInt(1, orden);
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            CustomLogger.logError("Error al incrementar el orden en la base de datos", e);
             throw new DatabaseException("Error al incrementar el orden en la base de datos", e);
         }
     }
