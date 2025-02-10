@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="root" minHeight="50.0" minWidth="550.0" onMouseDragged="#handleRootMouseDragged" onMouseMoved="#handleRootMouseMoved" onMousePressed="#handleRootMousePressed" onMouseReleased="#handleRootMouseReleased" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="root" minHeight="50.0" minWidth="550.0" onMouseDragged="#handleRootMouseDragged" onMousePressed="#handleRootMousePressed" onMouseReleased="#handleRootMouseReleased" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <BorderPane fx:id="contentArea" />
     </center>

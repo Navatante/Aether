@@ -5,6 +5,7 @@ import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -21,8 +22,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javafx.scene.control.ToggleGroup;
+
+import static javafx.scene.Cursor.*;
 
 @Singleton
 public class MainViewController {
@@ -43,18 +45,12 @@ public class MainViewController {
     private Rectangle2D previousBounds;
     private boolean wasMaximized = false;
 
-    @FXML
-    private BorderPane root;
-    @FXML
-    private BorderPane contentArea;
-    @FXML
-    private BorderPane topBar;
-    @FXML
-    private Button refreshButton;
-    @FXML
-    private ImageView refreshIcon;
-    @FXML
-    private ToggleGroup leftPanelToggleButtonsGroup;
+    @FXML private BorderPane root;
+    @FXML private BorderPane contentArea;
+    @FXML private BorderPane topBar;
+    @FXML private Button refreshButton;
+    @FXML private ImageView refreshIcon;
+    @FXML private ToggleGroup leftPanelToggleButtonsGroup;
 
     @Inject
     public MainViewController(PersonViewController personViewController) {
@@ -63,86 +59,81 @@ public class MainViewController {
 
     @FXML
     public void initialize() {
-        loadView("PersonView"); // Load PersonView by default
+        loadView("PersonView");
         setRefreshButtonShortCut();
         atLeastOneToggleButtonSelectedListener();
-    }
-
-    @FXML
-    private void handleRootMouseMoved(MouseEvent event) {
-        if (!resizing) {
-            Cursor cursor = getCursor(event);
-            root.setCursor(cursor);
-        }
+        setupMouseEvents();
     }
 
     @FXML
     private void handleRootMousePressed(MouseEvent event) {
-        initX = event.getScreenX();
-        initY = event.getScreenY();
+        Point2D mousePoint = root.sceneToLocal(event.getSceneX(), event.getSceneY());
+        Cursor cursor = getCursor(mousePoint.getX(), mousePoint.getY());
 
-        Stage stage = (Stage) root.getScene().getWindow();
-        initStageX = stage.getX();
-        initStageY = stage.getY();
-        initWidth = root.getWidth();
-        initHeight = root.getHeight();
-
-        Cursor cursor = getCursor(event);
         if (cursor != Cursor.DEFAULT) {
+            initX = event.getScreenX();
+            initY = event.getScreenY();
+
+            Stage stage = (Stage) root.getScene().getWindow();
+            initStageX = stage.getX();
+            initStageY = stage.getY();
+            initWidth = root.getWidth();
+            initHeight = root.getHeight();
+
             resizing = true;
             event.consume();
         }
     }
-
     @FXML
     private void handleRootMouseDragged(MouseEvent event) {
+        if (!resizing) return;
 
-        if (resizing) {
-            Stage stage = (Stage) root.getScene().getWindow();
-            Cursor cursor = root.getCursor();
+        Stage stage = (Stage) root.getScene().getWindow();
+        Cursor cursor = root.getCursor();
+        double deltaX = event.getScreenX() - initX;
+        double deltaY = event.getScreenY() - initY;
 
-            double deltaX = event.getScreenX() - initX;
-            double deltaY = event.getScreenY() - initY;
+        stage.setMinWidth(root.getMinWidth());
+        stage.setMinHeight(root.getMinHeight());
 
-            // Le pongo al stage el tamano minimo en altura y anchura del root, asi no se puede redimensionar por completo.
-            stage.setMinWidth(root.getMinWidth());
-            stage.setMinHeight(root.getMinHeight());
-
-            if (cursor == Cursor.SE_RESIZE) {
-                stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
-                stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
-            } else if (cursor == Cursor.SW_RESIZE) {
-                stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
-                stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
-                stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
-            } else if (cursor == Cursor.NW_RESIZE) {
-                stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
-                stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
-                stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
-                stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
-            } else if (cursor == Cursor.NE_RESIZE) {
-                stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
-                stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
-                stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
-            } else if (cursor == Cursor.E_RESIZE) {
-                stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
-            } else if (cursor == Cursor.W_RESIZE) {
-                stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
-                stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
-            } else if (cursor == Cursor.N_RESIZE) {
-                stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
-                stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
-            } else if (cursor == Cursor.S_RESIZE) {
-                stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
-            }
-            event.consume();
+        if (cursor.equals(SE_RESIZE)) {
+            stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
+            stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
+        } else if (cursor.equals(SW_RESIZE)) {
+            stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
+            stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
+            stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
+        } else if (cursor.equals(NW_RESIZE)) {
+            stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
+            stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
+            stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
+            stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
+        } else if (cursor.equals(NE_RESIZE)) {
+            stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
+            stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
+            stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
+        } else if (cursor.equals(E_RESIZE)) {
+            stage.setWidth(Math.max(initWidth + deltaX, stage.getMinWidth()));
+        } else if (cursor.equals(W_RESIZE)) {
+            stage.setX(Math.min(initStageX + deltaX, initStageX + initWidth - stage.getMinWidth()));
+            stage.setWidth(Math.max(initWidth - deltaX, stage.getMinWidth()));
+        } else if (cursor.equals(N_RESIZE)) {
+            stage.setY(Math.min(initStageY + deltaY, initStageY + initHeight - stage.getMinHeight()));
+            stage.setHeight(Math.max(initHeight - deltaY, stage.getMinHeight()));
+        } else if (cursor.equals(S_RESIZE)) {
+            stage.setHeight(Math.max(initHeight + deltaY, stage.getMinHeight()));
         }
+        event.consume();
     }
 
     @FXML
     private void handleRootMouseReleased(MouseEvent event) {
-        resizing = false;
-        root.setCursor(getCursor(event));
+        if (resizing) {
+            resizing = false;
+            Point2D mousePoint = root.sceneToLocal(event.getSceneX(), event.getSceneY());
+            root.setCursor(getCursor(mousePoint.getX(), mousePoint.getY()));
+            event.consume();
+        }
     }
 
     @FXML
@@ -271,6 +262,24 @@ public class MainViewController {
         rotateTransition.play();
     }
 
+    private void setupMouseEvents() {
+        // Configurar event filter para el movimiento del mouse
+        root.addEventFilter(MouseEvent.MOUSE_MOVED, this::handleMouseMoved);
+
+        // Configurar event handlers para el redimensionamiento
+        root.setOnMousePressed(this::handleRootMousePressed);
+        root.setOnMouseDragged(this::handleRootMouseDragged);
+        root.setOnMouseReleased(this::handleRootMouseReleased);
+    }
+
+    private void handleMouseMoved(MouseEvent event) {
+        if (!resizing) {
+            Point2D mousePoint = root.sceneToLocal(event.getSceneX(), event.getSceneY());
+            Cursor cursor = getCursor(mousePoint.getX(), mousePoint.getY());
+            root.setCursor(cursor);
+        }
+    }
+
     private void refreshContent() {
         // TODO
     }
@@ -297,11 +306,14 @@ public class MainViewController {
         }
     }
 
-    private Cursor getCursor(MouseEvent event) {
-        double x = event.getX();
-        double y = event.getY();
+    // Modificar el metodo getCursor para usar coordenadas directamente
+    private Cursor getCursor(double x, double y) {
         double width = root.getWidth();
         double height = root.getHeight();
+
+        if (x < 0 || x > width || y < 0 || y > height) {
+            return Cursor.DEFAULT;
+        }
 
         if (y < RESIZE_PADDING && x < RESIZE_PADDING) return Cursor.NW_RESIZE;
         if (y < RESIZE_PADDING && x > width - RESIZE_PADDING) return Cursor.NE_RESIZE;
