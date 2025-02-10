@@ -2,6 +2,7 @@ package org.jonatancarbonellmartinez.application.coordinator;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jonatancarbonellmartinez.presentation.view.controller.MainViewController;
@@ -62,6 +63,9 @@ public class MainCoordinator implements Cleanable {
             scene.getStylesheets().add(css);
 
             primaryStage.setScene(scene);
+
+            // Set the taskbar icon
+            primaryStage.getIcons().add(new Image("/images/Icon_Aether_provisional_logo.png"));
 
             // Configure close event
             primaryStage.setOnCloseRequest(event -> cleanup());

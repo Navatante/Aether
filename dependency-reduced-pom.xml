@@ -77,7 +77,6 @@
               <goal>launch4j</goal>
             </goals>
             <configuration>
-              <stayAlive>true</stayAlive>
               <headerType>gui</headerType>
               <outfile>target/${project.artifactId}.exe</outfile>
               <jar>target/${project.artifactId}-${project.version}.jar</jar>

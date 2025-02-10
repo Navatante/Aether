@@ -16,6 +16,7 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         // Reset default stylesheet
         Application.setUserAgentStylesheet(null);
 
