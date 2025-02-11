@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.domain.model;
 
 /**
- * En la capa de dominio, los modelos suelen ser POJOs puros sin dependencias de JavaFX.
+ * En la capa de dominio, contiente la logica de negocio, los modelos suelen ser POJOs puros sin dependencias de JavaFX.
  */
 
 // Domain Layer (business logic)
