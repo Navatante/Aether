@@ -54,21 +54,6 @@ public class PersonViewController {
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
         activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
         orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
-
-        // Personalizar la columna de activo para mostrar "Activo"/"Inactivo"
-        activeColumn.setCellFactory(column -> new TableCell<PersonUI, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    // Assuming the string values are "true"/"false" or "1"/"0"
-                    boolean isActive = "true".equalsIgnoreCase(item) || "1".equals(item);
-                    setText(isActive ? "Activo" : "Inactivo");
-                }
-            }
-        });
     }
 
     private void setupBindings() {
