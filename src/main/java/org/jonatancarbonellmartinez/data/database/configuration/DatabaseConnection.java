@@ -33,11 +33,17 @@ public class DatabaseConnection {
         }
 
         try {
-            return DriverManager.getConnection(databasePath.get());
+            Connection conn = DriverManager.getConnection(databasePath.get());
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON;");   // Toda conexion tendra implicitamente habilitadas las claves foraneas.
+                stmt.execute("PRAGMA busy_timeout = 5000;");  // Toda conexion tendra implicitamente reintentos de conexion en intervalos de microsegundos aleatorios durante 5 seg.
+            }
+            return conn;
         } catch (SQLException e) {
             throw new SQLException("Error connecting to database: " + e.getMessage(), e);
         }
     }
+
 
     public void setDatabasePath(String path) throws IOException {
         databasePath.set(path);

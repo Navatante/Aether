@@ -1,18 +1,31 @@
 package org.jonatancarbonellmartinez.presentation.view;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
+import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
 
 import javax.inject.Inject;
 
 public class PersonViewController {
-    @FXML private TableView<PersonViewModel.PersonUI> personTable;
+    @FXML private TableView<PersonUI> personTable;
     @FXML private TextField searchField;
-    @FXML private Button addButton;
-    @FXML private Button editButton;
+    @FXML private RadioButton activeInactiveSwitch;
+
+    // Column declarations
+    @FXML private TableColumn<PersonUI, Integer> idColumn;
+    @FXML private TableColumn<PersonUI, String> codeColumn;
+    @FXML private TableColumn<PersonUI, String> rankColumn;
+    @FXML private TableColumn<PersonUI, String> nameColumn;
+    @FXML private TableColumn<PersonUI, String> lastName1Column;
+    @FXML private TableColumn<PersonUI, String> lastName2Column;
+    @FXML private TableColumn<PersonUI, String> phoneColumn;
+    @FXML private TableColumn<PersonUI, String> dniColumn;
+    @FXML private TableColumn<PersonUI, String> divisionColumn;
+    @FXML private TableColumn<PersonUI, String> roleColumn;
+    @FXML private TableColumn<PersonUI, Boolean> activeColumn;
+    @FXML private TableColumn<PersonUI, Integer> orderColumn;
 
     private final PersonViewModel viewModel;
 
@@ -23,28 +36,47 @@ public class PersonViewController {
 
     @FXML
     public void initialize() {
-        // Conectar la tabla con los datos del ViewModel
+        setupTableColumns();
+        setupBindings();
+        viewModel.loadPersons();
+    }
+
+    private void setupTableColumns() {
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+        rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        lastName1Column.setCellValueFactory(new PropertyValueFactory<>("lastName1"));
+        lastName2Column.setCellValueFactory(new PropertyValueFactory<>("lastName2"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        dniColumn.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        divisionColumn.setCellValueFactory(new PropertyValueFactory<>("division"));
+        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
+        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
+        orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
+
+        // Personalizar la columna de activo para mostrar "Activo"/"Inactivo"
+        activeColumn.setCellFactory(column -> new TableCell<PersonUI, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item ? "Activo" : "Inactivo");
+                }
+            }
+        });
+    }
+
+    private void setupBindings() {
+        // Vincular la tabla con los datos filtrados
         personTable.setItems(viewModel.getFilteredPersons());
 
-        // Vincular el campo de búsqueda con el ViewModel
+        // Vincular el campo de búsqueda
         searchField.textProperty().bindBidirectional(viewModel.searchQueryProperty());
 
-        // Cargar personas al iniciar la vista
-        viewModel.loadPersons();
-
-        // Set up button handlers programmatically
-        addButton.setOnAction(event -> onAddPersonClicked());
-        editButton.setOnAction(event -> onEditPersonClicked());
-    }
-
-    private void onAddPersonClicked() {
-        viewModel.selectedPersonProperty().set(new PersonViewModel.PersonUI());
-    }
-
-    private void onEditPersonClicked() {
-        PersonViewModel.PersonUI selected = personTable.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            viewModel.selectedPersonProperty().set(selected);
-        }
+        // Vincular el switch de activos/inactivos
+        activeInactiveSwitch.selectedProperty().bindBidirectional(viewModel.showOnlyActiveProperty());
     }
 }
