@@ -3,9 +3,9 @@ package org.jonatancarbonellmartinez.application.di;
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
-import org.jonatancarbonellmartinez.data.database.PersonDAO;
-import org.jonatancarbonellmartinez.data.database.configuration.Database;
-import org.jonatancarbonellmartinez.data.database.configuration.Properties;
+import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
+import org.jonatancarbonellmartinez.data.database.configuration.DatabaseProperties;
+import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 
 /**
  * Module that provides database-related dependencies.
@@ -14,19 +14,19 @@ import org.jonatancarbonellmartinez.data.database.configuration.Properties;
 public class DatabaseModule {
     @Provides
     @Singleton
-    Properties provideProperties() {
-        return new Properties();
+    DatabaseConnection provideDatabaseConnection(DatabaseProperties properties) {
+        return new DatabaseConnection(properties);
     }
 
     @Provides
     @Singleton
-    Database provideDatabase(Properties properties) {
-        return new Database(properties);
+    DatabaseProperties provideDatabase() {
+        return new DatabaseProperties();
     }
 
     @Provides
     @Singleton
-    PersonDAO providePersonDAO() {
-        return new PersonDAO();
+    PersonRepositoryImpl providesPersonRepository(DatabaseConnection databaseConnection) {
+        return new PersonRepositoryImpl(databaseConnection);
     }
 }

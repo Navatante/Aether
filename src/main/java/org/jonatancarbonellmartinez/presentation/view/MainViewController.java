@@ -59,7 +59,8 @@ public class MainViewController {
 
     @FXML
     public void initialize() {
-        loadView("PersonView");
+        // TODO aun no navego a PersonView hasta que tenga controlado lo de la base de datos, repositorios unit of work, etc
+        //loadView("PersonView");
         setRefreshButtonShortCut();
         atLeastOneToggleButtonSelectedListener();
         setupMouseEvents();

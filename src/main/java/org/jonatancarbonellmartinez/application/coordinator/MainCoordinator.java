@@ -71,8 +71,9 @@ public class MainCoordinator implements Cleanable {
 
             primaryStage.show();
 
+            // TODO todavia no navego a ningun sitio hasta que tenga controlado el tema base de datos.
             // Navigate to PersonView by default
-            mainViewController.loadView("PersonView");
+            //mainViewController.loadView("PersonView");
         } catch (IOException e) {
             e.printStackTrace();
         }

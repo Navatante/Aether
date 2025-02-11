@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.data.repository;
 
+import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.data.database.configuration.DatabaseManager;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
@@ -18,15 +18,15 @@ import java.util.concurrent.Executors;
  */
 public class UnitOfWork {
 
-    private final DatabaseManager databaseManager;
+    private final DatabaseConnection databaseConnection;
     private final PersonRepositoryImpl personRepository;
     private final ExecutorService executorService;
     private Connection connection;
     private final List<Runnable> operations;
 
     @Inject
-    public UnitOfWork(DatabaseManager databaseManager, PersonRepositoryImpl personRepository) {
-        this.databaseManager = databaseManager;
+    public UnitOfWork(DatabaseConnection databaseConnection, PersonRepositoryImpl personRepository) {
+        this.databaseConnection = databaseConnection;
         this.personRepository = personRepository;
         this.executorService = Executors.newFixedThreadPool(2); // Puedes ajustarlo si lo deseas
         this.operations = new ArrayList<>();
@@ -37,8 +37,8 @@ public class UnitOfWork {
      */
     public void begin() {
         try {
-            connection = databaseManager.getConnection();
-            databaseManager.beginTransaction(connection);
+            connection = databaseConnection.getConnection();
+            databaseConnection.beginTransaction(connection);
         } catch (Exception e) {
             throw new DatabaseException("Failed to begin transaction", e);
         }
@@ -59,7 +59,7 @@ public class UnitOfWork {
             for (Runnable operation : operations) {
                 operation.run(); // Ejecuta todas las operaciones registradas
             }
-            databaseManager.commitTransaction(connection);
+            databaseConnection.commitTransaction(connection);
         } catch (Exception e) {
             rollback(); // En caso de error, revertir la transacción
             throw new DatabaseException("Failed to commit transaction", e);
@@ -74,7 +74,7 @@ public class UnitOfWork {
     public void rollback() {
         try {
             if (connection != null) {
-                databaseManager.rollbackTransaction(connection);
+                databaseConnection.rollbackTransaction(connection);
             }
         } catch (Exception e) {
             throw new DatabaseException("Failed to rollback transaction", e);
@@ -96,7 +96,7 @@ public class UnitOfWork {
     public void close() {
         try {
             if (connection != null) {
-                databaseManager.closeConnection(connection);
+                databaseConnection.close(connection);
             }
         } finally {
             executorService.shutdown();
