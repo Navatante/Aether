@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.coordinator;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jonatancarbonellmartinez.presentation.view.MainViewController;
@@ -49,13 +50,16 @@ public class MainCoordinator implements Cleanable {
 
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.TRANSPARENT); // Necesario para border redondeados (implementarlos mas adelante)
 
         try {
             // Load MainView
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
             loader.setController(mainViewController);
             Scene scene = new Scene(loader.load());
+
+            // Necesario para border redondeados (implementarlos mas adelante)
+            scene.setFill(Color.TRANSPARENT);
 
             // Apply styles
             String css = getClass().getResource("/css/styles/dark-theme.css").toExternalForm();
