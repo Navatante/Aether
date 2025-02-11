@@ -6,22 +6,21 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
+import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.model.Person;
-import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+
 import javax.inject.Inject;
+import java.sql.Connection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-/**
- * Las JavaFX Properties (StringProperty, IntegerProperty, BooleanProperty, etc.)
- * se usan aquí porque permiten la vinculación de datos (data binding) entre la vista (FXML o código JavaFX) y el modelo de la aplicación.
- */
-
 public class PersonViewModel {
-    private final PersonRepository repository;
+    private final PersonRepositoryImpl repository;
     private final PersonUiMapper uiMapper;
+    private final DatabaseConnection databaseConnection;
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
@@ -31,9 +30,12 @@ public class PersonViewModel {
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
-    public PersonViewModel(PersonRepository repository, PersonUiMapper uiMapper) {  // Update constructor
+    public PersonViewModel(PersonRepositoryImpl repository,
+                           PersonUiMapper uiMapper,
+                           DatabaseConnection databaseConnection) {
         this.repository = repository;
         this.uiMapper = uiMapper;
+        this.databaseConnection = databaseConnection;
         setupFilters();
     }
 
@@ -41,7 +43,8 @@ public class PersonViewModel {
         filteredPersons.predicateProperty().bind(
                 Bindings.createObjectBinding(() ->
                                 person -> {
-                                    boolean matchesActive = !showOnlyActive.get() || person.isActive();
+                                    boolean matchesActive = !showOnlyActive.get() ||
+                                            person.isActive().equals("Activo");
                                     boolean matchesSearch = person.matchesSearch(searchQuery.get());
                                     return matchesActive && matchesSearch;
                                 },
@@ -51,92 +54,118 @@ public class PersonViewModel {
     }
 
     public void loadPersons() {
-        setLoading(true);
-        setError("");
+        executeInBackground(() -> {
+            try (Connection connection = databaseConnection.getConnection()) {
+                List<Person> domainPersons = repository.getAllPersons(connection);
+                List<PersonUI> uiPersons = new ArrayList<>();
+                for (Person person : domainPersons) {
+                    uiPersons.add(uiMapper.toUiModel(person));
+                }
+                updatePersonsList(uiPersons);
+            }
+        });
+    }
 
-        repository.getAllPersons()
-                .thenAccept(domainPersons -> {
-                    Platform.runLater(() -> {
-                        persons.clear();
-                        persons.addAll(domainPersons.stream()
-                                .map(uiMapper::toUiModel)
-                                .collect(Collectors.toList()));
-                        setLoading(false);
-                    });
-                })
-                .exceptionally(throwable -> {
-                    Platform.runLater(() -> {
-                        setError("Error loading persons: " + throwable.getMessage());
-                        setLoading(false);
-                    });
-                    return null;
-                });
+    public void loadActivePilots() {
+        executeInBackground(() -> {
+            try (Connection connection = databaseConnection.getConnection()) {
+                List<Person> pilots = repository.getActivePilots(connection);
+                List<PersonUI> uiPilots = new ArrayList<>();
+                for (Person pilot : pilots) {
+                    uiPilots.add(uiMapper.toUiModel(pilot));
+                }
+                updatePersonsList(uiPilots);
+            }
+        });
+    }
+
+    public void loadActiveCrew() {
+        executeInBackground(() -> {
+            try (Connection connection = databaseConnection.getConnection()) {
+                List<Person> crew = repository.getActiveCrew(connection);
+                List<PersonUI> uiCrew = new ArrayList<>();
+                for (Person member : crew) {
+                    uiCrew.add(uiMapper.toUiModel(member));
+                }
+                updatePersonsList(uiCrew);
+            }
+        });
     }
 
     public void savePerson(PersonUI person) {
+        executeInBackground(() -> {
+            try (Connection connection = databaseConnection.getConnection()) {
+                databaseConnection.beginTransaction(connection);
+                try {
+                    Person domainPerson = uiMapper.toDomain(person);
+                    boolean success;
+
+                    if (person.getId() == null) {
+                        success = repository.insertPerson(connection, domainPerson);
+                    } else {
+                        success = repository.updatePerson(connection, domainPerson, person.getId());
+                    }
+
+                    if (success) {
+                        databaseConnection.commitTransaction(connection);
+                        Platform.runLater(this::loadPersons);
+                    } else {
+                        throw new Exception("Failed to save person");
+                    }
+                } catch (Exception e) {
+                    databaseConnection.rollbackTransaction(connection);
+                    throw e;
+                }
+            }
+        });
+    }
+
+    public void updatePersonStatus(PersonUI person, boolean isActive) {
+        if (person.getId() == null) return;
+
+        executeInBackground(() -> {
+            try (Connection connection = databaseConnection.getConnection()) {
+                databaseConnection.beginTransaction(connection);
+                try {
+                    boolean success = repository.updatePersonStatus(connection, person.getId(), isActive);
+                    if (success) {
+                        databaseConnection.commitTransaction(connection);
+                        Platform.runLater(this::loadPersons);
+                    } else {
+                        throw new Exception("Failed to update person status");
+                    }
+                } catch (Exception e) {
+                    databaseConnection.rollbackTransaction(connection);
+                    throw e;
+                }
+            }
+        });
+    }
+
+    private void executeInBackground(DatabaseOperation operation) {
         setLoading(true);
         setError("");
 
-        Person domainPerson = uiMapper.toDomain(person);
-        CompletableFuture<Boolean> future = person.getId() == null ?
-                repository.insertPerson(domainPerson) :
-                repository.updatePerson(domainPerson, person.getId());
-
-        future.thenAccept(success -> {
-                    Platform.runLater(() -> {
-                        if (success) {
-                            loadPersons();
-                        } else {
-                            setError("Error saving person");
-                        }
-                        setLoading(false);
-                    });
-                })
-                .exceptionally(throwable -> {
-                    Platform.runLater(() -> {
-                        setError("Error saving person: " + throwable.getMessage());
-                        setLoading(false);
-                    });
-                    return null;
+        Thread thread = new Thread(() -> {
+            try {
+                operation.execute();
+                setLoading(false);
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    setError("Error: " + e.getMessage());
+                    setLoading(false);
                 });
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
-    private List<PersonUI> mapToUI(List<Person> domainPersons) {
-        return domainPersons.stream()
-                .map(person -> {
-                    PersonUI ui = new PersonUI();
-                    ui.setId(person.getId());
-                    ui.setCode(person.getCode());
-                    ui.setRank(person.getRank());
-                    ui.setName(person.getName());
-                    ui.setLastName1(person.getLastName1());
-                    ui.setLastName2(person.getLastName2());
-                    ui.setPhone(person.getPhone());
-                    ui.setDni(person.getDni());
-                    ui.setDivision(person.getDivision());
-                    ui.setRole(person.getRole());
-                    ui.setOrder(person.getOrder());
-                    ui.setActive(person.isActive());
-                    return ui;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private Person mapToDomain(PersonUI ui) {
-        return new Person.Builder()
-                .id(ui.getId())
-                .code(ui.getCode())
-                .rank(ui.getRank())
-                .name(ui.getName())
-                .lastName1(ui.getLastName1())
-                .lastName2(ui.getLastName2())
-                .phone(ui.getPhone())
-                .dni(ui.getDni())
-                .division(ui.getDivision())
-                .role(ui.getRole())
-                .order(ui.getOrder())
-                .isActive(ui.isActive())
-                .build();
+    private void updatePersonsList(List<PersonUI> newPersons) {
+        Platform.runLater(() -> {
+            persons.clear();
+            persons.addAll(newPersons);
+        });
     }
 
     public void cleanup() {
@@ -153,6 +182,20 @@ public class PersonViewModel {
         Platform.runLater(() -> errorMessage.set(error));
     }
 
+    // Getters for properties
+    public ObservableList<PersonUI> getFilteredPersons() { return filteredPersons; }
+    public BooleanProperty showOnlyActiveProperty() { return showOnlyActive; }
+    public StringProperty searchQueryProperty() { return searchQuery; }
+    public BooleanProperty isLoadingProperty() { return isLoading; }
+    public StringProperty errorMessageProperty() { return errorMessage; }
+    public ObjectProperty<PersonUI> selectedPersonProperty() { return selectedPerson; }
+
+    @FunctionalInterface
+    private interface DatabaseOperation {
+        void execute() throws Exception;
+    }
+
+    // INNER STATIC CLASS
     public static class PersonUI {
         private Integer id;
         private final StringProperty code = new SimpleStringProperty();
@@ -165,7 +208,7 @@ public class PersonViewModel {
         private final StringProperty division = new SimpleStringProperty();
         private final StringProperty role = new SimpleStringProperty();
         private final IntegerProperty order = new SimpleIntegerProperty();
-        private final BooleanProperty active = new SimpleBooleanProperty();
+        private final StringProperty active = new SimpleStringProperty();
 
         public PersonUI() {
             this.id = null;
@@ -224,16 +267,8 @@ public class PersonViewModel {
         public void setOrder(int value) { order.set(value); }
         public IntegerProperty orderProperty() { return order; }
 
-        public boolean isActive() { return active.get(); }
-        public void setActive(boolean value) { active.set(value); }
-        public BooleanProperty activeProperty() { return active; }
+        public String isActive() { return active.get(); }
+        public void setActive(String value) { active.set(value); }
+        public StringProperty activeProperty() { return active; }
     }
-
-    // Public property getters
-    public ObservableList<PersonUI> getFilteredPersons() { return filteredPersons; }
-    public BooleanProperty showOnlyActiveProperty() { return showOnlyActive; }
-    public StringProperty searchQueryProperty() { return searchQuery; }
-    public BooleanProperty isLoadingProperty() { return isLoading; }
-    public StringProperty errorMessageProperty() { return errorMessage; }
-    public ObjectProperty<PersonUI> selectedPersonProperty() { return selectedPerson; }
 }

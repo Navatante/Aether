@@ -4,6 +4,14 @@ import javax.inject.Singleton;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
 
+/**
+ * Representa una capa adicional de mapeo específica para la UI (User Interface), lo que aporta varios beneficios importantes:
+ * Puede manejar formatos específicos de visualización
+ * Puede incluir propiedades adicionales para la UI
+ * Puede adaptar tipos de datos para la presentación
+ * Puede manejar estados específicos de la UI
+ */
+
 @Singleton
 public class PersonUiMapper {
     public PersonUI toUiModel(Person domain) {
@@ -19,7 +27,7 @@ public class PersonUiMapper {
         ui.setDivision(domain.getDivision());
         ui.setRole(domain.getRole());
         ui.setOrder(domain.getOrder());
-        ui.setActive(domain.isActive());
+        ui.setActive(domain.isActive() ? "Activo" : "Inactivo");
         return ui;
     }
 
@@ -36,7 +44,7 @@ public class PersonUiMapper {
                 .division(ui.getDivision())
                 .role(ui.getRole())
                 .order(ui.getOrder())
-                .isActive(ui.isActive())
+                .isActive(ui.isActive().equals("Activo") ? true : false)
                 .build();
     }
 }

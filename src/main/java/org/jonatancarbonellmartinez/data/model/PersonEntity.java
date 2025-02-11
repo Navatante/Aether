@@ -24,43 +24,7 @@ public class PersonEntity {
     // Constructor por defecto necesario para JDBC
     public PersonEntity() {}
 
-    // Metodo para mapear a domain model
-    public Person toDomainModel() {
-        return new Person.Builder()
-                .id(personSk)
-                .code(personNk)
-                .rank(personRank)
-                .name(personName)
-                .lastName1(personLastName1)
-                .lastName2(personLastName2)
-                .phone(personPhone)
-                .dni(personDni)
-                .division(personDivision)
-                .role(personRole)
-                .order(personOrder)
-                .isActive(personCurrentFlag == 1)
-                .build();
-    }
-
-    // Metodo para crear desde domain model
-    public static PersonEntity fromDomainModel(Person person) {
-        PersonEntity entity = new PersonEntity();
-        entity.setPersonSk(person.getId());
-        entity.setPersonNk(person.getCode());
-        entity.setPersonRank(person.getRank());
-        entity.setPersonName(person.getName());
-        entity.setPersonLastName1(person.getLastName1());
-        entity.setPersonLastName2(person.getLastName2());
-        entity.setPersonPhone(person.getPhone());
-        entity.setPersonDni(person.getDni());
-        entity.setPersonDivision(person.getDivision());
-        entity.setPersonRole(person.getRole());
-        entity.setPersonOrder(person.getOrder());
-        entity.setPersonCurrentFlag(person.isActive() ? 1 : 0);
-        return entity;
-    }
-
-    // Getters y Setters - objeto mutable para la capa de datos
+    // Getters y Setters - objeto mutable para la capa de datos porque necesita ser modificable para JDBC
     public Integer getPersonSk() {
         return personSk;
     }

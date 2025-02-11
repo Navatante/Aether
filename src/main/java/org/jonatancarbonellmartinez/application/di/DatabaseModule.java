@@ -24,10 +24,4 @@ public class DatabaseModule {
     DatabaseProperties provideDatabase() {
         return new DatabaseProperties();
     }
-
-    @Provides
-    @Singleton
-    PersonRepositoryImpl providesPersonRepository(DatabaseConnection databaseConnection, PersonDAO personDAO) {
-        return new PersonRepositoryImpl(databaseConnection, personDAO);
-    }
 }

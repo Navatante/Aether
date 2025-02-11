@@ -5,10 +5,11 @@ import dagger.Module;
 import javax.inject.Singleton;
 
 import dagger.Provides;
+import org.jonatancarbonellmartinez.data.database.DAO.PersonDAO;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
+import org.jonatancarbonellmartinez.data.mapper.PersonMapper;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 import org.jonatancarbonellmartinez.data.repository.UnitOfWork;
-import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 
 /**
  * This module provides bindings for repositories and UnitOfWork.
@@ -27,7 +28,15 @@ import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
  * 4. The type you're providing isn't a direct implementation of the return type
  */
 @Module
-public abstract class RepositoryModule {
+public class RepositoryModule {
+
+    @Provides
+    @Singleton
+    static PersonRepositoryImpl providePersonRepository(PersonDAO personDAO,
+                                                        PersonMapper personMapper) {
+        return new PersonRepositoryImpl(personDAO, personMapper);
+    }
+
     @Provides
     @Singleton
     static UnitOfWork provideUnitOfWork(DatabaseConnection databaseConnection,
@@ -35,7 +44,9 @@ public abstract class RepositoryModule {
         return new UnitOfWork(databaseConnection, personRepository);
     }
 
-    @Binds
+    @Provides
     @Singleton
-    abstract PersonRepository bindPersonRepository(PersonRepositoryImpl implementation);
+    static PersonDAO providePersonDAO() {
+        return new PersonDAO();
+    }
 }
