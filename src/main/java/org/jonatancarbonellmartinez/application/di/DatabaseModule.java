@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.di;
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
+import org.jonatancarbonellmartinez.data.database.DAO.PersonDAO;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseProperties;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
@@ -26,7 +27,7 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    PersonRepositoryImpl providesPersonRepository(DatabaseConnection databaseConnection) {
-        return new PersonRepositoryImpl(databaseConnection);
+    PersonRepositoryImpl providesPersonRepository(DatabaseConnection databaseConnection, PersonDAO personDAO) {
+        return new PersonRepositoryImpl(databaseConnection, personDAO);
     }
 }

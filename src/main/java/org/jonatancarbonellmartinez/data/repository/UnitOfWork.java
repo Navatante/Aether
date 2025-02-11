@@ -22,14 +22,14 @@ public class UnitOfWork {
     private final PersonRepositoryImpl personRepository;
     private final ExecutorService executorService;
     private Connection connection;
-    private final List<Runnable> operations;
+    private final List<Runnable> queries;
 
     @Inject
     public UnitOfWork(DatabaseConnection databaseConnection, PersonRepositoryImpl personRepository) {
         this.databaseConnection = databaseConnection;
         this.personRepository = personRepository;
         this.executorService = Executors.newFixedThreadPool(2); // Puedes ajustarlo si lo deseas
-        this.operations = new ArrayList<>();
+        this.queries = new ArrayList<>();
     }
 
     /**
@@ -47,8 +47,8 @@ public class UnitOfWork {
     /**
      * Registra una operación para que se ejecute en la transacción.
      */
-    public void registerOperation(Runnable operation) {
-        operations.add(operation);
+    public void registerOperation(Runnable query) {
+        queries.add(query);
     }
 
     /**
@@ -56,8 +56,8 @@ public class UnitOfWork {
      */
     public void commit() {
         try {
-            for (Runnable operation : operations) {
-                operation.run(); // Ejecuta todas las operaciones registradas
+            for (Runnable query : queries) {
+                query.run(); // Ejecuta todas las queries registradas
             }
             databaseConnection.commitTransaction(connection);
         } catch (Exception e) {

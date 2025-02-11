@@ -26,6 +26,7 @@ public class DatabaseConnection {
         databasePath.set(properties.read("path"));
     }
 
+    // Para conexiones de una sola  consulta. Utilizo este metodo directamente
     public Connection getConnection() throws SQLException {
         if (!isDatabaseFilePresent()) {
             throw new SQLException("Database file does not exist: " + databasePath.get());
@@ -63,6 +64,7 @@ public class DatabaseConnection {
         }
     }
 
+    // Estos metodos relacionados con una Transaccion no los llamo directamente, utilizare Unit of Work para ello.
     public void beginTransaction(Connection connection) throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.setAutoCommit(false);
