@@ -1,5 +1,7 @@
 package org.jonatancarbonellmartinez.presentation.view;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -52,22 +54,27 @@ public class PersonViewController {
     }
 
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
-        codeColumn.setCellValueFactory(cellData -> cellData.getValue().codeProperty());
-        rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty());
-        cuerpoColumn.setCellValueFactory(cellData -> cellData.getValue().cuerpoProperty());
-        especialidadColumn.setCellValueFactory(cellData -> cellData.getValue().especialidadProperty());
+        // Para campos simples (no Properties), usar PropertyValueFactory
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+        rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        cuerpoColumn.setCellValueFactory(new PropertyValueFactory<>("cuerpo"));
+        especialidadColumn.setCellValueFactory(new PropertyValueFactory<>("especialidad"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        dniColumn.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        divisionColumn.setCellValueFactory(new PropertyValueFactory<>("division"));
+        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
+        embarqueColumn.setCellValueFactory(new PropertyValueFactory<>("fechaEmbarque"));
+        antiguedadColumn.setCellValueFactory(new PropertyValueFactory<>("antiguedadEmpleo"));
+        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
+
+        // Para los que siguen siendo StringProperty, mantener el acceso a la propiedad
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         lastName1Column.setCellValueFactory(cellData -> cellData.getValue().lastName1Property());
         lastName2Column.setCellValueFactory(cellData -> cellData.getValue().lastName2Property());
-        phoneColumn.setCellValueFactory(cellData -> cellData.getValue().phoneProperty());
-        dniColumn.setCellValueFactory(cellData -> cellData.getValue().dniProperty());
-        divisionColumn.setCellValueFactory(cellData -> cellData.getValue().divisionProperty());
-        roleColumn.setCellValueFactory(cellData -> cellData.getValue().roleProperty());
-        embarqueColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getFechaEmbarque()));
-        antiguedadColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getAntiguedadEmpleo()));
-        orderColumn.setCellValueFactory(cellData -> cellData.getValue().orderProperty().asObject());
-        activeColumn.setCellValueFactory(cellData -> cellData.getValue().activeProperty());
+
+        // Para Integer con PropertyValueFactory
+        orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
     }
 
     private void setupBindings() {

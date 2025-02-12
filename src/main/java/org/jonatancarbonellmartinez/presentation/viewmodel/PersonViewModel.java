@@ -10,6 +10,7 @@ import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingMan
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
+import org.jonatancarbonellmartinez.exceptions.CustomLogger;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
@@ -26,7 +27,6 @@ public class PersonViewModel {
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
     private final StringProperty searchQuery = new SimpleStringProperty("");
-    private final StringProperty errorMessage = new SimpleStringProperty("");
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
@@ -67,7 +67,7 @@ public class PersonViewModel {
                     updatePersonsList(uiPersons);
                 })
                 .exceptionally(throwable -> {
-                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    CustomLogger.logError("Error loading persons", (Exception) throwable.getCause());
                     return null;
                 });
     }
@@ -83,7 +83,7 @@ public class PersonViewModel {
                     updatePersonsList(uiPilots);
                 })
                 .exceptionally(throwable -> {
-                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    CustomLogger.logError("Error loading active pilots", (Exception) throwable.getCause());
                     return null;
                 });
     }
@@ -99,7 +99,7 @@ public class PersonViewModel {
                     updatePersonsList(uiCrew);
                 })
                 .exceptionally(throwable -> {
-                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    CustomLogger.logError("Error loading active crew", (Exception) throwable.getCause());
                     return null;
                 });
     }
@@ -172,19 +172,13 @@ public class PersonViewModel {
     public void cleanup() {
         persons.clear();
         selectedPerson.set(null);
-        errorMessage.set("");
     }
 
-    private void setError(String error) {
-        Platform.runLater(() -> errorMessage.set(error));
-    }
 
     // Getters for properties
     public ObservableList<PersonUI> getFilteredPersons() { return filteredPersons; }
     public BooleanProperty showOnlyActiveProperty() { return showOnlyActive; }
     public StringProperty searchQueryProperty() { return searchQuery; }
-    public BooleanProperty isLoadingProperty() { return loadingManager.globalLoadingProperty(); }
-    public StringProperty errorMessageProperty() { return errorMessage; }
     public ObjectProperty<PersonUI> selectedPersonProperty() { return selectedPerson; }
 
     @FunctionalInterface
@@ -195,21 +189,21 @@ public class PersonViewModel {
     // INNER STATIC CLASS
     public static class PersonUI {
         private Integer id;
-        private final StringProperty code = new SimpleStringProperty();
-        private final StringProperty rank = new SimpleStringProperty();
-        private final StringProperty cuerpo = new SimpleStringProperty();
-        private final StringProperty especialidad = new SimpleStringProperty();
+        private String code;
+        private String rank;
+        private String cuerpo;
+        private String especialidad;
         private final StringProperty name = new SimpleStringProperty();
         private final StringProperty lastName1 = new SimpleStringProperty();
         private final StringProperty lastName2 = new SimpleStringProperty();
-        private final StringProperty phone = new SimpleStringProperty();
-        private final StringProperty dni = new SimpleStringProperty();
-        private final StringProperty division = new SimpleStringProperty();
-        private final StringProperty role = new SimpleStringProperty();
-        private final StringProperty antiguedadEmpleo = new SimpleStringProperty();
-        private final StringProperty fechaEmbarque = new SimpleStringProperty();
-        private final IntegerProperty order = new SimpleIntegerProperty();
-        private final StringProperty active = new SimpleStringProperty();
+        private String phone;
+        private String dni;
+        private String division;
+        private String role;
+        private String antiguedadEmpleo;
+        private String fechaEmbarque;
+        private Integer order;
+        private String active;
 
         public PersonUI() {
             this.id = null;
@@ -222,13 +216,9 @@ public class PersonViewModel {
             String normalizedQuery = normalizeString(query);
 
             // Normaliza y compara cada campo
-            return  normalizeString(code.get()).contains(normalizedQuery) ||
-                    normalizeString(rank.get()).contains(normalizedQuery) ||
-                    normalizeString(name.get()).contains(normalizedQuery) ||
+            return  normalizeString(name.get()).contains(normalizedQuery) ||
                     normalizeString(lastName1.get()).contains(normalizedQuery) ||
-                    normalizeString(lastName2.get()).contains(normalizedQuery) ||
-                    normalizeString(division.get()).contains(normalizedQuery) ||
-                    normalizeString(role.get()).contains(normalizedQuery);
+                    normalizeString(lastName2.get()).contains(normalizedQuery);
         }
 
         // Metodo auxiliar para normalizar strings
@@ -245,21 +235,19 @@ public class PersonViewModel {
         public Integer getId() { return id; }
         public void setId(Integer id) { this.id = id; }
 
-        public String getCode() { return code.get(); }
-        public void setCode(String value) { code.set(value); }
-        public StringProperty codeProperty() { return code; }
+        public String getCode() { return code; }
+        public void setCode(String code) { this.code = code; }
 
-        public String getRank() { return rank.get(); }
-        public void setRank(String value) { rank.set(value); }
-        public StringProperty rankProperty() { return rank; }
+        public String getRank() { return rank; }
+        public void setRank(String rank) { this.rank = rank; }
 
-        public String getCuerpo() { return cuerpo.get(); }
-        public void setCuerpo(String value) { cuerpo.set(value); }
-        public StringProperty cuerpoProperty() { return cuerpo; }
+        public String getCuerpo() { return cuerpo; }
+        public void setCuerpo(String cuerpo) { this.cuerpo = cuerpo; }
 
-        public String getEspecialidad() { return especialidad.get(); }
-        public void setEspecialidad(String value) { especialidad.set(value); }
-        public StringProperty especialidadProperty() { return especialidad; }
+
+        public String getEspecialidad() { return especialidad; }
+        public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+
 
         public String getName() { return name.get(); }
         public void setName(String value) { name.set(value); }
@@ -273,36 +261,28 @@ public class PersonViewModel {
         public void setLastName2(String value) { lastName2.set(value); }
         public StringProperty lastName2Property() { return lastName2; }
 
-        public String getPhone() { return phone.get(); }
-        public void setPhone(String value) { phone.set(value); }
-        public StringProperty phoneProperty() { return phone; }
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
 
-        public String getDni() { return dni.get(); }
-        public void setDni(String value) { dni.set(value); }
-        public StringProperty dniProperty() { return dni; }
+        public String getDni() { return dni; }
+        public void setDni(String dni) { this.dni = dni; }
 
-        public String getDivision() { return division.get(); }
-        public void setDivision(String value) { division.set(value); }
-        public StringProperty divisionProperty() { return division; }
+        public String getDivision() { return division; }
+        public void setDivision(String division) { this.division = division; }
 
-        public String getRole() { return role.get(); }
-        public void setRole(String value) { role.set(value); }
-        public StringProperty roleProperty() { return role; }
+        public String getRole() { return role; }
+        public void setRole(String role) { this.role = role; }
 
-        public String getAntiguedadEmpleo() { return antiguedadEmpleo.get(); }
-        public void setAntiguedadEmpleo(String value) { antiguedadEmpleo.set(value); }
-        public StringProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
+        public String getAntiguedadEmpleo() { return antiguedadEmpleo; }
+        public void setAntiguedadEmpleo(String antiguedadEmpleo) { this.antiguedadEmpleo = antiguedadEmpleo; }
 
-        public String getFechaEmbarque() { return fechaEmbarque.get(); }
-        public void setFechaEmbarque(String value) { fechaEmbarque.set(value); }
-        public StringProperty fechaEmbarqueProperty() { return fechaEmbarque; }
+        public String getFechaEmbarque() { return fechaEmbarque; }
+        public void setFechaEmbarque(String fechaEmbarque) { this.fechaEmbarque = fechaEmbarque; }
 
-        public int getOrder() { return order.get(); }
-        public void setOrder(int value) { order.set(value); }
-        public IntegerProperty orderProperty() { return order; }
+        public int getOrder() { return order; }
+        public void setOrder(int order) { this.order = order; }
 
-        public String isActive() { return active.get(); }
-        public void setActive(String value) { active.set(value); }
-        public StringProperty activeProperty() { return active; }
+        public String isActive() { return active; }
+        public void setActive(String active) { this.active = active; }
     }
 }

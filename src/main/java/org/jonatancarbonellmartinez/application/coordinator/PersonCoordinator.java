@@ -47,7 +47,6 @@ public class PersonCoordinator extends BaseCoordinator {
             Scene scene = new Scene(root);
             applyStylesheet(scene);  // Apply the dark theme
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Gestión de Personas");
 
             // Configure navigation and callbacks
             setupNavigationCallbacks();
@@ -80,11 +79,13 @@ public class PersonCoordinator extends BaseCoordinator {
         // Ejemplo: Abrir diálogo de edición cuando se selecciona una persona
         viewModel.selectedPersonProperty().addListener((obs, oldPerson, newPerson) -> {
             if (newPerson != null) {
+                // TODO para cuando implemente el menu contextual con editar
                 showEditPersonDialog(newPerson);
             }
         });
     }
 
+    // TODO por aqui quiza iria algo relacionado con el boton, nose.
 
     public void cleanup() {
         viewModel.cleanup();
