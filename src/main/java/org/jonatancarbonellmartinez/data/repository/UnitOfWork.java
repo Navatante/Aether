@@ -1,6 +1,7 @@
 package org.jonatancarbonellmartinez.data.repository;
 
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
+import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
@@ -23,13 +24,13 @@ import java.util.concurrent.Executors;
 public class UnitOfWork {
 
     private final DatabaseConnection databaseConnection;
-    private final PersonRepositoryImpl personRepositoryImpl;
+    private final PersonRepository personRepositoryImpl;
     private final ExecutorService executorService;
     private Connection connection;
     private final List<Runnable> queries;
 
     @Inject
-    public UnitOfWork(DatabaseConnection databaseConnection, PersonRepositoryImpl personRepositoryImpl) {
+    public UnitOfWork(DatabaseConnection databaseConnection, PersonRepository personRepositoryImpl) {
         this.databaseConnection = databaseConnection;
         this.personRepositoryImpl = personRepositoryImpl;
         this.executorService = Executors.newFixedThreadPool(2); // Puedes ajustarlo si lo deseas
@@ -92,7 +93,7 @@ public class UnitOfWork {
     /**
      * Devuelve el repositorio de Person.
      */
-    public PersonRepositoryImpl personRepositoryImpl() {
+    public PersonRepository personRepositoryImpl() {
         return personRepositoryImpl;
     }
 

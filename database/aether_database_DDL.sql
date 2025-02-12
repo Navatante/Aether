@@ -862,7 +862,8 @@ CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(sessi
 -- DIM_PERSON
 INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
 VALUES ('JON', 'SG1', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1 , 1);
-
+INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
+VALUES ('ROD', 'CB1', 'Juan Ramon', 'Rodríguez', 'Domínguez', '607451992','32865122P', 'Línea de vuelo', 'Dotación' ,2 , 1);
 -- Insert into dim_helo
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');

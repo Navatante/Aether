@@ -9,6 +9,7 @@ import javafx.collections.transformation.FilteredList;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class PersonViewModel {
-    private final PersonRepositoryImpl repository;
+    private final PersonRepository repository;
     private final PersonUiMapper uiMapper;
     private final DatabaseConnection databaseConnection;
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
@@ -30,7 +31,7 @@ public class PersonViewModel {
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
-    public PersonViewModel(PersonRepositoryImpl repository,
+    public PersonViewModel(PersonRepository repository,
                            PersonUiMapper uiMapper,
                            DatabaseConnection databaseConnection) {
         this.repository = repository;

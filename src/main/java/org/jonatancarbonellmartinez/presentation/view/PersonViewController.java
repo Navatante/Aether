@@ -41,6 +41,11 @@ public class PersonViewController {
         viewModel.loadPersons();
     }
 
+    @FXML
+    public void update() {
+        viewModel.loadPersons();
+    }
+
     private void setupTableColumns() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));

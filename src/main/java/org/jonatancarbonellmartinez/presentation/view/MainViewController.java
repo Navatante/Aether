@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.scene.control.ToggleGroup;
+import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import static javafx.scene.Cursor.*;
 
@@ -59,7 +60,6 @@ public class MainViewController {
 
     @FXML
     public void initialize() {
-        // TODO aun no navego a PersonView hasta que tenga controlado lo de la base de datos, repositorios unit of work, etc
         loadView("PersonView");
         setRefreshButtonShortCut();
         atLeastOneToggleButtonSelectedListener();
@@ -282,7 +282,14 @@ public class MainViewController {
     }
 
     private void refreshContent() {
-        // TODO
+        // Since we're caching views, we can get the current PersonView from our cache
+        Node currentView = contentArea.getCenter();
+
+        // Check if the current view is the PersonView
+        if (currentView != null && cachedViews.containsValue(currentView)) {
+            // Use the injected PersonViewController to refresh the data
+            personViewController.update();
+        }
     }
 
     public void loadView(String viewName) {
