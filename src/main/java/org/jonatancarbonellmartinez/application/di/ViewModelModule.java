@@ -3,6 +3,7 @@ package org.jonatancarbonellmartinez.application.di;
 import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
+import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
@@ -18,9 +19,10 @@ public class ViewModelModule {
     PersonViewModel providePersonViewModel(
             PersonRepositoryImpl repository,
             PersonUiMapper mapper,
-            DatabaseConnection databaseConnection
+            DatabaseConnection databaseConnection,
+            GlobalLoadingManager loadingManager
     ) {
-        return new PersonViewModel(repository, mapper, databaseConnection);
+        return new PersonViewModel(repository, mapper, databaseConnection, loadingManager);
     }
 
 //    @Provides

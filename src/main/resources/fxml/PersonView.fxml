@@ -52,6 +52,8 @@
                                 <TableColumn fx:id="idColumn" text="ID" />
                                 <TableColumn fx:id="codeColumn" text="Código" />
                                 <TableColumn fx:id="rankColumn" text="Empleo" />
+                                <TableColumn fx:id="cuerpoColumn" text="Cuerpo" />
+                                <TableColumn fx:id="especialidadaColumn" text="Especialidad" />
                                 <TableColumn fx:id="nameColumn" text="Nombre" />
                                 <TableColumn fx:id="lastName1Column" text="Apellido 1" />
                                 <TableColumn fx:id="lastName2Column" text="Apellido 2" />
@@ -60,6 +62,8 @@
                                 <TableColumn fx:id="divisionColumn" text="División" />
                                 <TableColumn fx:id="roleColumn" text="Rol" />
                                 <TableColumn fx:id="activeColumn" text="Situación" />
+                                <TableColumn fx:id="aEmpColumn" text="Antiguedad Empleo" />
+                                <TableColumn fx:id="fEmbColumn" text="Fecha Embarque" />
                                 <TableColumn fx:id="orderColumn" text="Orden" />
                             </columns>
                             <columnResizePolicy>

@@ -12,7 +12,6 @@ import java.util.List;
 
 @Singleton
 public class PersonDAO {
-    private static final String ENABLE_FOREIGN_KEYS = "PRAGMA foreign_keys = ON;";
 
     private static final String INSERT_PERSON =
             "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, " +
@@ -56,7 +55,6 @@ public class PersonDAO {
             }
 
             // Enable foreign keys and insert
-            enableForeignKeys(connection);
             try (PreparedStatement pstmt = connection.prepareStatement(INSERT_PERSON)) {
                 setPersonParameters(pstmt, entity);
                 pstmt.executeUpdate();
@@ -81,7 +79,6 @@ public class PersonDAO {
 
     public void update(PersonEntity entity, Connection connection) throws DatabaseException {
         try {
-            enableForeignKeys(connection);
             try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_PERSON)) {
                 setPersonParameters(pstmt, entity);
                 pstmt.setInt(12, entity.getPersonSk());
@@ -162,18 +159,12 @@ public class PersonDAO {
     }
 
     private void incrementOrders(int order, Connection connection) throws SQLException {
-        enableForeignKeys(connection);
         try (PreparedStatement pstmt = connection.prepareStatement(INCREMENT_ORDERS)) {
             pstmt.setInt(1, order);
             pstmt.executeUpdate();
         }
     }
 
-    private void enableForeignKeys(Connection connection) throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(ENABLE_FOREIGN_KEYS);
-        }
-    }
 
     private void setPersonParameters(PreparedStatement pstmt, PersonEntity entity) throws SQLException {
         pstmt.setString(1, entity.getPersonNk());

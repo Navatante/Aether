@@ -6,6 +6,7 @@ import dagger.Provides;
 import org.jonatancarbonellmartinez.application.coordinator.BaseCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
+import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.presentation.view.MainViewController;
 import org.jonatancarbonellmartinez.presentation.view.PersonViewController;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
@@ -45,8 +46,8 @@ public class CoordinatorModule {
 
     @Provides
     @Singleton
-    MainViewController provideMainViewController(PersonViewController personViewController) {
-        return new MainViewController(personViewController);
+    MainViewController provideMainViewController(PersonViewController personViewController, GlobalLoadingManager loadingManager) {
+        return new MainViewController(personViewController, loadingManager);
     }
 
     @Provides

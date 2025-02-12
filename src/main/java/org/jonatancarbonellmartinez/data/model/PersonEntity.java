@@ -1,7 +1,5 @@
 package org.jonatancarbonellmartinez.data.model;
 
-import org.jonatancarbonellmartinez.domain.model.Person;
-
 /**
  * JavaFX Properties NO deben usarse en esta capa.
  */
@@ -11,6 +9,8 @@ public class PersonEntity {
     private Integer personSk;
     private String personNk;
     private String personRank;
+    private String cuerpo;
+    private String especialidad;
     private String personName;
     private String personLastName1;
     private String personLastName2;
@@ -18,6 +18,8 @@ public class PersonEntity {
     private String personDni;
     private String personDivision;
     private String personRole;
+    private Long antiguedadEmpleo;
+    private Long fechaEmbarque;
     private Integer personOrder;
     private Integer personCurrentFlag;
 
@@ -119,5 +121,37 @@ public class PersonEntity {
 
     public void setPersonCurrentFlag(Integer personCurrentFlag) {
         this.personCurrentFlag = personCurrentFlag;
+    }
+
+    public String getCuerpo() {
+        return cuerpo;
+    }
+
+    public void setCuerpo(String cuerpo) {
+        this.cuerpo = cuerpo;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public Long getAntiguedadEmpleo() {
+        return antiguedadEmpleo;
+    }
+
+    public void setAntiguedadEmpleo(Long antiguedadEmpleo) {
+        this.antiguedadEmpleo = antiguedadEmpleo;
+    }
+
+    public Long getFechaEmbarque() {
+        return fechaEmbarque;
+    }
+
+    public void setFechaEmbarque(Long fechaEmbarque) {
+        this.fechaEmbarque = fechaEmbarque;
     }
 }

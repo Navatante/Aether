@@ -19,6 +19,8 @@ public class PersonUiMapper {
         ui.setId(domain.getId());
         ui.setCode(domain.getCode());
         ui.setRank(domain.getRank());
+        ui.setCuerpo(domain.getCuerpo());
+        ui.setEspecialidad(domain.getEspecialidad());
         ui.setName(domain.getName());
         ui.setLastName1(domain.getLastName1());
         ui.setLastName2(domain.getLastName2());
@@ -26,6 +28,8 @@ public class PersonUiMapper {
         ui.setDni(domain.getDni());
         ui.setDivision(domain.getDivision());
         ui.setRole(domain.getRole());
+        ui.setAntiguedadEmpleo(domain.getAntiguedadEmpleo());
+        ui.setFechaEmbarque(domain.getFechaEmbarque());
         ui.setOrder(domain.getOrder());
         ui.setActive(domain.isActive() ? "Activo" : "Inactivo");
         return ui;
@@ -36,6 +40,8 @@ public class PersonUiMapper {
                 .id(ui.getId())
                 .code(ui.getCode())
                 .rank(ui.getRank())
+                .cuerpo(ui.getCuerpo())
+                .especialidad(ui.getEspecialidad())
                 .name(ui.getName())
                 .lastName1(ui.getLastName1())
                 .lastName2(ui.getLastName2())
@@ -43,6 +49,8 @@ public class PersonUiMapper {
                 .dni(ui.getDni())
                 .division(ui.getDivision())
                 .role(ui.getRole())
+                .fechaEmbarque(ui.getFechaEmbarque())
+                .antiguedadEmpleo(ui.getAntiguedadEmpleo())
                 .order(ui.getOrder())
                 .isActive(ui.isActive().equals("Activo") ? true : false)
                 .build();

@@ -3,23 +3,45 @@ package org.jonatancarbonellmartinez.data.database.configuration;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.concurrent.CompletableFuture;
 
 @Singleton
 public class DatabaseConnection {
     private final StringProperty databasePath;
     private final DatabaseProperties properties;
+    private final GlobalLoadingManager loadingManager;
 
     @Inject
-    public DatabaseConnection(DatabaseProperties properties) {
+    public DatabaseConnection(DatabaseProperties properties, GlobalLoadingManager loadingManager) {
         this.properties = properties;
+        this.loadingManager = loadingManager;
         this.databasePath = new SimpleStringProperty();
         loadPathFromProperties();
+    }
+
+    public <T> CompletableFuture<T> executeOperation(DatabaseOperation<T> operation) {
+        return CompletableFuture.supplyAsync(() -> {
+            loadingManager.startLoading();
+            try (Connection connection = getConnection()) {
+                return operation.execute(connection);
+            } catch (Exception e) {
+                throw new DatabaseException("Database operation failed", e);
+            } finally {
+                loadingManager.endLoading();
+            }
+        });
+    }
+
+    @FunctionalInterface
+    public interface DatabaseOperation<T> {
+        T execute(Connection connection) throws Exception;
     }
 
     private void loadPathFromProperties() {

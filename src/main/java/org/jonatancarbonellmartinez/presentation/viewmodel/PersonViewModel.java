@@ -6,7 +6,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
+import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
@@ -17,27 +17,28 @@ import java.sql.Connection;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class PersonViewModel {
     private final PersonRepository repository;
     private final PersonUiMapper uiMapper;
     private final DatabaseConnection databaseConnection;
+    private final GlobalLoadingManager loadingManager;
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
     private final StringProperty searchQuery = new SimpleStringProperty("");
-    private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
     private final StringProperty errorMessage = new SimpleStringProperty("");
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
 
     @Inject
     public PersonViewModel(PersonRepository repository,
                            PersonUiMapper uiMapper,
-                           DatabaseConnection databaseConnection) {
+                           DatabaseConnection databaseConnection,
+                           GlobalLoadingManager loadingManager) {
         this.repository = repository;
         this.uiMapper = uiMapper;
         this.databaseConnection = databaseConnection;
+        this.loadingManager = loadingManager;
         setupFilters();
     }
 
@@ -57,112 +58,110 @@ public class PersonViewModel {
     }
 
     public void loadPersons() {
-        executeInBackground(() -> {
-            try (Connection connection = databaseConnection.getConnection()) {
-                List<Person> domainPersons = repository.getAllPersons(connection);
-                List<PersonUI> uiPersons = new ArrayList<>();
-                for (Person person : domainPersons) {
-                    uiPersons.add(uiMapper.toUiModel(person));
-                }
-                updatePersonsList(uiPersons);
-            }
-        });
+        databaseConnection
+                .executeOperation(connection -> repository.getAllPersons(connection))
+                .thenAccept(domainPersons -> {
+                    List<PersonUI> uiPersons = new ArrayList<>();
+                    for (Person person : domainPersons) {
+                        uiPersons.add(uiMapper.toUiModel(person));
+                    }
+                    updatePersonsList(uiPersons);
+                })
+                .exceptionally(throwable -> {
+                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    return null;
+                });
     }
 
     public void loadActivePilots() {
-        executeInBackground(() -> {
-            try (Connection connection = databaseConnection.getConnection()) {
-                List<Person> pilots = repository.getActivePilots(connection);
-                List<PersonUI> uiPilots = new ArrayList<>();
-                for (Person pilot : pilots) {
-                    uiPilots.add(uiMapper.toUiModel(pilot));
-                }
-                updatePersonsList(uiPilots);
-            }
-        });
+        databaseConnection
+                .executeOperation(connection -> repository.getActivePilots(connection))
+                .thenAccept(pilots -> {
+                    List<PersonUI> uiPilots = new ArrayList<>();
+                    for (Person pilot : pilots) {
+                        uiPilots.add(uiMapper.toUiModel(pilot));
+                    }
+                    updatePersonsList(uiPilots);
+                })
+                .exceptionally(throwable -> {
+                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    return null;
+                });
     }
 
     public void loadActiveCrew() {
-        executeInBackground(() -> {
-            try (Connection connection = databaseConnection.getConnection()) {
-                List<Person> crew = repository.getActiveCrew(connection);
-                List<PersonUI> uiCrew = new ArrayList<>();
-                for (Person member : crew) {
-                    uiCrew.add(uiMapper.toUiModel(member));
-                }
-                updatePersonsList(uiCrew);
-            }
-        });
-    }
-
-    public void savePerson(PersonUI person) {
-        executeInBackground(() -> {
-            try (Connection connection = databaseConnection.getConnection()) {
-                databaseConnection.beginTransaction(connection);
-                try {
-                    Person domainPerson = uiMapper.toDomain(person);
-                    boolean success;
-
-                    if (person.getId() == null) {
-                        success = repository.insertPerson(connection, domainPerson);
-                    } else {
-                        success = repository.updatePerson(connection, domainPerson, person.getId());
+        databaseConnection
+                .executeOperation(connection -> repository.getActiveCrew(connection))
+                .thenAccept(crew -> {
+                    List<PersonUI> uiCrew = new ArrayList<>();
+                    for (Person member : crew) {
+                        uiCrew.add(uiMapper.toUiModel(member));
                     }
-
-                    if (success) {
-                        databaseConnection.commitTransaction(connection);
-                        Platform.runLater(this::loadPersons);
-                    } else {
-                        throw new Exception("Failed to save person");
-                    }
-                } catch (Exception e) {
-                    databaseConnection.rollbackTransaction(connection);
-                    throw e;
-                }
-            }
-        });
-    }
-
-    public void updatePersonStatus(PersonUI person, boolean isActive) {
-        if (person.getId() == null) return;
-
-        executeInBackground(() -> {
-            try (Connection connection = databaseConnection.getConnection()) {
-                databaseConnection.beginTransaction(connection);
-                try {
-                    boolean success = repository.updatePersonStatus(connection, person.getId(), isActive);
-                    if (success) {
-                        databaseConnection.commitTransaction(connection);
-                        Platform.runLater(this::loadPersons);
-                    } else {
-                        throw new Exception("Failed to update person status");
-                    }
-                } catch (Exception e) {
-                    databaseConnection.rollbackTransaction(connection);
-                    throw e;
-                }
-            }
-        });
-    }
-
-    private void executeInBackground(DatabaseOperation operation) {
-        setLoading(true);
-        setError("");
-
-        Thread thread = new Thread(() -> {
-            try {
-                operation.execute();
-                setLoading(false);
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    setError("Error: " + e.getMessage());
-                    setLoading(false);
+                    updatePersonsList(uiCrew);
+                })
+                .exceptionally(throwable -> {
+                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+                    return null;
                 });
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
     }
+
+//    public void savePerson(PersonUI person) {
+//        databaseConnection
+//                .executeOperation(connection -> {
+//                    databaseConnection.beginTransaction(connection);
+//                    try {
+//                        Person domainPerson = uiMapper.toDomain(person);
+//                        boolean success;
+//
+//                        if (person.getId() == null) {
+//                            success = repository.insertPerson(connection, domainPerson);
+//                        } else {
+//                            success = repository.updatePerson(connection, domainPerson, person.getId());
+//                        }
+//
+//                        if (success) {
+//                            databaseConnection.commitTransaction(connection);
+//                            return true;
+//                        } else {
+//                            throw new Exception("Failed to save person");
+//                        }
+//                    } catch (Exception e) {
+//                        databaseConnection.rollbackTransaction(connection);
+//                        throw e;
+//                    }
+//                })
+//                .thenAccept(success -> Platform.runLater(this::loadPersons))
+//                .exceptionally(throwable -> {
+//                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+//                    return null;
+//                });
+//    }
+
+//    public void updatePersonStatus(PersonUI person, boolean isActive) {
+//        if (person.getId() == null) return;
+//
+//        databaseConnection
+//                .executeOperation(connection -> {
+//                    databaseConnection.beginTransaction(connection);
+//                    try {
+//                        boolean success = repository.updatePersonStatus(connection, person.getId(), isActive);
+//                        if (success) {
+//                            databaseConnection.commitTransaction(connection);
+//                            return true;
+//                        } else {
+//                            throw new Exception("Failed to update person status");
+//                        }
+//                    } catch (Exception e) {
+//                        databaseConnection.rollbackTransaction(connection);
+//                        throw e;
+//                    }
+//                })
+//                .thenAccept(success -> Platform.runLater(this::loadPersons))
+//                .exceptionally(throwable -> {
+//                    Platform.runLater(() -> setError("Error: " + throwable.getMessage()));
+//                    return null;
+//                });
+//    }
 
     private void updatePersonsList(List<PersonUI> newPersons) {
         Platform.runLater(() -> {
@@ -177,10 +176,6 @@ public class PersonViewModel {
         errorMessage.set("");
     }
 
-    private void setLoading(boolean loading) {
-        Platform.runLater(() -> isLoading.set(loading));
-    }
-
     private void setError(String error) {
         Platform.runLater(() -> errorMessage.set(error));
     }
@@ -189,7 +184,7 @@ public class PersonViewModel {
     public ObservableList<PersonUI> getFilteredPersons() { return filteredPersons; }
     public BooleanProperty showOnlyActiveProperty() { return showOnlyActive; }
     public StringProperty searchQueryProperty() { return searchQuery; }
-    public BooleanProperty isLoadingProperty() { return isLoading; }
+    public BooleanProperty isLoadingProperty() { return loadingManager.globalLoadingProperty(); }
     public StringProperty errorMessageProperty() { return errorMessage; }
     public ObjectProperty<PersonUI> selectedPersonProperty() { return selectedPerson; }
 
@@ -203,6 +198,8 @@ public class PersonViewModel {
         private Integer id;
         private final StringProperty code = new SimpleStringProperty();
         private final StringProperty rank = new SimpleStringProperty();
+        private final StringProperty cuerpo = new SimpleStringProperty();
+        private final StringProperty especialidad = new SimpleStringProperty();
         private final StringProperty name = new SimpleStringProperty();
         private final StringProperty lastName1 = new SimpleStringProperty();
         private final StringProperty lastName2 = new SimpleStringProperty();
@@ -210,6 +207,8 @@ public class PersonViewModel {
         private final StringProperty dni = new SimpleStringProperty();
         private final StringProperty division = new SimpleStringProperty();
         private final StringProperty role = new SimpleStringProperty();
+        private final LongProperty antiguedadEmpleo = new SimpleLongProperty();
+        private final LongProperty fechaEmbarque = new SimpleLongProperty();
         private final IntegerProperty order = new SimpleIntegerProperty();
         private final StringProperty active = new SimpleStringProperty();
 
@@ -255,6 +254,14 @@ public class PersonViewModel {
         public void setRank(String value) { rank.set(value); }
         public StringProperty rankProperty() { return rank; }
 
+        public String getCuerpo() { return cuerpo.get(); }
+        public void setCuerpo(String value) { cuerpo.set(value); }
+        public StringProperty cuerpoProperty() { return cuerpo; }
+
+        public String getEspecialidad() { return especialidad.get(); }
+        public void setEspecialidad(String value) { especialidad.set(value); }
+        public StringProperty especialidadProperty() { return especialidad; }
+
         public String getName() { return name.get(); }
         public void setName(String value) { name.set(value); }
         public StringProperty nameProperty() { return name; }
@@ -282,6 +289,14 @@ public class PersonViewModel {
         public String getRole() { return role.get(); }
         public void setRole(String value) { role.set(value); }
         public StringProperty roleProperty() { return role; }
+
+        public Long getAntiguedadEmpleo() { return antiguedadEmpleo.get(); }
+        public void setAntiguedadEmpleo(Long value) { antiguedadEmpleo.set(value); }
+        public LongProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
+
+        public Long getFechaEmbarque() { return fechaEmbarque.get(); }
+        public void setFechaEmbarque(Long value) { fechaEmbarque.set(value); }
+        public LongProperty fechaEmbarqueProperty() { return fechaEmbarque; }
 
         public int getOrder() { return order.get(); }
         public void setOrder(int value) { order.set(value); }

@@ -9,6 +9,8 @@ public class Person {
     private final Integer id;
     private final String code;
     private final String rank;
+    private final String cuerpo;
+    private final String especialidad;
     private final String name;
     private final String lastName1;
     private final String lastName2;
@@ -16,6 +18,8 @@ public class Person {
     private final String dni;
     private final String division;
     private final String role;
+    private final Long   antiguedadEmpleo;
+    private final Long   fechaEmbarque;
     private final Integer order;
     private final Boolean isActive;
 
@@ -23,6 +27,8 @@ public class Person {
         this.id = builder.id;
         this.code = builder.code;
         this.rank = builder.rank;
+        this.cuerpo = builder.cuerpo;
+        this.especialidad = builder.especialidad;
         this.name = builder.name;
         this.lastName1 = builder.lastName1;
         this.lastName2 = builder.lastName2;
@@ -30,6 +36,8 @@ public class Person {
         this.dni = builder.dni;
         this.division = builder.division;
         this.role = builder.role;
+        this.antiguedadEmpleo = builder.antiguedadEmpleo;
+        this.fechaEmbarque = builder.fechaEmbarque;
         this.order = builder.order;
         this.isActive = builder.isActive;
     }
@@ -38,6 +46,8 @@ public class Person {
     public Integer getId() { return id; }
     public String getCode() { return code; }
     public String getRank() { return rank; }
+    public String getCuerpo() { return cuerpo; }
+    public String getEspecialidad() { return especialidad; }
     public String getName() { return name; }
     public String getLastName1() { return lastName1; }
     public String getLastName2() { return lastName2; }
@@ -45,6 +55,8 @@ public class Person {
     public String getDni() { return dni; }
     public String getDivision() { return division; }
     public String getRole() { return role; }
+    public Long getAntiguedadEmpleo() { return antiguedadEmpleo; }
+    public Long getFechaEmbarque() { return fechaEmbarque; }
     public Integer getOrder() { return order; }
     public Boolean isActive() { return isActive; }
 
@@ -53,6 +65,8 @@ public class Person {
         private Integer id;
         private String code;
         private String rank;
+        private String cuerpo;
+        private String especialidad;
         private String name;
         private String lastName1;
         private String lastName2;
@@ -60,6 +74,8 @@ public class Person {
         private String dni;
         private String division;
         private String role;
+        private Long antiguedadEmpleo;
+        private Long fechaEmbarque;
         private Integer order;
         private Boolean isActive;
 
@@ -77,6 +93,16 @@ public class Person {
 
         public Builder rank(String rank) {
             this.rank = rank;
+            return this;
+        }
+
+        public Builder cuerpo(String cuerpo) {
+            this.cuerpo = cuerpo;
+            return this;
+        }
+
+        public Builder especialidad(String especialidad) {
+            this.especialidad = especialidad;
             return this;
         }
 
@@ -112,6 +138,16 @@ public class Person {
 
         public Builder role(String role) {
             this.role = role;
+            return this;
+        }
+
+        public Builder antiguedadEmpleo(Long antiguedadEmpleo) {
+            this.antiguedadEmpleo = antiguedadEmpleo;
+            return this;
+        }
+
+        public Builder fechaEmbarque(Long fechaEmbarque) {
+            this.fechaEmbarque = fechaEmbarque;
             return this;
         }
 

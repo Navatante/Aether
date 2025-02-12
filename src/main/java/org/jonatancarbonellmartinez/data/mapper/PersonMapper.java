@@ -35,6 +35,8 @@ public class PersonMapper {
                 .id(entity.getPersonSk())
                 .code(entity.getPersonNk())
                 .rank(entity.getPersonRank())
+                .cuerpo(entity.getCuerpo())
+                .especialidad(entity.getEspecialidad())
                 .name(entity.getPersonName())
                 .lastName1(entity.getPersonLastName1())
                 .lastName2(entity.getPersonLastName2())
@@ -42,6 +44,8 @@ public class PersonMapper {
                 .dni(entity.getPersonDni())
                 .division(entity.getPersonDivision())
                 .role(entity.getPersonRole())
+                .antiguedadEmpleo(entity.getAntiguedadEmpleo())
+                .fechaEmbarque(entity.getFechaEmbarque())
                 .order(entity.getPersonOrder())
                 .isActive(entity.getPersonCurrentFlag() == 1 ? true : false)
                 .build();
@@ -53,6 +57,8 @@ public class PersonMapper {
         entity.setPersonSk(domain.getId());
         entity.setPersonNk(domain.getCode());
         entity.setPersonRank(domain.getRank());
+        entity.setCuerpo(domain.getCuerpo());
+        entity.setEspecialidad(domain.getEspecialidad());
         entity.setPersonName(domain.getName());
         entity.setPersonLastName1(domain.getLastName1());
         entity.setPersonLastName2(domain.getLastName2());
@@ -60,6 +66,8 @@ public class PersonMapper {
         entity.setPersonDni(domain.getDni());
         entity.setPersonDivision(domain.getDivision());
         entity.setPersonRole(domain.getRole());
+        entity.setAntiguedadEmpleo(domain.getAntiguedadEmpleo());
+        entity.setFechaEmbarque(domain.getFechaEmbarque());
         entity.setPersonOrder(domain.getOrder());
         entity.setPersonCurrentFlag(domain.isActive() ? 1 : 0);
         return entity;

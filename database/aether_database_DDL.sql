@@ -17,6 +17,8 @@ CREATE TABLE dim_person (
     person_sk                 INTEGER		NOT NULL,
     person_nk                 TEXT,                     -- tengo que aceptar nulos para meter no tripulantes.
     person_rank               TEXT  		NOT NULL,
+    person_cuerpo             TEXT          NOT NULL,
+    person_especialidad       TEXT          NOT NULL,
     person_name               TEXT  		NOT NULL,
     person_last_name_1        TEXT  		NOT NULL,
     person_last_name_2        TEXT  		NOT NULL,
@@ -24,6 +26,8 @@ CREATE TABLE dim_person (
 	person_dni				  TEXT			NOT NULL,
     person_division           TEXT  		NOT NULL,
 	person_rol		          TEXT 			NOT NULL,
+    person_a_emp              INTEGER       NOT NULL,
+    person_f_emb              INTEGER       NOT NULL,
 	person_order	          INTEGER 		NOT NULL,
     person_current_flag       INTEGER  		NOT NULL,
 	PRIMARY KEY (person_sk),
@@ -860,10 +864,9 @@ CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(sessi
 -- 		  INSERT DATA		 	   --
 -- ############################### --
 -- DIM_PERSON
-INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
-VALUES ('JON', 'SG1', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1 , 1);
-INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol, person_order, person_current_flag)
-VALUES ('ROD', 'CB1', 'Juan Ramon', 'Rodríguez', 'Domínguez', '607451992','32865122P', 'Línea de vuelo', 'Dotación' ,2 , 1);
+INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
+VALUES ('JON', 'SG1','IM','AVP', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1688169600,1722508800,1 , 1);
+
 -- Insert into dim_helo
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');

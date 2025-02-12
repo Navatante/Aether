@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.scene.control.ToggleGroup;
+import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import static javafx.scene.Cursor.*;
@@ -46,6 +47,9 @@ public class MainViewController {
     private Rectangle2D previousBounds;
     private boolean wasMaximized = false;
 
+    private final GlobalLoadingManager loadingManager;
+    private RotateTransition rotateTransition;
+
     @FXML private BorderPane root;
     @FXML private BorderPane contentArea;
     @FXML private BorderPane topBar;
@@ -54,8 +58,10 @@ public class MainViewController {
     @FXML private ToggleGroup leftPanelToggleButtonsGroup;
 
     @Inject
-    public MainViewController(PersonViewController personViewController) {
+    public MainViewController(PersonViewController personViewController,
+                              GlobalLoadingManager loadingManager) {
         this.personViewController = personViewController;
+        this.loadingManager = loadingManager;
     }
 
     @FXML
@@ -64,6 +70,7 @@ public class MainViewController {
         setRefreshButtonShortCut();
         atLeastOneToggleButtonSelectedListener();
         setupMouseEvents();
+        setupRefreshAnimation();
     }
 
     @FXML
@@ -405,5 +412,21 @@ public class MainViewController {
 
         // Make sure the root node can receive key events
         root.setFocusTraversable(true);
+    }
+
+    private void setupRefreshAnimation() {
+        rotateTransition = new RotateTransition(Duration.millis(2000), refreshIcon);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+        rotateTransition.setInterpolator(Interpolator.LINEAR);
+
+        loadingManager.globalLoadingProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                rotateTransition.play();
+            } else {
+                rotateTransition.stop();
+                refreshIcon.setRotate(0);
+            }
+        });
     }
 }
