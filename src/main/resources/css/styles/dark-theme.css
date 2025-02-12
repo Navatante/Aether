@@ -16,13 +16,27 @@
 
 /* TableView styling */
 .table-view {
-    -fx-background-color: #1E1F22;
-    -fx-table-cell-border-color: #3c3c3c;
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: transparent; /* Removes vertical borders */
+    -fx-border-color: transparent; /* Removes black border */
+}
+
+#personTableScrollPane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 }
 
 .table-view .column-header {
-    -fx-background-color: #1E1F22;
-    -fx-border-color: #3c3c3c;
+    -fx-background-color: #2B2D30;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 1px 0; /* Only bottom border for separation */
+}
+
+.column-header {
+    -fx-min-height: 30px; /* Adjust the height as needed */
+    -fx-pref-height: 30px;
 }
 
 .table-view .column-header .label {
@@ -34,16 +48,17 @@
 }
 
 .table-row-cell {
-    -fx-background-color: #1E1F22;
-    -fx-table-cell-border-color: #3c3c3c;
-}
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: transparent; /* Removes vertical borders */
+    -fx-border-color: #282A2E; /* Adds horizontal gray borders */
+    -fx-border-width: 1px 0 1px 0; /* Only bottom border for row separation */
 
-.table-row-cell:odd {
-    -fx-background-color: #252525;
+    -fx-min-height: 60px; /* Adjust the height as needed */
+    -fx-pref-height: 60px;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #0096C9;
+    -fx-border-color: #4A777A;
 }
 
 /* Button styling */

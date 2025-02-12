@@ -1,0 +1,42 @@
+2025-02-12 17:27:21 [SEVERE] Error accessing persons
+Excepción: java.lang.NullPointerException: null
+Stack trace:
+	at org.jonatancarbonellmartinez.data.mapper.PersonMapper.toDomain(PersonMapper.java:54)
+	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193)
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1382)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:482)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:708)
+	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:499)
+	at org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl.getAllPersons(PersonRepositoryImpl.java:48)
+	at org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.lambda$loadPersons$2(PersonViewModel.java:61)
+	at org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection.lambda$executeOperation$0(DatabaseConnection.java:33)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+
+2025-02-12 17:33:28 [SEVERE] Error accessing persons
+Excepción: java.lang.NullPointerException: null
+Stack trace:
+	at org.jonatancarbonellmartinez.data.mapper.PersonMapper.toDomain(PersonMapper.java:60)
+	at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:193)
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1382)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:482)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:708)
+	at java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:499)
+	at org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl.getAllPersons(PersonRepositoryImpl.java:48)
+	at org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.lambda$loadPersons$2(PersonViewModel.java:61)
+	at org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection.lambda$executeOperation$0(DatabaseConnection.java:33)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+

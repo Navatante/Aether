@@ -48,11 +48,11 @@
                 </HBox>
             </left>
         </BorderPane>
-        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <ScrollPane id="personTableScrollPane" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
             <content>
                 <AnchorPane>
                     <children>
-                        <TableView fx:id="personTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="personTable" editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <columns>
                                 <TableColumn fx:id="idColumn" text="ID" />
                                 <TableColumn fx:id="codeColumn" text="Código" />

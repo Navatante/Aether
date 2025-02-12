@@ -867,6 +867,12 @@ CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(sessi
 INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
 VALUES ('JON', 'SG1','IM','AVP', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1688169600,1722508800,1 , 1);
 
+INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
+VALUES ('', 'SG1','CGA','SGS', 'Javier', 'Seijo', 'Nogueira', '663329689','53300794L', 'N4', 'No tripulante' ,1561939200,1722508800,1 , 1);
+
+INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
+VALUES ('', 'CBO','CGA','ADM', 'Lázaro', 'Vázquez', 'Cazorla', '666542968','34007959K', 'N1', 'No tripulante' ,921715200,1722508800,3 , 1);
+
 -- Insert into dim_helo
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES ('1234', 'NH-90', '1401');
 INSERT INTO dim_helo (helo_plate_nk, helo_name, helo_number) VALUES (1235, 'NH-90', '1402');
