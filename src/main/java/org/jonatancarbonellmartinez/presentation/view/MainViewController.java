@@ -287,7 +287,9 @@ public class MainViewController {
 
         // Check if the current view is the PersonView
         if (currentView != null && cachedViews.containsValue(currentView)) {
+            // En teoria solo vamos a actualizar los datos de la vista que tengamos en pantalla, asi evitamos cargar todas las vistas y sobrecargar la base de datos.
             // Use the injected PersonViewController to refresh the data
+            // TODO esto habria que manejarlo con UnitOfWork, para que se utilice la misma conexion.
             personViewController.update();
         }
     }

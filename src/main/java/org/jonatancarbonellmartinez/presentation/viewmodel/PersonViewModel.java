@@ -14,6 +14,7 @@ import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
 import java.sql.Connection;
+import java.text.Normalizer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -44,8 +45,9 @@ public class PersonViewModel {
         filteredPersons.predicateProperty().bind(
                 Bindings.createObjectBinding(() ->
                                 person -> {
-                                    boolean matchesActive = !showOnlyActive.get() ||
-                                            person.isActive().equals("Activo");
+                                    boolean matchesActive = showOnlyActive.get() ?
+                                            person.isActive().equals("Activo") :
+                                            person.isActive().equals("Inactivo");
                                     boolean matchesSearch = person.matchesSearch(searchQuery.get());
                                     return matchesActive && matchesSearch;
                                 },
@@ -218,10 +220,27 @@ public class PersonViewModel {
         public boolean matchesSearch(String query) {
             if (query == null || query.isEmpty()) return true;
 
-            String lowerQuery = query.toLowerCase();
-            return name.get().toLowerCase().contains(lowerQuery) ||
-                    lastName1.get().toLowerCase().contains(lowerQuery) ||
-                    code.get().toLowerCase().contains(lowerQuery);
+            // Normaliza el texto de búsqueda (quita acentos y convierte a minúsculas)
+            String normalizedQuery = normalizeString(query);
+
+            // Normaliza y compara cada campo
+            return  normalizeString(code.get()).contains(normalizedQuery) ||
+                    normalizeString(rank.get()).contains(normalizedQuery) ||
+                    normalizeString(name.get()).contains(normalizedQuery) ||
+                    normalizeString(lastName1.get()).contains(normalizedQuery) ||
+                    normalizeString(lastName2.get()).contains(normalizedQuery) ||
+                    normalizeString(division.get()).contains(normalizedQuery) ||
+                    normalizeString(role.get()).contains(normalizedQuery);
+        }
+
+        // Metodo auxiliar para normalizar strings
+        private String normalizeString(String text) {
+            if (text == null || text.isEmpty()) return "";
+
+            // Normaliza el texto quitando diacríticos y convirtiendo a minúsculas
+            return Normalizer.normalize(text, Normalizer.Form.NFD)
+                    .replaceAll("\\p{M}", "") // Elimina marcas diacríticas
+                    .toLowerCase();
         }
 
         // Getters and Setters
