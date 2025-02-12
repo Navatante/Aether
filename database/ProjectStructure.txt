@@ -275,3 +275,24 @@ Person: Modelo de dominio
 PersonEntity: Modelo de datos
 PersonMapper/PersonUiMapper: Mapean entre las diferentes capas
 PersonViewController/ViewModel/View: Implementan el patrón MVVM
+
+Cuando usas journal_mode = DELETE en SQLite (el modo predeterminado), la forma en que se maneja la concurrencia es un poco diferente al modo WAL. Aquí te explico cómo funciona:
+________________________________________
+•	📌 Principales Características de journal_mode = DELETE
+1.	Modo de journaling tradicional:
+o	En este modo, SQLite utiliza un archivo de diario (journal) que mantiene un registro de todas las operaciones realizadas, para que pueda revertir cambios si la transacción falla o el sistema se cae.
+o	El archivo mi_db.db-journal se crea para registrar las transacciones, y se elimina cuando se finaliza correctamente la transacción.
+2.	Lecturas concurrentes:
+o	Sí, en DELETE, las lecturas concurrentes son posibles.
+o	Las lecturas no bloquean el acceso de otras conexiones a la base de datos, siempre que no estén realizando una escritura en ese momento. Es decir, puedes hacer varias lecturas simultáneas sin problemas.
+3.	Bloqueo de archivo durante escrituras:
+o	El archivo de la base de datos solo se bloquea cuando hay una escritura (INSERT, UPDATE, DELETE).
+o	Lecturas no causan bloqueo en la base de datos, pero si ocurre una escritura, se bloquean las escrituras concurrentes (no las lecturas).
+4.	Manejo de escrituras concurrentes:
+o	Si varias conexiones intentan escribir en la base de datos al mismo tiempo, SQLite utiliza un sistema de bloqueos de archivos para garantizar que solo una escritura se realice a la vez.
+o	Cuando una escritura está en curso, las otras conexiones que intenten realizar una escritura se bloquean temporalmente y deben esperar a que termine la transacción de escritura.
+o	El bloqueo de escritura en este modo es por transacción. Una vez que la transacción se completa, el archivo se desbloquea y otra escritura puede comenzar.
+5.	¿Qué pasa si coinciden lecturas y escrituras?
+o	Si una lectura ocurre mientras se está realizando una escritura, la lectura puede proceder sin ningún problema.
+o	Si ocurre una escritura concurrente, las lecturas continuarán, pero las escrituras se bloquearán temporalmente hasta que se libere el bloqueo.
+o	No hay un timeout explícito para las lecturas. Las lecturas pueden acceder a la base de datos de manera continua, pero si hay una escritura, las otras escrituras deben esperar a que termine

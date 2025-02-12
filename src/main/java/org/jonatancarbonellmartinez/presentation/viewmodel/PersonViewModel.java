@@ -13,7 +13,6 @@ import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
-import java.sql.Connection;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.ArrayList;
