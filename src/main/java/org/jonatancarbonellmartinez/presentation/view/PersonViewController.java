@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.presentation.view;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -46,19 +47,21 @@ public class PersonViewController {
         viewModel.loadPersons();
     }
 
+
+
     private void setupTableColumns() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-        rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        lastName1Column.setCellValueFactory(new PropertyValueFactory<>("lastName1"));
-        lastName2Column.setCellValueFactory(new PropertyValueFactory<>("lastName2"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        dniColumn.setCellValueFactory(new PropertyValueFactory<>("dni"));
-        divisionColumn.setCellValueFactory(new PropertyValueFactory<>("division"));
-        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
-        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
-        orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
+        idColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
+        codeColumn.setCellValueFactory(cellData -> cellData.getValue().codeProperty());
+        rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty());
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        lastName1Column.setCellValueFactory(cellData -> cellData.getValue().lastName1Property());
+        lastName2Column.setCellValueFactory(cellData -> cellData.getValue().lastName2Property());
+        phoneColumn.setCellValueFactory(cellData -> cellData.getValue().phoneProperty());
+        dniColumn.setCellValueFactory(cellData -> cellData.getValue().dniProperty());
+        divisionColumn.setCellValueFactory(cellData -> cellData.getValue().divisionProperty());
+        roleColumn.setCellValueFactory(cellData -> cellData.getValue().roleProperty());
+        orderColumn.setCellValueFactory(cellData -> cellData.getValue().orderProperty().asObject());
+        activeColumn.setCellValueFactory(cellData -> cellData.getValue().activeProperty());
     }
 
     private void setupBindings() {
@@ -70,5 +73,6 @@ public class PersonViewController {
 
         // Vincular el switch de activos/inactivos
         activeInactiveSwitch.selectedProperty().bindBidirectional(viewModel.showOnlyActiveProperty());
+
     }
 }
