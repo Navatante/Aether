@@ -16,7 +16,9 @@ import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
         ViewModelModule.class,
         RepositoryModule.class,
         CoordinatorModule.class,
-        MapperModule.class
+        MapperModule.class,
+        UnitOfWorkModule.class,
+        DAOModule.class
 })
 public interface AppComponent {
     // Factory para crear instancias
