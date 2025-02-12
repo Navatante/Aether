@@ -206,8 +206,8 @@ public class PersonViewModel {
         private final StringProperty dni = new SimpleStringProperty();
         private final StringProperty division = new SimpleStringProperty();
         private final StringProperty role = new SimpleStringProperty();
-        private final LongProperty antiguedadEmpleo = new SimpleLongProperty();
-        private final LongProperty fechaEmbarque = new SimpleLongProperty();
+        private final StringProperty antiguedadEmpleo = new SimpleStringProperty();
+        private final StringProperty fechaEmbarque = new SimpleStringProperty();
         private final IntegerProperty order = new SimpleIntegerProperty();
         private final StringProperty active = new SimpleStringProperty();
 
@@ -289,13 +289,13 @@ public class PersonViewModel {
         public void setRole(String value) { role.set(value); }
         public StringProperty roleProperty() { return role; }
 
-        public Long getAntiguedadEmpleo() { return antiguedadEmpleo.get(); }
-        public void setAntiguedadEmpleo(Long value) { antiguedadEmpleo.set(value); }
-        public LongProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
+        public String getAntiguedadEmpleo() { return antiguedadEmpleo.get(); }
+        public void setAntiguedadEmpleo(String value) { antiguedadEmpleo.set(value); }
+        public StringProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
 
-        public Long getFechaEmbarque() { return fechaEmbarque.get(); }
-        public void setFechaEmbarque(Long value) { fechaEmbarque.set(value); }
-        public LongProperty fechaEmbarqueProperty() { return fechaEmbarque; }
+        public String getFechaEmbarque() { return fechaEmbarque.get(); }
+        public void setFechaEmbarque(String value) { fechaEmbarque.set(value); }
+        public StringProperty fechaEmbarqueProperty() { return fechaEmbarque; }
 
         public int getOrder() { return order.get(); }
         public void setOrder(int value) { order.set(value); }

@@ -18,8 +18,8 @@ public class Person {
     private final String dni;
     private final String division;
     private final String role;
-    private final Long   antiguedadEmpleo;
-    private final Long   fechaEmbarque;
+    private final String   antiguedadEmpleo;
+    private final String   fechaEmbarque;
     private final Integer order;
     private final Boolean isActive;
 
@@ -55,8 +55,8 @@ public class Person {
     public String getDni() { return dni; }
     public String getDivision() { return division; }
     public String getRole() { return role; }
-    public Long getAntiguedadEmpleo() { return antiguedadEmpleo; }
-    public Long getFechaEmbarque() { return fechaEmbarque; }
+    public String getAntiguedadEmpleo() { return antiguedadEmpleo; }
+    public String getFechaEmbarque() { return fechaEmbarque; }
     public Integer getOrder() { return order; }
     public Boolean isActive() { return isActive; }
 
@@ -74,8 +74,8 @@ public class Person {
         private String dni;
         private String division;
         private String role;
-        private Long antiguedadEmpleo;
-        private Long fechaEmbarque;
+        private String antiguedadEmpleo;
+        private String fechaEmbarque;
         private Integer order;
         private Boolean isActive;
 
@@ -141,12 +141,12 @@ public class Person {
             return this;
         }
 
-        public Builder antiguedadEmpleo(Long antiguedadEmpleo) {
+        public Builder antiguedadEmpleo(String antiguedadEmpleo) {
             this.antiguedadEmpleo = antiguedadEmpleo;
             return this;
         }
 
-        public Builder fechaEmbarque(Long fechaEmbarque) {
+        public Builder fechaEmbarque(String fechaEmbarque) {
             this.fechaEmbarque = fechaEmbarque;
             return this;
         }

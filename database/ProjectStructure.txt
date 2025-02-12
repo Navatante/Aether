@@ -296,3 +296,65 @@ o	El bloqueo de escritura en este modo es por transacción. Una vez que la trans
 o	Si una lectura ocurre mientras se está realizando una escritura, la lectura puede proceder sin ningún problema.
 o	Si ocurre una escritura concurrente, las lecturas continuarán, pero las escrituras se bloquearán temporalmente hasta que se libere el bloqueo.
 o	No hay un timeout explícito para las lecturas. Las lecturas pueden acceder a la base de datos de manera continua, pero si hay una escritura, las otras escrituras deben esperar a que termine
+
+
+Para determinar qué campos necesitan ser JavaFX Properties y cuáles pueden ser campos regulares, debemos analizar cómo se usa cada campo en la interfaz de usuario. Aquí te explico los criterios:
+NECESITAN ser Properties:
+
+Campos que se muestran en celdas editables de TableView/ListView
+Campos que se usan en bindings bidireccionales (por ejemplo, con TextFields)
+Campos que necesitan notificar cambios a otros componentes
+Campos que se usan en filtros dinámicos o propiedades computadas
+
+NO NECESITAN ser Properties:
+
+Campos que son solo de lectura en la UI
+Campos que solo se muestran pero no se editan
+Campos que no participan en bindings
+Identificadores (como ID) que no cambian
+
+Por ejemplo, en tu caso:
+javaCopypublic static class PersonUI {
+    // No necesitan ser Properties:
+    private Integer id;                  // Solo identificador, no cambia
+    private String dni;                  // Normalmente solo lectura
+    private Long antiguedadEmpleo;       // Calculado/solo lectura
+    private Long fechaEmbarque;          // Fecha fija, solo lectura
+
+    // Sí necesitan ser Properties:
+    private StringProperty name;         // Editable en la UI
+    private StringProperty phone;        // Editable en la UI
+    private StringProperty active;       // Participa en filtros
+    private StringProperty role;         // Puede cambiar y afectar otros componentes
+
+    // Ejemplo de implementación lazy para 'name':
+    private String nameValue;            // Backing field
+    private StringProperty nameProp;     // Lazy property
+
+    public String getName() {
+        return nameValue;
+    }
+
+    public void setName(String value) {
+        nameValue = value;
+        if (nameProp != null) {
+            nameProp.set(value);
+        }
+    }
+
+    public StringProperty nameProperty() {
+        if (nameProp == null) {
+            nameProp = new SimpleStringProperty(nameValue);
+        }
+        return nameProp;
+    }
+}
+
+Un enfoque práctico es:
+
+Comenzar con todos los campos como valores regulares
+Convertir a Properties solo cuando encuentres un caso de uso específico que lo requiera
+Implementar la inicialización lazy para esas Properties
+Documentar por qué cada campo es una Property para futuro mantenimiento
+
+Esto te ayudará a tener un mejor rendimiento mientras mantienes la funcionalidad necesaria.

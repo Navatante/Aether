@@ -1,8 +1,10 @@
 package org.jonatancarbonellmartinez.presentation.mapper;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
+import org.jonatancarbonellmartinez.services.DateService;
 
 /**
  * Representa una capa adicional de mapeo específica para la UI (User Interface), lo que aporta varios beneficios importantes:
@@ -14,6 +16,12 @@ import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.Perso
 
 @Singleton
 public class PersonUiMapper {
+    private final DateService dateService;
+
+    @Inject
+    public PersonUiMapper(DateService dateService) {
+        this.dateService = dateService;
+    }
     public PersonUI toUiModel(Person domain) {
         PersonUI ui = new PersonUI();
         ui.setId(domain.getId());
@@ -28,8 +36,8 @@ public class PersonUiMapper {
         ui.setDni(domain.getDni());
         ui.setDivision(domain.getDivision());
         ui.setRole(domain.getRole());
-        ui.setAntiguedadEmpleo(domain.getAntiguedadEmpleo());
-        ui.setFechaEmbarque(domain.getFechaEmbarque());
+        ui.setAntiguedadEmpleo(dateService.convertUTCtoLocalDate(domain.getAntiguedadEmpleo()));
+        ui.setFechaEmbarque(dateService.convertUTCtoLocalDate(domain.getFechaEmbarque()));
         ui.setOrder(domain.getOrder());
         ui.setActive(domain.isActive() ? "Activo" : "Inactivo");
         return ui;
@@ -49,8 +57,8 @@ public class PersonUiMapper {
                 .dni(ui.getDni())
                 .division(ui.getDivision())
                 .role(ui.getRole())
-                .fechaEmbarque(ui.getFechaEmbarque())
-                .antiguedadEmpleo(ui.getAntiguedadEmpleo())
+                .fechaEmbarque(dateService.convertLocalToUTCDate(ui.getFechaEmbarque()))
+                .antiguedadEmpleo(dateService.convertLocalToUTCDate(ui.getAntiguedadEmpleo()))
                 .order(ui.getOrder())
                 .isActive(ui.isActive().equals("Activo") ? true : false)
                 .build();

@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import org.jonatancarbonellmartinez.data.mapper.PersonMapper;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+import org.jonatancarbonellmartinez.services.DateService;
 
 import javax.inject.Singleton;
 
@@ -11,13 +12,13 @@ import javax.inject.Singleton;
 public class MapperModule {
     @Provides
     @Singleton
-    PersonMapper providePersonDataMapper() {
-        return new PersonMapper();
+    PersonMapper providePersonDataMapper(DateService dateService) {
+        return new PersonMapper(dateService);
     }
 
     @Provides
     @Singleton
-    PersonUiMapper providePersonUiMapper() {
-        return new PersonUiMapper();
+    PersonUiMapper providePersonUiMapper(DateService dateService) {
+        return new PersonUiMapper(dateService);
     }
 }

@@ -2,9 +2,10 @@ package org.jonatancarbonellmartinez.data.mapper;
 
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.services.DateService;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Objects;
 
 /**
  * Los mappers son comúnmente utilizados en varios lugares dentro de la arquitectura de una aplicación, especialmente en:
@@ -30,7 +31,14 @@ import java.util.Objects;
 // New mapper class to separate mapping logic from entity
 @Singleton
 public class PersonMapper {
+    private final DateService dateService;
+
+    @Inject
+    public PersonMapper(DateService dateService) {
+        this.dateService = dateService;
+    }
     public Person toDomain(PersonEntity entity) {
+
         return new Person.Builder()
                 .id(entity.getPersonSk())
                 .code(entity.getPersonNk())
@@ -44,8 +52,8 @@ public class PersonMapper {
                 .dni(entity.getPersonDni())
                 .division(entity.getPersonDivision())
                 .role(entity.getPersonRole())
-                .antiguedadEmpleo(entity.getAntiguedadEmpleo())
-                .fechaEmbarque(entity.getFechaEmbarque())
+                .antiguedadEmpleo(dateService.convertUnixToUTCDate(entity.getAntiguedadEmpleo()))
+                .fechaEmbarque(dateService.convertUnixToUTCDate(entity.getFechaEmbarque()))
                 .order(entity.getPersonOrder())
                 .isActive(entity.getPersonCurrentFlag() == 1 ? true : false)
                 .build();
@@ -66,8 +74,8 @@ public class PersonMapper {
         entity.setPersonDni(domain.getDni());
         entity.setPersonDivision(domain.getDivision());
         entity.setPersonRole(domain.getRole());
-        entity.setAntiguedadEmpleo(domain.getAntiguedadEmpleo());
-        entity.setFechaEmbarque(domain.getFechaEmbarque());
+        entity.setAntiguedadEmpleo(dateService.convertUTCDateToUnix(domain.getAntiguedadEmpleo()));
+        entity.setFechaEmbarque(dateService.convertUTCDateToUnix(domain.getFechaEmbarque()));
         entity.setPersonOrder(domain.getOrder());
         entity.setPersonCurrentFlag(domain.isActive() ? 1 : 0);
         return entity;

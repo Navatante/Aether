@@ -136,6 +136,8 @@ public class PersonDAO {
         PersonEntity entity = new PersonEntity();
         entity.setPersonSk(rs.getInt("person_sk"));
         entity.setPersonNk(rs.getString("person_nk"));
+        entity.setCuerpo(rs.getString("person_cuerpo"));
+        entity.setEspecialidad(rs.getString("person_especialidad"));
         entity.setPersonRank(rs.getString("person_rank"));
         entity.setPersonName(rs.getString("person_name"));
         entity.setPersonLastName1(rs.getString("person_last_name_1"));
@@ -144,6 +146,8 @@ public class PersonDAO {
         entity.setPersonDni(rs.getString("person_dni"));
         entity.setPersonDivision(rs.getString("person_division"));
         entity.setPersonOrder(rs.getInt("person_order"));
+        entity.setAntiguedadEmpleo(rs.getLong("person_a_emp"));
+        entity.setFechaEmbarque(rs.getLong("person_f_emb"));
         entity.setPersonRole(rs.getString("person_rol"));
         entity.setPersonCurrentFlag(rs.getInt("person_current_flag"));
         return entity;

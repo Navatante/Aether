@@ -29,6 +29,10 @@
     -fx-text-fill: #CED0D6;
 }
 
+.table-cell {
+    -fx-alignment: center;
+}
+
 .table-row-cell {
     -fx-background-color: #1E1F22;
     -fx-table-cell-border-color: #3c3c3c;

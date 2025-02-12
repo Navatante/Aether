@@ -15,6 +15,11 @@
             <right>
                 <HBox alignment="CENTER_RIGHT" prefHeight="71.0" prefWidth="390.0" spacing="20.0" BorderPane.alignment="CENTER">
                     <children>
+                  <Button fx:id="addPersonButton" minWidth="80.0" mnemonicParsing="false" text="Añadir">
+                     <HBox.margin>
+                        <Insets left="10.0" right="40.0" />
+                     </HBox.margin>
+                  </Button>
                         <TextField fx:id="searchField" minHeight="20.0" minWidth="300.0" promptText="Buscar...">
                             <font>
                                 <Font name="Segoe UI" size="14.0" />
@@ -31,7 +36,7 @@
             <left>
                 <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="83.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Label text="Personal">
+                        <Label minWidth="100.0" text="Personal">
                             <font>
                                 <Font name="Segoe UI Black" size="14.0" />
                             </font>
@@ -53,7 +58,7 @@
                                 <TableColumn fx:id="codeColumn" text="Código" />
                                 <TableColumn fx:id="rankColumn" text="Empleo" />
                                 <TableColumn fx:id="cuerpoColumn" text="Cuerpo" />
-                                <TableColumn fx:id="especialidadaColumn" text="Especialidad" />
+                                <TableColumn fx:id="especialidadColumn" text="Especialidad" />
                                 <TableColumn fx:id="nameColumn" text="Nombre" />
                                 <TableColumn fx:id="lastName1Column" text="Apellido 1" />
                                 <TableColumn fx:id="lastName2Column" text="Apellido 2" />
@@ -62,8 +67,8 @@
                                 <TableColumn fx:id="divisionColumn" text="División" />
                                 <TableColumn fx:id="roleColumn" text="Rol" />
                                 <TableColumn fx:id="activeColumn" text="Situación" />
-                                <TableColumn fx:id="aEmpColumn" text="Antiguedad Empleo" />
-                                <TableColumn fx:id="fEmbColumn" text="Fecha Embarque" />
+                                <TableColumn fx:id="antiguedadColumn" text="Antiguedad" />
+                                <TableColumn fx:id="embarqueColumn" text="Embarque" />
                                 <TableColumn fx:id="orderColumn" text="Orden" />
                             </columns>
                             <columnResizePolicy>
