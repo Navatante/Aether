@@ -7,8 +7,8 @@ import org.jonatancarbonellmartinez.application.coordinator.BaseCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
-import org.jonatancarbonellmartinez.presentation.view.MainViewController;
-import org.jonatancarbonellmartinez.presentation.view.PersonViewController;
+import org.jonatancarbonellmartinez.presentation.controller.MainViewController;
+import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import java.util.HashMap;

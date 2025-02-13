@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presentation.view;
+package org.jonatancarbonellmartinez.presentation.controller;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import javafx.scene.control.ToggleGroup;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
-import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import static javafx.scene.Cursor.*;
 

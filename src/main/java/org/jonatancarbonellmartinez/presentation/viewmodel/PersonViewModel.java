@@ -10,7 +10,7 @@ import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingMan
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;

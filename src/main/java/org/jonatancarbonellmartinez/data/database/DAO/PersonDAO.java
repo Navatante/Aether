@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.data.database.DAO;
 
-import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 

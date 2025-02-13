@@ -3,7 +3,7 @@ package org.jonatancarbonellmartinez.data.repository;
 import org.jonatancarbonellmartinez.domain.model.Person;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.database.DAO.PersonDAO;
 import org.jonatancarbonellmartinez.data.mapper.PersonMapper;

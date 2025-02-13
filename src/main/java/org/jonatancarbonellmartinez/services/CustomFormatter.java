@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.exceptions;
+package org.jonatancarbonellmartinez.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

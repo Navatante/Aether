@@ -1,6 +1,6 @@
 package org.jonatancarbonellmartinez.data.database.configuration;
 
-import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseConfigurationException;
 
 import javax.inject.Inject;

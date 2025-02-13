@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.jonatancarbonellmartinez.presentation.view.PersonViewController;
+import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

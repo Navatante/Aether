@@ -2,7 +2,7 @@ package org.jonatancarbonellmartinez.data.database.configuration;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.jonatancarbonellmartinez.exceptions.CustomLogger;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 
 import javax.inject.Inject;

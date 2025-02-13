@@ -1,4 +1,4 @@
-package org.jonatancarbonellmartinez.presentation.view;
+package org.jonatancarbonellmartinez.presentation.controller;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
