@@ -75,7 +75,6 @@ public class AddPersonViewController {
         dniField.textProperty().bindBidirectional(viewModel.dniProperty());
         divisionField.textProperty().bindBidirectional(viewModel.divisionProperty());
         rolField.textProperty().bindBidirectional(viewModel.roleProperty());
-
     }
 
     private void setupValidation() {
