@@ -51,6 +51,8 @@ public class AddPersonViewModel {
         setupValidation();
     }
 
+
+
     private void setupValidation() {
         // Bind formValid to required fields
         formValid.bind(

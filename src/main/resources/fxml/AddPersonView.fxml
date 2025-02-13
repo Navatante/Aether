@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="addPersonView" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox id="addPersonView" fx:id="addPersonView" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" onMouseDragged="#handleDialogDragged" onMousePressed="#handleDialogPressed" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER" spacing="11.0">
          <children>
@@ -88,7 +88,7 @@
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <DatePicker fx:id="embarqueDatepicker" promptText="Fecha embarque" />
+            <DatePicker id="fechaDatePicker" fx:id="embarqueDatePicker" promptText="Fecha embarque" />
             <DatePicker fx:id="antiguedadDatePicker" promptText="Antiguedad empleo" />
          </children>
          <VBox.margin>

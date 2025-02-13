@@ -3,13 +3,21 @@ package org.jonatancarbonellmartinez.presentation.controller;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class AddPersonViewController {
+    private double xOffset = 0;
+    private double yOffset = 0;
     @FXML private TextField codigoField;
     @FXML private TextField empleoField;
     @FXML private TextField cuerpoField;
@@ -26,6 +34,7 @@ public class AddPersonViewController {
     @FXML private TextField ordenField;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
+    @FXML private VBox addPersonView;
 
     private final AddPersonViewModel viewModel;
 
@@ -38,6 +47,14 @@ public class AddPersonViewController {
     private void initialize() {
         setupBindings();
         setupValidation();
+        setupDatePicker();
+    }
+
+    private void setupDatePicker() {
+        // Establecer locale español
+        Locale.setDefault(new Locale("es", "ES"));
+        configureDatePicker(embarqueDatePicker);
+        configureDatePicker(antiguedadDatePicker);
     }
 
     private void setupBindings() {
@@ -86,6 +103,28 @@ public class AddPersonViewController {
         saveButton.disableProperty().bind(viewModel.formValidProperty().not());
     }
 
+    public static void configureDatePicker(DatePicker datePicker) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return formatter.format(date);
+                }
+                return "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, formatter);
+                }
+                return null;
+            }
+        });
+    }
+
     @FXML
     private void handleSaveButtonClicked() {
         viewModel.savePerson()
@@ -103,6 +142,23 @@ public class AddPersonViewController {
     @FXML
     private void handleCancelButtonClicked() {
         closeDialog();
+    }
+
+    @FXML
+    private void handleDialogPressed(MouseEvent event) {
+        // Guardar la posición inicial del cursor relativa a la ventana
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleDialogDragged(MouseEvent event) {
+        Stage stage = (Stage) addPersonView.getScene().getWindow();
+
+        // Mover la ventana utilizando la diferencia entre la posición actual del cursor
+        // y la posición inicial guardada
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
     }
 
     private void closeDialog() {

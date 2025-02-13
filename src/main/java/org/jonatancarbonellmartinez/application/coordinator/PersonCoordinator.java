@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.application.coordinator;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -80,7 +81,8 @@ public class PersonCoordinator extends BaseCoordinator implements PersonNavigati
             // Create dialog stage
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
+            dialogStage.initOwner(primaryStage);;
+            dialogStage.centerOnScreen();
             dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.setIconified(false);
             dialogStage.setResizable(false);
@@ -103,6 +105,18 @@ public class PersonCoordinator extends BaseCoordinator implements PersonNavigati
 
             // Reset view model state
             addPersonViewModel.reset();
+
+            // Colocamos el nuevo dialogo en el centro del primaryStage
+            Platform.runLater(() -> {
+                double dialogWidth = dialogStage.getWidth();
+                double dialogHeight = dialogStage.getHeight();
+
+                double centerXPosition = primaryStage.getX() + (primaryStage.getWidth() - dialogWidth) / 2;
+                double centerYPosition = primaryStage.getY() + (primaryStage.getHeight() - dialogHeight) / 2;
+
+                dialogStage.setX(centerXPosition);
+                dialogStage.setY(centerYPosition);
+            });
 
             // Show dialog
             dialogStage.showAndWait();

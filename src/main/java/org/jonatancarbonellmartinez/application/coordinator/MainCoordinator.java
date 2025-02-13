@@ -52,6 +52,9 @@ public class MainCoordinator implements Cleanable {
         this.primaryStage = primaryStage;
         primaryStage.initStyle(StageStyle.TRANSPARENT); // Necesario para border redondeados (implementarlos mas adelante)
 
+        // Initialize all coordinators with the primary stage
+        coordinators.values().forEach(coordinator -> coordinator.start(primaryStage));
+
         try {
             // Load MainView
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
@@ -78,6 +81,7 @@ public class MainCoordinator implements Cleanable {
             // TODO todavia no navego a ningun sitio hasta que tenga controlado el tema base de datos.
             // Navigate to PersonView by default
             mainViewController.loadView("PersonView");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -118,6 +118,10 @@
 }
 
 /* Dialog styling */
+#addPersonView {
+    -fx-border-width: 1px;
+    -fx-border-color: #4B4C4F;
+}
 .dialog-pane {
     -fx-background-color: #1d1d1d;
 }
@@ -225,3 +229,93 @@
 }
 
 
+/* ### DATE PICKER */
+
+/* Base DatePicker styles */
+.date-picker {
+    -fx-background-color: #1d1d1d;
+}
+
+.date-picker .text-field {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #CCCCCB;
+    -fx-background-radius: 0;
+}
+
+/* Arrow button styles */
+.date-picker .arrow-button {
+    -fx-background-color: #4B4C4F;
+    -fx-background-radius: 0;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #3b3b3b;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #808080;
+}
+
+/* Popup calendar styles */
+.date-picker-popup {
+    -fx-background-color: #4B4C4F;
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #2B2D30;
+}
+
+/* Calendar grid styles */
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #1E1F22;
+    -fx-grid-lines-visible: true;
+}
+
+/* Calendar cell styles */
+.date-picker-popup .calendar-grid .date-cell {
+    -fx-background-color: #1E1F22;
+    -fx-pref-width: 35px;
+    -fx-pref-height: 35px;
+    -fx-text-fill: #CCCCCB;
+}
+
+.date-picker-popup .calendar-grid .date-cell:hover {
+    -fx-background-color: #4B4C4F;
+}
+
+/* Selected and Today cell styles */
+.date-picker-popup .calendar-grid .date-cell.selected {
+    -fx-background-color: #4A777A;
+    -fx-text-fill: #CCCCCB;
+}
+
+.date-picker-popup .calendar-grid .date-cell.today {
+    -fx-background-color: #4B4C4F;
+    -fx-border-color: #4A777A;
+    -fx-border-width: 2px;
+}
+
+/* Para asegurarnos que today sea visible incluso cuando está seleccionado */
+.date-picker-popup .calendar-grid .date-cell.today.selected {
+    -fx-background-color: #4A777A;
+    -fx-border-color: #CCCCCB;
+    -fx-border-width: 2px;
+}
+
+/* Calendar header styles */
+.date-picker-popup > * > .spinner > .label {
+    -fx-text-fill: #CCCCCB;
+}
+
+.date-picker-popup > * > .spinner > .button {
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 0;
+}
+
+.date-picker-popup > * > .spinner > .button:hover {
+    -fx-background-color: #3b3b3b;
+}
+
+.date-picker-popup > * > .day-name-cell {
+    -fx-text-fill: #CCCCCB;
+}
