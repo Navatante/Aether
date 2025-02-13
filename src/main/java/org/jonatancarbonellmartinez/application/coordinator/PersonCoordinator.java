@@ -7,6 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jonatancarbonellmartinez.presentation.controller.AddPersonViewController;
+import org.jonatancarbonellmartinez.presentation.navigation.PersonNavigationCallback;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
@@ -30,7 +31,7 @@ import java.io.IOException;
  */
 
 @Singleton
-public class PersonCoordinator extends BaseCoordinator {
+public class PersonCoordinator extends BaseCoordinator implements PersonNavigationCallback {
     private final PersonViewModel personViewModel;
     private final PersonViewController personViewController;
     private final AddPersonViewModel addPersonViewModel;
@@ -47,6 +48,14 @@ public class PersonCoordinator extends BaseCoordinator {
         this.personViewController = personViewController;
         this.addPersonViewModel = addPersonViewModel;
         this.addPersonViewController = addPersonViewController;
+
+        // Establecer el callback de navegación
+        this.personViewController.setNavigationCallback(this);
+    }
+
+    @Override
+    public void onAddPersonRequested() {
+        showAddPersonDialog();
     }
 
     @Override

@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
+import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
+import org.jonatancarbonellmartinez.presentation.navigation.PersonNavigationCallback;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
 
@@ -37,6 +39,8 @@ public class PersonViewController {
     @FXML private TableColumn<PersonUI, String> activeColumn;
     @FXML private TableColumn<PersonUI, Integer> orderColumn;
 
+
+    private PersonNavigationCallback navigationCallback;
     private final PersonViewModel viewModel;
 
     @Inject
@@ -63,7 +67,13 @@ public class PersonViewController {
 
     @FXML
     private void handleAddPersonButtonPressed(MouseEvent event) {
-        viewModel.
+        if (navigationCallback != null) {
+            navigationCallback.onAddPersonRequested();
+        }
+    }
+
+    public void setNavigationCallback(PersonNavigationCallback callback) {
+        this.navigationCallback = callback;
     }
 
     private void handleCopyShortcut(KeyEvent event) {
