@@ -108,9 +108,6 @@
          <VBox.margin>
             <Insets bottom="20.0" />
          </VBox.margin>
-         <padding>
-            <Insets bottom="2.0" top="2.0" />
-         </padding>
       </HBox>
    </children>
    <padding>
