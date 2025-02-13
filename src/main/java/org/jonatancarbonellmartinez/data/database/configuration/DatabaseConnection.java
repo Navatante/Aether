@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,12 +28,13 @@ public class DatabaseConnection {
         loadPathFromProperties();
     }
 
-    public <T> CompletableFuture<T> executeOperation(DatabaseOperation<T> operation) {
+    public <T> CompletableFuture<T> executeOperation(DatabaseOperation<T> operation, boolean isWrite) {
         return CompletableFuture.supplyAsync(() -> {
             loadingManager.startLoading();
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection(isWrite)) {
                 return operation.execute(connection);
             } catch (Exception e) {
+                CustomLogger.logError("Database operation failed", e);
                 throw new DatabaseException("Database operation failed", e);
             } finally {
                 loadingManager.endLoading();
@@ -49,22 +52,42 @@ public class DatabaseConnection {
     }
 
     // Para conexiones de una sola  consulta. Utilizo este metodo directamente
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection(boolean isWrite) throws SQLException {
         if (!isDatabaseFilePresent()) {
+            CustomLogger.logError("Database file does not exist: " + databasePath.get(), null);
             throw new SQLException("Database file does not exist: " + databasePath.get());
         }
 
         try {
             Connection conn = DriverManager.getConnection(databasePath.get());
             try (Statement stmt = conn.createStatement()) {
-                stmt.execute("PRAGMA foreign_keys = ON;");   // Toda conexion tendra implicitamente habilitadas las claves foraneas.
-                stmt.execute("PRAGMA busy_timeout = 5000;");  // Toda conexion tendra implicitamente reintentos de conexion en intervalos de microsegundos aleatorios durante 5 seg.
+                stmt.execute("PRAGMA foreign_keys = ON;");   // Habilita claves foráneas.
+                stmt.execute("PRAGMA busy_timeout = 5000;");  // Configura el tiempo de espera en 5 segundos.
+
+                if (isWrite) {
+                    // Si es una conexión de escritura, limpia e inserta en session_info
+                    stmt.execute("DELETE FROM session_info;");
+                    String userName = System.getProperty("user.name");
+                    String ipAddress = InetAddress.getLocalHost().getHostAddress();
+
+                    String insertSQL = "INSERT INTO session_info (user_id, ip_address) VALUES (?, ?)";
+                    try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                        pstmt.setString(1, userName);
+                        pstmt.setString(2, ipAddress);
+                        pstmt.executeUpdate();
+                    }
+                }
+            } catch (UnknownHostException e) {
+                CustomLogger.logError("Failed to retrieve IP address", e);
+                throw new RuntimeException("Failed to retrieve IP address", e);
             }
             return conn;
         } catch (SQLException e) {
+            CustomLogger.logError("Error connecting to database", e);
             throw new SQLException("Error connecting to database: " + e.getMessage(), e);
         }
     }
+
 
 
     public void setDatabasePath(String path) throws IOException {

@@ -69,7 +69,7 @@ public class DatabaseCheckViewModel {
     private void testConnection() {
         Connection connection = null;
         try {
-            connection = databaseConnection.getConnection();
+            connection = databaseConnection.getConnection(false);
             connectionSuccess.set(true);
         } catch (SQLException e) {
             showError("Error de conexión: " + e.getMessage());

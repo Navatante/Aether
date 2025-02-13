@@ -40,9 +40,9 @@ public class UnitOfWork {
     /**
      * Inicia una nueva transacción.
      */
-    public void begin() {
+    public void begin(boolean isWrite) {
         try {
-            connection = databaseConnection.getConnection();
+            connection = databaseConnection.getConnection(isWrite);
             databaseConnection.beginTransaction(connection);
         } catch (Exception e) {
             throw new DatabaseException("Failed to begin transaction", e);

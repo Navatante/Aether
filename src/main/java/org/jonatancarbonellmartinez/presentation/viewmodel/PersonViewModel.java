@@ -60,7 +60,7 @@ public class PersonViewModel {
 
     public void loadPersons() {
         databaseConnection
-                .executeOperation(connection -> repository.getAllPersons(connection))
+                .executeOperation(repository::getAllPersons, false)
                 .thenAccept(domainPersons -> {
                     List<PersonUI> uiPersons = new ArrayList<>();
                     for (Person person : domainPersons) {
@@ -76,7 +76,7 @@ public class PersonViewModel {
 
     public void loadActivePilots() {
         databaseConnection
-                .executeOperation(connection -> repository.getActivePilots(connection))
+                .executeOperation(repository::getActivePilots,false)
                 .thenAccept(pilots -> {
                     List<PersonUI> uiPilots = new ArrayList<>();
                     for (Person pilot : pilots) {
@@ -92,7 +92,7 @@ public class PersonViewModel {
 
     public void loadActiveCrew() {
         databaseConnection
-                .executeOperation(connection -> repository.getActiveCrew(connection))
+                .executeOperation(repository::getActiveCrew,false)
                 .thenAccept(crew -> {
                     List<PersonUI> uiCrew = new ArrayList<>();
                     for (Person member : crew) {

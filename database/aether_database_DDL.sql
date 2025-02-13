@@ -295,7 +295,7 @@ CREATE TABLE audit_log (
     changed_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla para la información de sesión, en cada inicio de sesion, se borraran y se actualizaran los datos.
+-- Crear tabla para la información de sesión, en cada CONEXION, se borraran y se actualizaran los datos.
 CREATE TABLE session_info (
     user_id         TEXT,
     ip_address      TEXT
