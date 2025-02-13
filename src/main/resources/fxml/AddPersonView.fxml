@@ -10,25 +10,22 @@
    <children>
       <HBox alignment="CENTER" spacing="11.0">
          <children>
-            <TextField fx:id="codigoField" alignment="CENTER" prefWidth="100.0" promptText="Código">
+            <TextField fx:id="codigoField" alignment="CENTER" prefWidth="120.0" promptText="Código">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font></TextField>
-            <TextField fx:id="empleoField" alignment="CENTER" prefWidth="100.0" promptText="Empleo">
-               <font>
-                  <Font name="Segoe UI" size="14.0" />
-               </font></TextField>
-            <TextField fx:id="cuerpoField" alignment="CENTER" prefWidth="100.0" promptText="Cuerpo">
+            <TextField fx:id="ordenFied" alignment="CENTER" prefWidth="120.0" promptText="Orden">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="especialidadField" alignment="CENTER" prefWidth="100.0" promptText="Especialidad">
+            <ComboBox fx:id="empleoComboBox" minHeight="28.0" prefWidth="120.0" promptText="Empleo" />
+            <TextField fx:id="cuerpoField" alignment="CENTER" prefWidth="120.0" promptText="Cuerpo">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="ordenFied" alignment="CENTER" prefWidth="100.0" promptText="Orden">
+            <TextField fx:id="especialidadField" alignment="CENTER" prefWidth="120.0" promptText="Especialidad">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
@@ -40,17 +37,17 @@
       </HBox>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
-            <TextField fx:id="nombreField" alignment="CENTER" promptText="Nombre">
+            <TextField fx:id="nombreField" alignment="CENTER" prefWidth="208.0" promptText="Nombre">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="apellido1Field" alignment="CENTER" promptText="Apellido 1">
+            <TextField fx:id="apellido1Field" alignment="CENTER" prefWidth="208.0" promptText="Apellido 1">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="apellido2Field" alignment="CENTER" promptText="Apellido 2">
+            <TextField fx:id="apellido2Field" alignment="CENTER" prefWidth="208.0" promptText="Apellido 2">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
@@ -61,17 +58,17 @@
          </VBox.margin></HBox>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
-            <TextField fx:id="telefonoField" alignment="CENTER" promptText="Teléfono">
+            <TextField fx:id="telefonoField" alignment="CENTER" prefWidth="208.0" promptText="Teléfono">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="dniField" alignment="CENTER" promptText="DNI">
+            <TextField fx:id="dniField" alignment="CENTER" prefWidth="208.0" promptText="DNI">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="divisionField" alignment="CENTER" promptText="División">
+            <TextField fx:id="divisionField" alignment="CENTER" prefWidth="208.0" promptText="División">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
@@ -83,13 +80,13 @@
       </HBox>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
-            <TextField fx:id="rolField" alignment="CENTER" promptText="Rol">
+            <TextField fx:id="rolField" alignment="CENTER" prefWidth="208.0" promptText="Rol">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <DatePicker id="fechaDatePicker" fx:id="embarqueDatePicker" promptText="Fecha embarque" />
-            <DatePicker fx:id="antiguedadDatePicker" promptText="Antiguedad empleo" />
+            <DatePicker id="fechaDatePicker" fx:id="embarqueDatePicker" prefWidth="208.0" promptText="Fecha embarque" />
+            <DatePicker fx:id="antiguedadDatePicker" prefWidth="208.0" promptText="Antiguedad empleo" />
          </children>
          <VBox.margin>
             <Insets bottom="20.0" />
@@ -111,6 +108,9 @@
          <VBox.margin>
             <Insets bottom="20.0" />
          </VBox.margin>
+         <padding>
+            <Insets bottom="2.0" top="2.0" />
+         </padding>
       </HBox>
    </children>
    <padding>

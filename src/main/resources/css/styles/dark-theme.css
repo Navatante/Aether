@@ -8,6 +8,7 @@
     -fx-focus-color: #4B4C4F;
     -fx-faint-focus-color: #4A777A;
     -fx-selection-bar: #4B4C4F;
+    -fx-font-family: "Segoue UI";
 }
 
 .text {
@@ -106,6 +107,10 @@
 /* ComboBox styling */
 .combo-box {
     -fx-background-color: #2B2D30;
+    -fx-text-fill: #CCCCCB;
+    -fx-prompt-text-fill: #808080;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
 }
 
 .combo-box .list-cell {
@@ -214,6 +219,10 @@
     -fx-text-fill: #CCCCCB;
 }
 
+#refreshButton {
+    -fx-border-width: 0;
+}
+
 #refreshButton:focused {
     -fx-background-color: null;
     -fx-border-width: 0;
@@ -320,7 +329,25 @@
     -fx-text-fill: #CCCCCB;
 }
 
-#addPersonView .text-field, .button{
+#addPersonView {
+    -fx-font-size: 14px;
+}
+
+#addPersonView .text-field, .button, .combo-box{
     -fx-border-color: #4B4C4F;
     -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.combo-box .arrow-button .arrow {
+    -fx-background-color: #4B4C4F;
+}
+
+.combo-box:hover .arrow-button .arrow {
+    -fx-background-color: #666666;
+}
+
+/* Try this first */
+.combo-box .list-cell{
+    -fx-text-fill: -fx-text-base-color;
 }

@@ -19,7 +19,7 @@ public class AddPersonViewController {
     private double xOffset = 0;
     private double yOffset = 0;
     @FXML private TextField codigoField;
-    @FXML private TextField empleoField;
+    @FXML private ComboBox<String> empleoComboBox;
     @FXML private TextField cuerpoField;
     @FXML private TextField especialidadField;
     @FXML private TextField nombreField;
@@ -48,6 +48,11 @@ public class AddPersonViewController {
         setupBindings();
         setupValidation();
         setupDatePicker();
+        populateComboBoxes();
+    }
+
+    private void populateComboBoxes() {
+        empleoComboBox.getItems().addAll("TCOL", "CF","CTE","CC","CAP","TN","TTE","AN","SBMY","STTE","BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO");
     }
 
     private void setupDatePicker() {
@@ -60,7 +65,7 @@ public class AddPersonViewController {
     private void setupBindings() {
         // Two-way bindings for form fields
         codigoField.textProperty().bindBidirectional(viewModel.codeProperty());
-        empleoField.textProperty().bindBidirectional(viewModel.rankProperty());
+        //empleoComboBox.buttonCellProperty().bindBidirectional(viewModel.em);
         cuerpoField.textProperty().bindBidirectional(viewModel.cuerpoProperty());
         especialidadField.textProperty().bindBidirectional(viewModel.especialidadProperty());
         nombreField.textProperty().bindBidirectional(viewModel.nameProperty());
