@@ -6,10 +6,16 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PersonViewController {
     @FXML private TableView<PersonUI> personTable;
@@ -46,11 +52,45 @@ public class PersonViewController {
         setupTableColumns();
         setupBindings();
         viewModel.loadPersons();
+
+        personTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        // Manejar evento de teclado para copiar con Ctrl + C
+        personTable.setOnKeyPressed(this::handleCopyShortcut);
     }
 
     @FXML
     public void update() {
         viewModel.loadPersons();
+    }
+
+    private void handleCopyShortcut(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.C) {
+            copySelectedRowsToClipboard();
+        }
+    }
+
+    private void copySelectedRowsToClipboard() {
+        List<PersonUI> selectedRows = personTable.getSelectionModel().getSelectedItems();
+
+        if (selectedRows.isEmpty()) {
+            return; // No hay filas seleccionadas
+        }
+
+        // Obtener los valores de todas las celdas de las filas seleccionadas
+        String copiedText = selectedRows.stream()
+                .map(row -> personTable.getColumns().stream()
+                        .map(column -> {
+                            Object cellValue = column.getCellData(row);
+                            return cellValue != null ? cellValue.toString() : "";
+                        })
+                        .collect(Collectors.joining("\t"))) // Separar celdas con tabulación
+                .collect(Collectors.joining("\n")); // Separar filas con salto de línea
+
+        // Copiar al portapapeles
+        ClipboardContent content = new ClipboardContent();
+        content.putString(copiedText);
+        Clipboard.getSystemClipboard().setContent(content);
     }
 
     private void setupTableColumns() {
