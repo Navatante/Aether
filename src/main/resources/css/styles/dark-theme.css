@@ -65,11 +65,18 @@
 .button {
     -fx-background-color: #2B2D30;
     -fx-text-fill: #CED0D6;
-    -fx-background-radius: 10;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+
+}
+
+.button:pressed {
+    -fx-background-color: #4B4C4F;
+    -fx-text-fill: #CED0D6;
 }
 
 .button:hover {
-    -fx-background-color: #4B4C4F;
+    -fx-border-color: #4A777A;
 }
 
 /* Toggle Button styling */
@@ -92,6 +99,8 @@
     -fx-background-color: #2B2D30;
     -fx-text-fill: #CED0D6;
     -fx-prompt-text-fill: #808080;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
 }
 
 /* ComboBox styling */

@@ -54,27 +54,39 @@ public class PersonViewController {
     }
 
     private void setupTableColumns() {
-        // Para campos simples (no Properties), usar PropertyValueFactory
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-        rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-        cuerpoColumn.setCellValueFactory(new PropertyValueFactory<>("cuerpo"));
-        especialidadColumn.setCellValueFactory(new PropertyValueFactory<>("especialidad"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        dniColumn.setCellValueFactory(new PropertyValueFactory<>("dni"));
-        divisionColumn.setCellValueFactory(new PropertyValueFactory<>("division"));
-        roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
-        embarqueColumn.setCellValueFactory(new PropertyValueFactory<>("fechaEmbarque"));
-        antiguedadColumn.setCellValueFactory(new PropertyValueFactory<>("antiguedadEmpleo"));
-        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
-
-        // Para los que siguen siendo StringProperty, mantener el acceso a la propiedad
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        lastName1Column.setCellValueFactory(cellData -> cellData.getValue().lastName1Property());
-        lastName2Column.setCellValueFactory(cellData -> cellData.getValue().lastName2Property());
-
-        // Para Integer con PropertyValueFactory
-        orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
+        // Usar ReadOnlyWrapper para mejor rendimiento
+        idColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
+        codeColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getCode()));
+        nameColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getName()));
+        lastName1Column.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getLastName1()));
+        lastName2Column.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getLastName2()));
+        rankColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getRank()));
+        cuerpoColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getCuerpo()));
+        especialidadColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getEspecialidad()));
+        phoneColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getPhone()));
+        dniColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getDni()));
+        divisionColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getDivision()));
+        roleColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getRole()));
+        antiguedadColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getAntiguedadEmpleo()));
+        embarqueColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getFechaEmbarque()));
+        activeColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().isActive()));
+        orderColumn.setCellValueFactory(cellData ->
+                new ReadOnlyObjectWrapper<>(cellData.getValue().getOrder()));
     }
 
     private void setupBindings() {

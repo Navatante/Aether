@@ -25,6 +25,8 @@ public class PersonViewModel {
     private final GlobalLoadingManager loadingManager;
     private final ObservableList<PersonUI> persons = FXCollections.observableArrayList();
     private final FilteredList<PersonUI> filteredPersons = new FilteredList<>(persons);
+
+    // MANTENER estos como Properties porque se usan para bindings en los filtros
     private final BooleanProperty showOnlyActive = new SimpleBooleanProperty(true);
     private final StringProperty searchQuery = new SimpleStringProperty("");
     private final ObjectProperty<PersonUI> selectedPerson = new SimpleObjectProperty<>();
@@ -188,14 +190,12 @@ public class PersonViewModel {
 
     // INNER STATIC CLASS
     public static class PersonUI {
+        // Estos campos solo son de lectura y no participan en bindings
         private Integer id;
         private String code;
         private String rank;
         private String cuerpo;
         private String especialidad;
-        private final StringProperty name = new SimpleStringProperty();
-        private final StringProperty lastName1 = new SimpleStringProperty();
-        private final StringProperty lastName2 = new SimpleStringProperty();
         private String phone;
         private String dni;
         private String division;
@@ -205,6 +205,13 @@ public class PersonViewModel {
         private Integer order;
         private String active;
 
+        // ESTOS también pueden ser String simples porque:
+        // 1. Solo se usan en matchesSearch()
+        // 2. No necesitan actualización en tiempo real en la UI
+        private String name;        // En lugar de StringProperty
+        private String lastName1;   // En lugar de StringProperty
+        private String lastName2;   // En lugar de StringProperty
+
         public PersonUI() {
             this.id = null;
         }
@@ -212,13 +219,10 @@ public class PersonViewModel {
         public boolean matchesSearch(String query) {
             if (query == null || query.isEmpty()) return true;
 
-            // Normaliza el texto de búsqueda (quita acentos y convierte a minúsculas)
             String normalizedQuery = normalizeString(query);
-
-            // Normaliza y compara cada campo
-            return  normalizeString(name.get()).contains(normalizedQuery) ||
-                    normalizeString(lastName1.get()).contains(normalizedQuery) ||
-                    normalizeString(lastName2.get()).contains(normalizedQuery);
+            return normalizeString(name).contains(normalizedQuery) ||
+                    normalizeString(lastName1).contains(normalizedQuery) ||
+                    normalizeString(lastName2).contains(normalizedQuery);
         }
 
         // Metodo auxiliar para normalizar strings
@@ -249,17 +253,16 @@ public class PersonViewModel {
         public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
 
 
-        public String getName() { return name.get(); }
-        public void setName(String value) { name.set(value); }
-        public StringProperty nameProperty() { return name; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
 
-        public String getLastName1() { return lastName1.get(); }
-        public void setLastName1(String value) { lastName1.set(value); }
-        public StringProperty lastName1Property() { return lastName1; }
+        public String getLastName1() { return lastName1; }
+        public void setLastName1(String lastName1) { this.lastName1 = lastName1; }
 
-        public String getLastName2() { return lastName2.get(); }
-        public void setLastName2(String value) { lastName2.set(value); }
-        public StringProperty lastName2Property() { return lastName2; }
+
+        public String getLastName2() { return lastName2; }
+        public void setLastName2(String lastName2) { this.lastName2 = lastName2; }
+
 
         public String getPhone() { return phone; }
         public void setPhone(String phone) { this.phone = phone; }
