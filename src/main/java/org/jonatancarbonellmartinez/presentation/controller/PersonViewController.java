@@ -63,7 +63,7 @@ public class PersonViewController {
 
     @FXML
     private void handleAddPersonButtonPressed(MouseEvent event) {
-        viewModel.showAddPersonDialog();
+        viewModel.
     }
 
     private void handleCopyShortcut(KeyEvent event) {

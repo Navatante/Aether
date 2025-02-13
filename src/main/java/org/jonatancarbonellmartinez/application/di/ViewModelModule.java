@@ -2,45 +2,58 @@ package org.jonatancarbonellmartinez.application.di;
 
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
-import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
+import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 /**
- * Este módulo proporciona ViewModels, que manejan la lógica de presentación.
+ * Módulo que proporciona ViewModels para la capa de presentación.
+ * Los ViewModels gestionan la lógica de presentación y el estado de la UI.
  */
-
-// ViewModels para la UI.
 @Module
 public class ViewModelModule {
+
     @Provides
+    @Singleton
     PersonViewModel providePersonViewModel(
-            PersonRepositoryImpl repository,
+            PersonRepository repository,
             PersonUiMapper mapper,
             DatabaseConnection databaseConnection,
             GlobalLoadingManager loadingManager
     ) {
-        return new PersonViewModel(repository, mapper, databaseConnection, loadingManager);
+        return new PersonViewModel(
+                repository,
+                mapper,
+                databaseConnection,
+                loadingManager
+        );
     }
 
     @Provides
+    @Singleton
     AddPersonViewModel provideAddPersonViewModel(
-            PersonRepositoryImpl repository,
+            PersonRepository repository,
             PersonUiMapper mapper,
             DatabaseConnection databaseConnection,
             GlobalLoadingManager loadingManager
     ) {
-        return new AddPersonViewModel(repository, mapper, databaseConnection, loadingManager);
+        return new AddPersonViewModel(
+                repository,
+                mapper,
+                databaseConnection,
+                loadingManager
+        );
     }
 
-//    @Provides
-//    EventViewModel provideEventViewModel(
-//            EventRepository repository,
-//            EventMapper mapper
-//    ) {
-//        return new EventViewModel(repository, mapper);
-//    }
+    // Future ViewModels can be added here as needed
+    // For example:
+    // @Provides
+    // @Singleton
+    // EditPersonViewModel provideEditPersonViewModel(...) {
+    //     return new EditPersonViewModel(...);
+    // }
 }

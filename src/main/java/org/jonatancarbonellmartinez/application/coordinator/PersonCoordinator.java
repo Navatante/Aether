@@ -1,13 +1,14 @@
 package org.jonatancarbonellmartinez.application.coordinator;
 
-import org.jonatancarbonellmartinez.presentation.controller.AddPersonViewController;
-import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
-import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.jonatancarbonellmartinez.presentation.controller.AddPersonViewController;
+import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
+import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
 
 import javax.inject.Inject;
@@ -30,64 +31,76 @@ import java.io.IOException;
 
 @Singleton
 public class PersonCoordinator extends BaseCoordinator {
-    private final PersonViewModel viewModel;
-    private final PersonViewController controller;  // Inject controller directly
-    private final FXMLLoader fxmlLoader;
+    private final PersonViewModel personViewModel;
+    private final PersonViewController personViewController;
+    private final AddPersonViewModel addPersonViewModel;
+    private final AddPersonViewController addPersonViewController;
 
     @Inject
-    public PersonCoordinator(PersonViewModel viewModel, PersonViewController controller) {
-        this.viewModel = viewModel;
-        this.controller = controller;
-        this.fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/PersonView.fxml"));
-        this.fxmlLoader.setController(controller); // Set the controller explicitly
+    public PersonCoordinator(
+            PersonViewModel personViewModel,
+            PersonViewController personViewController,
+            AddPersonViewModel addPersonViewModel,
+            AddPersonViewController addPersonViewController
+    ) {
+        this.personViewModel = personViewModel;
+        this.personViewController = personViewController;
+        this.addPersonViewModel = addPersonViewModel;
+        this.addPersonViewController = addPersonViewController;
     }
 
     @Override
     protected void onStart() {
         try {
-            VBox root = fxmlLoader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonView.fxml"));
+            loader.setController(personViewController);
+            VBox root = loader.load();
             Scene scene = new Scene(root);
-            applyStylesheet(scene);  // Apply the dark theme
+            applyStylesheet(scene);
             primaryStage.setScene(scene);
 
             // Load initial data
-            viewModel.loadPersons();
+            personViewModel.loadPersons();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void showEditPersonDialog() {
+    public void showAddPersonDialog() {
         try {
-            // Crear Stage para el diálogo
+            // Create dialog stage
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
-            dialogStage.setTitle("Editar Persona");
+            dialogStage.initStyle(StageStyle.UNIFIED);
+            dialogStage.setTitle("Add New Person");
+            dialogStage.setResizable(false);
 
-            // Cargar FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditPersonDialog.fxml"));
+            // Load FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddPersonView.fxml"));
+            loader.setController(addPersonViewController);
             VBox dialogRoot = loader.load();
 
-            // Configurar ViewModel y Controller
-            AddPersonViewController controller = loader.getController();
-            AddPersonViewModel viewModel
-
-            // Configurar y mostrar escena
+            // Setup and show scene
             Scene dialogScene = new Scene(dialogRoot);
             applyStylesheet(dialogScene);
             dialogStage.setScene(dialogScene);
 
+            // Reset view model state
+            addPersonViewModel.reset();
 
+            // Show dialog
             dialogStage.showAndWait();
+
+            // Refresh person list after dialog closes
+            personViewModel.loadPersons();
         } catch (IOException e) {
             e.printStackTrace();
-            // Aquí deberías manejar el error apropiadamente
         }
     }
 
+    @Override
     public void cleanup() {
-        viewModel.cleanup();
+        personViewModel.cleanup();
     }
 }
-

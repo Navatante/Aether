@@ -7,18 +7,22 @@ import org.jonatancarbonellmartinez.application.coordinator.BaseCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.MainCoordinator;
 import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
+import org.jonatancarbonellmartinez.presentation.controller.AddPersonViewController;
 import org.jonatancarbonellmartinez.presentation.controller.MainViewController;
 import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
+import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Este módulo proporciona un coordinador, que organiza la navegación o interacción entre ViewModels.
+ * Este módulo proporciona coordinadores y controladores para la navegación y gestión de vistas.
+ * Sigue el patrón MVVM-C (Model-View-ViewModel-Coordinator).
  */
 @Module
 public class CoordinatorModule {
+
     @Provides
     @Singleton
     Map<Class<?>, BaseCoordinator> provideCoordinators(
@@ -46,16 +50,32 @@ public class CoordinatorModule {
 
     @Provides
     @Singleton
-    MainViewController provideMainViewController(PersonViewController personViewController, GlobalLoadingManager loadingManager) {
+    AddPersonViewController provideAddPersonViewController(AddPersonViewModel viewModel) {
+        return new AddPersonViewController(viewModel);
+    }
+
+    @Provides
+    @Singleton
+    MainViewController provideMainViewController(
+            PersonViewController personViewController,
+            GlobalLoadingManager loadingManager
+    ) {
         return new MainViewController(personViewController, loadingManager);
     }
 
     @Provides
     @Singleton
     PersonCoordinator providePersonCoordinator(
-            PersonViewModel viewModel,
-            PersonViewController personViewController
+            PersonViewModel personViewModel,
+            PersonViewController personViewController,
+            AddPersonViewModel addPersonViewModel,
+            AddPersonViewController addPersonViewController
     ) {
-        return new PersonCoordinator(viewModel, personViewController);
+        return new PersonCoordinator(
+                personViewModel,
+                personViewController,
+                addPersonViewModel,
+                addPersonViewController
+        );
     }
 }
