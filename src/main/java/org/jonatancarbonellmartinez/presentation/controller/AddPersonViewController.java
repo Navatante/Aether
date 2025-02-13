@@ -82,25 +82,25 @@ public class AddPersonViewController {
         // Required fields styling
         codigoField.styleProperty().bind(
                 Bindings.when(viewModel.codeProperty().isEmpty())
-                        .then("-fx-border-color: red;")
+                        .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
 
         nombreField.styleProperty().bind(
                 Bindings.when(viewModel.nameProperty().isEmpty())
-                        .then("-fx-border-color: red;")
+                        .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
 
         apellido1Field.styleProperty().bind(
                 Bindings.when(viewModel.lastName1Property().isEmpty())
-                        .then("-fx-border-color: red;")
+                        .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
 
         dniField.styleProperty().bind(
                 Bindings.when(viewModel.dniProperty().isEmpty())
-                        .then("-fx-border-color: red;")
+                        .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
 
