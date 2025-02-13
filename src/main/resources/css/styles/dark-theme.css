@@ -197,6 +197,7 @@
 #quitButton, #minimizeAndMaximizeButton {
     -fx-background-color: #2B2D30;
     -fx-background-radius: 0;
+    -fx-border-width: 0;
 }
 
 #quitButton:hover {
@@ -211,10 +212,12 @@
 
 #refreshButton:focused {
     -fx-background-color: null;
+    -fx-border-width: 0;
 }
 
 #refreshButton:hover {
     -fx-background-color: #4B4C4F;
+    -fx-border-width: 0;
 }
 
 
