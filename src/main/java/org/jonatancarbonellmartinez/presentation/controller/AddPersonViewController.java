@@ -4,31 +4,28 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 
 import javax.inject.Inject;
 
 public class AddPersonViewController {
-    @FXML private TextField codeField;
-    @FXML private TextField rankField;
+    @FXML private TextField codigoField;
+    @FXML private TextField empleoField;
     @FXML private TextField cuerpoField;
     @FXML private TextField especialidadField;
-    @FXML private TextField nameField;
-    @FXML private TextField lastName1Field;
-    @FXML private TextField lastName2Field;
-    @FXML private TextField phoneField;
+    @FXML private TextField nombreField;
+    @FXML private TextField apellido1Field;
+    @FXML private TextField apellido2Field;
+    @FXML private TextField telefonoField;
     @FXML private TextField dniField;
     @FXML private TextField divisionField;
-    @FXML private TextField roleField;
-    @FXML private DatePicker antiguedadEmpleoField;
-    @FXML private DatePicker fechaEmbarqueField;
-    @FXML private TextField orderField;
-    @FXML private CheckBox activeField;
+    @FXML private TextField rolField;
+    @FXML private DatePicker antiguedadDatePicker;
+    @FXML private DatePicker embarqueDatePicker;
+    @FXML private TextField ordenField;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
-    @FXML private Label errorLabel;
 
     private final AddPersonViewModel viewModel;
 
@@ -41,52 +38,39 @@ public class AddPersonViewController {
     private void initialize() {
         setupBindings();
         setupValidation();
-        setupButtons();
     }
 
     private void setupBindings() {
         // Two-way bindings for form fields
-        codeField.textProperty().bindBidirectional(viewModel.codeProperty());
-        rankField.textProperty().bindBidirectional(viewModel.rankProperty());
+        codigoField.textProperty().bindBidirectional(viewModel.codeProperty());
+        empleoField.textProperty().bindBidirectional(viewModel.rankProperty());
         cuerpoField.textProperty().bindBidirectional(viewModel.cuerpoProperty());
         especialidadField.textProperty().bindBidirectional(viewModel.especialidadProperty());
-        nameField.textProperty().bindBidirectional(viewModel.nameProperty());
-        lastName1Field.textProperty().bindBidirectional(viewModel.lastName1Property());
-        lastName2Field.textProperty().bindBidirectional(viewModel.lastName2Property());
-        phoneField.textProperty().bindBidirectional(viewModel.phoneProperty());
+        nombreField.textProperty().bindBidirectional(viewModel.nameProperty());
+        apellido1Field.textProperty().bindBidirectional(viewModel.lastName1Property());
+        apellido2Field.textProperty().bindBidirectional(viewModel.lastName2Property());
+        telefonoField.textProperty().bindBidirectional(viewModel.phoneProperty());
         dniField.textProperty().bindBidirectional(viewModel.dniProperty());
         divisionField.textProperty().bindBidirectional(viewModel.divisionProperty());
-        roleField.textProperty().bindBidirectional(viewModel.roleProperty());
+        rolField.textProperty().bindBidirectional(viewModel.roleProperty());
 
-        // Use Bindings utility for Integer conversion
-        Bindings.bindBidirectional(
-                orderField.textProperty(),
-                viewModel.orderProperty(),
-                new NumberStringConverter()
-        );
-
-        activeField.selectedProperty().bindBidirectional(viewModel.activeProperty());
-
-        // Error message binding
-        errorLabel.textProperty().bind(viewModel.errorMessageProperty());
-        errorLabel.visibleProperty().bind(viewModel.errorMessageProperty().isNotEmpty());
     }
 
     private void setupValidation() {
         // Required fields styling
-        codeField.styleProperty().bind(
+        codigoField.styleProperty().bind(
                 Bindings.when(viewModel.codeProperty().isEmpty())
                         .then("-fx-border-color: red;")
                         .otherwise("")
         );
 
-        nameField.styleProperty().bind(
+        nombreField.styleProperty().bind(
                 Bindings.when(viewModel.nameProperty().isEmpty())
                         .then("-fx-border-color: red;")
                         .otherwise("")
         );
 
-        lastName1Field.styleProperty().bind(
+        apellido1Field.styleProperty().bind(
                 Bindings.when(viewModel.lastName1Property().isEmpty())
                         .then("-fx-border-color: red;")
                         .otherwise("")
@@ -102,12 +86,8 @@ public class AddPersonViewController {
         saveButton.disableProperty().bind(viewModel.formValidProperty().not());
     }
 
-    private void setupButtons() {
-        saveButton.setOnAction(event -> handleSave());
-        cancelButton.setOnAction(event -> handleCancel());
-    }
-
-    private void handleSave() {
+    @FXML
+    private void handleSaveButtonClicked() {
         viewModel.savePerson()
                 .thenAccept(success -> {
                     if (success) {
@@ -120,7 +100,8 @@ public class AddPersonViewController {
                 });
     }
 
-    private void handleCancel() {
+    @FXML
+    private void handleCancelButtonClicked() {
         closeDialog();
     }
 
