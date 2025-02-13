@@ -220,4 +220,8 @@
     -fx-border-width: 0;
 }
 
+#addPersonView {
+    -fx-background-color: #2B2D30;
+}
+
 
