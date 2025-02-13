@@ -74,37 +74,37 @@ public class PersonViewModel {
                 });
     }
 
-    public void loadActivePilots() {
-        databaseConnection
-                .executeOperation(repository::getActivePilots,false)
-                .thenAccept(pilots -> {
-                    List<PersonUI> uiPilots = new ArrayList<>();
-                    for (Person pilot : pilots) {
-                        uiPilots.add(uiMapper.toUiModel(pilot));
-                    }
-                    updatePersonsList(uiPilots);
-                })
-                .exceptionally(throwable -> {
-                    CustomLogger.logError("Error loading active pilots", (Exception) throwable.getCause());
-                    return null;
-                });
-    }
-
-    public void loadActiveCrew() {
-        databaseConnection
-                .executeOperation(repository::getActiveCrew,false)
-                .thenAccept(crew -> {
-                    List<PersonUI> uiCrew = new ArrayList<>();
-                    for (Person member : crew) {
-                        uiCrew.add(uiMapper.toUiModel(member));
-                    }
-                    updatePersonsList(uiCrew);
-                })
-                .exceptionally(throwable -> {
-                    CustomLogger.logError("Error loading active crew", (Exception) throwable.getCause());
-                    return null;
-                });
-    }
+//    public void loadActivePilots() {
+//        databaseConnection
+//                .executeOperation(repository::getActivePilots,false)
+//                .thenAccept(pilots -> {
+//                    List<PersonUI> uiPilots = new ArrayList<>();
+//                    for (Person pilot : pilots) {
+//                        uiPilots.add(uiMapper.toUiModel(pilot));
+//                    }
+//                    updatePersonsList(uiPilots);
+//                })
+//                .exceptionally(throwable -> {
+//                    CustomLogger.logError("Error loading active pilots", (Exception) throwable.getCause());
+//                    return null;
+//                });
+//    }
+//
+//    public void loadActiveCrew() {
+//        databaseConnection
+//                .executeOperation(repository::getActiveCrew,false)
+//                .thenAccept(crew -> {
+//                    List<PersonUI> uiCrew = new ArrayList<>();
+//                    for (Person member : crew) {
+//                        uiCrew.add(uiMapper.toUiModel(member));
+//                    }
+//                    updatePersonsList(uiCrew);
+//                })
+//                .exceptionally(throwable -> {
+//                    CustomLogger.logError("Error loading active crew", (Exception) throwable.getCause());
+//                    return null;
+//                });
+//    }
 
 //    public void savePerson(PersonUI person) {
 //        databaseConnection

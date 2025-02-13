@@ -6,6 +6,7 @@ import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnecti
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
 /**
@@ -23,6 +24,16 @@ public class ViewModelModule {
             GlobalLoadingManager loadingManager
     ) {
         return new PersonViewModel(repository, mapper, databaseConnection, loadingManager);
+    }
+
+    @Provides
+    AddPersonViewModel provideAddPersonViewModel(
+            PersonRepositoryImpl repository,
+            PersonUiMapper mapper,
+            DatabaseConnection databaseConnection,
+            GlobalLoadingManager loadingManager
+    ) {
+        return new AddPersonViewModel(repository, mapper, databaseConnection, loadingManager);
     }
 
 //    @Provides

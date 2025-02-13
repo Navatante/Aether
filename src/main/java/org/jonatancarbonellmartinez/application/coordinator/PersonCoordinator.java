@@ -1,5 +1,7 @@
 package org.jonatancarbonellmartinez.application.coordinator;
 
+import org.jonatancarbonellmartinez.presentation.controller.AddPersonViewController;
+import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -48,9 +50,6 @@ public class PersonCoordinator extends BaseCoordinator {
             applyStylesheet(scene);  // Apply the dark theme
             primaryStage.setScene(scene);
 
-            // Configure navigation and callbacks
-            setupNavigationCallbacks();
-
             // Load initial data
             viewModel.loadPersons();
         } catch (IOException e) {
@@ -58,34 +57,34 @@ public class PersonCoordinator extends BaseCoordinator {
         }
     }
 
-    private void showEditPersonDialog(PersonViewModel.PersonUI person) {
+    public void showEditPersonDialog() {
         try {
+            // Crear Stage para el diálogo
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
+            dialogStage.setTitle("Editar Persona");
 
-            // Load dialog FXML and apply stylesheet
-            //Scene dialogScene = new Scene(/* your dialog root node */);
-            //applyStylesheet(dialogScene);
-            //dialogStage.setScene(dialogScene);
+            // Cargar FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EditPersonDialog.fxml"));
+            VBox dialogRoot = loader.load();
+
+            // Configurar ViewModel y Controller
+            AddPersonViewController controller = loader.getController();
+            AddPersonViewModel viewModel
+
+            // Configurar y mostrar escena
+            Scene dialogScene = new Scene(dialogRoot);
+            applyStylesheet(dialogScene);
+            dialogStage.setScene(dialogScene);
+
 
             dialogStage.showAndWait();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            // Aquí deberías manejar el error apropiadamente
         }
     }
-
-    private void setupNavigationCallbacks() {
-        // Ejemplo: Abrir diálogo de edición cuando se selecciona una persona
-        viewModel.selectedPersonProperty().addListener((obs, oldPerson, newPerson) -> {
-            if (newPerson != null) {
-                // TODO para cuando implemente el menu contextual con editar
-                showEditPersonDialog(newPerson);
-            }
-        });
-    }
-
-    // TODO por aqui quiza iria algo relacionado con el boton, nose.
 
     public void cleanup() {
         viewModel.cleanup();

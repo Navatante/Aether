@@ -6,10 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
 
@@ -62,6 +59,11 @@ public class PersonViewController {
     @FXML
     public void update() {
         viewModel.loadPersons();
+    }
+
+    @FXML
+    private void handleAddPersonButtonPressed(MouseEvent event) {
+        viewModel.showAddPersonDialog();
     }
 
     private void handleCopyShortcut(KeyEvent event) {
