@@ -7,6 +7,36 @@ import javax.inject.Singleton;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Los Services (servicios) son una capa en la arquitectura de software que encapsula la lógica de negocio reutilizable que no pertenece directamente a ninguna entidad específica. Se utilizan principalmente para:
+ *
+ * Encapsular lógica de negocio reutilizable
+ *
+ * Por ejemplo, tu DniService contiene la lógica para calcular la letra del DNI, que podría ser necesaria en diferentes partes de la aplicación
+ * El DateService que ya tienes maneja las conversiones de fechas, que son usadas por varios mappers
+ *
+ *
+ * Separar responsabilidades
+ *
+ * En lugar de poner toda la lógica en los ViewModels o Repositories
+ * Permite tener clases más pequeñas y focalizadas (Principio de Responsabilidad Única)
+ *
+ *
+ * Facilitar el testing
+ *
+ * Al tener la lógica aislada en servicios, es más fácil hacer pruebas unitarias
+ * Se pueden mockear los servicios para probar otras capas
+ *
+ *
+ *
+ * Cuándo crear un Service:
+ *
+ * Cuando tienes lógica que se repite en varios lugares
+ * Cuando la lógica es compleja y merece estar aislada
+ * Cuando necesitas funcionalidad que no pertenece naturalmente a ninguna entidad
+ * Cuando quieres abstraer operaciones complejas o integraciones externas
+ */
+
 @Singleton
 public class DateService {
     private static final ZoneId MADRID_ZONE = ZoneId.of("Europe/Madrid");
