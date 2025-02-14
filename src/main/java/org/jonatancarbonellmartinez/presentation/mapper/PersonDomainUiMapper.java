@@ -4,7 +4,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 import org.jonatancarbonellmartinez.presentation.model.PersonUI;
+import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.services.DateService;
+import org.jonatancarbonellmartinez.services.DniService;
+
 import java.time.LocalDate;
 
 /**
@@ -18,11 +21,14 @@ import java.time.LocalDate;
 @Singleton
 public class PersonDomainUiMapper {
     private final DateService dateService;
+    private final DniService dniService;
 
     @Inject
-    public PersonDomainUiMapper(DateService dateService) {
+    public PersonDomainUiMapper(DateService dateService, DniService dniService) {
         this.dateService = dateService;
+        this.dniService = dniService;
     }
+
     public PersonUI toUiModel(PersonDomain domain) {
         return new PersonUI.Builder()
                 .id(domain.getId())
@@ -45,6 +51,18 @@ public class PersonDomainUiMapper {
     }
 
     public PersonDomain toDomain(PersonUI ui) {
+
+        // Generar DNI completo si solo se proporcionaron números
+        String dniCompleto = ui.getDni();
+        if (dniCompleto != null && dniCompleto.length() == 8) {
+            try {
+                dniCompleto = dniService.generarDniCompleto(dniCompleto);
+            } catch (IllegalArgumentException e) {
+                CustomLogger.logError("DNI inválido" ,e);
+                throw new IllegalArgumentException("DNI inválido: " + e.getMessage());
+            }
+        }
+
         return new PersonDomain.Builder()
                 .id(ui.getId())
                 .code(ui.getCode())
@@ -55,7 +73,7 @@ public class PersonDomainUiMapper {
                 .lastName1(ui.getLastName1())
                 .lastName2(ui.getLastName2())
                 .phone(ui.getPhone())
-                .dni(ui.getDni())
+                .dni(dniCompleto)
                 .division(ui.getDivision())
                 .role(ui.getRole())
                 .fechaEmbarque(dateService.convertLocalToUTCDate(ui.getFechaEmbarque()))

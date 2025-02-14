@@ -92,6 +92,12 @@
     -fx-background-color: #4B4C4F;
 }
 
+/* Radio Button */
+.radio-button {
+    -fx-text-fill: #CCCCCB;
+    -fx-font-size: 14px;
+}
+
 /* ========== INPUT CONTROLS ========== */
 /* Text Field */
 .text-field {
@@ -254,15 +260,49 @@
 
 /* ========== MENU ========== */
 .menu-bar {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px 5px 10px;
+}
+
+.menu-bar > .container {
     -fx-background-color: #2B2D30;
+    -fx-background-radius: 5px;
+    -fx-padding: 0;
+}
+
+.menu-bar .menu {
+    -fx-background-color: transparent;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: #4B4C4F;
+    -fx-background-radius: 5px;
+}
+
+.menu-bar .menu:showing {
+    -fx-background-color: #4B4C4F;
+    -fx-background-radius: 5px;
 }
 
 .menu-item {
     -fx-background-color: #2B2D30;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px 5px 10px;
 }
 
 .menu-item:focused {
-    -fx-background-color: #3c3c3c;
+    -fx-background-color: #4B4C4F;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px 10px 5px 10px;
+}
+
+.context-menu {
+    -fx-background-color: #2B2D30;
+    -fx-border-color: #4B4C4F;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
 }
 
 /* ========== TAB PANE ========== */

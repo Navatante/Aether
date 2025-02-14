@@ -8,11 +8,11 @@ import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingMan
 import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
+import org.jonatancarbonellmartinez.presentation.model.PersonUI;
+import org.jonatancarbonellmartinez.services.DniService;
 
 import javax.inject.Inject;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.concurrent.CompletableFuture;
 
 public class AddPersonViewModel {
@@ -20,6 +20,7 @@ public class AddPersonViewModel {
     private final PersonDomainUiMapper uiMapper;
     private final DatabaseConnection databaseConnection;
     private final GlobalLoadingManager loadingManager;
+    private final DniService dniService;
 
     // Form fields
     private final StringProperty code = new SimpleStringProperty("");
@@ -47,12 +48,14 @@ public class AddPersonViewModel {
             PersonRepository repository,
             PersonDomainUiMapper uiMapper,
             DatabaseConnection databaseConnection,
-            GlobalLoadingManager loadingManager
+            GlobalLoadingManager loadingManager,
+            DniService dniService
     ) {
         this.repository = repository;
         this.uiMapper = uiMapper;
         this.databaseConnection = databaseConnection;
         this.loadingManager = loadingManager;
+        this.dniService = dniService;
 
         setupValidation();
     }
@@ -98,36 +101,13 @@ public class AddPersonViewModel {
         );
     }
 
-    // TODO save test
-    public void saveButtonTest() {
-
-        PersonDomain personDomain = new PersonDomain.Builder()
-                .code(code.get())
-                .rank(rank.get())
-                .cuerpo(cuerpo.get())
-                .especialidad(especialidad.get())
-                .name(name.get())
-                .lastName1(lastName1.get())
-                .lastName2(lastName2.get())
-                .phone(phone.get())
-                .dni(dni.get())
-                .division(division.get())
-                .role(role.get())
-                .antiguedadEmpleo(antiguedadEmpleo.get())
-                .fechaEmbarque(fechaEmbarque.get())
-                .order(order.get())
-                .isActive(active.get())
-                .build();
-
-        System.out.println(personDomain);
-    }
-
     public CompletableFuture<Boolean> savePerson() {
         if (!formValid.get()) {
             return CompletableFuture.completedFuture(false);
         }
 
-        PersonDomain personDomain = new PersonDomain.Builder()
+        // Crear un PersonUI temporal
+        PersonUI personUI = new PersonUI.Builder()
                 .code(code.get())
                 .rank(rank.get())
                 .cuerpo(cuerpo.get())
@@ -142,8 +122,11 @@ public class AddPersonViewModel {
                 .antiguedadEmpleo(antiguedadEmpleo.get())
                 .fechaEmbarque(fechaEmbarque.get())
                 .order(order.get())
-                .isActive(active.get())
+                .isActive(active.get() ? "Activo" : "Inactivo")
                 .build();
+
+        // Usar el mapper para convertir a PersonDomain
+        PersonDomain personDomain = uiMapper.toDomain(personUI);
 
         return databaseConnection.executeOperation(conn -> repository.insertPerson(conn, personDomain), true);
     }

@@ -5,6 +5,7 @@ import dagger.Provides;
 import org.jonatancarbonellmartinez.data.mapper.PersonEntityDomainMapper;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
 import org.jonatancarbonellmartinez.services.DateService;
+import org.jonatancarbonellmartinez.services.DniService;
 
 import javax.inject.Singleton;
 
@@ -18,7 +19,7 @@ public class MapperModule {
 
     @Provides
     @Singleton
-    PersonDomainUiMapper providePersonUiMapper(DateService dateService) {
-        return new PersonDomainUiMapper(dateService);
+    PersonDomainUiMapper providePersonUiMapper(DateService dateService, DniService dniService) {
+        return new PersonDomainUiMapper(dateService, dniService);
     }
 }

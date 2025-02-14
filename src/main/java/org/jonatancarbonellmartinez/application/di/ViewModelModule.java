@@ -9,6 +9,7 @@ import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
+import org.jonatancarbonellmartinez.services.DniService;
 
 /**
  * Módulo que proporciona ViewModels para la capa de presentación.
@@ -39,13 +40,15 @@ public class ViewModelModule {
             PersonRepository repository,
             PersonDomainUiMapper mapper,
             DatabaseConnection databaseConnection,
-            GlobalLoadingManager loadingManager
+            GlobalLoadingManager loadingManager,
+            DniService dniService
     ) {
         return new AddPersonViewModel(
                 repository,
                 mapper,
                 databaseConnection,
-                loadingManager
+                loadingManager,
+                dniService
         );
     }
 

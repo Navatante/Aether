@@ -10,6 +10,7 @@ import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 import org.jonatancarbonellmartinez.presentation.model.PersonUI;
 
 import javax.inject.Inject;
+import javafx.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +69,16 @@ public class PersonViewController {
         if (navigationCallback != null) {
             navigationCallback.onAddPersonRequested();
         }
+    }
+
+    @FXML
+    private void handleEditarPersona(ActionEvent event) {
+        System.out.println("Editar persona");
+    }
+
+    @FXML
+    private void handleDardebajaPersona(ActionEvent event) {
+        System.out.println("Dar de baja persona");
     }
 
     public void setNavigationCallback(PersonNavigationCallback callback) {
