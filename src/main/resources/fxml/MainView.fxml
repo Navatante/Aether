@@ -17,7 +17,10 @@
          <top>
             <VBox alignment="TOP_CENTER" minWidth="50.0" prefWidth="50.0" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
-                  <ToggleButton fx:id="overviewToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" selected="true" toggleGroup="$leftPanelToggleButtonsGroup">
+                  <ToggleButton fx:id="overviewToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" selected="true">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="leftPanelToggleButtonsGroup" />
+                     </toggleGroup>
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -66,10 +69,7 @@
                   <Insets bottom="5.0" top="5.0" />
                </BorderPane.margin>
                <children>
-                  <ToggleButton fx:id="personnelToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="leftPanelToggleButtonsGroup" />
-                     </toggleGroup>
+                  <ToggleButton fx:id="personnelToggleButton" contentDisplay="CENTER" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" toggleGroup="$leftPanelToggleButtonsGroup">
                      <graphic>
                         <ImageView pickOnBounds="true" preserveRatio="true">
                            <image>
