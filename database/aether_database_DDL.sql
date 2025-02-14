@@ -31,8 +31,7 @@ CREATE TABLE dim_person (
 	person_order	          INTEGER,
     person_current_flag       INTEGER  		NOT NULL,
 	PRIMARY KEY (person_sk),
-	CHECK 		(person_current_flag 	IN (0,1)),
-    CHECK       (person_rol IN('Piloto', 'Dotación', 'No tripulante'))
+	CHECK 		(person_current_flag 	IN (0,1))
 );
 
 CREATE TABLE dim_helo (
@@ -865,7 +864,7 @@ CREATE INDEX idx_session_crew_flight_person ON junction_session_crew_count(sessi
 -- ############################### --
 -- DIM_PERSON
 INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
-VALUES ('JON', 'SG1','IM','AVP', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1688169600,1722508800,1 , 1);
+VALUES ('JON', 'SG1','IM','AVP', 'Jonatan', 'Carbonell', 'Martinez', '647168956','39390040X', 'N2', 'Piloto' ,1688169600,1722508800,1 , 2);
 
 INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, person_division, person_rol,person_a_emp, person_f_emb, person_order, person_current_flag)
 VALUES ('', 'SG1','CGA','SGS', 'Javier', 'Seijo', 'Nogueira', '663329689','53300794L', 'N4', 'No tripulante' ,1561939200,1722508800,1 , 1);
