@@ -1,5 +1,6 @@
 package org.jonatancarbonellmartinez.data.database.configuration;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.jonatancarbonellmartinez.services.CustomLogger;
@@ -30,15 +31,16 @@ public class DatabaseConnection {
 
     // Este metodo ejecuta las operaciones de la base de datos de forma asíncrona. El primero en usarlo ha sido PersonRepositoryImpl.
     public <T> CompletableFuture<T> executeOperation(DatabaseOperation<T> operation, boolean isWrite) {
+        Platform.runLater(loadingManager::startLoading);
+
         return CompletableFuture.supplyAsync(() -> {
-            loadingManager.startLoading();
             try (Connection connection = getConnection(isWrite)) {
                 return operation.execute(connection);
             } catch (Exception e) {
                 CustomLogger.logError("Database operation failed", e);
                 throw new DatabaseException("Database operation failed", e);
             } finally {
-                loadingManager.endLoading();
+                Platform.runLater(loadingManager::endLoading);
             }
         });
     }

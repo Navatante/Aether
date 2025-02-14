@@ -242,11 +242,13 @@ public class AddPersonViewController {
         viewModel.savePerson()
                 .thenAccept(success -> {
                     if (success) {
-                        closeDialog();
+                        Platform.runLater(this::closeDialog);
                     }
                 })
                 .exceptionally(throwable -> {
-                    viewModel.errorMessageProperty().set(throwable.getMessage());
+                    Platform.runLater(() -> {
+                        viewModel.errorMessageProperty().set(throwable.getMessage());
+                    });
                     return null;
                 });
     }

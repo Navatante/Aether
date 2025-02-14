@@ -87,7 +87,6 @@ public class PersonRepositoryImpl implements PersonRepository {
     public Boolean insertPerson(Connection connection, PersonDomain personDomain) {
         try {
             PersonEntity entity = personEntityDomainMapper.toEntity(personDomain);
-            System.out.println(entity);
             personDAO.insert(entity, connection);
             return true;
         } catch (Exception e) {
