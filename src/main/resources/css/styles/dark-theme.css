@@ -10,10 +10,6 @@
     -fx-font-family: "Segoe UI";
 }
 
-.text {
-    -fx-fill: #CCCCCB;
-}
-
 /* ========== TABLE VIEW ========== */
 .table-view {
     -fx-background-color: transparent;
@@ -29,12 +25,13 @@
     -fx-pref-height: 30px;
 }
 
-.table-view .column-header .label {
+.table-view .column-header .label  {
     -fx-text-fill: #CCCCCB;
 }
 
 .table-cell {
     -fx-alignment: center;
+    -fx-text-fill: #CCCCCB;
 }
 
 .table-row-cell {
@@ -55,6 +52,12 @@
     -fx-border-color: transparent;
     -fx-background-insets: 0;
     -fx-padding: 0;
+}
+
+/* ========== LABELS ========== */
+
+.label {
+    -fx-text-fill: #CCCCCB;
 }
 
 /* ========== BUTTONS ========== */
@@ -101,19 +104,16 @@
 /* Combo Box */
 .combo-box {
     -fx-background-color: #2B2D30;
-    -fx-text-fill: #CCCCCB;
-    -fx-prompt-text-fill: red;
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
 }
 
-.combo-box .list-cell {
+.combo-box .list-cell  {
     -fx-background-color: #2B2D30;
     -fx-text-fill: #CCCCCB;
 }
 
 .combo-box-popup .list-view {
     -fx-background-color: #2B2D30;
+    -fx-text-fill: #CCCCCB;
 }
 
 .combo-box .arrow-button .arrow {
@@ -124,35 +124,10 @@
     -fx-background-color: #666666;
 }
 
-
-
-
-/* ========== COMBO BOX  TEST ========== */
-/* outer combo-box text */
-.combo-box .list-cell {
-    -fx-text-fill: white;
-}
-
-/* combo-box list view text, not hovered or focused */
-.combo-box .list-view .list-cell {
-    -fx-text-fill: black;
-}
-
-/* combo-box selected text */
-.combo-box .list-view .list-cell:focused {
-    -fx-background-color : #5F9EA0;  /* Cadet Blue */
-    -fx-text-fill: white;
-}
-
-/* combo-box hover text */
 .combo-box .list-view .list-cell:hover {
-    -fx-background-color : #5F9EA0;  /* Cadet Blue */
-    -fx-text-fill: white;
+    -fx-background-color : #4A777A;
+    -fx-text-fill: #CCCCCB;
 }
-
-
-
-
 
 
 /* ========== DATE PICKER ========== */
@@ -169,10 +144,6 @@
 .date-picker .arrow-button {
     -fx-background-color: #4B4C4F;
     -fx-background-radius: 0;
-}
-
-.date-picker .arrow-button:hover {
-    -fx-background-color: #3b3b3b;
 }
 
 .date-picker .arrow-button .arrow {
