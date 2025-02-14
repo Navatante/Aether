@@ -1,12 +1,12 @@
 package org.jonatancarbonellmartinez.data.repository;
 
-import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.services.CustomLogger;
 import org.jonatancarbonellmartinez.exceptions.DatabaseException;
 import org.jonatancarbonellmartinez.data.database.DAO.PersonDAO;
-import org.jonatancarbonellmartinez.data.mapper.PersonMapper;
+import org.jonatancarbonellmartinez.data.mapper.PersonEntityDomainMapper;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,19 +32,19 @@ import java.util.stream.Collectors;
 @Singleton
 public class PersonRepositoryImpl implements PersonRepository {
     private final PersonDAO personDAO;
-    private final PersonMapper personMapper;
+    private final PersonEntityDomainMapper personEntityDomainMapper;
 
     @Inject
-    public PersonRepositoryImpl(PersonDAO personDAO, PersonMapper personMapper) {
+    public PersonRepositoryImpl(PersonDAO personDAO, PersonEntityDomainMapper personEntityDomainMapper) {
         this.personDAO = personDAO;
-        this.personMapper = personMapper;
+        this.personEntityDomainMapper = personEntityDomainMapper;
     }
 
     @Override
-    public List<Person> getAllPersons(Connection connection) {
+    public List<PersonDomain> getAllPersons(Connection connection) {
         try {
             return personDAO.findAll(connection).stream()
-                    .map(personMapper::toDomain)
+                    .map(personEntityDomainMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             CustomLogger.logError("Error accessing persons", e);
@@ -52,10 +52,10 @@ public class PersonRepositoryImpl implements PersonRepository {
         }
     }
 
-    public List<Person> getActivePilots(Connection connection) {
+    public List<PersonDomain> getActivePilots(Connection connection) {
         try {
             return personDAO.getOnlyActualPilots(connection).stream()
-                    .map(personMapper::toDomain)
+                    .map(personEntityDomainMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             CustomLogger.logError("Error accessing pilots", e);
@@ -63,10 +63,10 @@ public class PersonRepositoryImpl implements PersonRepository {
         }
     }
 
-    public List<Person> getActiveCrew(Connection connection) {
+    public List<PersonDomain> getActiveCrew(Connection connection) {
         try {
             return personDAO.getOnlyActualDvs(connection).stream()
-                    .map(personMapper::toDomain)
+                    .map(personEntityDomainMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             CustomLogger.logError("Error accessing crew", e);
@@ -74,19 +74,20 @@ public class PersonRepositoryImpl implements PersonRepository {
         }
     }
 
-    public Person getPersonById(Connection connection, int id) {
+    public PersonDomain getPersonById(Connection connection, int id) {
         try {
             PersonEntity entity = personDAO.findById(id, connection);
-            return entity != null ? personMapper.toDomain(entity) : null;
+            return entity != null ? personEntityDomainMapper.toDomain(entity) : null;
         } catch (Exception e) {
             CustomLogger.logError("Error accessing person with id: " + id, e);
             throw new DatabaseException("Error accessing person with id: " + id, e);
         }
     }
 
-    public Boolean insertPerson(Connection connection, Person person) {
+    public Boolean insertPerson(Connection connection, PersonDomain personDomain) {
         try {
-            PersonEntity entity = personMapper.toEntity(person);
+            PersonEntity entity = personEntityDomainMapper.toEntity(personDomain);
+            System.out.println(entity);
             personDAO.insert(entity, connection);
             return true;
         } catch (Exception e) {
@@ -95,9 +96,9 @@ public class PersonRepositoryImpl implements PersonRepository {
         }
     }
 
-    public Boolean updatePerson(Connection connection, Person person, int id) {
+    public Boolean updatePerson(Connection connection, PersonDomain personDomain, int id) {
         try {
-            PersonEntity entity = personMapper.toEntity(person);
+            PersonEntity entity = personEntityDomainMapper.toEntity(personDomain);
             personDAO.update(entity, connection);
             return true;
         } catch (Exception e) {

@@ -1,7 +1,7 @@
 package org.jonatancarbonellmartinez.data.mapper;
 
 import org.jonatancarbonellmartinez.data.model.PersonEntity;
-import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 import org.jonatancarbonellmartinez.services.DateService;
 
 import javax.inject.Inject;
@@ -30,16 +30,16 @@ import javax.inject.Singleton;
 
 // New mapper class to separate mapping logic from entity
 @Singleton
-public class PersonMapper {
+public class PersonEntityDomainMapper {
     private final DateService dateService;
 
     @Inject
-    public PersonMapper(DateService dateService) {
+    public PersonEntityDomainMapper(DateService dateService) {
         this.dateService = dateService;
     }
-    public Person toDomain(PersonEntity entity) {
+    public PersonDomain toDomain(PersonEntity entity) {
 
-        return new Person.Builder()
+        return new PersonDomain.Builder()
                 .id(entity.getPersonSk())
                 .code(entity.getPersonNk())
                 .rank(entity.getPersonRank())
@@ -59,7 +59,7 @@ public class PersonMapper {
                 .build();
     }
 
-    public PersonEntity toEntity(Person domain) {
+    public PersonEntity toEntity(PersonDomain domain) {
         PersonEntity entity = new PersonEntity();
         entity.setPersonSk(domain.getId());
         entity.setPersonSk(domain.getId());

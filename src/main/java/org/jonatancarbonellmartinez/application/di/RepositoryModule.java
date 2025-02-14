@@ -2,14 +2,10 @@ package org.jonatancarbonellmartinez.application.di;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
+
 import javax.inject.Singleton;
 
-import org.jonatancarbonellmartinez.data.database.DAO.PersonDAO;
-import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
-import org.jonatancarbonellmartinez.data.mapper.PersonMapper;
 import org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl;
-import org.jonatancarbonellmartinez.data.repository.UnitOfWork;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 
 /**

@@ -14,9 +14,11 @@ import java.util.List;
 public class PersonDAO {
 
     private static final String INSERT_PERSON =
-            "INSERT INTO dim_person (person_nk, person_rank, person_name, person_last_name_1, " +
-                    "person_last_name_2, person_phone, person_dni, person_division, person_rol, " +
-                    "person_order, person_current_flag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "INSERT INTO dim_person (person_nk, person_rank, person_cuerpo, person_especialidad, " +
+                    "person_name, person_last_name_1, person_last_name_2, person_phone, person_dni, " +
+                    "person_division, person_rol, person_a_emp, person_f_emb, " +
+                    "person_order, person_current_flag) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_PERSON =
             "UPDATE dim_person SET person_nk = ?, person_rank = ?, person_name = ?, " +
@@ -54,7 +56,7 @@ public class PersonDAO {
                 incrementOrders(entity.getPersonOrder(), connection);
             }
 
-            // Enable foreign keys and insert
+            // insert
             try (PreparedStatement pstmt = connection.prepareStatement(INSERT_PERSON)) {
                 setPersonParameters(pstmt, entity);
                 pstmt.executeUpdate();
@@ -153,6 +155,7 @@ public class PersonDAO {
         return entity;
     }
 
+    // TODO estos tres metodos no se si hacen bien lo del manejo de order numbers.
     private boolean checkIfOrderExists(int order, Connection connection) throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(CHECK_ORDER_EXISTS)) {
             pstmt.setInt(1, order);
@@ -169,18 +172,21 @@ public class PersonDAO {
         }
     }
 
-
     private void setPersonParameters(PreparedStatement pstmt, PersonEntity entity) throws SQLException {
         pstmt.setString(1, entity.getPersonNk());
         pstmt.setString(2, entity.getPersonRank());
-        pstmt.setString(3, entity.getPersonName());
-        pstmt.setString(4, entity.getPersonLastName1());
-        pstmt.setString(5, entity.getPersonLastName2());
-        pstmt.setString(6, entity.getPersonPhone());
-        pstmt.setString(7, entity.getPersonDni());
-        pstmt.setString(8, entity.getPersonDivision());
-        pstmt.setString(9, entity.getPersonRole());
-        pstmt.setInt(10, entity.getPersonOrder());
-        pstmt.setInt(11, entity.getPersonCurrentFlag());
+        pstmt.setString(3, entity.getCuerpo());
+        pstmt.setString(4, entity.getEspecialidad());
+        pstmt.setString(5, entity.getPersonName());
+        pstmt.setString(6, entity.getPersonLastName1());
+        pstmt.setString(7, entity.getPersonLastName2());
+        pstmt.setString(8, entity.getPersonPhone());
+        pstmt.setString(9, entity.getPersonDni());
+        pstmt.setString(10, entity.getPersonDivision());
+        pstmt.setString(11, entity.getPersonRole());
+        pstmt.setLong(12, entity.getAntiguedadEmpleo());
+        pstmt.setLong(13, entity.getFechaEmbarque());
+        pstmt.setInt(14, entity.getPersonOrder());
+        pstmt.setInt(15, entity.getPersonCurrentFlag());
     }
 }

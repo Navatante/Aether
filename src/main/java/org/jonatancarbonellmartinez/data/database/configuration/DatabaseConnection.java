@@ -28,6 +28,7 @@ public class DatabaseConnection {
         loadPathFromProperties();
     }
 
+    // Este metodo ejecuta las operaciones de la base de datos de forma asíncrona. El primero en usarlo ha sido PersonRepositoryImpl.
     public <T> CompletableFuture<T> executeOperation(DatabaseOperation<T> operation, boolean isWrite) {
         return CompletableFuture.supplyAsync(() -> {
             loadingManager.startLoading();

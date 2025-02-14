@@ -1,11 +1,13 @@
 package org.jonatancarbonellmartinez.domain.model;
 
+import java.time.LocalDate;
+
 /**
  * En la capa de dominio, contiente la logica de negocio, los modelos suelen ser POJOs puros sin dependencias de JavaFX.
  */
 
 // Domain Layer (business logic)
-public class Person {
+public class PersonDomain {
     private final Integer id;
     private final String code;
     private final String rank;
@@ -18,12 +20,12 @@ public class Person {
     private final String dni;
     private final String division;
     private final String role;
-    private final String   antiguedadEmpleo;
-    private final String   fechaEmbarque;
+    private final LocalDate antiguedadEmpleo;
+    private final LocalDate fechaEmbarque;
     private final Integer order;
     private final Boolean isActive;
 
-    private Person(Builder builder) {
+    private PersonDomain(Builder builder) {
         this.id = builder.id;
         this.code = builder.code;
         this.rank = builder.rank;
@@ -55,8 +57,8 @@ public class Person {
     public String getDni() { return dni; }
     public String getDivision() { return division; }
     public String getRole() { return role; }
-    public String getAntiguedadEmpleo() { return antiguedadEmpleo; }
-    public String getFechaEmbarque() { return fechaEmbarque; }
+    public LocalDate getAntiguedadEmpleo() { return antiguedadEmpleo; }
+    public LocalDate getFechaEmbarque() { return fechaEmbarque; }
     public Integer getOrder() { return order; }
     public Boolean isActive() { return isActive; }
 
@@ -74,8 +76,8 @@ public class Person {
         private String dni;
         private String division;
         private String role;
-        private String antiguedadEmpleo;
-        private String fechaEmbarque;
+        private LocalDate antiguedadEmpleo;
+        private LocalDate fechaEmbarque;
         private Integer order;
         private Boolean isActive;
 
@@ -141,12 +143,12 @@ public class Person {
             return this;
         }
 
-        public Builder antiguedadEmpleo(String antiguedadEmpleo) {
+        public Builder antiguedadEmpleo(LocalDate antiguedadEmpleo) {
             this.antiguedadEmpleo = antiguedadEmpleo;
             return this;
         }
 
-        public Builder fechaEmbarque(String fechaEmbarque) {
+        public Builder fechaEmbarque(LocalDate fechaEmbarque) {
             this.fechaEmbarque = fechaEmbarque;
             return this;
         }
@@ -161,8 +163,30 @@ public class Person {
             return this;
         }
 
-        public Person build() {
-            return new Person(this);
+        public PersonDomain build() {
+            return new PersonDomain(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Person {" +
+                "code='" + code + '\'' +
+                ", rank='" + rank + '\'' +
+                ", cuerpo='" + cuerpo + '\'' +
+                ", especialidad='" + especialidad + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName1='" + lastName1 + '\'' +
+                ", lastName2='" + lastName2 + '\'' +
+                ", phone='" + phone + '\'' +
+                ", dni='" + dni + '\'' +
+                ", division='" + division + '\'' +
+                ", role='" + role + '\'' +
+                ", antiguedadEmpleo='" + antiguedadEmpleo + '\'' +
+                ", fechaEmbarque='" + fechaEmbarque + '\'' +
+                ", order=" + order +
+                ", isActive=" + isActive +
+                '}';
+    }
+
 }

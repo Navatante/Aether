@@ -87,12 +87,6 @@ public class PersonCoordinator extends BaseCoordinator implements PersonNavigati
             dialogStage.setIconified(false);
             dialogStage.setResizable(false);
 
-            // TODO: Implementar el cierre del diálogo al cerrar la ventana principal
-            // Cerrar el diálogo si se cierra la ventana principal
-//            primaryStage.setOnCloseRequest(event -> {
-//                dialogStage.close();
-//            });
-
             // Load FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AddPersonView.fxml"));
             loader.setController(addPersonViewController);

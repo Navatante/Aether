@@ -2,9 +2,10 @@ package org.jonatancarbonellmartinez.presentation.mapper;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jonatancarbonellmartinez.domain.model.Person;
-import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
+import org.jonatancarbonellmartinez.domain.model.PersonDomain;
+import org.jonatancarbonellmartinez.presentation.model.PersonUI;
 import org.jonatancarbonellmartinez.services.DateService;
+import java.time.LocalDate;
 
 /**
  * Representa una capa adicional de mapeo específica para la UI (User Interface), lo que aporta varios beneficios importantes:
@@ -15,36 +16,36 @@ import org.jonatancarbonellmartinez.services.DateService;
  */
 
 @Singleton
-public class PersonUiMapper {
+public class PersonDomainUiMapper {
     private final DateService dateService;
 
     @Inject
-    public PersonUiMapper(DateService dateService) {
+    public PersonDomainUiMapper(DateService dateService) {
         this.dateService = dateService;
     }
-    public PersonUI toUiModel(Person domain) {
-        PersonUI ui = new PersonUI();
-        ui.setId(domain.getId());
-        ui.setCode(domain.getCode());
-        ui.setRank(domain.getRank());
-        ui.setCuerpo(domain.getCuerpo());
-        ui.setEspecialidad(domain.getEspecialidad());
-        ui.setName(domain.getName());
-        ui.setLastName1(domain.getLastName1());
-        ui.setLastName2(domain.getLastName2());
-        ui.setPhone(domain.getPhone());
-        ui.setDni(domain.getDni());
-        ui.setDivision(domain.getDivision());
-        ui.setRole(domain.getRole());
-        ui.setAntiguedadEmpleo(dateService.convertUTCtoLocalDate(domain.getAntiguedadEmpleo()));
-        ui.setFechaEmbarque(dateService.convertUTCtoLocalDate(domain.getFechaEmbarque()));
-        ui.setOrder(domain.getOrder());
-        ui.setActive(domain.isActive() ? "Activo" : "Inactivo");
-        return ui;
+    public PersonUI toUiModel(PersonDomain domain) {
+        return new PersonUI.Builder()
+                .id(domain.getId())
+                .code(domain.getCode())
+                .rank(domain.getRank())
+                .cuerpo(domain.getCuerpo())
+                .especialidad(domain.getEspecialidad())
+                .name(domain.getName())
+                .lastName1(domain.getLastName1())
+                .lastName2(domain.getLastName2())
+                .phone(domain.getPhone())
+                .dni(domain.getDni())
+                .division(domain.getDivision())
+                .role(domain.getRole())
+                .antiguedadEmpleo(dateService.convertUTCtoLocalDate(domain.getAntiguedadEmpleo()))
+                .fechaEmbarque(dateService.convertUTCtoLocalDate(domain.getFechaEmbarque()))
+                .order(domain.getOrder())
+                .isActive(domain.isActive() ? "Activo" : "Inactivo")
+                .build();
     }
 
-    public Person toDomain(PersonUI ui) {
-        return new Person.Builder()
+    public PersonDomain toDomain(PersonUI ui) {
+        return new PersonDomain.Builder()
                 .id(ui.getId())
                 .code(ui.getCode())
                 .rank(ui.getRank())

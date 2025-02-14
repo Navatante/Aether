@@ -1,10 +1,9 @@
 package org.jonatancarbonellmartinez.domain.repository.contract;
 
-import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Define los métodos que se pueden usar en la app, pero no implementa la lógica.
@@ -15,11 +14,11 @@ import java.util.concurrent.CompletableFuture;
  */
 
 public interface PersonRepository {
-    List<Person> getAllPersons(Connection connection);  // No CompletableFuture
-    List<Person> getActivePilots(Connection connection);
-    List<Person> getActiveCrew(Connection connection);
-    Person getPersonById(Connection connection, int id);
-    Boolean insertPerson(Connection connection, Person person);
-    Boolean updatePerson(Connection connection, Person person, int id);
+    List<PersonDomain> getAllPersons(Connection connection);  // No CompletableFuture
+    List<PersonDomain> getActivePilots(Connection connection);
+    List<PersonDomain> getActiveCrew(Connection connection);
+    PersonDomain getPersonById(Connection connection, int id);
+    Boolean insertPerson(Connection connection, PersonDomain personDomain);
+    Boolean updatePerson(Connection connection, PersonDomain personDomain, int id);
     Boolean updatePersonStatus(Connection connection, int id, boolean isActive);
 }

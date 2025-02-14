@@ -106,6 +106,8 @@ public class AddPersonViewController {
         antiguedadDatePicker.valueProperty().bindBidirectional(viewModel.antiguedadEmpleoProperty());
     }
 
+
+
     // Crear un StringConverter para la conversión entre String e Integer
     StringConverter<Integer> converter = new StringConverter<Integer>() {
         @Override
@@ -272,30 +274,13 @@ public class AddPersonViewController {
     }
 
     private void closeDialog() {
-        viewModel.reset();
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        Stage stage = (Stage) addPersonView.getScene().getWindow();
         stage.close();
     }
 
     private void setOrderFieldFormatter() {
         TextFormatter<String> orderFormatter = textFormatter.createNumericFormatter(5);
         ordenField.setTextFormatter(orderFormatter);
-
-//        ordenField.textProperty().addListener((obs, oldVal, newVal) -> {
-//            if (!newVal.isEmpty()) {
-//                try {
-//                    int value = Integer.parseInt(newVal);
-//                    viewModel.orderProperty().set(value);
-//                    errorLabel.setText(""); // Limpiar mensaje de error si es válido
-//                } catch (NumberFormatException e) {
-//                    errorLabel.setText("Solo se permiten números");
-//                    errorLabel.setStyle("-fx-text-fill: red;");
-//                }
-//            } else {
-//                viewModel.orderProperty().set(0);
-//                errorLabel.setText(""); // Limpiar mensaje de error si está vacío
-//            }
-//        });
     }
 
     private void setCodigoFieldFormatter() {

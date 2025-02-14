@@ -5,18 +5,19 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
-import org.jonatancarbonellmartinez.domain.model.Person;
+import org.jonatancarbonellmartinez.domain.model.PersonDomain;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
 import java.util.concurrent.CompletableFuture;
 
 public class AddPersonViewModel {
     private final PersonRepository repository;
-    private final PersonUiMapper uiMapper;
+    private final PersonDomainUiMapper uiMapper;
     private final DatabaseConnection databaseConnection;
     private final GlobalLoadingManager loadingManager;
 
@@ -44,7 +45,7 @@ public class AddPersonViewModel {
     @Inject
     public AddPersonViewModel(
             PersonRepository repository,
-            PersonUiMapper uiMapper,
+            PersonDomainUiMapper uiMapper,
             DatabaseConnection databaseConnection,
             GlobalLoadingManager loadingManager
     ) {
@@ -52,10 +53,9 @@ public class AddPersonViewModel {
         this.uiMapper = uiMapper;
         this.databaseConnection = databaseConnection;
         this.loadingManager = loadingManager;
+
         setupValidation();
     }
-
-
 
     private void setupValidation() {
         // Create individual validation bindings
@@ -98,14 +98,10 @@ public class AddPersonViewModel {
         );
     }
 
-    public CompletableFuture<Boolean> savePerson() {
-        if (!formValid.get()) {
-            return CompletableFuture.completedFuture(false);
-        }
+    // TODO save test
+    public void saveButtonTest() {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-        Person person = new Person.Builder()
+        PersonDomain personDomain = new PersonDomain.Builder()
                 .code(code.get())
                 .rank(rank.get())
                 .cuerpo(cuerpo.get())
@@ -117,13 +113,39 @@ public class AddPersonViewModel {
                 .dni(dni.get())
                 .division(division.get())
                 .role(role.get())
-                .antiguedadEmpleo(antiguedadEmpleo.get() != null ? antiguedadEmpleo.get().format(formatter) : "")
-                .fechaEmbarque(fechaEmbarque.get() != null ? fechaEmbarque.get().format(formatter) : "")
+                .antiguedadEmpleo(antiguedadEmpleo.get())
+                .fechaEmbarque(fechaEmbarque.get())
                 .order(order.get())
                 .isActive(active.get())
                 .build();
 
-        return databaseConnection.executeOperation(conn -> repository.insertPerson(conn, person), true);
+        System.out.println(personDomain);
+    }
+
+    public CompletableFuture<Boolean> savePerson() {
+        if (!formValid.get()) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        PersonDomain personDomain = new PersonDomain.Builder()
+                .code(code.get())
+                .rank(rank.get())
+                .cuerpo(cuerpo.get())
+                .especialidad(especialidad.get())
+                .name(name.get())
+                .lastName1(lastName1.get())
+                .lastName2(lastName2.get())
+                .phone(phone.get())
+                .dni(dni.get())
+                .division(division.get())
+                .role(role.get())
+                .antiguedadEmpleo(antiguedadEmpleo.get())
+                .fechaEmbarque(fechaEmbarque.get())
+                .order(order.get())
+                .isActive(active.get())
+                .build();
+
+        return databaseConnection.executeOperation(conn -> repository.insertPerson(conn, personDomain), true);
     }
 
     public void reset() {

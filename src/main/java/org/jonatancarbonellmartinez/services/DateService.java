@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 @Singleton
 public class DateService {
+    private static final ZoneId MADRID_ZONE = ZoneId.of("Europe/Madrid");
+
     private final DateTimeFormatter dateTimeFormatterUTC;
     private final DateTimeFormatter dateOnlyFormatterUTC;
     private final DateTimeFormatter timeOnlyFormatterUTC;
@@ -32,135 +34,111 @@ public class DateService {
         this.timeOnlyFormatterLocal = timeOnlyFormatterLocal;
     }
 
-    // Métodos para UTC
-    public String convertUnixToUTCDateTime(long unixTimestamp) {
-        return dateTimeFormatterUTC.format(Instant.ofEpochSecond(unixTimestamp));
+    // UTC conversion methods
+    public Instant convertUnixToUTCDateTime(long unixTimestamp) {
+        return Instant.ofEpochSecond(unixTimestamp);
     }
 
-    public String convertUnixToUTCDate(long unixTimestamp) {
-        return dateOnlyFormatterUTC.format(Instant.ofEpochSecond(unixTimestamp));
+    public LocalDate convertUnixToUTCDate(long unixTimestamp) {
+        return Instant.ofEpochSecond(unixTimestamp)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate();
     }
 
-    public String convertUnixToUTCTime(long unixTimestamp) {
-        return timeOnlyFormatterUTC.format(Instant.ofEpochSecond(unixTimestamp));
+    public LocalTime convertUnixToUTCTime(long unixTimestamp) {
+        return Instant.ofEpochSecond(unixTimestamp)
+                .atZone(ZoneOffset.UTC)
+                .toLocalTime();
     }
 
-    // Métodos para hora local (España)
-    public String convertUTCtoLocalDateTime(String utcDateTimeStr) {
+    // Local (Spain) conversion methods
+    public ZonedDateTime convertUTCtoLocalDateTime(Instant utcDateTime) {
         try {
-            // Parsear el string UTC a LocalDateTime
-            LocalDateTime utcDateTime = LocalDateTime.parse(utcDateTimeStr, dateTimeFormatterUTC);
-            // Convertir a ZonedDateTime en UTC
-            ZonedDateTime utcZoned = utcDateTime.atZone(ZoneOffset.UTC);
-            // Convertir a zona horaria de Madrid
-            ZonedDateTime madridTime = utcZoned.withZoneSameInstant(ZoneId.of("Europe/Madrid"));
-            // Formatear a string
-            return dateTimeFormatterLocal.format(madridTime);
+            return utcDateTime.atZone(MADRID_ZONE);
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    public String convertUTCtoLocalDate(String utcDateStr) {
+    public LocalDate convertUTCtoLocalDate(LocalDate utcDate) {
         try {
-            // Añadimos hora 00:00 para la conversión
-            String dateWithTime = utcDateStr + " 00:00";
-            LocalDateTime utcDateTime = LocalDateTime.parse(dateWithTime, dateTimeFormatterUTC);
-            ZonedDateTime utcZoned = utcDateTime.atZone(ZoneOffset.UTC);
-            ZonedDateTime madridTime = utcZoned.withZoneSameInstant(ZoneId.of("Europe/Madrid"));
-            return dateOnlyFormatterLocal.format(madridTime);
+            return utcDate.atStartOfDay(ZoneOffset.UTC)
+                    .withZoneSameInstant(MADRID_ZONE)
+                    .toLocalDate();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    public String convertUTCtoLocalTime(String utcTimeStr) {
+    public LocalTime convertUTCtoLocalTime(LocalTime utcTime) {
         try {
-            // Usamos la fecha actual para la conversión
             LocalDate today = LocalDate.now(ZoneOffset.UTC);
-            String fullDateTime = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + " " + utcTimeStr;
-            LocalDateTime utcDateTime = LocalDateTime.parse(fullDateTime, dateTimeFormatterUTC);
-            ZonedDateTime utcZoned = utcDateTime.atZone(ZoneOffset.UTC);
-            ZonedDateTime madridTime = utcZoned.withZoneSameInstant(ZoneId.of("Europe/Madrid"));
-            return timeOnlyFormatterLocal.format(madridTime);
+            return today.atTime(utcTime)
+                    .atZone(ZoneOffset.UTC)
+                    .withZoneSameInstant(MADRID_ZONE)
+                    .toLocalTime();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    // Para UTC
+    // UTC to Unix timestamp conversions
     public Long convertUTCDateTimeToUnix(String dateTimeStr) {
         try {
-            LocalDateTime localDateTime = LocalDateTime.parse(dateTimeStr, dateTimeFormatterUTC);
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
-            return zonedDateTime.toEpochSecond();
+            return Instant.parse(dateTimeStr).getEpochSecond();
         } catch (DateTimeException e) {
-            // TODO meter CustomLogger
             return null;
         }
     }
 
-    public Long convertUTCDateToUnix(String dateStr) {
+    public Long convertUTCDateToUnix(LocalDate utcDate) {
         try {
-            String dateWithTime = dateStr + " 00:00";
-            LocalDateTime localDateTime = LocalDateTime.parse(dateWithTime, dateTimeFormatterUTC);
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
-            return zonedDateTime.toEpochSecond();
+            return utcDate.atStartOfDay(ZoneOffset.UTC)
+                    .toEpochSecond();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    public Long convertUTCTimeToUnix(String timeStr) {
+    public Long convertUTCTimeToUnix(LocalTime utcTime) {
         try {
             LocalDate today = LocalDate.now(ZoneOffset.UTC);
-            String fullDateTime = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + " " + timeStr;
-            LocalDateTime localDateTime = LocalDateTime.parse(fullDateTime, dateTimeFormatterUTC);
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneOffset.UTC);
-            return zonedDateTime.toEpochSecond();
+            return today.atTime(utcTime)
+                    .atZone(ZoneOffset.UTC)
+                    .toEpochSecond();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    // Convertir de String Local a String UTC
-    public String convertLocalToUTCDateTime(String localDateTimeStr) {
+    // Local to UTC conversions
+    public Instant convertLocalToUTCDateTime(LocalDateTime localDateTime) {
         try {
-            // Parsear el string local a LocalDateTime
-            LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeStr, dateTimeFormatterLocal);
-            // Convertir a ZonedDateTime en zona Madrid
-            ZonedDateTime madridTime = localDateTime.atZone(ZoneId.of("Europe/Madrid"));
-            // Convertir a UTC
-            ZonedDateTime utcTime = madridTime.withZoneSameInstant(ZoneOffset.UTC);
-            // Formatear a string
-            return dateTimeFormatterUTC.format(utcTime);
+            return localDateTime.atZone(MADRID_ZONE)
+                    .withZoneSameInstant(ZoneOffset.UTC)
+                    .toInstant();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    public String convertLocalToUTCDate(String localDateStr) {
+    public LocalDate convertLocalToUTCDate(LocalDate localDate) {
         try {
-            // Añadimos hora 00:00 para la conversión
-            String dateWithTime = localDateStr + " 00:00";
-            LocalDateTime localDateTime = LocalDateTime.parse(dateWithTime, dateTimeFormatterLocal);
-            ZonedDateTime madridTime = localDateTime.atZone(ZoneId.of("Europe/Madrid"));
-            ZonedDateTime utcTime = madridTime.withZoneSameInstant(ZoneOffset.UTC);
-            return dateOnlyFormatterUTC.format(utcTime);
+            return localDate.atStartOfDay(MADRID_ZONE)
+                    .withZoneSameInstant(ZoneOffset.UTC)
+                    .toLocalDate();
         } catch (DateTimeException e) {
             return null;
         }
     }
 
-    public String convertLocalToUTCTime(String localTimeStr) {
+    public LocalTime convertLocalToUTCTime(LocalTime localTime) {
         try {
-            // Usamos la fecha actual para la conversión
-            LocalDate today = LocalDate.now(ZoneId.of("Europe/Madrid"));
-            String fullDateTime = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + " " + localTimeStr;
-            LocalDateTime localDateTime = LocalDateTime.parse(fullDateTime, dateTimeFormatterLocal);
-            ZonedDateTime madridTime = localDateTime.atZone(ZoneId.of("Europe/Madrid"));
-            ZonedDateTime utcTime = madridTime.withZoneSameInstant(ZoneOffset.UTC);
-            return timeOnlyFormatterUTC.format(utcTime);
+            LocalDate today = LocalDate.now(MADRID_ZONE);
+            return today.atTime(localTime)
+                    .atZone(MADRID_ZONE)
+                    .withZoneSameInstant(ZoneOffset.UTC)
+                    .toLocalTime();
         } catch (DateTimeException e) {
             return null;
         }

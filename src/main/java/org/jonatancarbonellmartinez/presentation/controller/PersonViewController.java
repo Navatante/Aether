@@ -2,17 +2,15 @@ package org.jonatancarbonellmartinez.presentation.controller;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.*;
-import org.jonatancarbonellmartinez.application.coordinator.PersonCoordinator;
 import org.jonatancarbonellmartinez.presentation.navigation.PersonNavigationCallback;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
-import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel.PersonUI;
+import org.jonatancarbonellmartinez.presentation.model.PersonUI;
 
 import javax.inject.Inject;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -132,9 +130,10 @@ public class PersonViewController {
         roleColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(cellData.getValue().getRole()));
         antiguedadColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(cellData.getValue().getAntiguedadEmpleo()));
+                new ReadOnlyStringWrapper(cellData.getValue().getAntiguedadEmpleo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+
         embarqueColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(cellData.getValue().getFechaEmbarque()));
+                new ReadOnlyStringWrapper(cellData.getValue().getFechaEmbarque().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
         activeColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(cellData.getValue().isActive()));
         orderColumn.setCellValueFactory(cellData ->

@@ -154,4 +154,26 @@ public class PersonEntity {
     public void setFechaEmbarque(Long fechaEmbarque) {
         this.fechaEmbarque = fechaEmbarque;
     }
+
+    @Override
+    public String toString() {
+        return "PersonEntity{" +
+                "personSk=" + personSk +
+                ", personNk='" + personNk + '\'' +
+                ", personRank='" + personRank + '\'' +
+                ", cuerpo='" + cuerpo + '\'' +
+                ", especialidad='" + especialidad + '\'' +
+                ", personName='" + personName + '\'' +
+                ", personLastName1='" + personLastName1 + '\'' +
+                ", personLastName2='" + personLastName2 + '\'' +
+                ", personPhone='" + personPhone + '\'' +
+                ", personDni='" + personDni + '\'' +
+                ", personDivision='" + personDivision + '\'' +
+                ", personRole='" + personRole + '\'' +
+                ", antiguedadEmpleo=" + antiguedadEmpleo +
+                ", fechaEmbarque=" + fechaEmbarque +
+                ", personOrder=" + personOrder +
+                ", personCurrentFlag=" + personCurrentFlag +
+                '}';
+    }
 }

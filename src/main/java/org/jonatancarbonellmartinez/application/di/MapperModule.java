@@ -2,8 +2,8 @@ package org.jonatancarbonellmartinez.application.di;
 
 import dagger.Module;
 import dagger.Provides;
-import org.jonatancarbonellmartinez.data.mapper.PersonMapper;
-import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+import org.jonatancarbonellmartinez.data.mapper.PersonEntityDomainMapper;
+import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
 import org.jonatancarbonellmartinez.services.DateService;
 
 import javax.inject.Singleton;
@@ -12,13 +12,13 @@ import javax.inject.Singleton;
 public class MapperModule {
     @Provides
     @Singleton
-    PersonMapper providePersonDataMapper(DateService dateService) {
-        return new PersonMapper(dateService);
+    PersonEntityDomainMapper providePersonDataMapper(DateService dateService) {
+        return new PersonEntityDomainMapper(dateService);
     }
 
     @Provides
     @Singleton
-    PersonUiMapper providePersonUiMapper(DateService dateService) {
-        return new PersonUiMapper(dateService);
+    PersonDomainUiMapper providePersonUiMapper(DateService dateService) {
+        return new PersonDomainUiMapper(dateService);
     }
 }

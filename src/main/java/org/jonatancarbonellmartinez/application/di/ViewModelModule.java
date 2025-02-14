@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
 import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
-import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
+import org.jonatancarbonellmartinez.presentation.mapper.PersonDomainUiMapper;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
 
@@ -21,7 +21,7 @@ public class ViewModelModule {
     @Singleton
     PersonViewModel providePersonViewModel(
             PersonRepository repository,
-            PersonUiMapper mapper,
+            PersonDomainUiMapper mapper,
             DatabaseConnection databaseConnection,
             GlobalLoadingManager loadingManager
     ) {
@@ -37,7 +37,7 @@ public class ViewModelModule {
     @Singleton
     AddPersonViewModel provideAddPersonViewModel(
             PersonRepository repository,
-            PersonUiMapper mapper,
+            PersonDomainUiMapper mapper,
             DatabaseConnection databaseConnection,
             GlobalLoadingManager loadingManager
     ) {
