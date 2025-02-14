@@ -124,6 +124,37 @@
     -fx-background-color: #666666;
 }
 
+
+
+
+/* ========== COMBO BOX  TEST ========== */
+/* outer combo-box text */
+.combo-box .list-cell {
+    -fx-text-fill: white;
+}
+
+/* combo-box list view text, not hovered or focused */
+.combo-box .list-view .list-cell {
+    -fx-text-fill: black;
+}
+
+/* combo-box selected text */
+.combo-box .list-view .list-cell:focused {
+    -fx-background-color : #5F9EA0;  /* Cadet Blue */
+    -fx-text-fill: white;
+}
+
+/* combo-box hover text */
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color : #5F9EA0;  /* Cadet Blue */
+    -fx-text-fill: white;
+}
+
+
+
+
+
+
 /* ========== DATE PICKER ========== */
 .date-picker {
     -fx-background-color: transparent;

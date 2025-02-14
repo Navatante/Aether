@@ -19,7 +19,7 @@
                   <Font name="Segoe UI" size="14.0" />
                </font>
             </TextField>
-            <ComboBox fx:id="empleoComboBox" minHeight="28.0" prefWidth="135.0" promptText="Empleo" />
+            <ComboBox id="empleoComboBox" fx:id="empleoComboBox" minHeight="28.0" prefWidth="135.0" promptText="Empleo" />
             <ComboBox fx:id="cuerpoComboBox" minHeight="28.0" prefWidth="135.0" promptText="Cuerpo" />
             <ComboBox fx:id="especialidadComboBox" minHeight="28.0" prefWidth="135.0" promptText="Especialidad" />
          </children>
