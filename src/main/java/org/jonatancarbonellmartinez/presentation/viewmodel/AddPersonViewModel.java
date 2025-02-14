@@ -8,6 +8,8 @@ import org.jonatancarbonellmartinez.domain.repository.contract.PersonRepository;
 import org.jonatancarbonellmartinez.presentation.mapper.PersonUiMapper;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
 
 public class AddPersonViewModel {
@@ -28,8 +30,8 @@ public class AddPersonViewModel {
     private final StringProperty dni = new SimpleStringProperty("");
     private final StringProperty division = new SimpleStringProperty("");
     private final StringProperty role = new SimpleStringProperty("");
-    private final StringProperty antiguedadEmpleo = new SimpleStringProperty("");
-    private final StringProperty fechaEmbarque = new SimpleStringProperty("");
+    private final ObjectProperty<LocalDate> antiguedadEmpleo = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDate> fechaEmbarque = new SimpleObjectProperty<>();
     private final ObjectProperty<Integer> order = new SimpleObjectProperty<>(null);
     private final BooleanProperty active = new SimpleBooleanProperty(true);
 
@@ -55,18 +57,31 @@ public class AddPersonViewModel {
 
     private void setupValidation() {
         // Bind formValid to required fields
+        // TODO hay que gestionar que no se habilite el boton guardar cuando un field no esta completo, por ejemplo poner un dni de 4 numeros
         formValid.bind(
-                code.isNotEmpty()
+                (order.isNotNull()
+                        .and(rank.isNotEmpty())
+                        .and(cuerpo.isNotEmpty())
+                        .and(especialidad.isNotEmpty())
                         .and(name.isNotEmpty())
                         .and(lastName1.isNotEmpty())
+                        .and(lastName2.isNotEmpty())
+                        .and(phone.isNotEmpty())
                         .and(dni.isNotEmpty())
-        );
+                        .and(division.isNotEmpty())
+                        .and(role.isNotEmpty())
+                        .and(fechaEmbarque.isNotNull())
+                        .and(antiguedadEmpleo.isNotNull())
+
+        ));
     }
 
     public CompletableFuture<Boolean> savePerson() {
         if (!formValid.get()) {
             return CompletableFuture.completedFuture(false);
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         Person person = new Person.Builder()
                 .code(code.get())
@@ -80,8 +95,8 @@ public class AddPersonViewModel {
                 .dni(dni.get())
                 .division(division.get())
                 .role(role.get())
-                .antiguedadEmpleo(antiguedadEmpleo.get())
-                .fechaEmbarque(fechaEmbarque.get())
+                .antiguedadEmpleo(antiguedadEmpleo.get() != null ? antiguedadEmpleo.get().format(formatter) : "")
+                .fechaEmbarque(fechaEmbarque.get() != null ? fechaEmbarque.get().format(formatter) : "")
                 .order(order.get())
                 .isActive(active.get())
                 .build();
@@ -101,8 +116,8 @@ public class AddPersonViewModel {
         dni.set("");
         division.set(null);
         role.set(null);
-        antiguedadEmpleo.set("");
-        fechaEmbarque.set("");
+        antiguedadEmpleo.set(null);
+        fechaEmbarque.set(null);
         order.set(null);
         active.set(true);
         errorMessage.set("");
@@ -120,8 +135,8 @@ public class AddPersonViewModel {
     public StringProperty dniProperty() { return dni; }
     public StringProperty divisionProperty() { return division; }
     public StringProperty roleProperty() { return role; }
-    public StringProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
-    public StringProperty fechaEmbarqueProperty() { return fechaEmbarque; }
+    public ObjectProperty<LocalDate> antiguedadEmpleoProperty() { return antiguedadEmpleo; }
+    public ObjectProperty<LocalDate> fechaEmbarqueProperty() { return fechaEmbarque; }
     public ObjectProperty<Integer> orderProperty() { return order; }
     public BooleanProperty activeProperty() { return active; }
     public BooleanProperty formValidProperty() { return formValid; }
