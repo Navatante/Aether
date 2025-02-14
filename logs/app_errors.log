@@ -116,3 +116,52 @@ Stack trace:
 	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
 	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
 
+2025-02-14 13:13:35 [SEVERE] Error inserting person
+Excepción: org.sqlite.SQLiteException: [SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: dim_person.person_cuerpo)
+Stack trace:
+	at org.sqlite.core.DB.newSQLException(DB.java:1179)
+	at org.sqlite.core.DB.newSQLException(DB.java:1190)
+	at org.sqlite.core.DB.execute(DB.java:985)
+	at org.sqlite.core.DB.executeUpdate(DB.java:1054)
+	at org.sqlite.jdbc3.JDBC3PreparedStatement.lambda$executeLargeUpdate$2(JDBC3PreparedStatement.java:129)
+	at org.sqlite.jdbc3.JDBC3Statement.withConnectionTimeout(JDBC3Statement.java:454)
+	at org.sqlite.jdbc3.JDBC3PreparedStatement.executeLargeUpdate(JDBC3PreparedStatement.java:124)
+	at org.sqlite.jdbc3.JDBC3PreparedStatement.executeUpdate(JDBC3PreparedStatement.java:105)
+	at org.jonatancarbonellmartinez.data.database.DAO.PersonDAO.insert(PersonDAO.java:60)
+	at org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl.insertPerson(PersonRepositoryImpl.java:90)
+	at org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel.lambda$savePerson$3(AddPersonViewModel.java:126)
+	at org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection.lambda$executeOperation$0(DatabaseConnection.java:35)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+
+2025-02-14 13:13:35 [SEVERE] Error inserting person
+Excepción: org.jonatancarbonellmartinez.exceptions.DatabaseException: Error inserting person
+Stack trace:
+	at org.jonatancarbonellmartinez.data.database.DAO.PersonDAO.insert(PersonDAO.java:64)
+	at org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl.insertPerson(PersonRepositoryImpl.java:90)
+	at org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel.lambda$savePerson$3(AddPersonViewModel.java:126)
+	at org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection.lambda$executeOperation$0(DatabaseConnection.java:35)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+
+2025-02-14 13:13:35 [SEVERE] Database operation failed
+Excepción: org.jonatancarbonellmartinez.exceptions.DatabaseException: Error inserting person
+Stack trace:
+	at org.jonatancarbonellmartinez.data.repository.PersonRepositoryImpl.insertPerson(PersonRepositoryImpl.java:94)
+	at org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel.lambda$savePerson$3(AddPersonViewModel.java:126)
+	at org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection.lambda$executeOperation$0(DatabaseConnection.java:35)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+

@@ -1,5 +1,7 @@
 package org.jonatancarbonellmartinez.presentation.viewmodel;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import org.jonatancarbonellmartinez.data.database.configuration.DatabaseConnection;
 import org.jonatancarbonellmartinez.data.database.configuration.GlobalLoadingManager;
@@ -56,24 +58,44 @@ public class AddPersonViewModel {
 
 
     private void setupValidation() {
-        // Bind formValid to required fields
-        // TODO hay que gestionar que no se habilite el boton guardar cuando un field no esta completo, por ejemplo poner un dni de 4 numeros
-        formValid.bind(
-                (order.isNotNull()
-                        .and(rank.isNotEmpty())
-                        .and(cuerpo.isNotEmpty())
-                        .and(especialidad.isNotEmpty())
-                        .and(name.isNotEmpty())
-                        .and(lastName1.isNotEmpty())
-                        .and(lastName2.isNotEmpty())
-                        .and(phone.isNotEmpty())
-                        .and(dni.isNotEmpty())
-                        .and(division.isNotEmpty())
-                        .and(role.isNotEmpty())
-                        .and(fechaEmbarque.isNotNull())
-                        .and(antiguedadEmpleo.isNotNull())
+        // Create individual validation bindings
+        BooleanBinding orderValid = order.isNotNull();
 
-        ));
+        BooleanBinding dniValid = Bindings.createBooleanBinding(
+                () -> dni.get() != null && dni.get().length() == 8,
+                dni
+        );
+
+        BooleanBinding phoneValid = Bindings.createBooleanBinding(
+                () -> phone.get() != null && phone.get().length() == 9,
+                phone
+        );
+
+        BooleanBinding codeValid = Bindings.createBooleanBinding(
+                () -> code.get() == null || code.get().isEmpty() || code.get().length() == 3,
+                code
+        );
+
+        // Basic required field validations
+        BooleanBinding requiredFieldsValid = rank.isNotEmpty()
+                .and(cuerpo.isNotEmpty())
+                .and(especialidad.isNotEmpty())
+                .and(name.isNotEmpty())
+                .and(lastName1.isNotEmpty())
+                .and(lastName2.isNotEmpty())
+                .and(division.isNotEmpty())
+                .and(role.isNotEmpty())
+                .and(fechaEmbarque.isNotNull())
+                .and(antiguedadEmpleo.isNotNull());
+
+        // Combine all validations
+        formValid.bind(
+                orderValid
+                        .and(dniValid)
+                        .and(phoneValid)
+                        .and(codeValid)
+                        .and(requiredFieldsValid)
+        );
     }
 
     public CompletableFuture<Boolean> savePerson() {
@@ -105,22 +127,46 @@ public class AddPersonViewModel {
     }
 
     public void reset() {
+        // Unbind formValid first
+        formValid.unbind();
+
+        // Reset all properties
         code.set("");
+        rank.unbind();
         rank.set(null);
+        cuerpo.unbind();
         cuerpo.set(null);
+        especialidad.unbind();
         especialidad.set(null);
         name.set("");
         lastName1.set("");
         lastName2.set("");
         phone.set("");
         dni.set("");
+        division.unbind();
         division.set(null);
+        role.unbind();
         role.set(null);
         antiguedadEmpleo.set(null);
         fechaEmbarque.set(null);
         order.set(null);
         active.set(true);
+        errorMessage.unbind();
         errorMessage.set("");
+
+        // Re-setup validation after reset
+        setupValidation();
+    }
+
+    // Optional: Add a dispose method to clean up bindings when the view model is no longer needed
+    public void dispose() {
+        formValid.unbind();
+        rank.unbind();
+        cuerpo.unbind();
+        especialidad.unbind();
+        division.unbind();
+        role.unbind();
+        errorMessage.unbind();
     }
 
     // Getters for properties
