@@ -91,16 +91,16 @@ public class AddPersonViewModel {
 
     public void reset() {
         code.set("");
-        rank.set("");
-        cuerpo.set("");
-        especialidad.set("");
+        rank.set(null);
+        cuerpo.set(null);
+        especialidad.set(null);
         name.set("");
         lastName1.set("");
         lastName2.set("");
         phone.set("");
         dni.set("");
-        division.set("");
-        role.set("");
+        division.set(null);
+        role.set(null);
         antiguedadEmpleo.set("");
         fechaEmbarque.set("");
         order.set(null);

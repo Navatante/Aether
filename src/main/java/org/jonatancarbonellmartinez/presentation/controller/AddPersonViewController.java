@@ -87,7 +87,7 @@ public class AddPersonViewController {
         // Two-way bindings for form fields
         codigoField.textProperty().bindBidirectional(viewModel.codeProperty());
         ordenField.textProperty().bindBidirectional(viewModel.orderProperty(), converter);
-        //empleoComboBox.buttonCellProperty().bindBidirectional(viewModel.em);
+        empleoComboBox.valueProperty().bindBidirectional(viewModel.rankProperty());
         cuerpoField.textProperty().bindBidirectional(viewModel.cuerpoProperty());
         especialidadField.textProperty().bindBidirectional(viewModel.especialidadProperty());
         nombreField.textProperty().bindBidirectional(viewModel.nameProperty());
@@ -132,6 +132,12 @@ public class AddPersonViewController {
 
         nombreField.styleProperty().bind(
                 Bindings.when(viewModel.nameProperty().isEmpty())
+                        .then("-fx-border-color: #B85C4B;")
+                        .otherwise("")
+        );
+
+        empleoComboBox.styleProperty().bind(
+                Bindings.when(empleoComboBox.valueProperty().isNull())
                         .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
