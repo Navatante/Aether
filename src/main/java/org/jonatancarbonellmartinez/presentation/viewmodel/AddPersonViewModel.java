@@ -30,7 +30,7 @@ public class AddPersonViewModel {
     private final StringProperty role = new SimpleStringProperty("");
     private final StringProperty antiguedadEmpleo = new SimpleStringProperty("");
     private final StringProperty fechaEmbarque = new SimpleStringProperty("");
-    private final IntegerProperty order = new SimpleIntegerProperty(0);
+    private final ObjectProperty<Integer> order = new SimpleObjectProperty<>(null);
     private final BooleanProperty active = new SimpleBooleanProperty(true);
 
     // Form state
@@ -103,7 +103,7 @@ public class AddPersonViewModel {
         role.set("");
         antiguedadEmpleo.set("");
         fechaEmbarque.set("");
-        order.set(0);
+        order.set(null);
         active.set(true);
         errorMessage.set("");
     }
@@ -122,7 +122,7 @@ public class AddPersonViewModel {
     public StringProperty roleProperty() { return role; }
     public StringProperty antiguedadEmpleoProperty() { return antiguedadEmpleo; }
     public StringProperty fechaEmbarqueProperty() { return fechaEmbarque; }
-    public IntegerProperty orderProperty() { return order; }
+    public ObjectProperty<Integer> orderProperty() { return order; }
     public BooleanProperty activeProperty() { return active; }
     public BooleanProperty formValidProperty() { return formValid; }
     public StringProperty errorMessageProperty() { return errorMessage; }

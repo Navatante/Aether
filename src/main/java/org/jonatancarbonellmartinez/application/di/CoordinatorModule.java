@@ -12,6 +12,7 @@ import org.jonatancarbonellmartinez.presentation.controller.MainViewController;
 import org.jonatancarbonellmartinez.presentation.controller.PersonViewController;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
 import org.jonatancarbonellmartinez.presentation.viewmodel.PersonViewModel;
+import org.jonatancarbonellmartinez.services.util.TextFormatterService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +51,8 @@ public class CoordinatorModule {
 
     @Provides
     @Singleton
-    AddPersonViewController provideAddPersonViewController(AddPersonViewModel viewModel) {
-        return new AddPersonViewController(viewModel);
+    AddPersonViewController provideAddPersonViewController(AddPersonViewModel viewModel, TextFormatterService textFormatterService) {
+        return new AddPersonViewController(viewModel, textFormatterService);
     }
 
     @Provides

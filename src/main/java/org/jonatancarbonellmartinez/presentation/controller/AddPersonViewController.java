@@ -1,14 +1,20 @@
 package org.jonatancarbonellmartinez.presentation.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
-import javafx.util.converter.NumberStringConverter;
 import org.jonatancarbonellmartinez.presentation.viewmodel.AddPersonViewModel;
+import org.jonatancarbonellmartinez.services.util.TextFormatterService;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -35,12 +41,16 @@ public class AddPersonViewController {
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
     @FXML private VBox addPersonView;
+    @FXML private Label errorLabel;
+    private final StringProperty errorMessage = new SimpleStringProperty("");
 
     private final AddPersonViewModel viewModel;
+    private final TextFormatterService textFormatter;
 
     @Inject
-    public AddPersonViewController(AddPersonViewModel viewModel) {
+    public AddPersonViewController(AddPersonViewModel viewModel, TextFormatterService textFormatter) {
         this.viewModel = viewModel;
+        this.textFormatter = textFormatter;
     }
 
     @FXML
@@ -49,7 +59,18 @@ public class AddPersonViewController {
         setupValidation();
         setupDatePicker();
         populateComboBoxes();
+        setupTextFormatters();
+        setDniFieldFormatter();
     }
+
+    private void setupTextFormatters() {
+        setOrderFieldFormatter();
+        setCodigoFieldFormatter();
+        setNameFieldFormatter();
+        setLastName1FieldFormatter();
+        setLastName2FieldFormatter();
+    }
+
 
     private void populateComboBoxes() {
         empleoComboBox.getItems().addAll("TCOL", "CF","CTE","CC","CAP","TN","TTE","AN","SBMY","STTE","BG","SG1","SGTO","CBMY","CB1","CBO","SDO","MRO");
@@ -65,6 +86,7 @@ public class AddPersonViewController {
     private void setupBindings() {
         // Two-way bindings for form fields
         codigoField.textProperty().bindBidirectional(viewModel.codeProperty());
+        ordenField.textProperty().bindBidirectional(viewModel.orderProperty(), converter);
         //empleoComboBox.buttonCellProperty().bindBidirectional(viewModel.em);
         cuerpoField.textProperty().bindBidirectional(viewModel.cuerpoProperty());
         especialidadField.textProperty().bindBidirectional(viewModel.especialidadProperty());
@@ -77,10 +99,33 @@ public class AddPersonViewController {
         rolField.textProperty().bindBidirectional(viewModel.roleProperty());
     }
 
+    // Crear un StringConverter para la conversión entre String e Integer
+    StringConverter<Integer> converter = new StringConverter<Integer>() {
+        @Override
+        public String toString(Integer number) {
+            if (number == null) {
+                return "";
+            }
+            return number.toString();
+        }
+
+        @Override
+        public Integer fromString(String string) {
+            if (string == null || string.isEmpty()) {
+                return null;
+            }
+            try {
+                return Integer.parseInt(string);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    };
+
     private void setupValidation() {
         // Required fields styling
-        codigoField.styleProperty().bind(
-                Bindings.when(viewModel.codeProperty().isEmpty())
+        ordenField.styleProperty().bind(
+                Bindings.when(viewModel.orderProperty().isNull())
                         .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
@@ -93,6 +138,18 @@ public class AddPersonViewController {
 
         apellido1Field.styleProperty().bind(
                 Bindings.when(viewModel.lastName1Property().isEmpty())
+                        .then("-fx-border-color: #B85C4B;")
+                        .otherwise("")
+        );
+
+        apellido2Field.styleProperty().bind(
+                Bindings.when(viewModel.lastName2Property().isEmpty())
+                        .then("-fx-border-color: #B85C4B;")
+                        .otherwise("")
+        );
+
+        telefonoField.styleProperty().bind(
+                Bindings.when(viewModel.phoneProperty().isEmpty())
                         .then("-fx-border-color: #B85C4B;")
                         .otherwise("")
         );
@@ -169,5 +226,93 @@ public class AddPersonViewController {
         viewModel.reset();
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    private void setOrderFieldFormatter() {
+        TextFormatter<String> orderFormatter = textFormatter.createNumericFormatter(5);
+        ordenField.setTextFormatter(orderFormatter);
+
+//        ordenField.textProperty().addListener((obs, oldVal, newVal) -> {
+//            if (!newVal.isEmpty()) {
+//                try {
+//                    int value = Integer.parseInt(newVal);
+//                    viewModel.orderProperty().set(value);
+//                    errorLabel.setText(""); // Limpiar mensaje de error si es válido
+//                } catch (NumberFormatException e) {
+//                    errorLabel.setText("Solo se permiten números");
+//                    errorLabel.setStyle("-fx-text-fill: red;");
+//                }
+//            } else {
+//                viewModel.orderProperty().set(0);
+//                errorLabel.setText(""); // Limpiar mensaje de error si está vacío
+//            }
+//        });
+    }
+
+    private void setCodigoFieldFormatter() {
+        TextFormatter<String> codigoFormatter = textFormatter.createAlphabeticWithoutSpacesFormatter(3);
+        codigoField.setTextFormatter(codigoFormatter);
+
+        // Add focus listener to validate when field loses focus
+        codigoField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // When focus is lost
+                String text = codigoField.getText();
+                if (text.length() != 3) {
+                    if (!text.trim().isEmpty()) {
+                        errorLabel.setText("El Código debe contener 3 letras");
+                        errorLabel.setStyle("-fx-text-fill: #B85C4B;");
+                        Platform.runLater(() -> codigoField.requestFocus());
+
+                        // Crear un Timeline para ocultar el mensaje después de 3 segundos
+                        Timeline timeline = new Timeline(new KeyFrame(
+                                Duration.seconds(3),
+                                evt -> errorLabel.setText("")
+                        ));
+                        timeline.play();
+                    }
+                }
+            }
+        });
+    }
+
+    private void setNameFieldFormatter() {
+        TextFormatter<String> nameFormatter = textFormatter.createAlphabeticWithSpacesFormatter(50);
+        nombreField.setTextFormatter(nameFormatter);
+    }
+
+    private void setLastName1FieldFormatter() {
+        TextFormatter<String> lastName1Formatter = textFormatter.createAlphabeticWithSpacesFormatter(50);
+        apellido1Field.setTextFormatter(lastName1Formatter);
+    }
+
+    private void setLastName2FieldFormatter() {
+        TextFormatter<String> lastName2Formatter = textFormatter.createAlphabeticWithSpacesFormatter(50);
+        apellido2Field.setTextFormatter(lastName2Formatter);
+    }
+
+    private void setDniFieldFormatter() {
+        TextFormatter<String> codigoFormatter = textFormatter.createNumericFormatter(8);
+        dniField.setTextFormatter(codigoFormatter);
+
+        // Add focus listener to validate when field loses focus
+        dniField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // When focus is lost
+                String text = dniField.getText();
+                if (text.length() != 8) {
+                    if (!text.trim().isEmpty()) {
+                        errorLabel.setText("El DNI debe contener 8 números");
+                        errorLabel.setStyle("-fx-text-fill: #B85C4B;");
+                        Platform.runLater(() -> dniField.requestFocus());
+
+                        // Crear un Timeline para ocultar el mensaje después de 3 segundos
+                        Timeline timeline = new Timeline(new KeyFrame(
+                                Duration.seconds(3),
+                                evt -> errorLabel.setText("")
+                        ));
+                        timeline.play();
+                    }
+                }
+            }
+        });
     }
 }
